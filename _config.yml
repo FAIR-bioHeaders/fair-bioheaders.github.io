@@ -12,7 +12,7 @@ title                    : "FAIR Bioheaders"
 title_separator          : "-"
 name                     : &name "FAIR BioHeaders"
 description              : &description "personal description"
-url                      : https://academicpages.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
+url                      : https://fair-bioheaders.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
 repository               : "fair-bioheaders/fair-bioheaders.github.io"
 

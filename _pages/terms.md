@@ -1,39 +1,15 @@
 ---
+title: "Privacy"
 permalink: /terms/
-title: "Terms and Privacy Policy"
-modified: 2016-06-06
+sitemap: false
 ---
 
-{% include base_path %}
-{% include toc %}
+Updated October 8, 2026.
 
-## Privacy Policy
+This static website does not use Google Analytics, embedded comment services, or advertising trackers. A theme preference is saved in your browser’s local storage when you use the light/dark theme button; it is not sent to the project.
 
-The privacy of my visitors is extremely important. This Privacy Policy outlines the types of personal information that is received and collected and how it is used.
+The site is hosted by GitHub Pages. GitHub may process technical information such as your IP address when serving the site; see the [GitHub Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement).
 
-First and foremost, I will never share your email address or any other personal information to anyone without your direct consent.
+External links take you to services with their own privacy policies. The site’s current pages load their scripts, fonts, and images from this site. A future page that explicitly enables mathematical notation may load MathJax from jsDelivr.
 
-### Log Files
-
-Like many other websites, this site uses log files to help learn about when, from where, and how often traffic flows to this site. The information in these log files include:
-
-* Internet Protocol addresses (IP)
-* Types of browser
-* Internet Service Provider (ISP)
-* Date and time stamp
-* Referring and exit pages
-* Number of clicks
-
-All of this information is not linked to anything that is personally identifiable.
-
-### Cookies and Web Beacons
-
-When you visit this site "convenience" cookies are stored on your computer when you submit a comment to help you log in faster to [Disqus](http://disqus.com) the next time you leave a comment.
-
-Third-party advertisers may also place and read cookies on your browser and/or use web beacons to collect information. This site has no access or control over these cookies. You should review the respective privacy policies on any and all third-party ad servers for more information regarding their practices and how to opt-out.
-
-If you wish to disable cookies, you may do so through your web browser options. Instructions for doing so can be found on the specific web browsers' websites.
-
-#### Google Analytics
-
-Google Analytics is a web analytics tool I use to help understand how visitors engage with this website. It reports website trends using cookies and web beacons without identifying individual visitors. You can read [Google Analytics Privacy Policy](http://www.google.com/analytics/learn/privacy.html).
+For questions about this website, use its [GitHub issue tracker](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues). Avoid posting private or sensitive information in public issues.

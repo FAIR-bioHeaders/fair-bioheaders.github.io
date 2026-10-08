@@ -1,0 +1,43 @@
+// Project additions, including keyboard navigation and a locally stored theme.
+.skip-link {
+  position: fixed;
+  top: -5em;
+  left: 1em;
+  z-index: 100;
+  padding: .6em 1em;
+  background: #fff;
+  color: #1a405e;
+  &:focus { top: 1em; }
+}
+:focus-visible { outline: 3px solid #e77924; outline-offset: 3px; }
+.greedy-nav button:focus-visible { outline: 3px solid #e77924; }
+.navicon { display: block; }
+.masthead__inner-wrap { display: flex; align-items: center; gap: 1em; }
+.masthead__menu { flex: 1; min-width: 0; }
+.theme-toggle { padding: .5em; border: 1px solid currentColor; border-radius: .25em; background: transparent; color: inherit; font-size: .7em; cursor: pointer; }
+.theme-toggle[hidden] { display: none; }
+.project-links { padding: 0; list-style: none; font-size: .8em; }
+.author__avatar img { height: auto; }
+.about-us a { overflow-wrap: anywhere; }
+.no-js .greedy-nav .visible-links { display: flex; flex-wrap: wrap; }
+.no-js .greedy-nav .visible-links li { display: block; }
+.no-js .nav-toggle { display: none; }
+html[data-theme="dark"] {
+  color-scheme: dark;
+  &, body, .masthead, .greedy-nav, .greedy-nav .hidden-links { background: #171c22; color: #e5e9ef; }
+  a, .greedy-nav a { color: #9bd2f7; }
+  a:hover, .greedy-nav a:hover { color: #ffd09f; }
+  .page__footer { background: #222b35; color: #c8d4df; }
+  .page__footer a { color: #c8d4df; }
+  .page__meta, .page__date, .archive__item-excerpt { color: #c8d4df; }
+  .masthead, th, td, .greedy-nav .hidden-links li { border-color: #495562; }
+  .greedy-nav .hidden-links a:hover { background: #303c49; }
+  .greedy-nav .hidden-links:after { border-color: #171c22 transparent; }
+  .greedy-nav .hidden-links:before { border-color: #495562 transparent; }
+  code, pre, .highlight { background: #222b35; color: #e5e9ef; }
+}
+
+.greedy-nav { min-width: 0; }
+.masthead__menu-item--lg { padding-right: .5em; }
+
+[id] { scroll-margin-top: 5em; }

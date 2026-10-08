@@ -23,58 +23,58 @@ are the single source of truth for the generated citation.
   {% else %}
     {% assign itemtype = "https://schema.org/CreativeWork" %}
 {% endcase %}
-<div class="reference" id="{{ key }}" itemscope itemtype="{{ itemtype }}"{% if include.compact %} data-cite-compact="true"{% endif %}>
-  <meta itemprop="name" content="{{ reference.title }}">
+<div class="reference" id="{{ key | escape }}" itemscope itemtype="{{ itemtype }}"{% if include.compact %} data-cite-compact="true"{% endif %}>
+  <meta itemprop="name" content="{{ reference.title | escape }}">
   {% for author in reference.authors %}
-    <span itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="givenName" content="{{ author.given }}"><meta itemprop="familyName" content="{{ author.family }}"></span>
+    <span itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="givenName" content="{{ author.given | escape }}"><meta itemprop="familyName" content="{{ author.family | escape }}"></span>
   {% endfor %}
-  {% if reference.doi %}<span itemprop="identifier" itemscope itemtype="https://schema.org/PropertyValue"><meta itemprop="propertyID" content="DOI"><meta itemprop="value" content="{{ reference.doi }}"></span>{% endif %}
-  {% if url %}<meta itemprop="url" content="{{ url }}">{% endif %}
+  {% if reference.doi %}<span itemprop="identifier" itemscope itemtype="https://schema.org/PropertyValue"><meta itemprop="propertyID" content="DOI"><meta itemprop="value" content="{{ reference.doi | escape }}"></span>{% endif %}
+  {% if url %}<meta itemprop="url" content="{{ url | escape }}">{% endif %}
   {% if reference.journal %}
     <span itemprop="isPartOf" itemscope itemtype="https://schema.org/Periodical">
-      <meta itemprop="name" content="{{ reference.journal }}">
-      {% if reference.volume %}<meta itemprop="volumeNumber" content="{{ reference.volume }}">{% endif %}
-      {% if reference.number %}<meta itemprop="issueNumber" content="{{ reference.number }}">{% endif %}
+      <meta itemprop="name" content="{{ reference.journal | escape }}">
+      {% if reference.volume %}<meta itemprop="volumeNumber" content="{{ reference.volume | escape }}">{% endif %}
+      {% if reference.number %}<meta itemprop="issueNumber" content="{{ reference.number | escape }}">{% endif %}
     </span>
   {% endif %}
   {% if reference.publisher %}
-    <span itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="{{ reference.publisher }}"></span>
+    <span itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="{{ reference.publisher | escape }}"></span>
   {% endif %}
   {% if reference.pages %}
     {% assign page_bits = reference.pages | split: '-' %}
     {% if page_bits.size > 1 %}
-      <meta itemprop="pageStart" content="{{ page_bits[0] }}">
-      <meta itemprop="pageEnd" content="{{ page_bits[1] }}">
+      <meta itemprop="pageStart" content="{{ page_bits[0] | escape }}">
+      <meta itemprop="pageEnd" content="{{ page_bits[1] | escape }}">
     {% else %}
-      <meta itemprop="pagination" content="{{ reference.pages }}">
+      <meta itemprop="pagination" content="{{ reference.pages | escape }}">
     {% endif %}
   {% endif %}
-  {% if reference.year %}<meta itemprop="datePublished" content="{{ reference.year }}">{% endif %}
-  {% if reference.repository %}<meta itemprop="codeRepository" content="{{ reference.repository }}">{% endif %}
-  {% if reference.programming_language %}<meta itemprop="programmingLanguage" content="{{ reference.programming_language }}">{% endif %}
+  {% if reference.year %}<meta itemprop="datePublished" content="{{ reference.year | escape }}">{% endif %}
+  {% if reference.repository and reference.type == 'software' %}<meta itemprop="codeRepository" content="{{ reference.repository | escape }}">{% endif %}
+  {% if reference.programming_language %}<meta itemprop="programmingLanguage" content="{{ reference.programming_language | escape }}">{% endif %}
   {% if reference.license %}
-    <span itemprop="license" itemscope itemtype="https://schema.org/CreativeWork"><meta itemprop="name" content="{{ reference.license }}"></span>
+    <span itemprop="license" itemscope itemtype="https://schema.org/CreativeWork"><meta itemprop="name" content="{{ reference.license | escape }}"></span>
   {% endif %}
 
   {% unless include.compact %}
     <p class="reference__citation">
-      <span class="reference__authors">{% for author in reference.authors %}{{ author.family }}, {{ author.given }}{% unless forloop.last %}; {% endunless %}{% endfor %}</span>.
-      <em>{{ reference.title }}</em>.
-      {%- if reference.journal %} {{ reference.journal }}{% if reference.volume %}, {{ reference.volume }}{% if reference.number %}({{ reference.number }}){% endif %}{% endif %}.{% endif %}
-      {%- if reference.publisher and reference.journal == nil %} {{ reference.publisher }}.{% endif %}
-      {%- if reference.pages and reference.pages contains '-' %} {{ reference.pages }}.{% endif %}
-      {%- if reference.year %} {{ reference.year }}.{% endif %}
+      <span class="reference__authors">{% for author in reference.authors %}{{ author.family | escape }}, {{ author.given | escape }}{% unless forloop.last %}; {% endunless %}{% endfor %}</span>.
+      <em>{{ reference.title | escape }}</em>.
+      {%- if reference.journal %} {{ reference.journal | escape }}{% if reference.volume %}, {{ reference.volume | escape }}{% if reference.number %}({{ reference.number | escape }}){% endif %}{% endif %}.{% endif %}
+      {%- if reference.publisher and reference.journal == nil %} {{ reference.publisher | escape }}.{% endif %}
+      {%- if reference.pages and reference.pages contains '-' %} {{ reference.pages | escape }}.{% endif %}
+      {%- if reference.year %} {{ reference.year | escape }}.{% endif %}
     </p>
   {% endunless %}
   <p class="reference__links">
-    {% if reference.doi %}<a itemprop="sameAs" href="{{ doi_url }}">https://doi.org/{{ reference.doi }}</a>
-    {% elsif reference.repository %}<a itemprop="sameAs codeRepository" href="{{ reference.repository }}">{{ reference.repository }}</a>
+    {% if reference.doi %}<a itemprop="sameAs" href="{{ doi_url | escape }}">https://doi.org/{{ reference.doi | escape }}</a>
+    {% elsif reference.repository %}<a itemprop="sameAs{% if reference.type == 'software' %} codeRepository{% endif %}" href="{{ reference.repository | escape }}">{{ reference.repository | escape }}</a>
     {% endif %}
-    {% if reference.note %}<span class="reference__note">{{ reference.note }}</span>{% endif %}
-    <button type="button" class="cite-button" data-cite-key="{{ key }}" aria-label="Show BibTeX citation for {{ reference.title | escape }}" aria-expanded="false" aria-controls="cite-panel-{{ key }}">Cite</button>
+    {% if reference.note %}<span class="reference__note">{{ reference.note | escape }}</span>{% endif %}
+    <button type="button" class="cite-button" data-cite-key="{{ key | escape }}" aria-label="Show BibTeX citation for {{ reference.title | escape }}" aria-expanded="false" aria-controls="cite-panel-{{ key | escape }}">Cite</button>
   </p>
-  <div class="cite-panel" id="cite-panel-{{ key }}" data-cite-panel="{{ key }}" hidden>
-    <pre class="cite-output" data-cite-output="{{ key }}"></pre>
-    <button type="button" class="cite-copy" data-cite-copy="{{ key }}">Copy BibTeX</button>
+  <div class="cite-panel" id="cite-panel-{{ key | escape }}" data-cite-panel="{{ key | escape }}" hidden>
+    <pre class="cite-output" data-cite-output="{{ key | escape }}"></pre>
+    <button type="button" class="cite-copy" data-cite-copy="{{ key | escape }}">Copy BibTeX</button>
   </div>
 </div>

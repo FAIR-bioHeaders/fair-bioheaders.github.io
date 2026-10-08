@@ -140,31 +140,37 @@ Marrano2026:
   doi: 10.1093/database/baag058
 
 FHR_Specification:
+  status: Published
+  purpose: Reference genome metadata specification and schemas
   type: dataset
   title: "FHR Specification"
   authors:
     - { family: Molik, given: David }
     - { family: Wright, given: Adam }
   publisher: Zenodo
-  year: 2022
+  year: 2026
   doi: 10.5281/zenodo.6762549
   repository: https://github.com/FAIR-bioHeaders/FHR-Specification
   license: PDDL-1.0
 
 FHR_File_Converter:
+  status: Published
+  purpose: Processing library and conversion tools
   type: software
   title: "FHR File Converter"
   authors:
     - { family: Molik, given: David }
     - { family: Wright, given: Adam }
   publisher: Zenodo
-  year: 2024
+  year: 2026
   doi: 10.5281/zenodo.6762547
   repository: https://github.com/FAIR-bioHeaders/FHR-File-Converter
   programming_language: Python
   license: PDDL-1.0
 
 FHR_Nextflow:
+  status: Demo
+  purpose: Workflow integration
   type: software
   title: "FHR Nextflow"
   authors:
@@ -177,6 +183,8 @@ FHR_Nextflow:
   note: "Development prototype; no published release or DOI."
 
 FHT_Specification:
+  status: Draft
+  purpose: Companion FHT specification
   type: dataset
   title: "FHT Specification"
   authors:
@@ -188,6 +196,8 @@ FHT_Specification:
   note: "Draft companion specification for reference transcriptomes."
 
 FHT_File_Converter:
+  status: Draft
+  purpose: Companion FHT conversion tools
   type: software
   title: "FHT File Converter"
   authors:
@@ -200,6 +210,8 @@ FHT_File_Converter:
   note: "Draft companion converter for reference transcriptomes."
 
 FHR_Citation:
+  status: Published
+  purpose: Maintained citation metadata and BibTeX
   type: software
   title: "FHR Citation"
   authors:

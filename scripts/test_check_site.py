@@ -92,6 +92,14 @@ class ReferenceChecks(unittest.TestCase):
         self.assertEqual(reference_errors('index.html', two, Page(two)), [])
 
 
+class ElementIDChecks(unittest.TestCase):
+    def test_duplicate_ids_are_detected(self):
+        self.assertEqual(Page('<div id="a"></div><pre id="a"></pre>').duplicate_ids, {'a'})
+
+    def test_distinct_ids_are_allowed(self):
+        self.assertEqual(Page('<div id="a"></div><pre id="b"></pre>').duplicate_ids, set())
+
+
 class IconFontChecks(unittest.TestCase):
     def test_plain_italic_is_allowed(self):
         self.assertEqual(Page('<i>emphasis</i>').icons, [])

@@ -16,6 +16,7 @@ class Page(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.links, self.ids, self.metas, self.json_ld = [], set(), {}, []
         self.json_buffer = None
+        self.duplicate_ids = set()
         self.scripts = []
         self.icons = []
         self.references = []
@@ -30,6 +31,8 @@ class Page(HTMLParser):
     def handle_starttag(self, tag, attributes):
         attrs = dict(attributes)
         if attrs.get('id'):
+            if attrs['id'] in self.ids:
+                self.duplicate_ids.add(attrs['id'])
             self.ids.add(attrs['id'])
         if tag == 'a' and attrs.get('name'):
             self.ids.add(attrs['name'])
@@ -106,7 +109,7 @@ def reference_errors(relative, text, page):
         if not re.search(r'itemprop="author".*?itemprop="familyName"', block, re.DOTALL):
             errors.append(f'{relative}: reference block lacks author name parts')
         has_doi = 'itemprop="propertyID" content="DOI"' in block and 'itemprop="value"' in block
-        has_repo = 'itemprop="codeRepository"' in block
+        has_repo = 'itemprop="codeRepository"' in block or bool(re.search(r'itemprop="(?:url|sameAs)"[^>]*(?:content|href)="https://github\.com/', block))
         if not has_doi and not has_repo:
             errors.append(f'{relative}: reference block lacks a DOI or repository identifier')
     expected = page.cite_buttons
@@ -165,6 +168,8 @@ def check(root):
                 require('alt' in image, f'{relative}: image lacks alt text')
             for icon in page.icons:
                 require(False, f'{relative}: icon-font markup without a shipped icon font: {icon}')
+        for duplicate in sorted(page.duplicate_ids):
+            errors.append(f'{relative}: duplicate element ID {duplicate}')
         text = file.read_text().lower()
         for forbidden in ('fonts.googleapis.com', 'fonts.gstatic.com', 'lorem ipsum', 'future blog post', 'github university', 'analytics.js', 'polyfill', 'jquery-1.12'):
             require(forbidden not in text, f'{relative}: unwanted template/runtime content: {forbidden}')

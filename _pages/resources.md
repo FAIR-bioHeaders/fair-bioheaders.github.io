@@ -6,10 +6,17 @@ excerpt: "FAIR BioHeaders specifications, converters, workflows, and citation gu
 
 ## Project repositories
 
-Each repository is published as Schema.org `SoftwareSourceCode` or `Dataset` metadata with a "Cite" button.
+| Resource | Purpose | Status |
+| --- | --- | --- |
+{% for key in site.data.reference_order %}{% assign reference = site.data.references[key] %}{% if reference.repository %}| [{{ reference.title }}]({{ reference.repository }}) | {{ reference.purpose }} | {{ reference.status }} |
+{% endif %}{% endfor %}
+
+### Repository citations
+
+Select **Cite** to view and copy a repository’s BibTeX entry.
 
 <div class="repo-references">
-{% for key in site.data.reference_order %}{% assign reference = site.data.references[key] %}{% if reference.repository %}{% include reference.html key=key reference=reference compact=true %}
+{% for key in site.data.reference_order %}{% assign reference = site.data.references[key] %}{% if reference.repository %}{% include reference.html key=key reference=reference %}
 {% endif %}{% endfor %}
 </div>
 
@@ -23,7 +30,7 @@ FHR is referenced in [ISO 25184:2026](https://www.iso.org/standard/89273.html), 
 
 ## Citing FHR
 
-For a general description of FHR, cite the published paper. Select **Cite** to generate BibTeX; the page also exposes the citation as Schema.org microdata.
+For a general description of FHR, cite the published paper. Select **Cite** to view and copy its BibTeX entry.
 
 {% include reference.html key="Wright2024" reference=site.data.references.Wright2024 %}
 

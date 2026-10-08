@@ -40,7 +40,6 @@
   {% if ref.pages and ref.pages contains '-' %}<meta name="citation_firstpage" content="{{ ref.pages | split: '-' | first }}"><meta name="citation_lastpage" content="{{ ref.pages | split: '-' | last }}">{% endif %}
   {% if ref.doi %}<meta name="citation_doi" content="{{ ref.doi }}">{% endif %}
   {% if ref.publisher %}<meta name="citation_publisher" content="{{ ref.publisher | escape }}">{% endif %}
-  <meta name="citation_fulltext_html_url" content="{{ seo_url }}{{ page.url | replace: 'index.html', '' }}">
 {% endif %}
 
 <script type="application/ld+json">
@@ -87,7 +86,7 @@
     {% for author in ref.authors %}{ "@type": "Person", "name": {{ author.given | append: ' ' | append: author.family | jsonify }} }{% unless forloop.last %},{% endunless %}{% endfor %}
   ],
   {% if ref.publisher %}"publisher": { "@type": "Organization", "name": {{ ref.publisher | jsonify }} },{% endif %}
-  {% if ref.year %}"datePublished": {{ ref.year | jsonify }},{% endif %}
+  {% if ref.year %}"datePublished": {{ ref.year | append: '' | jsonify }},{% endif %}
   {% if ref.pages and ref.pages contains '-' %}"pageStart": {{ ref.pages | split: '-' | first | jsonify }}, "pageEnd": {{ ref.pages | split: '-' | last | jsonify }},{% endif %}
   {% if ref.doi %}"identifier": { "@type": "PropertyValue", "propertyID": "DOI", "value": {{ ref.doi | jsonify }} }, "sameAs": {{ ref.doi | prepend: 'https://doi.org/' | jsonify }},{% endif %}
   "description": {{ seo_description | jsonify }}
@@ -110,7 +109,7 @@
         "name": {{ ref.title | jsonify }},
         "url": {{ item_url | jsonify }},
         {% if ref.venue or ref.journal %}"isPartOf": { "@type": "Periodical", "name": {{ ref.journal | default: post.venue | jsonify }} },{% endif %}
-        {% if ref.year %}"datePublished": {{ ref.year | jsonify }},{% endif %}
+        {% if ref.year %}"datePublished": {{ ref.year | append: '' | jsonify }},{% endif %}
         "author": [{% for author in ref.authors %}{ "@type": "Person", "name": {{ author.given | append: ' ' | append: author.family | jsonify }} }{% unless forloop.last %},{% endunless %}{% endfor %}]
       }
     }{% unless forloop.last %},{% endunless %}{% endfor %}

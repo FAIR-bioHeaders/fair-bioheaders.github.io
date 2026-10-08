@@ -184,6 +184,9 @@ def check(root):
             require(resolve(urlsplit(urljoin(base, link)).path).is_file(), f'{file.name}: missing CSS asset {link}')
         for forbidden in ('font awesome', 'academicons'):
             require(forbidden not in css.lower(), f'{file.name}: references removed icon font: {forbidden}')
+    # Repo Markdown docs are excluded from Jekyll and must not be published.
+    for doc in ('README.md', 'CONTRIBUTING.md', 'AGENTS.md'):
+        require(not (root / doc).exists(), f'{doc} should be excluded from the build')
     sitemap = ET.parse(root / 'sitemap.xml')
     urls = [loc.text for loc in sitemap.findall('.//{http://www.sitemaps.org/schemas/sitemap/0.9}loc')]
     require(len(urls) == len(set(urls)), 'Sitemap contains duplicate URLs')

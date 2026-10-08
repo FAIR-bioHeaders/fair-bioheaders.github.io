@@ -56,6 +56,7 @@ exclude:
   - LICENSE
   - README.md
   - CONTRIBUTING.md
+  - AGENTS.md
   - docs
   - scripts
   - package.json

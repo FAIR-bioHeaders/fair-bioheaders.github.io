@@ -19,9 +19,22 @@ BUNDLE_FROZEN=true JEKYLL_ENV=production bundle exec jekyll build --strict_front
 python3 scripts/check_site.py _site
 python3 -m unittest discover -s scripts -p 'test_*.py'
 node --test scripts/test_cite.mjs
+npm run test:browser             # once: npx playwright install --with-deps chromium
 ```
 
-Toolchain is pinned in `.ruby-version` (Ruby 3.3.4) and `.nvmrc` (Node 24).
+After a deployment, `npm run test:deploy` smoke-checks the live homepage,
+sitemap, robots policy, and feeds. Toolchain is pinned in `.ruby-version`
+(Ruby 3.3.4) and `.nvmrc` (Node 24).
+
+- **`_site` must be fresh before checks and Playwright.** Some checks (sitemap,
+  browser) read rendered output; delete `_site` and rebuild after config or Sass
+  changes, or stale files cause false failures. `test-results/` and
+  `playwright-report/` are gitignored and excluded from the Jekyll build.
+- **Accessibility and contrast are enforced.** `npm run test:browser` runs axe in
+  light and dark themes and fails on any violation, including color contrast.
+  Check new colors against the code and footer backgrounds in both themes. The
+  Rouge syntax palette in `_sass/_syntax.scss` has dark overrides in
+  `_project.scss`; extend both when adding token styles.
 
 - **Host Ruby may be too old.** On macOS the system Ruby 2.6 cannot install this
   `Gemfile.lock`. Use the pinned Docker image from `docs/preview.md`

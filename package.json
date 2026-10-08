@@ -27,11 +27,15 @@
     "jquery": "3.7.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.64.0",
     "uglify-js": "^3.17.4"
   },
   "scripts": {
     "uglify": "uglifyjs node_modules/jquery/dist/jquery.min.js assets/js/plugins/jquery.fitvids.js assets/js/plugins/jquery.greedy-navigation.js assets/js/plugins/jquery.magnific-popup.js assets/js/plugins/stickyfill.min.js assets/js/_main.js assets/js/cite.js -c -m -o assets/js/main.min.js",
-    "build:js": "npm run uglify"
+    "build:js": "npm run uglify",
+    "test:browser": "playwright test",
+    "test:deploy": "python3 scripts/check_deployed.py"
   },
   "private": true
 }

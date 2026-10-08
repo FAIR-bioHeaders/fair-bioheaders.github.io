@@ -30,12 +30,28 @@ are the single source of truth for the generated citation.
   {% endfor %}
   {% if reference.doi %}<span itemprop="identifier" itemscope itemtype="https://schema.org/PropertyValue"><meta itemprop="propertyID" content="DOI"><meta itemprop="value" content="{{ reference.doi | escape }}"></span>{% endif %}
   {% if url %}<meta itemprop="url" content="{{ url | escape }}">{% endif %}
+  {% comment %}
+    Container hierarchy: article -> PublicationIssue -> PublicationVolume ->
+    Periodical. volumeNumber belongs to PublicationVolume and issueNumber to
+    PublicationIssue (https://schema.org/volumeNumber, https://schema.org/issueNumber).
+    Articles without volume/issue fall back to the nearest applicable level.
+  {% endcomment %}
   {% if reference.journal %}
-    <span itemprop="isPartOf" itemscope itemtype="https://schema.org/Periodical">
-      <meta itemprop="name" content="{{ reference.journal | escape }}">
-      {% if reference.volume %}<meta itemprop="volumeNumber" content="{{ reference.volume | escape }}">{% endif %}
-      {% if reference.number %}<meta itemprop="issueNumber" content="{{ reference.number | escape }}">{% endif %}
-    </span>
+    {% if reference.number or reference.volume %}
+      <span itemprop="isPartOf" itemscope itemtype="https://schema.org/PublicationIssue">
+        {% if reference.number %}<meta itemprop="issueNumber" content="{{ reference.number | escape }}">{% endif %}
+        <span itemprop="isPartOf" itemscope itemtype="https://schema.org/PublicationVolume">
+          {% if reference.volume %}<meta itemprop="volumeNumber" content="{{ reference.volume | escape }}">{% endif %}
+          <span itemprop="isPartOf" itemscope itemtype="https://schema.org/Periodical">
+            <meta itemprop="name" content="{{ reference.journal | escape }}">
+          </span>
+        </span>
+      </span>
+    {% else %}
+      <span itemprop="isPartOf" itemscope itemtype="https://schema.org/Periodical">
+        <meta itemprop="name" content="{{ reference.journal | escape }}">
+      </span>
+    {% endif %}
   {% endif %}
   {% if reference.publisher %}
     <span itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="{{ reference.publisher | escape }}"></span>

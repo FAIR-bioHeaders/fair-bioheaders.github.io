@@ -81,7 +81,11 @@
   "headline": {{ ref.title | jsonify }},
   "name": {{ ref.title | jsonify }},
   "url": {{ canonical_url | jsonify }},
-  {% if ref.journal %}"isPartOf": { "@type": "Periodical", "name": {{ ref.journal | jsonify }}{% if ref.volume %}, "volumeNumber": {{ ref.volume | jsonify }}{% endif %}{% if ref.number %}, "issueNumber": {{ ref.number | jsonify }}{% endif %} },{% endif %}
+  {% comment %}Container hierarchy: article -> PublicationIssue -> PublicationVolume -> Periodical.{% endcomment %}
+  {% assign has_volume_or_issue = false %}
+  {% if ref.volume %}{% assign has_volume_or_issue = true %}{% endif %}
+  {% if ref.number %}{% assign has_volume_or_issue = true %}{% endif %}
+  {% if ref.journal and has_volume_or_issue %}"isPartOf": { "@type": "PublicationIssue"{% if ref.number %}, "issueNumber": {{ ref.number | jsonify }}{% endif %}, "isPartOf": { "@type": "PublicationVolume"{% if ref.volume %}, "volumeNumber": {{ ref.volume | jsonify }}{% endif %}, "isPartOf": { "@type": "Periodical", "name": {{ ref.journal | jsonify }} } } },{% elsif ref.journal %}"isPartOf": { "@type": "Periodical", "name": {{ ref.journal | jsonify }} },{% endif %}
   "author": [
     {% for author in ref.authors %}{ "@type": "Person", "name": {{ author.given | append: ' ' | append: author.family | jsonify }} }{% unless forloop.last %},{% endunless %}{% endfor %}
   ],

@@ -1,0 +1,22 @@
+name: Deployed site smoke check
+on:
+  # Run after the Pages build completes, and on manual/scheduled triggers.
+  workflow_run:
+    workflows: ["pages-build-deployment"]
+    types: [completed]
+  workflow_dispatch:
+  schedule:
+    - cron: '37 10 * * 2'
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.13'
+      - name: Smoke-check the deployed site
+        # Bounded retries cover Pages propagation after a deployment.
+        run: python3 scripts/check_deployed.py --attempts 8 --delay 20

@@ -217,17 +217,26 @@ html[data-theme="dark"] {
   &, body { background: #14161a; color: #e9eaec; }
   .masthead, .masthead__inner-wrap { background: #14161a; }
   .greedy-nav, .greedy-nav .hidden-links { background: #14161a; }
-  a, .greedy-nav a { color: #ffb566; }
-  a:hover, .greedy-nav a:hover { color: var(--brand-yellow); }
+  a, .greedy-nav a, .cite-button, .cite-copy { color: #ffb566; }
+  a:hover, .greedy-nav a:hover, .cite-button:hover, .cite-copy:hover { color: var(--brand-yellow); }
+  .cite-button:focus, .cite-copy:focus { background: var(--brand-orange); color: #14161a; }
   .page__footer { background: #1c2027; color: #c8ced6; }
   .page__footer a { color: #c8ced6; }
   .page__meta, .page__date, .archive__item-excerpt { color: #c8ced6; }
   .masthead, th, td, .greedy-nav .hidden-links li { border-color: #313640; }
+  thead { background-color: #222b35; }
   .page__content h2 { border-bottom-color: #2b2f36; }
   .greedy-nav .hidden-links a:hover { background: #242932; }
   .greedy-nav .hidden-links:after { border-color: #14161a transparent; }
   .greedy-nav .hidden-links:before { border-color: #313640 transparent; }
   code, pre, .highlight { background: #1c2027; color: #e9eaec; }
+  .highlight .c, .highlight .cm, .highlight .c1, .highlight .sb { color: #8b96a5; }
+  .highlight .k, .highlight .o, .highlight .cp, .highlight .cs, .highlight .kn, .highlight .kp, .highlight .ow { color: #c9a0ff; }
+  .highlight .s, .highlight .m, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .mo, .highlight .sc, .highlight .s1, .highlight .s2, .highlight .si, .highlight .sx, .highlight .ss, .highlight .il, .highlight .gd, .highlight .gi { color: #5fd3c0; }
+  .highlight .kd, .highlight .kr, .highlight .nc, .highlight .nd, .highlight .nf, .highlight .nt, .highlight .nv, .highlight .bp, .highlight .vc, .highlight .vg, .highlight .vi { color: #6cb6ff; }
+  .highlight .nb, .highlight .no, .highlight .ni, .highlight .ne, .highlight .x, .highlight .gh, .highlight .gu, .highlight .se, .highlight .kc { color: #e0b341; }
+  .highlight .err, .highlight .gr, .highlight .sr, .highlight .kt { color: #ff8a80; }
+  .highlight .na, .highlight .n, .highlight .l, .highlight .p, .highlight .g, .highlight .go, .highlight .gp, .highlight .gs, .highlight .gt, .highlight .ld, .highlight .nl, .highlight .nn, .highlight .nx, .highlight .py, .highlight .sd, .highlight .sh, .highlight .w { color: #e9eaec; }
   .about-us__person { background: #1a1d23; border-color: #2b2f36; }
   .about-us__role { color: #a9b0ba; }
 }

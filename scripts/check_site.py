@@ -113,6 +113,21 @@ def reference_errors(relative, text, page):
         has_repo = 'itemprop="codeRepository"' in block or bool(re.search(r'itemprop="(?:url|sameAs)"[^>]*(?:content|href)="https://github\.com/', block))
         if not has_doi and not has_repo:
             errors.append(f'{relative}: reference block lacks a DOI or repository identifier')
+        # An article with volume/issue must nest PublicationIssue > PublicationVolume
+        # > Periodical, and volumeNumber/issueNumber must sit on those levels.
+        is_article = 'ScholarlyArticle' in head
+        if is_article:
+            if not re.search(r'itemprop="datePublished"', block):
+                errors.append(f'{relative}: article reference lacks datePublished')
+            has_volume = 'volumeNumber' in block
+            has_issue = 'issueNumber' in block
+            has_periodical = 'schema.org/Periodical' in block
+            if (has_volume or has_issue) and not has_periodical:
+                errors.append(f'{relative}: article with volume/issue lacks a Periodical container')
+            if has_issue and 'schema.org/PublicationIssue' not in block:
+                errors.append(f'{relative}: issueNumber must be on a PublicationIssue')
+            if has_volume and 'schema.org/PublicationVolume' not in block:
+                errors.append(f'{relative}: volumeNumber must be on a PublicationVolume')
     expected = page.cite_buttons
     for label, actual in (
         ('output', page.cite_outputs),
@@ -121,6 +136,39 @@ def reference_errors(relative, text, page):
     ):
         for key in sorted(expected.symmetric_difference(actual)):
             errors.append(f'{relative}: cite button/{label} mismatch for {key}')
+    return errors
+
+
+ATOM = '{http://www.w3.org/2005/Atom}'
+
+
+def feed_errors(path, expected_origin):
+    """Parse an Atom feed and check canonical URLs, coverage, and dates."""
+    errors = []
+    if not path.is_file():
+        return [f'{path.name}: missing Atom feed']
+    try:
+        tree = ET.parse(path)
+    except ET.ParseError as error:
+        return [f'{path.name}: invalid Atom XML ({error})']
+    feed = tree.getroot()
+    self_link = None
+    for link in feed.findall(f'{ATOM}link'):
+        if link.get('rel') == 'self':
+            self_link = link.get('href')
+    if not self_link or not self_link.startswith(expected_origin):
+        errors.append(f'{path.name}: feed self link must use the production origin')
+    entries = feed.findall(f'{ATOM}entry')
+    for entry in entries:
+        eid = entry.findtext(f'{ATOM}id') or ''
+        if not eid.startswith(expected_origin):
+            errors.append(f'{path.name}: entry id outside the production origin: {eid}')
+        for link in entry.findall(f'{ATOM}link'):
+            href = link.get('href') or ''
+            if href and not href.startswith(expected_origin) and not href.startswith('https://doi.org/'):
+                errors.append(f'{path.name}: entry link outside expected origins: {href}')
+        if entry.find(f'{ATOM}updated') is None:
+            errors.append(f'{path.name}: entry missing updated timestamp')
     return errors
 
 
@@ -201,7 +249,7 @@ def check(root):
     for url in urls:
         path = urlsplit(url).path
         require(resolve(path).is_file(), f'Sitemap has missing page: {url}')
-        require(path == '/' or path in ('/publications/', '/resources/') or path.startswith('/publication/'), f'Unexpected sitemap page: {url}')
+        require(path == '/' or path in ('/publications/', '/resources/', '/guide/') or path.startswith('/publication/'), f'Unexpected sitemap page: {url}')
     org = html[root / 'index.html'].json_ld[0]
     require(org.get('@type') == 'Organization', 'Home identity must be an organization')
     members = {p['@id'] for p in org.get('member', [])}
@@ -220,13 +268,33 @@ def check(root):
     require(any(block.get('@type') == 'WebSite' for block in home_jsonld),
             'Home page must include WebSite JSON-LD')
     publications_jsonld = html[root / 'publications/index.html'].json_ld
-    require(any(block.get('@type') == 'ItemList' for block in publications_jsonld),
-            'Publications page must include an ItemList JSON-LD')
+    item_lists = [b for b in publications_jsonld if b.get('@type') == 'ItemList']
+    require(bool(item_lists), 'Publications page must include an ItemList JSON-LD')
+    publication_pages = sorted(p for p in html if p.relative_to(root).as_posix().startswith('publication/'))
+    for item_list in item_lists:
+        items = item_list.get('itemListElement', [])
+        require(len(items) == len(publication_pages),
+                f'ItemList covers {len(items)} of {len(publication_pages)} publication pages')
+        positions = [item.get('position') for item in items]
+        require(positions == list(range(1, len(items) + 1)), 'ItemList positions must be sequential')
+        for item in items:
+            article = item.get('item', {})
+            require(article.get('@type') == 'ScholarlyArticle', 'ItemList entries must be ScholarlyArticle')
+            require(bool(article.get('name')), 'ItemList article missing a name')
+            require(str(article.get('url', '')).startswith(ORIGIN), 'ItemList article url outside the production origin')
+            require('isPartOf' in article, 'ItemList article missing a container')
     for file, page in html.items():
         relative = file.relative_to(root).as_posix()
         types = {block.get('@type') for block in page.json_ld}
         if relative.startswith('publication/'):
             require('ScholarlyArticle' in types, f'{relative}: missing ScholarlyArticle JSON-LD')
+            article = next(b for b in page.json_ld if b.get('@type') == 'ScholarlyArticle')
+            require(bool(article.get('identifier', {}).get('value')), f'{relative}: ScholarlyArticle missing DOI identifier')
+            require(bool(article.get('datePublished')), f'{relative}: ScholarlyArticle missing datePublished')
+            require(bool(article.get('author')), f'{relative}: ScholarlyArticle missing authors')
+            if article.get('isPartOf'):
+                require(article['isPartOf'].get('@type') in ('PublicationIssue', 'PublicationVolume', 'Periodical'),
+                        f'{relative}: unexpected container type')
             require(any('citation_title' == key for key in page.metas),
                     f'{relative}: missing Highwire citation_title meta')
             require(any('citation_author' == key for key in page.metas),
@@ -234,6 +302,8 @@ def check(root):
         if relative in ('terms/index.html', 'sitemap/index.html', '404.html'):
             require(page.metas.get('robots', '').startswith('noindex'),
                     f'{relative}: utility page should be noindex')
+    errors.extend(feed_errors(root / 'publications/feed.xml', ORIGIN))
+    errors.extend(feed_errors(root / 'feed.xml', ORIGIN))
     require((root / 'publications/feed.xml').is_file(), 'Missing publications Atom feed')
     require((root / 'feed.xml').is_file(), 'Missing site Atom feed')
     if errors:

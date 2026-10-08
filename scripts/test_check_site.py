@@ -1,7 +1,7 @@
 """Regression coverage for the documented MathJax opt-in and runtime checks."""
 import unittest
 
-from check_site import Page, mathjax_errors, reference_errors, MATHJAX_INTEGRITY
+from check_site import Page, mathjax_errors, reference_errors, feed_errors, MATHJAX_INTEGRITY
 
 PINNED_SCRIPT = f'<script integrity="{MATHJAX_INTEGRITY}" crossorigin="anonymous" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>'
 OPT_IN = '<meta name="fhr:math" content="true">'
@@ -51,6 +51,7 @@ REFERENCE = (
     '<meta itemprop="givenName" content="Adam"><meta itemprop="familyName" content="Wright"></span>'
     '<span itemprop="identifier" itemscope itemtype="https://schema.org/PropertyValue">'
     '<meta itemprop="propertyID" content="DOI"><meta itemprop="value" content="10.1/x"></span>'
+    '<meta itemprop="datePublished" content="2024">'
     '<button class="cite-button" data-cite-key="Wright2024">Cite</button>'
     '<div class="cite-panel" data-cite-panel="Wright2024" hidden>'
     '<pre data-cite-output="Wright2024"></pre>'
@@ -100,6 +101,69 @@ class ReferenceChecks(unittest.TestCase):
         # The citation panel is a nested div; both references must still parse.
         two = REFERENCE + REFERENCE.replace('Wright2024', 'Cannon2025')
         self.assertEqual(reference_errors('index.html', two, Page(two)), [])
+
+    def test_article_without_date_is_reported(self):
+        bad = REFERENCE.replace('<meta itemprop="datePublished" content="2024">', '')
+        self.assertTrue(reference_errors('index.html', bad, Page(bad)))
+
+    def test_issue_number_requires_publication_issue(self):
+        bad = REFERENCE.replace(
+            '<meta itemprop="datePublished" content="2024">',
+            '<meta itemprop="issueNumber" content="3">'
+            '<span itemprop="isPartOf" itemscope itemtype="https://schema.org/Periodical">'
+            '<meta itemprop="name" content="J"></span>'
+            '<meta itemprop="datePublished" content="2024">')
+        self.assertTrue(any('PublicationIssue' in e for e in reference_errors('index.html', bad, Page(bad))))
+
+    def test_valid_volume_issue_hierarchy_passes(self):
+        node = (
+            '<div class="reference" id="a" itemscope itemtype="https://schema.org/ScholarlyArticle">'
+            '<meta itemprop="name" content="T">'
+            '<span itemprop="author" itemscope itemtype="https://schema.org/Person">'
+            '<meta itemprop="givenName" content="A"><meta itemprop="familyName" content="B"></span>'
+            '<span itemprop="identifier" itemscope itemtype="https://schema.org/PropertyValue">'
+            '<meta itemprop="propertyID" content="DOI"><meta itemprop="value" content="10.1/x"></span>'
+            '<meta itemprop="datePublished" content="2024">'
+            '<span itemprop="isPartOf" itemscope itemtype="https://schema.org/PublicationIssue">'
+            '<meta itemprop="issueNumber" content="3">'
+            '<span itemprop="isPartOf" itemscope itemtype="https://schema.org/PublicationVolume">'
+            '<meta itemprop="volumeNumber" content="25">'
+            '<span itemprop="isPartOf" itemscope itemtype="https://schema.org/Periodical">'
+            '<meta itemprop="name" content="J"></span></span></span>'
+            '<button class="cite-button" data-cite-key="a">Cite</button>'
+            '<div class="cite-panel" data-cite-panel="a" hidden>'
+            '<pre data-cite-output="a"></pre>'
+            '<button class="cite-copy" data-cite-copy="a">Copy BibTeX</button>'
+            '</div></div>'
+        )
+        self.assertEqual(reference_errors('index.html', node, Page(node)), [])
+
+
+class FeedChecks(unittest.TestCase):
+    def test_valid_feed_passes(self):
+        import tempfile
+        from pathlib import Path
+        feed = ('<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom">'
+                '<link rel="self" href="https://fair-bioheaders.github.io/publications/feed.xml"/>'
+                '<entry><id>https://fair-bioheaders.github.io/publication/x/</id>'
+                '<updated>2026-01-01T00:00:00+00:00</updated>'
+                '<link href="https://doi.org/10.1/x"/></entry></feed>')
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / 'feed.xml'
+            path.write_text(feed)
+            self.assertEqual(feed_errors(path, 'https://fair-bioheaders.github.io'), [])
+
+    def test_entry_outside_origin_is_reported(self):
+        import tempfile
+        from pathlib import Path
+        feed = ('<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom">'
+                '<link rel="self" href="https://fair-bioheaders.github.io/publications/feed.xml"/>'
+                '<entry><id>https://evil.example/x</id>'
+                '<updated>2026-01-01T00:00:00+00:00</updated></entry></feed>')
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / 'feed.xml'
+            path.write_text(feed)
+            self.assertTrue(feed_errors(path, 'https://fair-bioheaders.github.io'))
 
 
 class ElementIDChecks(unittest.TestCase):

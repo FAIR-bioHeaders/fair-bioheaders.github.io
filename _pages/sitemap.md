@@ -7,6 +7,7 @@ sitemap: false
 
 - [Home and team](/)
 - [Publications](/publications/)
+- [Using FHR](/guide/)
 - [Resources and citation](/resources/)
 - [Privacy](/terms/)
 

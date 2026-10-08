@@ -37,7 +37,7 @@ jobs:
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2
         with:
-          args: --no-progress --max-retries 2 --timeout 20 --exclude '^https://fair-bioheaders.github.io' '_site/**/*.html'
+          args: --base-url https://fair-bioheaders.github.io/ --no-progress --max-retries 2 --timeout 20 --exclude '^https://fair-bioheaders\.github\.io/' '_site/**/*.html'
           fail: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

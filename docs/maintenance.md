@@ -29,3 +29,5 @@ The inherited template tag dates from February 2024, older than the upstream `v0
 - Every content page has description and social image metadata; home identities include both maintainer ORCIDs.
 - Current pages load no MathJax, polyfill, icon fonts, or analytics. Opted-in math pages emit an explicit marker and must load exactly the pinned MathJax script.
 - CI builds with lockfiles; generated JavaScript is reproducible.
+
+The scheduled/manual Lychee step resolves relative links against the production URL and excludes this site, since `check_site.py` validates local paths and fragments on every build. `.lycheeignore` documents DOI and ISO exclusions for automated-client blocking. Run the workflow manually when changing this configuration to exercise the external-link step.

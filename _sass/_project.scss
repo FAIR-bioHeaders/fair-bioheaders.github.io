@@ -262,8 +262,7 @@ html[data-theme="dark"] {
 
   a { overflow-wrap: anywhere; }
 }
-.cite-button {
-  margin-left: .5em;
+%cite-control {
   padding: .15em .6em;
   border: 1.5px solid var(--brand-orange);
   border-radius: .2em;
@@ -279,13 +278,31 @@ html[data-theme="dark"] {
     color: #fff;
   }
 }
-.cite-output {
-  overflow-x: auto;
+.cite-button {
+  @extend %cite-control;
+  margin-left: .5em;
+}
+.cite-panel {
+  position: relative;
   margin: .75em 0 0;
   padding: .75em 1em;
   border-left: 3px solid var(--brand-orange);
   background: $code-background-color;
+}
+.cite-output {
+  overflow-x: auto;
+  margin: 0 0 .5em;
+  padding: 0;
+  background: transparent;
   font-size: $type-size-7;
+}
+.cite-copy {
+  @extend %cite-control;
+
+  &--done {
+    border-color: $success-color;
+    color: $success-color;
+  }
 }
 .reference-block__title {
   font-size: $type-size-5;

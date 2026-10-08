@@ -141,22 +141,70 @@
     return lines.join('\n');
   }
 
+  function entryFor(key) {
+    var reference = document.getElementById(key);
+    if (!reference) return '';
+    return bibtex(key, parseItem(reference));
+  }
+
   function toggle(button) {
     var key = button.getAttribute('data-cite-key');
-    var reference = document.getElementById(key);
+    var panel = document.querySelector('[data-cite-panel="' + key + '"]');
     var output = document.querySelector('[data-cite-output="' + key + '"]');
-    if (!reference || !output) return;
+    if (!panel || !output) return;
     if (!output.dataset.filled) {
-      output.textContent = bibtex(key, parseItem(reference));
+      output.textContent = entryFor(key);
       output.dataset.filled = 'true';
     }
-    var hidden = output.hasAttribute('hidden');
+    var hidden = panel.hasAttribute('hidden');
     if (hidden) {
-      output.removeAttribute('hidden');
+      panel.removeAttribute('hidden');
     } else {
-      output.setAttribute('hidden', '');
+      panel.setAttribute('hidden', '');
     }
     button.setAttribute('aria-expanded', String(hidden));
+  }
+
+  function fallbackCopy(text) {
+    var area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', '');
+    area.style.position = 'absolute';
+    area.style.left = '-9999px';
+    document.body.appendChild(area);
+    area.select();
+    var ok = false;
+    try {
+      ok = document.execCommand('copy');
+    } catch (error) {
+      ok = false;
+    }
+    document.body.removeChild(area);
+    return ok;
+  }
+
+  function copy(button) {
+    var key = button.getAttribute('data-cite-copy');
+    var output = document.querySelector('[data-cite-output="' + key + '"]');
+    var text = output && output.textContent ? output.textContent : entryFor(key);
+    var original = button.textContent;
+    function done(ok) {
+      button.textContent = ok ? 'Copied' : 'Copy failed';
+      button.classList.toggle('cite-copy--done', ok);
+      window.setTimeout(function () {
+        button.textContent = original;
+        button.classList.remove('cite-copy--done');
+      }, 2000);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        done(true);
+      }, function () {
+        done(fallbackCopy(text));
+      });
+    } else {
+      done(fallbackCopy(text));
+    }
   }
 
   function init() {
@@ -164,6 +212,12 @@
     for (var i = 0; i < buttons.length; i++) {
       buttons[i].addEventListener('click', function () {
         toggle(this);
+      });
+    }
+    var copies = document.querySelectorAll('.cite-copy');
+    for (var j = 0; j < copies.length; j++) {
+      copies[j].addEventListener('click', function () {
+        copy(this);
       });
     }
   }

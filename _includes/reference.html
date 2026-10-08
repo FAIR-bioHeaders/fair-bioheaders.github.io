@@ -60,6 +60,9 @@ are the single source of truth for the generated citation.
       {%- if reference.year %} {{ reference.year }}.{% endif %}
     </p>
   {% endunless %}
-  <p class="reference__links"><a itemprop="sameAs" href="{{ doi_url }}">https://doi.org/{{ reference.doi }}</a><button type="button" class="cite-button" data-cite-key="{{ key }}" aria-label="Show BibTeX citation for {{ reference.title | escape }}" aria-expanded="false">Cite</button></p>
-  <pre class="cite-output" data-cite-output="{{ key }}" hidden></pre>
+  <p class="reference__links"><a itemprop="sameAs" href="{{ doi_url }}">https://doi.org/{{ reference.doi }}</a><button type="button" class="cite-button" data-cite-key="{{ key }}" aria-label="Show BibTeX citation for {{ reference.title | escape }}" aria-expanded="false" aria-controls="cite-panel-{{ key }}">Cite</button></p>
+  <div class="cite-panel" id="cite-panel-{{ key }}" data-cite-panel="{{ key }}" hidden>
+    <pre class="cite-output" data-cite-output="{{ key }}"></pre>
+    <button type="button" class="cite-copy" data-cite-copy="{{ key }}">Copy BibTeX</button>
+  </div>
 </div>

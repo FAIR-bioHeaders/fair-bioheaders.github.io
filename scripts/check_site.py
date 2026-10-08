@@ -21,6 +21,8 @@ class Page(HTMLParser):
         self.references = []
         self.cite_buttons = set()
         self.cite_outputs = set()
+        self.cite_copies = set()
+        self.cite_panels = set()
         self.skip, self.main, self.menu, self.images = False, False, False, []
         self.feed(text)
 
@@ -45,8 +47,13 @@ class Page(HTMLParser):
         if tag == 'button' and 'cite-button' in attrs.get('class', '').split():
             if attrs.get('data-cite-key'):
                 self.cite_buttons.add(attrs['data-cite-key'])
+        if tag == 'button' and 'cite-copy' in attrs.get('class', '').split():
+            if attrs.get('data-cite-copy'):
+                self.cite_copies.add(attrs['data-cite-copy'])
         if tag == 'pre' and attrs.get('data-cite-output'):
             self.cite_outputs.add(attrs['data-cite-output'])
+        if tag == 'div' and attrs.get('data-cite-panel'):
+            self.cite_panels.add(attrs['data-cite-panel'])
         if tag == 'script' and attrs.get('type') == 'application/ld+json':
             self.json_buffer = ''
         if tag == 'a' and attrs.get('href') == '#main':
@@ -66,12 +73,28 @@ class Page(HTMLParser):
             self.json_buffer = None
 
 
-REFERENCE_RE = re.compile(r'<div class="reference"([^>]*)>(.*?)</div>', re.DOTALL)
+REFERENCE_RE = re.compile(r'<div class="reference"([^>]*)>')
+
+
+def iter_references(text):
+    """Yield (start_tag_attrs, inner_html) for each .reference div.
+
+    Divs nest (the citation panel), so scan with a depth counter rather than a
+    non-greedy match that would stop at the first closing tag.
+    """
+    for match in REFERENCE_RE.finditer(text):
+        depth = 1
+        pos = match.end()
+        for div in re.finditer(r'<div\b|</div>', text[pos:]):
+            depth += 1 if div.group(0).startswith('<div') else -1
+            if depth == 0:
+                yield match.group(1), text[pos:pos + div.start()]
+                break
 
 
 def reference_errors(relative, text, page):
     errors = []
-    for head, block in REFERENCE_RE.findall(text):
+    for head, block in iter_references(text):
         if 'itemscope' not in head or 'itemtype="https://schema.org/' not in head:
             errors.append(f'{relative}: reference block lacks itemscope/itemtype')
         if not re.search(r'itemprop="name"', block):
@@ -80,9 +103,14 @@ def reference_errors(relative, text, page):
             errors.append(f'{relative}: reference block lacks author name parts')
         if 'itemprop="propertyID" content="DOI"' not in block or 'itemprop="value"' not in block:
             errors.append(f'{relative}: reference block lacks a DOI identifier')
-    missing = page.cite_buttons.symmetric_difference(page.cite_outputs)
-    for key in sorted(missing):
-        errors.append(f'{relative}: cite button/output mismatch for {key}')
+    expected = page.cite_buttons
+    for label, actual in (
+        ('output', page.cite_outputs),
+        ('copy button', page.cite_copies),
+        ('panel', page.cite_panels),
+    ):
+        for key in sorted(expected.symmetric_difference(actual)):
+            errors.append(f'{relative}: cite button/{label} mismatch for {key}')
     return errors
 
 

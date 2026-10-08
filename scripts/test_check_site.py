@@ -42,7 +42,10 @@ REFERENCE = (
     '<span itemprop="identifier" itemscope itemtype="https://schema.org/PropertyValue">'
     '<meta itemprop="propertyID" content="DOI"><meta itemprop="value" content="10.1/x"></span>'
     '<button class="cite-button" data-cite-key="Wright2024">Cite</button>'
-    '<pre data-cite-output="Wright2024" hidden></pre>'
+    '<div class="cite-panel" data-cite-panel="Wright2024" hidden>'
+    '<pre data-cite-output="Wright2024"></pre>'
+    '<button class="cite-copy" data-cite-copy="Wright2024">Copy BibTeX</button>'
+    '</div>'
     '</div>'
 )
 
@@ -60,9 +63,18 @@ class ReferenceChecks(unittest.TestCase):
         bad = REFERENCE.replace('<meta itemprop="value" content="10.1/x">', '')
         self.assertTrue(reference_errors('index.html', bad, Page(bad)))
 
-    def test_mismatched_cite_button_is_reported(self):
-        bad = REFERENCE.replace('<pre data-cite-output="Wright2024" hidden></pre>', '')
+    def test_mismatched_cite_output_is_reported(self):
+        bad = REFERENCE.replace('<pre data-cite-output="Wright2024"></pre>', '')
         self.assertTrue(reference_errors('index.html', bad, Page(bad)))
+
+    def test_missing_copy_button_is_reported(self):
+        bad = REFERENCE.replace('<button class="cite-copy" data-cite-copy="Wright2024">Copy BibTeX</button>', '')
+        self.assertTrue(reference_errors('index.html', bad, Page(bad)))
+
+    def test_nested_panel_does_not_break_reference_scan(self):
+        # The citation panel is a nested div; both references must still parse.
+        two = REFERENCE + REFERENCE.replace('Wright2024', 'Cannon2025')
+        self.assertEqual(reference_errors('index.html', two, Page(two)), [])
 
 
 class IconFontChecks(unittest.TestCase):

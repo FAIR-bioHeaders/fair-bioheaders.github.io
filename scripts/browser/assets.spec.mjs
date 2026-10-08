@@ -44,3 +44,32 @@ test('an opted-in math page loads only the pinned MathJax script', async ({ page
   expect(mathjax).toEqual([]);
   expect(MATHJAX).toContain('mathjax@3.2.2');
 });
+
+test('biological images decode with reserved space and local responsive sources', async ({ page }) => {
+  await page.goto('/');
+  const pictures = page.locator('.biology-image picture');
+  await expect(pictures).toHaveCount(2);
+  for (const picture of await pictures.all()) {
+    const img = picture.locator('img');
+    await img.scrollIntoViewIfNeeded();
+    // Lazy loading and responsive candidate changes can abort an in-flight decode.
+    await expect.poll(() => img.evaluate(image =>
+      image.decode().then(() => image.complete && image.naturalWidth > 0).catch(() => false)
+    )).toBe(true);
+    const info = await img.evaluate(image => ({
+      width: image.width, height: image.height,
+      naturalWidth: image.naturalWidth,
+      declaredWidth: image.getAttribute('width'),
+      declaredHeight: image.getAttribute('height'),
+      currentSrc: image.currentSrc,
+      alt: image.alt
+    }));
+    expect(info.naturalWidth).toBeGreaterThan(0);
+    expect(Number(info.declaredWidth)).toBeGreaterThan(0);
+    expect(Number(info.declaredHeight)).toBeGreaterThan(0);
+    expect(info.width).toBeGreaterThan(0);
+    expect(info.height).toBeGreaterThan(0);
+    expect(info.currentSrc).toMatch(/^http:\/\/127\.0\.0\.1:4000\/images\/biology\/.*\.webp$/);
+    expect(info.alt.length).toBeGreaterThan(0);
+  }
+});

@@ -1,0 +1,17 @@
+Image licenses are separate from the repository's MIT code license.
+
+honeycomb-480.jpg, honeycomb-960.jpg, honeycomb-480.webp, honeycomb-960.webp:
+Honigwabe by Waugsberg; CC BY-SA 3.0 Unported.
+https://commons.wikimedia.org/wiki/File:Honigwabe.jpg
+https://creativecommons.org/licenses/by-sa/3.0/
+Resized and compressed; homepage displays a CSS hexagonal crop.
+These derivatives are distributed under CC BY-SA 3.0.
+
+compound-eye-400.jpg, compound-eye-800.jpg,
+compound-eye-400.webp, compound-eye-800.webp:
+Fruit-fly eye SEM by Louisa Howard / Dartmouth College.
+Public domain dedication by Dartmouth College, as recorded at:
+https://commons.wikimedia.org/wiki/File:Drosophilidae_compound_eye_edit1.jpg
+Upstream retouch: Papa Lima Whiskey. Locally resized and compressed.
+
+Source revisions and additional provenance: _data/image_credits.yml.

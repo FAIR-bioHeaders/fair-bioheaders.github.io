@@ -335,3 +335,132 @@ html[data-theme="dark"] {
     scroll-behavior: auto !important;
   }
 }
+
+/* Biological imagery and the project landing page (issue #11). */
+:root {
+  --surface-warm: #fff8ee;
+  --surface-soft: #faf9f6;
+  --surface-border: #e6dfd3;
+  --text-muted: #555951;
+}
+html[data-theme="dark"] {
+  --surface-warm: #242019;
+  --surface-soft: #1a1d23;
+  --surface-border: #494138;
+  --text-muted: #c1c7bf;
+}
+.page--home {
+  width: 100%;
+  float: none;
+  padding-left: 0;
+  padding-right: 0;
+  .page__title { font-size: 1.35em; margin-bottom: 1.5em; }
+  .page__content > h2 { margin-top: 2.5em; }
+  .about-us { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.project-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 2em;
+  padding: 2em;
+  background: var(--surface-warm);
+  border: 1px solid var(--surface-border);
+  border-radius: 1em;
+  .project-intro__copy h2 {
+    margin: .4em 0 .6em;
+    padding: 0;
+    border: 0;
+    font-size: clamp(1.6em, 3.4vw, 2.6em);
+    line-height: 1.12;
+    letter-spacing: -.04em;
+    &::after { content: none; }
+  }
+}
+.project-eyebrow {
+  display: block;
+  color: var(--text-muted);
+  font-size: .65em !important;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.project-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .7em; }
+.page__content .project-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .7em;
+  padding: .7em 1em;
+  font-size: .8em;
+  font-weight: 600;
+  border-radius: .35em;
+  &--primary { background: #753608; color: #fff; text-decoration: none; }
+  &--primary:hover { background: #542704; color: #fff; }
+}
+.biology-image {
+  min-width: 0;
+  margin: 0;
+  img { display: block; width: 100%; height: auto; }
+  figcaption {
+    font-family: inherit;
+    margin: .8em 0 0;
+    color: var(--text-muted);
+    font-size: .6em;
+    line-height: 1.6;
+    a { color: inherit; }
+  }
+  &--honeycomb img {
+    aspect-ratio: 1;
+    object-fit: cover;
+    clip-path: polygon(50% 0, 94% 25%, 94% 75%, 50% 100%, 6% 75%, 6% 25%);
+  }
+  &--eye img { border-radius: .5em; }
+}
+.project-paths {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1em;
+  margin: 1.5em 0 3em;
+  a {
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
+    padding: 1.3em;
+    color: var(--ink);
+    background: var(--surface-soft);
+    border: 1px solid var(--surface-border);
+    border-top: 3px solid var(--brand-orange);
+    border-radius: .4em;
+    text-decoration: none;
+    &:hover { border-color: var(--brand-orange); text-decoration: none; }
+    strong { font-size: 1.1em; letter-spacing: -.02em; }
+    span:last-child { font-size: .8em; line-height: 1.6; }
+  }
+}
+.biology-feature {
+  display: grid;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.4fr);
+  align-items: center;
+  gap: 2em;
+  margin: 3em 0;
+  padding: 1.5em;
+  background: var(--surface-soft);
+  border: 1px solid var(--surface-border);
+  border-radius: .7em;
+  h3 { margin: .5em 0; font-size: 1.5em; }
+}
+.archive__item { padding: 1em 0; border-bottom: 1px solid var(--surface-border); }
+.archive__item-title { line-height: 1.35; }
+@media (max-width: 899px) {
+  .project-intro { grid-template-columns: 1fr; }
+  .biology-image--honeycomb { max-width: 480px; margin: 0 auto; }
+  .biology-image--honeycomb img { aspect-ratio: 3 / 2; }
+}
+@media (max-width: 599px) {
+  .project-intro { padding: 1.2em; gap: 1.2em; }
+  .project-paths, .biology-feature, .page--home .about-us { grid-template-columns: 1fr; }
+  .biology-feature { padding: 1em; gap: 1em; }
+  .project-paths { gap: .7em; }
+  .project-action { width: 100%; }
+}

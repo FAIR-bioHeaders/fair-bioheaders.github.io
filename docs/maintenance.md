@@ -49,3 +49,12 @@ The scheduled/manual Lychee step resolves relative links against the production 
 Articles model the levels actually present: issue and volume use `ScholarlyArticle` → `PublicationIssue` → `PublicationVolume` → `Periodical`; issue-only uses `PublicationIssue` → `Periodical`; volume-only uses `PublicationVolume` → `Periodical`; and records with neither use `Periodical`. `volumeNumber` belongs on `PublicationVolume` and `issueNumber` on `PublicationIssue`. Keep `_includes/reference.html`, `_includes/seo.html`, and the `containerInfo` reader in `assets/js/cite.js` consistent when changing this, and keep the semantic checks in `check_site.py` in step.
 
 The optional MathJax 3.2.2 script uses a verified SHA-384 integrity digest and `crossorigin="anonymous"`. A version change requires recomputing the digest from the CDN file and updating the template/checker together; MathJax may fetch additional components, so the entry-script digest is not a guarantee for all downstream requests.
+
+## Biological visual identity
+
+The homepage uses biological hexagon imagery and a wider project introduction,
+with clear paths to the specification, tools, and resources. See `docs/design.md`
+for the selected direction, source/license documentation, preparation commands,
+and responsive behavior. Image licenses are independent of the MIT code license;
+keep the visible credits and `_data/image_credits.yml` synchronized. Existing
+publication/citation metadata and navigation remain part of the acceptance checks.

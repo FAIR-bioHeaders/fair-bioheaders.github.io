@@ -1,6 +1,6 @@
 main:
   - title: "About"
-    url: /#about-us
+    url: /#about-the-project
   - title: "Publications"
     url: /publications/
   - title: "Resources & citation"

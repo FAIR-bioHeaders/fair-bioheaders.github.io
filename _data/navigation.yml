@@ -7,3 +7,5 @@ main:
     url: /resources/
   - title: "GitHub"
     url: https://github.com/FAIR-bioHeaders
+  - title: "Zenodo community"
+    url: https://zenodo.org/communities/fh-/

@@ -148,6 +148,8 @@ FHR_Specification:
   publisher: Zenodo
   year: 2022
   doi: 10.5281/zenodo.6762549
+  repository: https://github.com/FAIR-bioHeaders/FHR-Specification
+  license: PDDL-1.0
 
 FHR_File_Converter:
   type: software
@@ -158,3 +160,52 @@ FHR_File_Converter:
   publisher: Zenodo
   year: 2024
   doi: 10.5281/zenodo.6762547
+  repository: https://github.com/FAIR-bioHeaders/FHR-File-Converter
+  programming_language: Python
+  license: PDDL-1.0
+
+FHR_Nextflow:
+  type: software
+  title: "FHR Nextflow"
+  authors:
+    - { family: Molik, given: David }
+    - { family: Wright, given: Adam }
+  year: 2025
+  repository: https://github.com/FAIR-bioHeaders/FHR-Nextflow
+  programming_language: Nextflow
+  license: MPL-2.0
+  note: "Development prototype; no published release or DOI."
+
+FHT_Specification:
+  type: dataset
+  title: "FHT Specification"
+  authors:
+    - { family: Molik, given: David }
+    - { family: Wright, given: Adam }
+  year: 2023
+  repository: https://github.com/FAIR-bioHeaders/FHT-Specification
+  license: PDDL-1.0
+  note: "Draft companion specification for reference transcriptomes."
+
+FHT_File_Converter:
+  type: software
+  title: "FHT File Converter"
+  authors:
+    - { family: Molik, given: David }
+    - { family: Wright, given: Adam }
+  year: 2023
+  repository: https://github.com/FAIR-bioHeaders/FHT-File-Converter
+  programming_language: Python
+  license: PDDL-1.0
+  note: "Draft companion converter for reference transcriptomes."
+
+FHR_Citation:
+  type: software
+  title: "FHR Citation"
+  authors:
+    - { family: Molik, given: David }
+    - { family: Wright, given: Adam }
+  year: 2026
+  repository: https://github.com/FAIR-bioHeaders/FHR-Citation
+  license: PDDL-1.0
+  note: "Maintained citation metadata and BibTeX."

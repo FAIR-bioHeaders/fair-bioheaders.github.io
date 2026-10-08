@@ -8,8 +8,9 @@ are the single source of truth for the generated citation.
 {% endcomment %}
 {% assign key = include.key %}
 {% assign reference = include.reference %}
-{% assign doi_url = "https://doi.org/" | append: reference.doi %}
-{% assign url = reference.url | default: doi_url %}
+{% assign doi_url = "" %}
+{% if reference.doi %}{% assign doi_url = "https://doi.org/" | append: reference.doi %}{% endif %}
+{% assign url = reference.url | default: reference.repository | default: doi_url %}
 {% case reference.type %}
   {% when 'article' %}
     {% assign itemtype = "https://schema.org/ScholarlyArticle" %}
@@ -27,8 +28,8 @@ are the single source of truth for the generated citation.
   {% for author in reference.authors %}
     <span itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="givenName" content="{{ author.given }}"><meta itemprop="familyName" content="{{ author.family }}"></span>
   {% endfor %}
-  <span itemprop="identifier" itemscope itemtype="https://schema.org/PropertyValue"><meta itemprop="propertyID" content="DOI"><meta itemprop="value" content="{{ reference.doi }}"></span>
-  <meta itemprop="url" content="{{ url }}">
+  {% if reference.doi %}<span itemprop="identifier" itemscope itemtype="https://schema.org/PropertyValue"><meta itemprop="propertyID" content="DOI"><meta itemprop="value" content="{{ reference.doi }}"></span>{% endif %}
+  {% if url %}<meta itemprop="url" content="{{ url }}">{% endif %}
   {% if reference.journal %}
     <span itemprop="isPartOf" itemscope itemtype="https://schema.org/Periodical">
       <meta itemprop="name" content="{{ reference.journal }}">
@@ -49,6 +50,11 @@ are the single source of truth for the generated citation.
     {% endif %}
   {% endif %}
   {% if reference.year %}<meta itemprop="datePublished" content="{{ reference.year }}">{% endif %}
+  {% if reference.repository %}<meta itemprop="codeRepository" content="{{ reference.repository }}">{% endif %}
+  {% if reference.programming_language %}<meta itemprop="programmingLanguage" content="{{ reference.programming_language }}">{% endif %}
+  {% if reference.license %}
+    <span itemprop="license" itemscope itemtype="https://schema.org/CreativeWork"><meta itemprop="name" content="{{ reference.license }}"></span>
+  {% endif %}
 
   {% unless include.compact %}
     <p class="reference__citation">
@@ -60,7 +66,13 @@ are the single source of truth for the generated citation.
       {%- if reference.year %} {{ reference.year }}.{% endif %}
     </p>
   {% endunless %}
-  <p class="reference__links"><a itemprop="sameAs" href="{{ doi_url }}">https://doi.org/{{ reference.doi }}</a><button type="button" class="cite-button" data-cite-key="{{ key }}" aria-label="Show BibTeX citation for {{ reference.title | escape }}" aria-expanded="false" aria-controls="cite-panel-{{ key }}">Cite</button></p>
+  <p class="reference__links">
+    {% if reference.doi %}<a itemprop="sameAs" href="{{ doi_url }}">https://doi.org/{{ reference.doi }}</a>
+    {% elsif reference.repository %}<a itemprop="sameAs codeRepository" href="{{ reference.repository }}">{{ reference.repository }}</a>
+    {% endif %}
+    {% if reference.note %}<span class="reference__note">{{ reference.note }}</span>{% endif %}
+    <button type="button" class="cite-button" data-cite-key="{{ key }}" aria-label="Show BibTeX citation for {{ reference.title | escape }}" aria-expanded="false" aria-controls="cite-panel-{{ key }}">Cite</button>
+  </p>
   <div class="cite-panel" id="cite-panel-{{ key }}" data-cite-panel="{{ key }}" hidden>
     <pre class="cite-output" data-cite-output="{{ key }}"></pre>
     <button type="button" class="cite-copy" data-cite-copy="{{ key }}">Copy BibTeX</button>

@@ -19,6 +19,7 @@ class Page(HTMLParser):
         self.scripts = []
         self.icons = []
         self.references = []
+        self.json_errors = []
         self.cite_buttons = set()
         self.cite_outputs = set()
         self.cite_copies = set()
@@ -69,7 +70,10 @@ class Page(HTMLParser):
 
     def handle_endtag(self, tag):
         if tag == 'script' and self.json_buffer is not None:
-            self.json_ld.append(json.loads(self.json_buffer))
+            try:
+                self.json_ld.append(json.loads(self.json_buffer))
+            except json.JSONDecodeError as error:
+                self.json_errors.append(str(error))
             self.json_buffer = None
 
 
@@ -101,8 +105,10 @@ def reference_errors(relative, text, page):
             errors.append(f'{relative}: reference block lacks a name')
         if not re.search(r'itemprop="author".*?itemprop="familyName"', block, re.DOTALL):
             errors.append(f'{relative}: reference block lacks author name parts')
-        if 'itemprop="propertyID" content="DOI"' not in block or 'itemprop="value"' not in block:
-            errors.append(f'{relative}: reference block lacks a DOI identifier')
+        has_doi = 'itemprop="propertyID" content="DOI"' in block and 'itemprop="value"' in block
+        has_repo = 'itemprop="codeRepository"' in block
+        if not has_doi and not has_repo:
+            errors.append(f'{relative}: reference block lacks a DOI or repository identifier')
     expected = page.cite_buttons
     for label, actual in (
         ('output', page.cite_outputs),
@@ -164,6 +170,8 @@ def check(root):
             require(forbidden not in text, f'{relative}: unwanted template/runtime content: {forbidden}')
         require('cite-button' not in text or 'assets/js/main.min.js' in text,
                 f'{relative}: cite buttons require the bundled script')
+        for error in page.json_errors:
+            errors.append(f'{relative}: invalid JSON-LD ({error})')
         errors.extend(reference_errors(relative, file.read_text(), page))
         errors.extend(f'{relative}: {error}' for error in mathjax_errors(page))
     # Also check font and image references in CSS, including missing vendored assets.
@@ -187,7 +195,36 @@ def check(root):
     require(org.get('@type') == 'Organization', 'Home identity must be an organization')
     members = {p['@id'] for p in org.get('member', [])}
     require(members == {'https://orcid.org/0000-0002-5719-4024', 'https://orcid.org/0000-0003-3192-6538'}, 'Home identity must include both maintainer ORCIDs')
-    require(org.get('sameAs') == ['https://github.com/FAIR-bioHeaders'], 'Organization identity must use its own GitHub profile')
+    same_as = org.get('sameAs') or []
+    require('https://github.com/FAIR-bioHeaders' in same_as, 'Organization identity must use its own GitHub profile')
+    require(len(set(same_as)) == len(same_as), 'Organization sameAs must not repeat links')
+    member_keys = {p.get('@id') for p in org.get('member', [])}
+    for person in org.get('member', []):
+        require('jobTitle' in person and 'worksFor' in person,
+                f"Organization member {person.get('name')} lacks jobTitle/worksFor")
+        require(person['@id'] in member_keys, 'member @id missing')
+
+    # Per-page structured data expectations.
+    home_jsonld = html[root / 'index.html'].json_ld
+    require(any(block.get('@type') == 'WebSite' for block in home_jsonld),
+            'Home page must include WebSite JSON-LD')
+    publications_jsonld = html[root / 'publications/index.html'].json_ld
+    require(any(block.get('@type') == 'ItemList' for block in publications_jsonld),
+            'Publications page must include an ItemList JSON-LD')
+    for file, page in html.items():
+        relative = file.relative_to(root).as_posix()
+        types = {block.get('@type') for block in page.json_ld}
+        if relative.startswith('publication/'):
+            require('ScholarlyArticle' in types, f'{relative}: missing ScholarlyArticle JSON-LD')
+            require(any('citation_title' == key for key in page.metas),
+                    f'{relative}: missing Highwire citation_title meta')
+            require(any('citation_author' == key for key in page.metas),
+                    f'{relative}: missing Highwire citation_author meta')
+        if relative in ('terms/index.html', 'sitemap/index.html', '404.html'):
+            require(page.metas.get('robots', '').startswith('noindex'),
+                    f'{relative}: utility page should be noindex')
+    require((root / 'publications/feed.xml').is_file(), 'Missing publications Atom feed')
+    require((root / 'feed.xml').is_file(), 'Missing site Atom feed')
     if errors:
         print('\n'.join(errors), file=sys.stderr)
         return 1

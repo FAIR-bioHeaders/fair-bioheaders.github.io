@@ -1,5 +1,7 @@
 - name: Adam Wright
   orcid: https://orcid.org/0000-0002-5719-4024
+  job_title: Software Architect
+  affiliation: Ontario Institute for Cancer Research
   role: Software Architect, Ontario Institute for Cancer Research
   bio: >-
     Adam Wright is a software architect in the Adaptive Oncology Program at the
@@ -10,6 +12,8 @@
     FHR standard.
 - name: David Molik
   orcid: https://orcid.org/0000-0003-3192-6538
+  job_title: Department Head and Associate Professor
+  affiliation: Kansas State University Libraries
   role: Department Head and Associate Professor, Open Publishing Exchange, Kansas State University Libraries
   bio: >-
     David Molik leads the Open Publishing Exchange and is an associate professor

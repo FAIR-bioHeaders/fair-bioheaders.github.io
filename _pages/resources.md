@@ -6,14 +6,12 @@ excerpt: "FAIR BioHeaders specifications, converters, workflows, and citation gu
 
 ## Project repositories
 
-| Resource | Purpose | Status |
-| --- | --- | --- |
-| [FHR Specification](https://github.com/FAIR-bioHeaders/FHR-Specification) | Reference genome metadata specification and schemas | Published |
-| [FHR File Converter](https://github.com/FAIR-bioHeaders/FHR-File-Converter) | Processing library and conversion tools | Published |
-| [FHR Nextflow](https://github.com/FAIR-bioHeaders/FHR-Nextflow) | Workflow integration | Demo |
-| [FHT Specification](https://github.com/FAIR-bioHeaders/FHT-Specification) | Companion FHT specification | Draft |
-| [FHT File Converter](https://github.com/FAIR-bioHeaders/FHT-File-Converter) | Companion FHT conversion tools | Draft |
-| [FHR Citation](https://github.com/FAIR-bioHeaders/FHR-Citation) | Maintained citation metadata and BibTeX | Published |
+Each repository is published as Schema.org `SoftwareSourceCode` or `Dataset` metadata with a "Cite" button.
+
+<div class="repo-references">
+{% for key in site.data.reference_order %}{% assign reference = site.data.references[key] %}{% if reference.repository %}{% include reference.html key=key reference=reference compact=true %}
+{% endif %}{% endfor %}
+</div>
 
 ## Zenodo community
 
@@ -29,10 +27,6 @@ For a general description of FHR, cite the published paper. Select **Cite** to g
 
 {% include reference.html key="Wright2024" reference=site.data.references.Wright2024 %}
 
-For direct use of the specification or converter, cite the resource:
-
-{% include reference.html key="FHR_Specification" reference=site.data.references.FHR_Specification %}
-
-{% include reference.html key="FHR_File_Converter" reference=site.data.references.FHR_File_Converter %}
+For direct use of the specification or converter, cite the resource in the [project repositories](#project-repositories) list above.
 
 These are concept DOIs, which group releases. For reproducible use of a specific release, select its version DOI from the Zenodo record. See [FHR Citation](https://github.com/FAIR-bioHeaders/FHR-Citation) for maintained metadata and [downloadable BibTeX](https://github.com/FAIR-bioHeaders/FHR-Citation/blob/main/citation.bib).

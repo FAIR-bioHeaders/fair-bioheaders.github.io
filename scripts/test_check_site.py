@@ -59,9 +59,24 @@ class ReferenceChecks(unittest.TestCase):
         bad = REFERENCE.replace(' itemscope itemtype="https://schema.org/ScholarlyArticle"', '')
         self.assertTrue(reference_errors('index.html', bad, Page(bad)))
 
-    def test_missing_doi_is_reported(self):
-        bad = REFERENCE.replace('<meta itemprop="value" content="10.1/x">', '')
+    def test_missing_doi_and_repository_is_reported(self):
+        bad = REFERENCE.replace('<meta itemprop="propertyID" content="DOI"><meta itemprop="value" content="10.1/x">', '')
         self.assertTrue(reference_errors('index.html', bad, Page(bad)))
+
+    def test_repository_reference_without_doi_passes(self):
+        repo = (
+            '<div class="reference" id="repo" itemscope itemtype="https://schema.org/SoftwareSourceCode">'
+            '<meta itemprop="name" content="Tool">'
+            '<span itemprop="author" itemscope itemtype="https://schema.org/Person">'
+            '<meta itemprop="givenName" content="A"><meta itemprop="familyName" content="B"></span>'
+            '<meta itemprop="codeRepository" content="https://example.org/repo">'
+            '<button class="cite-button" data-cite-key="repo">Cite</button>'
+            '<div class="cite-panel" data-cite-panel="repo" hidden>'
+            '<pre data-cite-output="repo"></pre>'
+            '<button class="cite-copy" data-cite-copy="repo">Copy BibTeX</button>'
+            '</div></div>'
+        )
+        self.assertEqual(reference_errors('index.html', repo, Page(repo)), [])
 
     def test_mismatched_cite_output_is_reported(self):
         bad = REFERENCE.replace('<pre data-cite-output="Wright2024"></pre>', '')

@@ -1,0 +1,13 @@
+# Publication and resource citation keys in display order. Used by the
+# publications ItemList and the resources page so ordering is deterministic.
+- Wright2024
+- Cannon2025
+- Cabugos2025
+- Tvedte2026
+- Marrano2026
+- FHR_Specification
+- FHR_File_Converter
+- FHR_Nextflow
+- FHT_Specification
+- FHT_File_Converter
+- FHR_Citation

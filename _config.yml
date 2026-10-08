@@ -20,13 +20,26 @@ social:
   name: FAIR BioHeaders
   links:
     - https://github.com/FAIR-bioHeaders
+    - https://zenodo.org/communities/fh-/
+keywords: "FAIR, TRUST, reference genome, metadata, provenance, bioinformatics, FASTA, GFA, YAML, JSON"
+knowsAbout:
+  - FAIR data principles
+  - TRUST principles
+  - reference genome metadata
+  - data provenance
+  - genomics interoperability
 og_image: logo.png
 analytics:
   provider: false
 comments:
   provider: false
 atom_feed:
-  hide: true
+  hide: false
+  path: /feed.xml
+feed:
+  collections:
+    publications:
+      path: /publications/feed.xml
 future: false
 read_more: disabled
 breadcrumbs: false
@@ -85,6 +98,7 @@ sass:
   sass_dir: _sass
   style: compressed
 plugins:
+  - jekyll-feed
   - jekyll-sitemap
   - jekyll-redirect-from
 compress_html:

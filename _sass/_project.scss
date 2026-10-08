@@ -37,7 +37,7 @@
    -------------------------------------------------------------------------- */
 .masthead {
   background: #fff;
-  border-bottom: 1px solid #ebecef;
+  border-bottom: 0;
 }
 .masthead::after {
   content: "";
@@ -45,7 +45,7 @@
   height: 3px;
   background: var(--brand-gradient);
 }
-.masthead__inner-wrap { display: flex; align-items: center; gap: 1em; }
+.masthead__inner-wrap { background: #fff; display: flex; align-items: center; gap: 1em; }
 .masthead__menu { flex: 1; min-width: 0; }
 .masthead__menu-item--lg {
   padding-right: .5em;
@@ -183,7 +183,7 @@ html[data-theme="dark"] {
   --paper: #14161a;
 
   &, body { background: #14161a; color: #e9eaec; }
-  .masthead { background: #14161a; border-bottom-color: #2b2f36; }
+  .masthead, .masthead__inner-wrap { background: #14161a; }
   .greedy-nav, .greedy-nav .hidden-links { background: #14161a; }
   a, .greedy-nav a { color: #ffb566; }
   a:hover, .greedy-nav a:hover { color: var(--brand-yellow); }

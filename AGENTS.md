@@ -114,7 +114,9 @@ Toolchain is pinned in `.ruby-version` (Ruby 3.3.4) and `.nvmrc` (Node 24).
   400 WOFF2 files. Keep `LICENSE.txt` and provenance with them; Markdown README
   files in assets can become unintended pages with the Pages plugin set.
 - MathJax is optional: only boolean `math: true` emits `fhr:math` and the pinned
-  3.2.2 jsDelivr script. Ordinary pages must not load it; keep the privacy text
+  3.2.2 jsDelivr script with verified SHA-384 integrity and anonymous CORS.
+  When changing the script URL, recompute the digest from the actual CDN bytes
+  and update the template and checker together. Ordinary pages must not load it; keep the privacy text
   aligned with actual requests.
 - Escape values in HTML text/attributes with `escape`; use `jsonify` for JSON-LD.
   Dates in JSON-LD must be strings, not YAML year integers. `codeRepository`

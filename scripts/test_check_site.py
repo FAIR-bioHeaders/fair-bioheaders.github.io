@@ -1,9 +1,9 @@
 """Regression coverage for the documented MathJax opt-in and runtime checks."""
 import unittest
 
-from check_site import Page, mathjax_errors, reference_errors
+from check_site import Page, mathjax_errors, reference_errors, MATHJAX_INTEGRITY
 
-PINNED_SCRIPT = '<script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>'
+PINNED_SCRIPT = f'<script integrity="{MATHJAX_INTEGRITY}" crossorigin="anonymous" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>'
 OPT_IN = '<meta name="fhr:math" content="true">'
 
 
@@ -29,6 +29,16 @@ class MathJaxChecks(unittest.TestCase):
 
     def test_script_without_standard_id_still_requires_opt_in(self):
         self.assertTrue(mathjax_errors(Page(PINNED_SCRIPT.replace(' id="MathJax-script"', ''))))
+
+    def test_missing_integrity_is_rejected(self):
+        script = PINNED_SCRIPT.replace(f' integrity="{MATHJAX_INTEGRITY}"', '')
+        self.assertTrue(mathjax_errors(Page(OPT_IN + script)))
+
+    def test_wrong_integrity_is_rejected(self):
+        self.assertTrue(mathjax_errors(Page(OPT_IN + PINNED_SCRIPT.replace(MATHJAX_INTEGRITY, 'sha384-wrong'))))
+
+    def test_missing_cors_is_rejected(self):
+        self.assertTrue(mathjax_errors(Page(OPT_IN + PINNED_SCRIPT.replace(' crossorigin="anonymous"', ''))))
 
     def test_prose_mention_is_not_a_runtime_script(self):
         self.assertEqual(mathjax_errors(Page('<p>The MathJax-script is optional.</p>')), [])

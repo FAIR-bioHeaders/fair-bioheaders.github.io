@@ -37,3 +37,5 @@ The inherited template tag dates from February 2024, older than the upstream `v0
 - Publication pages include `ScholarlyArticle` JSON-LD and Highwire `citation_*` meta; the home page includes `WebSite`, `/publications/` includes an `ItemList`, and utility pages are `noindex`. All JSON-LD blocks parse as valid JSON.
 
 The scheduled/manual Lychee step resolves relative links against the production URL and excludes this site, since `check_site.py` validates local paths and fragments on every build. `.lycheeignore` documents DOI and ISO exclusions for automated-client blocking. Run the workflow manually when changing this configuration to exercise the external-link step.
+
+The optional MathJax 3.2.2 script uses a verified SHA-384 integrity digest and `crossorigin="anonymous"`. A version change requires recomputing the digest from the CDN file and updating the template/checker together; MathJax may fetch additional components, so the entry-script digest is not a guarantee for all downstream requests.

@@ -9,6 +9,7 @@ from urllib.parse import unquote, urljoin, urlsplit
 import xml.etree.ElementTree as ET
 
 ORIGIN = 'https://fair-bioheaders.github.io'
+MATHJAX_INTEGRITY = 'sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei'
 MATHJAX_URL = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js'
 
 class Page(HTMLParser):
@@ -130,6 +131,8 @@ def mathjax_errors(page):
     if page.metas.get('fhr:math') == 'true':
         if len(scripts) != 1 or scripts[0].get('src') != MATHJAX_URL:
             return ['math opt-in must load exactly the pinned MathJax script']
+        if scripts[0].get('integrity') != MATHJAX_INTEGRITY or scripts[0].get('crossorigin') != 'anonymous':
+            return ['MathJax must have the verified integrity digest and anonymous CORS']
     elif scripts:
         return ['MathJax loaded without a page math opt-in']
     return []

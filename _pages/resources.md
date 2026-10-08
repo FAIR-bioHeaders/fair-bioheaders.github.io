@@ -15,6 +15,10 @@ excerpt: "FAIR BioHeaders specifications, converters, workflows, and citation gu
 | [FHT File Converter](https://github.com/FAIR-bioHeaders/FHT-File-Converter) | Companion FHT conversion tools |
 | [FHR Citation](https://github.com/FAIR-bioHeaders/FHR-Citation) | Maintained citation metadata and BibTeX |
 
+## Standards & adoption
+
+FHR is referenced in [ISO 25184:2026](https://www.iso.org/standard/89273.html), *Molecular biomarker analysis — Nucleotide sequencing — Verified next generation sequences (VNGS)* (edition 1, published 2026-04; ISO/TC 34/SC 16). The standard specifies requirements for reference next generation nucleotide sequences, including sequences that are accessible on the semantic web — the same provenance and metadata goals FHR was designed to support.
+
 ## Citing FHR
 
 For a general description of FHR, cite the published paper:

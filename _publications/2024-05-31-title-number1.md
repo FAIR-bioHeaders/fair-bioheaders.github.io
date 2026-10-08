@@ -6,6 +6,8 @@ excerpt: 'The FAIR bioHeaders Reference genome (FHR) aims to address the lack of
 date: 2024-05-31
 venue: 'Briefings in Bioinformatics'
 paperurl: 'https://doi.org/10.1093/bib/bbae122'
+doi: '10.1093/bib/bbae122'
+cite_key: 'Wright2024'
 citation: 'Wright, Adam, Mark D. Wilkinson, Christopher Mungall, Scott Cain, Stephen Richards, Paul Sternberg, Ellen Provin, Jonathan L. Jacobs, Scott Geib, Daniela Raciti, Karen Yook, Lincoln Stein, and David C. Molik. “FAIR Header Reference Genome: A TRUSTworthy Standard.” Briefings in Bioinformatics 25, no. 3 (2024): bbae122. https://doi.org/10.1093/bib/bbae122.'
 ---
 

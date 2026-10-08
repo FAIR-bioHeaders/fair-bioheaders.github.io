@@ -1,0 +1,223 @@
+# Bibliography records in a BibTeX-shaped schema. Each entry maps to Schema.org
+# microdata rendered by _includes/reference.html; assets/js/cite.js turns the
+# rendered microdata back into a BibTeX entry for the per-reference "Cite" button.
+#
+# Fields:
+#   type      BibTeX entry type: article, software, dataset, misc
+#   title     Entry title
+#   authors   List of {family, given}
+#   journal   Container title (journal / periodical / book)
+#   publisher Publisher or hosting organization
+#   year      Publication year (datePublished)
+#   volume    Volume number
+#   number    Issue / number
+#   pages     Page range ("150-165") or article number
+#   doi       DOI without the https://doi.org/ prefix
+#   url       Canonical URL (defaults to the DOI resolver)
+
+Wright2024:
+  type: article
+  title: "FAIR Header Reference genome: a TRUSTworthy standard"
+  authors:
+    - { family: Wright, given: Adam }
+    - { family: Wilkinson, given: Mark D }
+    - { family: Mungall, given: Christopher }
+    - { family: Cain, given: Scott }
+    - { family: Richards, given: Stephen }
+    - { family: Sternberg, given: Paul }
+    - { family: Provin, given: Ellen }
+    - { family: Jacobs, given: Jonathan L }
+    - { family: Geib, given: Scott }
+    - { family: Raciti, given: Daniela }
+    - { family: Yook, given: Karen }
+    - { family: Stein, given: Lincoln }
+    - { family: Molik, given: David C }
+  journal: Briefings in Bioinformatics
+  publisher: Oxford University Press
+  year: 2024
+  volume: 25
+  number: 3
+  pages: bbae122
+  doi: 10.1093/bib/bbae122
+
+Cannon2025:
+  type: article
+  title: "Guidelines for gene and genome assembly nomenclature"
+  authors:
+    - { family: Cannon, given: Ethalinda K S }
+    - { family: Molik, given: David C }
+    - { family: Wright, given: Adam J }
+    - { family: Zhang, given: Huiting }
+    - { family: Honaas, given: Loren }
+    - { family: Chougule, given: Kapeel }
+    - { family: Dyer, given: Sarah }
+  journal: GENETICS
+  publisher: Oxford University Press
+  year: 2025
+  volume: 229
+  number: 3
+  pages: iyaf006
+  doi: 10.1093/genetics/iyaf006
+
+Cabugos2025:
+  type: article
+  title: "AgBioDatabase Finder: an online tool to help researchers find and submit agricultural genomic, genetic, and breeding data"
+  authors:
+    - { family: Cabugos, given: Leyla }
+    - { family: Buble, given: Katheryn }
+    - { family: Daenzer, given: Jenna }
+    - { family: Jung, given: Sook }
+    - { family: Main, given: Dorrie }
+    - { family: Marrano, given: Annarita }
+    - { family: Molik, given: David }
+    - { family: Raciti, given: Daniela }
+    - { family: Wright, given: Adam }
+    - { family: Yook, given: Karen }
+    - { family: Reiser, given: Leonore }
+  journal: microPublication Biology
+  publisher: microPublication Biology
+  year: 2025
+  pages: micropub.biology.001896
+  doi: 10.17912/micropub.biology.001896
+
+Tvedte2026:
+  type: article
+  title: "Toward standardization in arthropod and biodiversity genome projects"
+  authors:
+    - { family: Tvedte, given: Eric S }
+    - { family: Bucher, given: Gregor }
+    - { family: Luecke, given: David M }
+    - { family: Molik, given: David C }
+    - { family: Sylvester, given: Terrence }
+    - { family: Blaxter, given: Mark }
+    - { family: Elsik, given: Christine G }
+    - { family: Howe, given: Kerstin }
+    - { family: McKenna, given: Duane D }
+    - { family: Murphy, given: Terence D }
+    - { family: Schrader, given: Lukas }
+    - { family: Sotero-Caio, given: Cibele G }
+    - { family: Waterhouse, given: Robert M }
+    - { family: Childers, given: Anna K }
+    - { family: Halfon, given: Marc S }
+    - { family: Poelchau, given: Monica F }
+  journal: GENETICS
+  publisher: Oxford University Press
+  year: 2026
+  volume: 234
+  number: 1
+  pages: iyag172
+  doi: 10.1093/genetics/iyag172
+
+Marrano2026:
+  type: article
+  title: "The future is FAIR: a community framework for enhanced data management and data sharing"
+  authors:
+    - { family: Marrano, given: Annarita }
+    - { family: Andorf, given: Carson }
+    - { family: Campbell, given: Jacqueline D }
+    - { family: Cannon, given: Ethalinda }
+    - { family: Coe, given: Michael }
+    - { family: Cooper, given: Laurel }
+    - { family: Dyer, given: Sarah }
+    - { family: Harrison, given: Peter W }
+    - { family: Kumari, given: Sunita }
+    - { family: Jung, given: Sook }
+    - { family: Main, given: Dorrie }
+    - { family: McNamara, given: John }
+    - { family: Molik, given: David }
+    - { family: Naithani, given: Sushma }
+    - { family: Poelchau, given: Monica F }
+    - { family: Staton, given: Margaret E }
+    - { family: Selby, given: Peter }
+    - { family: Sen, given: Taner Z }
+    - { family: Tello-Ruiz, given: Marcela K }
+    - { family: Reiser, given: Leonore }
+  journal: Database
+  publisher: Oxford University Press
+  year: 2026
+  volume: 2026
+  pages: baag058
+  doi: 10.1093/database/baag058
+
+FHR_Specification:
+  status: Published
+  purpose: Reference genome metadata specification and schemas
+  type: dataset
+  title: "FHR Specification"
+  authors:
+    - { family: Molik, given: David }
+    - { family: Wright, given: Adam }
+  publisher: Zenodo
+  year: 2026
+  doi: 10.5281/zenodo.6762549
+  repository: https://github.com/FAIR-bioHeaders/FHR-Specification
+  license: PDDL-1.0
+
+FHR_File_Converter:
+  status: Published
+  purpose: Processing library and conversion tools
+  type: software
+  title: "FHR File Converter"
+  authors:
+    - { family: Molik, given: David }
+    - { family: Wright, given: Adam }
+  publisher: Zenodo
+  year: 2026
+  doi: 10.5281/zenodo.6762547
+  repository: https://github.com/FAIR-bioHeaders/FHR-File-Converter
+  programming_language: Python
+  license: PDDL-1.0
+
+FHR_Nextflow:
+  status: Demo
+  purpose: Workflow integration
+  type: software
+  title: "FHR Nextflow"
+  authors:
+    - { family: Molik, given: David }
+    - { family: Wright, given: Adam }
+  year: 2025
+  repository: https://github.com/FAIR-bioHeaders/FHR-Nextflow
+  programming_language: Nextflow
+  license: MPL-2.0
+  note: "Development prototype; no published release or DOI."
+
+FHT_Specification:
+  status: Draft
+  purpose: Companion FHT specification
+  type: dataset
+  title: "FHT Specification"
+  authors:
+    - { family: Molik, given: David }
+    - { family: Wright, given: Adam }
+  year: 2023
+  repository: https://github.com/FAIR-bioHeaders/FHT-Specification
+  license: PDDL-1.0
+  note: "Draft companion specification for reference transcriptomes."
+
+FHT_File_Converter:
+  status: Draft
+  purpose: Companion FHT conversion tools
+  type: software
+  title: "FHT File Converter"
+  authors:
+    - { family: Molik, given: David }
+    - { family: Wright, given: Adam }
+  year: 2023
+  repository: https://github.com/FAIR-bioHeaders/FHT-File-Converter
+  programming_language: Python
+  license: PDDL-1.0
+  note: "Draft companion converter for reference transcriptomes."
+
+FHR_Citation:
+  status: Published
+  purpose: Maintained citation metadata and BibTeX
+  type: software
+  title: "FHR Citation"
+  authors:
+    - { family: Molik, given: David }
+    - { family: Wright, given: Adam }
+  year: 2026
+  repository: https://github.com/FAIR-bioHeaders/FHR-Citation
+  license: PDDL-1.0
+  note: "Maintained citation metadata and BibTeX."

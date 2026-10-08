@@ -1,0 +1,5 @@
+# Publishers and resolvers that reject automated clients with 403 even though
+# the links resolve in a browser. Excluded so the weekly lychee run reflects
+# real breakage rather than bot blocking.
+^https://doi\.org/
+^https://www\.iso\.org/

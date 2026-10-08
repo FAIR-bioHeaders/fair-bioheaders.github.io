@@ -1,3 +1,33 @@
+/* Public Sans v2.001, self-hosted; license in assets/fonts/public-sans. */
+@font-face {
+  font-family: "Public Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/public-sans/PublicSans-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Public Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../fonts/public-sans/PublicSans-SemiBold.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Public Sans";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("../fonts/public-sans/PublicSans-ExtraBold.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Public Sans";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/public-sans/PublicSans-Italic.woff2") format("woff2");
+}
+
 // Project additions, including keyboard navigation, a locally stored theme,
 // and the FAIR BioHeaders visual system.
 

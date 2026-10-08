@@ -10,6 +10,6 @@ This static website does not use Google Analytics, embedded comment services, or
 
 The site is hosted by GitHub Pages. GitHub may process technical information such as your IP address when serving the site; see the [GitHub Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement).
 
-External links take you to services with their own privacy policies. The site’s current pages load their scripts and images from this site. The Public Sans typeface is loaded from Google Fonts, which connects your browser to Google’s font services; see the [Google Fonts FAQ](https://fonts.google.com/faq). A page that explicitly enables mathematical notation loads MathJax from jsDelivr.
+External links take you to services with their own privacy policies. The site’s current pages load their scripts, images, and Public Sans fonts from this site. A page that explicitly enables mathematical notation loads MathJax from jsDelivr.
 
 For questions about this website, use its [GitHub issue tracker](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues). Avoid posting private or sensitive information in public issues.

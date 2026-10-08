@@ -98,7 +98,7 @@ def check(root):
             for image in page.images:
                 require('alt' in image, f'{relative}: image lacks alt text')
         text = file.read_text().lower()
-        for forbidden in ('lorem ipsum', 'future blog post', 'github university', 'analytics.js', 'polyfill', 'jquery-1.12'):
+        for forbidden in ('fonts.googleapis.com', 'fonts.gstatic.com', 'lorem ipsum', 'future blog post', 'github university', 'analytics.js', 'polyfill', 'jquery-1.12'):
             require(forbidden not in text, f'{relative}: unwanted template/runtime content: {forbidden}')
         errors.extend(f'{relative}: {error}' for error in mathjax_errors(page))
     # Also check font and image references in CSS, including missing vendored assets.

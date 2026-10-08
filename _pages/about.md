@@ -44,6 +44,23 @@ FAIR BioHeaders has already been adopted by several significant biological curat
 - **MicroPublications:** Guiding authors in adopting FHR headers for proper reporting of genome metadata standards.
 
 
+About Us
+======
+
+FAIR BioHeaders is developed and maintained by:
+
+<ul class="about-us">
+  <li class="h-card vcard">
+    <span class="p-name fn">Adam Wright</span>
+    <a class="u-uid u-url url" href="https://orcid.org/0000-0002-5719-4024">https://orcid.org/0000-0002-5719-4024</a>
+  </li>
+  <li class="h-card vcard">
+    <span class="p-name fn">David Molik</span>
+    <a class="u-uid u-url url" href="https://orcid.org/0000-0003-3192-6538">https://orcid.org/0000-0003-3192-6538</a>
+  </li>
+</ul>
+
+
 Get Involved
 ======
 

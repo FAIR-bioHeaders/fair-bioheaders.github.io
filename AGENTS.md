@@ -35,7 +35,10 @@ Toolchain is pinned in `.ruby-version` (Ruby 3.3.4) and `.nvmrc` (Node 24).
 - **The JavaScript bundle is committed and CI verifies it is reproducible.** After
   editing anything under `assets/js/` (including `_main.js` and `cite.js`), run
   `npm run build:js`. CI runs `git diff --exit-code -- assets/js/main.min.js`; a
-  stale bundle fails the build. `package.json` script order also matters.
+  stale bundle fails the build. Dependency bumps (including Dependabot PRs)
+  also require regenerating this bundle. jQuery 4 removes `$.isArray` and
+  `$.isFunction`; use `Array.isArray` and `typeof value === "function"` in
+  vendored plugins rather than relying on removed helpers. `package.json` script order also matters.
   The unused `onchange` watcher was removed with its vulnerable dependency tree;
   use `npm run build:js` for source changes. `theme.js` loads separately and does
   not appear in the bundle inputs.

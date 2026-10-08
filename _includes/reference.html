@@ -37,14 +37,28 @@ are the single source of truth for the generated citation.
     Articles without volume/issue fall back to the nearest applicable level.
   {% endcomment %}
   {% if reference.journal %}
-    {% if reference.number or reference.volume %}
+    {% if reference.number and reference.volume %}
       <span itemprop="isPartOf" itemscope itemtype="https://schema.org/PublicationIssue">
-        {% if reference.number %}<meta itemprop="issueNumber" content="{{ reference.number | escape }}">{% endif %}
+        <meta itemprop="issueNumber" content="{{ reference.number | escape }}">
         <span itemprop="isPartOf" itemscope itemtype="https://schema.org/PublicationVolume">
-          {% if reference.volume %}<meta itemprop="volumeNumber" content="{{ reference.volume | escape }}">{% endif %}
+          <meta itemprop="volumeNumber" content="{{ reference.volume | escape }}">
           <span itemprop="isPartOf" itemscope itemtype="https://schema.org/Periodical">
             <meta itemprop="name" content="{{ reference.journal | escape }}">
           </span>
+        </span>
+      </span>
+    {% elsif reference.number %}
+      <span itemprop="isPartOf" itemscope itemtype="https://schema.org/PublicationIssue">
+        <meta itemprop="issueNumber" content="{{ reference.number | escape }}">
+        <span itemprop="isPartOf" itemscope itemtype="https://schema.org/Periodical">
+          <meta itemprop="name" content="{{ reference.journal | escape }}">
+        </span>
+      </span>
+    {% elsif reference.volume %}
+      <span itemprop="isPartOf" itemscope itemtype="https://schema.org/PublicationVolume">
+        <meta itemprop="volumeNumber" content="{{ reference.volume | escape }}">
+        <span itemprop="isPartOf" itemscope itemtype="https://schema.org/Periodical">
+          <meta itemprop="name" content="{{ reference.journal | escape }}">
         </span>
       </span>
     {% else %}

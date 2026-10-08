@@ -83,6 +83,10 @@ def check(origin, attempts, delay):
             status, _, _ = fetch(url, attempts, delay)
             if status != 200:
                 errors.append(f'sitemap target not reachable: {url} ({status})')
+        sitemap_paths = {urlsplit(url).path for url in urls}
+        for path in INDEXABLE:
+            if path not in sitemap_paths:
+                errors.append(f'sitemap is missing required page: {path}')
 
     sitemap_url = origin + '/sitemap.xml'
     if sitemap_url not in pages['/robots.txt'].decode('utf-8', 'replace'):

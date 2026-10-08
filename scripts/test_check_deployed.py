@@ -10,6 +10,8 @@ SITEMAP = (
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
     f'<url><loc>{ORIGIN}/</loc></url>'
     f'<url><loc>{ORIGIN}/publications/</loc></url>'
+    f'<url><loc>{ORIGIN}/resources/</loc></url>'
+    f'<url><loc>{ORIGIN}/guide/</loc></url>'
     f'<url><loc>{ORIGIN}/publication/x</loc></url>'
     '</urlset>'
 )
@@ -25,6 +27,7 @@ def fake_fetch(overrides=None):
         '/feed.xml': (200, 'application/atom+xml', b'<feed/>'),
         '/publications/': (200, 'text/html', b'<html></html>'),
         '/resources/': (200, 'text/html', b'<html></html>'),
+        '/guide/': (200, 'text/html', b'<html></html>'),
         '/publication/x': (200, 'text/html', b'<html></html>'),
     }
     if overrides:
@@ -67,6 +70,10 @@ class DeploySmokeChecks(unittest.TestCase):
     def test_sitemap_unexpected_page_is_reported(self):
         extra = SITEMAP.replace('</urlset>', f'<url><loc>{ORIGIN}/terms/</loc></url></urlset>')
         self.assertEqual(self.run_check(fake_fetch({'/sitemap.xml': (200, 'application/xml', extra.encode())})), 1)
+
+    def test_sitemap_missing_required_page_is_reported(self):
+        missing = SITEMAP.replace(f'<url><loc>{ORIGIN}/resources/</loc></url>', '')
+        self.assertEqual(self.run_check(fake_fetch({'/sitemap.xml': (200, 'application/xml', missing.encode())})), 1)
 
     def test_robots_without_sitemap_is_reported(self):
         self.assertEqual(self.run_check(fake_fetch({'/robots.txt': (200, 'text/plain', b'User-agent: *')})), 1)

@@ -31,6 +31,7 @@ taxon:
   uri: https://identifiers.org/taxonomy:9606
 genome: Synthetic human reference example
 version: 0.0.1
+masking: not-masked
 metadataAuthor:
 - name: Adam Wright
   uri: https://orcid.org/0000-0002-5719-4024
@@ -43,7 +44,7 @@ dateCreated: '2022-03-21'
 Install the released package and combine the metadata with the sequence:
 
 ```bash
-python -m pip install fhr
+python -m pip install fhr==0.3.3
 fhr-fasta-combine metadata.yaml genome.fasta -o genome.fhr.fasta
 fhr-fasta-validate genome.fhr.fasta
 ```
@@ -60,6 +61,7 @@ file checksum:
 ;~  uri: https://identifiers.org/taxonomy:9606
 ;~genome: Synthetic human reference example
 ;~version: 0.0.1
+;~masking: not-masked
 ;~metadataAuthor:
 ;~- name: Adam Wright
 ;~  uri: https://orcid.org/0000-0002-5719-4024
@@ -67,7 +69,7 @@ file checksum:
 ;~- name: David Molik
 ;~  uri: https://orcid.org/0000-0003-3192-6538
 ;~dateCreated: '2022-03-21'
-;~checksum: UVnB9lD7uzFeYTcoayb+E3sZzXfgY2rylGkxXx88BW4=
+;~checksum: PayVnq8Fdnzvaq2jOdUq+l0oJZ+iHk/DtiaYuUWRHqQ=
 >chr1 synthetic example
 ACGTACGTACGTACGT
 ```

@@ -96,6 +96,36 @@ test.describe('citation controls', () => {
     const clipboard = await page.evaluate(() => navigator.clipboard.readText());
     expect(clipboard).toContain('@article{Wright2024,');
   });
+
+  test('Copy falls back when the Clipboard API rejects', async ({ page }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: () => Promise.reject(new Error('clipboard unavailable')) }
+      });
+      document.execCommand = () => true;
+    });
+    await page.goto('/resources/');
+    const reference = page.locator('#Wright2024');
+    await reference.locator('.cite-button').click();
+    await reference.locator('.cite-copy').click();
+    await expect(reference.locator('.cite-copy')).toHaveText('Copied');
+  });
+
+  test('Copy reports failure when the Clipboard API and fallback fail', async ({ page }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: undefined
+      });
+      document.execCommand = () => false;
+    });
+    await page.goto('/resources/');
+    const reference = page.locator('#Wright2024');
+    await reference.locator('.cite-button').click();
+    await reference.locator('.cite-copy').click();
+    await expect(reference.locator('.cite-copy')).toHaveText('Copy failed');
+  });
 });
 
 test.describe('accessibility', () => {

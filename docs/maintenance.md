@@ -46,6 +46,6 @@ The scheduled/manual Lychee step resolves relative links against the production 
 
 ## Citation container hierarchy
 
-Articles model their container as `ScholarlyArticle` → `PublicationIssue` → `PublicationVolume` → `Periodical`, because `volumeNumber` belongs on a `PublicationVolume` and `issueNumber` on a `PublicationIssue`. Articles without volume/issue fall back to a `Periodical`. Keep `_includes/reference.html`, `_includes/seo.html`, and the `containerInfo` reader in `assets/js/cite.js` consistent when changing this, and keep the semantic checks in `check_site.py` in step.
+Articles model the levels actually present: issue and volume use `ScholarlyArticle` → `PublicationIssue` → `PublicationVolume` → `Periodical`; issue-only uses `PublicationIssue` → `Periodical`; volume-only uses `PublicationVolume` → `Periodical`; and records with neither use `Periodical`. `volumeNumber` belongs on `PublicationVolume` and `issueNumber` on `PublicationIssue`. Keep `_includes/reference.html`, `_includes/seo.html`, and the `containerInfo` reader in `assets/js/cite.js` consistent when changing this, and keep the semantic checks in `check_site.py` in step.
 
 The optional MathJax 3.2.2 script uses a verified SHA-384 integrity digest and `crossorigin="anonymous"`. A version change requires recomputing the digest from the CDN file and updating the template/checker together; MathJax may fetch additional components, so the entry-script digest is not a guarantee for all downstream requests.

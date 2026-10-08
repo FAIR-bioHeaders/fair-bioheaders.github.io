@@ -21,9 +21,9 @@ FAIR BioHeaders grew out of a problem described in the [FHR standard paper](http
 - **Extensible and expressive.** A small set of required fields keeps implementation easy while allowing projects to record more when they need it.
 - **Low barrier to adoption.** Few dependencies and a small codebase make the standard and its tooling straightforward to use and maintain.
 
-### How our work fits together
+### How our work fits together with others
 
-Our [publications](/publications/) approach these ideas from different angles:
+[Publications we’ve had a part in](/publications/) approach these ideas from different angles:
 
 - **Naming** — [Guidelines for gene and genome assembly nomenclature](https://doi.org/10.1093/genetics/iyaf006) proposes conventions so assemblies can be identified and linked across datasets and resources.
 - **Reporting** — [Toward standardization in arthropod and biodiversity genome projects](https://doi.org/10.1093/genetics/iyag172) surveys genome projects and documents the gaps in sample, assembly, quality, and submission reporting that FHR helps close.

@@ -6,14 +6,14 @@ excerpt: "FAIR BioHeaders specifications, converters, workflows, and citation gu
 
 ## Project repositories
 
-| Resource | Purpose |
-| --- | --- |
-| [FHR Specification](https://github.com/FAIR-bioHeaders/FHR-Specification) | Reference genome metadata specification and schemas |
-| [FHR File Converter](https://github.com/FAIR-bioHeaders/FHR-File-Converter) | Processing library and conversion tools |
-| [FHR Nextflow](https://github.com/FAIR-bioHeaders/FHR-Nextflow) | Workflow integration |
-| [FHT Specification](https://github.com/FAIR-bioHeaders/FHT-Specification) | Companion FHT specification |
-| [FHT File Converter](https://github.com/FAIR-bioHeaders/FHT-File-Converter) | Companion FHT conversion tools |
-| [FHR Citation](https://github.com/FAIR-bioHeaders/FHR-Citation) | Maintained citation metadata and BibTeX |
+| Resource | Purpose | Status |
+| --- | --- | --- |
+| [FHR Specification](https://github.com/FAIR-bioHeaders/FHR-Specification) | Reference genome metadata specification and schemas | Published |
+| [FHR File Converter](https://github.com/FAIR-bioHeaders/FHR-File-Converter) | Processing library and conversion tools | Published |
+| [FHR Nextflow](https://github.com/FAIR-bioHeaders/FHR-Nextflow) | Workflow integration | Demo |
+| [FHT Specification](https://github.com/FAIR-bioHeaders/FHT-Specification) | Companion FHT specification | Draft |
+| [FHT File Converter](https://github.com/FAIR-bioHeaders/FHT-File-Converter) | Companion FHT conversion tools | Draft |
+| [FHR Citation](https://github.com/FAIR-bioHeaders/FHR-Citation) | Maintained citation metadata and BibTeX | Published |
 
 ## Zenodo community
 

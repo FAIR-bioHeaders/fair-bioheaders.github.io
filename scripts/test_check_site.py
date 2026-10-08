@@ -45,6 +45,11 @@ class IconFontChecks(unittest.TestCase):
                        '<i class="far fa-star"></i>'):
             self.assertTrue(Page(markup).icons, markup)
 
+    def test_icons_on_other_elements_are_detected(self):
+        for markup in ('<span class="fa fa-calendar"></span>',
+                       '<span class="fa-calendar"></span>'):
+            self.assertTrue(Page(markup).icons, markup)
+
     def test_unrelated_class_containing_fa_is_allowed(self):
         self.assertEqual(Page('<i class="factual"></i>').icons, [])
 

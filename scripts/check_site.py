@@ -34,7 +34,8 @@ class Page(HTMLParser):
             self.scripts.append(attrs)
         if tag == 'img':
             self.images.append(attrs)
-        if tag == 'i' and re.search(r'\b(fa|fas|far|fab|fal)\b', attrs.get('class', '')):
+        if any(token in {'fa', 'fas', 'far', 'fab', 'fal', 'fad', 'fat'}
+               or token.startswith('fa-') for token in attrs.get('class', '').split()):
             self.icons.append(attrs.get('class', ''))
         if tag == 'meta':
             self.metas[attrs.get('name', attrs.get('property'))] = attrs.get('content')

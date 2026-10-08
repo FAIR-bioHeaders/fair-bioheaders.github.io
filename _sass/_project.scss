@@ -245,6 +245,8 @@ html[data-theme="dark"] {
             animation-iteration-count: 1 !important;
     -webkit-transition-duration: 0.001ms !important;
             transition-duration: 0.001ms !important;
+    animation-delay: 0s !important;
+    transition-delay: 0s !important;
     scroll-behavior: auto !important;
   }
 }

@@ -29,6 +29,8 @@ jobs:
           JEKYLL_ENV: production
           BUNDLE_FROZEN: 'true'
         run: bundle exec jekyll build --strict_front_matter
+      - name: Test MathJax opt-in checks
+        run: python3 -m unittest discover -s scripts -p 'test_*.py'
       - name: Check links, metadata and sitemap
         run: python3 scripts/check_site.py _site
       - name: Check external links (weekly or on demand)

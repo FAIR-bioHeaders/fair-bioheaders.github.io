@@ -9,12 +9,14 @@ from urllib.parse import unquote, urljoin, urlsplit
 import xml.etree.ElementTree as ET
 
 ORIGIN = 'https://fair-bioheaders.github.io'
+MATHJAX_URL = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js'
 
 class Page(HTMLParser):
     def __init__(self, text):
         super().__init__(convert_charrefs=True)
         self.links, self.ids, self.metas, self.json_ld = [], set(), {}, []
         self.json_buffer = None
+        self.scripts = []
         self.skip, self.main, self.menu, self.images = False, False, False, []
         self.feed(text)
 
@@ -27,6 +29,8 @@ class Page(HTMLParser):
         for key in ('href', 'src'):
             if attrs.get(key):
                 self.links.append(attrs[key])
+        if tag == 'script':
+            self.scripts.append(attrs)
         if tag == 'img':
             self.images.append(attrs)
         if tag == 'meta':
@@ -48,6 +52,18 @@ class Page(HTMLParser):
         if tag == 'script' and self.json_buffer is not None:
             self.json_ld.append(json.loads(self.json_buffer))
             self.json_buffer = None
+
+
+def mathjax_errors(page):
+    scripts = [script for script in page.scripts
+               if 'mathjax' in script.get('src', '').lower()
+               or script.get('id', '').lower() == 'mathjax-script']
+    if page.metas.get('fhr:math') == 'true':
+        if len(scripts) != 1 or scripts[0].get('src') != MATHJAX_URL:
+            return ['math opt-in must load exactly the pinned MathJax script']
+    elif scripts:
+        return ['MathJax loaded without a page math opt-in']
+    return []
 
 
 def check(root):
@@ -82,8 +98,9 @@ def check(root):
             for image in page.images:
                 require('alt' in image, f'{relative}: image lacks alt text')
         text = file.read_text().lower()
-        for forbidden in ('lorem ipsum', 'future blog post', 'github university', 'analytics.js', 'polyfill', 'mathjax-script', 'jquery-1.12'):
+        for forbidden in ('lorem ipsum', 'future blog post', 'github university', 'analytics.js', 'polyfill', 'jquery-1.12'):
             require(forbidden not in text, f'{relative}: unwanted template/runtime content: {forbidden}')
+        errors.extend(f'{relative}: {error}' for error in mathjax_errors(page))
     # Also check font and image references in CSS, including missing vendored assets.
     for file in root.rglob('*.css'):
         for link in re.findall(r'url\([\'\"]?([^\)\'\"]+)', file.read_text()):

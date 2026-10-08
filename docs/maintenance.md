@@ -6,7 +6,7 @@ Trim the existing theme into a project-specific site instead of merging the enti
 
 Keep the home page, maintainer h-cards, publications and their existing URLs, resource/citation guidance, privacy page, and sitemaps. Remove demo posts, CVs, talks, teaching, portfolio, template documentation, fake PDFs, demo images, and comment fixtures. Organization metadata links the project's GitHub identity; person metadata links each maintainer's ORCID. Do not invent a Twitter account or Wikidata identifier to fill empty fields.
 
-The sidebar and footer use text links, eliminating the need to ship full Font Awesome and Academicons fonts. Preserve the upstream attribution and license. The responsive navigation and locally hosted JavaScript remain. Keyboard accessibility, HTTPS links, metadata fallbacks, and a small light/dark preference control are maintained locally.
+The sidebar and footer use text links, eliminating the need to ship full Font Awesome and Academicons fonts. Preserve the upstream attribution and license. The responsive navigation and locally hosted JavaScript remain. Public Sans is loaded from Google Fonts; the privacy page describes that connection. Keyboard accessibility, HTTPS links, metadata fallbacks, and a small light/dark preference control are maintained locally.
 
 Analytics and comments are disabled. MathJax is loaded only when a page explicitly sets `math: true`, at a fixed version; no current page needs it. There is no global polyfill. No tracking ID or service is introduced as part of this cleanup.
 
@@ -27,5 +27,5 @@ The template tag dates from February 2024: in October 2026 this is about 2½ yea
 - Demo and utility URLs are absent from the XML sitemap, with no duplicate entries.
 - Local links, fragments, and assets pass checks on every PR; external links are checked weekly or on demand.
 - Every content page has description and social image metadata; home identities include both maintainer ORCIDs.
-- Current pages load no MathJax, polyfill, icon fonts, or analytics.
+- Current pages load no MathJax, polyfill, icon fonts, or analytics. Opted-in math pages emit an explicit marker and must load exactly the pinned MathJax script.
 - CI builds with lockfiles; generated JavaScript is reproducible.

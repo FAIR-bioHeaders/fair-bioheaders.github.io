@@ -108,8 +108,10 @@
   align-items: center;
   gap: .5em;
 
-  &:before {
+  &:after {
     content: "";
+    order: -1;
+    flex-shrink: 0;
     width: .95em;
     height: .95em;
     background: url("/images/hexagon.svg") center / contain no-repeat;

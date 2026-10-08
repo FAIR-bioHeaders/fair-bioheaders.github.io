@@ -5,4 +5,4 @@ https://github.com/uswds/public-sans/tree/v2.001/fonts/webfonts
 
 Included faces: Regular (400), SemiBold (600), ExtraBold (800), and Italic (400).
 These match the weights and styles previously requested from Google Fonts.
-See LICENSE.md for the upstream license and attribution.
+See LICENSE.txt for the upstream license and attribution.

@@ -6,6 +6,8 @@ excerpt: "Related context: community recommendations for FAIR data management, o
 date: 2026-09-25
 venue: "Database"
 paperurl: "https://doi.org/10.1093/database/baag058"
+doi: '10.1093/database/baag058'
+cite_key: 'Marrano2026'
 citation: "Annarita Marrano, Carson Andorf, Jacqueline D Campbell, Ethalinda Cannon, Michael Coe, Laurel Cooper, Sarah Dyer, Peter W Harrison, Sunita Kumari, Sook Jung, Dorrie Main, John McNamara, David Molik, Sushma Naithani, Monica F Poelchau, Margaret E Staton, Peter Selby, Taner Z Sen, Marcela K Tello-Ruiz, Leonore Reiser. “The future is FAIR: a community framework for enhanced data management and data sharing.” Database 2026: baag058 (2026)."
 ---
 

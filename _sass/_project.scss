@@ -234,6 +234,65 @@ html[data-theme="dark"] {
 
 [id] { scroll-margin-top: 5em; }
 
+/* --------------------------------------------------------------------------
+   Bibliography entries and citation buttons
+   -------------------------------------------------------------------------- */
+.reference {
+  position: relative;
+  margin: 0 0 1em;
+  padding-left: 1.1em;
+
+  &:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: .35em;
+    width: .6em;
+    height: .6em;
+    border: 2px solid var(--brand-orange);
+    clip-path: polygon(50% 0, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+    opacity: .6;
+  }
+}
+.reference__citation { margin: 0 0 .35em; }
+.reference__authors { font-weight: $font-weight-medium; }
+.reference__links {
+  margin: 0;
+  font-size: $type-size-7;
+
+  a { overflow-wrap: anywhere; }
+}
+.cite-button {
+  margin-left: .5em;
+  padding: .15em .6em;
+  border: 1.5px solid var(--brand-orange);
+  border-radius: .2em;
+  background: transparent;
+  color: $link-color;
+  font-size: $type-size-7;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    background: var(--brand-orange);
+    color: #fff;
+  }
+}
+.cite-output {
+  overflow-x: auto;
+  margin: .75em 0 0;
+  padding: .75em 1em;
+  border-left: 3px solid var(--brand-orange);
+  background: $code-background-color;
+  font-size: $type-size-7;
+}
+.reference-block__title {
+  font-size: $type-size-5;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
 /* Respect reduced-motion preferences: drop the intro fades and transitions. */
 @media (prefers-reduced-motion: reduce) {
   *,

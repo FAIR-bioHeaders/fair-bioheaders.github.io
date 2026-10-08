@@ -1,7 +1,7 @@
 """Regression coverage for the documented MathJax opt-in and runtime checks."""
 import unittest
 
-from check_site import Page, mathjax_errors
+from check_site import Page, mathjax_errors, reference_errors
 
 PINNED_SCRIPT = '<script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>'
 OPT_IN = '<meta name="fhr:math" content="true">'
@@ -32,6 +32,37 @@ class MathJaxChecks(unittest.TestCase):
 
     def test_prose_mention_is_not_a_runtime_script(self):
         self.assertEqual(mathjax_errors(Page('<p>The MathJax-script is optional.</p>')), [])
+
+
+REFERENCE = (
+    '<div class="reference" id="Wright2024" itemscope itemtype="https://schema.org/ScholarlyArticle">'
+    '<meta itemprop="name" content="Title">'
+    '<span itemprop="author" itemscope itemtype="https://schema.org/Person">'
+    '<meta itemprop="givenName" content="Adam"><meta itemprop="familyName" content="Wright"></span>'
+    '<span itemprop="identifier" itemscope itemtype="https://schema.org/PropertyValue">'
+    '<meta itemprop="propertyID" content="DOI"><meta itemprop="value" content="10.1/x"></span>'
+    '<button class="cite-button" data-cite-key="Wright2024">Cite</button>'
+    '<pre data-cite-output="Wright2024" hidden></pre>'
+    '</div>'
+)
+
+
+class ReferenceChecks(unittest.TestCase):
+    def test_valid_reference_passes(self):
+        page = Page(REFERENCE)
+        self.assertEqual(reference_errors('index.html', REFERENCE, page), [])
+
+    def test_missing_itemtype_is_reported(self):
+        bad = REFERENCE.replace(' itemscope itemtype="https://schema.org/ScholarlyArticle"', '')
+        self.assertTrue(reference_errors('index.html', bad, Page(bad)))
+
+    def test_missing_doi_is_reported(self):
+        bad = REFERENCE.replace('<meta itemprop="value" content="10.1/x">', '')
+        self.assertTrue(reference_errors('index.html', bad, Page(bad)))
+
+    def test_mismatched_cite_button_is_reported(self):
+        bad = REFERENCE.replace('<pre data-cite-output="Wright2024" hidden></pre>', '')
+        self.assertTrue(reference_errors('index.html', bad, Page(bad)))
 
 
 class IconFontChecks(unittest.TestCase):

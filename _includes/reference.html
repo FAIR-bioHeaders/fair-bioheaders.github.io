@@ -1,0 +1,65 @@
+{% comment %}
+Renders a bibliography entry as Schema.org microdata and adds a "Cite" button.
+`reference` is a record from _data/references.yml (see that file for fields).
+`key` is its BibTeX citation key, used as the element id and by cite.js.
+`compact` (optional) trims the visible citation to just the DOI line.
+assets/js/cite.js reads this microdata back into BibTeX, so the itemprops here
+are the single source of truth for the generated citation.
+{% endcomment %}
+{% assign key = include.key %}
+{% assign reference = include.reference %}
+{% assign doi_url = "https://doi.org/" | append: reference.doi %}
+{% assign url = reference.url | default: doi_url %}
+{% case reference.type %}
+  {% when 'article' %}
+    {% assign itemtype = "https://schema.org/ScholarlyArticle" %}
+  {% when 'book' %}
+    {% assign itemtype = "https://schema.org/Book" %}
+  {% when 'software' %}
+    {% assign itemtype = "https://schema.org/SoftwareSourceCode" %}
+  {% when 'dataset' %}
+    {% assign itemtype = "https://schema.org/Dataset" %}
+  {% else %}
+    {% assign itemtype = "https://schema.org/CreativeWork" %}
+{% endcase %}
+<div class="reference" id="{{ key }}" itemscope itemtype="{{ itemtype }}"{% if include.compact %} data-cite-compact="true"{% endif %}>
+  <meta itemprop="name" content="{{ reference.title }}">
+  {% for author in reference.authors %}
+    <span itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="givenName" content="{{ author.given }}"><meta itemprop="familyName" content="{{ author.family }}"></span>
+  {% endfor %}
+  <span itemprop="identifier" itemscope itemtype="https://schema.org/PropertyValue"><meta itemprop="propertyID" content="DOI"><meta itemprop="value" content="{{ reference.doi }}"></span>
+  <meta itemprop="url" content="{{ url }}">
+  {% if reference.journal %}
+    <span itemprop="isPartOf" itemscope itemtype="https://schema.org/Periodical">
+      <meta itemprop="name" content="{{ reference.journal }}">
+      {% if reference.volume %}<meta itemprop="volumeNumber" content="{{ reference.volume }}">{% endif %}
+      {% if reference.number %}<meta itemprop="issueNumber" content="{{ reference.number }}">{% endif %}
+    </span>
+  {% endif %}
+  {% if reference.publisher %}
+    <span itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="{{ reference.publisher }}"></span>
+  {% endif %}
+  {% if reference.pages %}
+    {% assign page_bits = reference.pages | split: '-' %}
+    {% if page_bits.size > 1 %}
+      <meta itemprop="pageStart" content="{{ page_bits[0] }}">
+      <meta itemprop="pageEnd" content="{{ page_bits[1] }}">
+    {% else %}
+      <meta itemprop="pagination" content="{{ reference.pages }}">
+    {% endif %}
+  {% endif %}
+  {% if reference.year %}<meta itemprop="datePublished" content="{{ reference.year }}">{% endif %}
+
+  {% unless include.compact %}
+    <p class="reference__citation">
+      <span class="reference__authors">{% for author in reference.authors %}{{ author.family }}, {{ author.given }}{% unless forloop.last %}; {% endunless %}{% endfor %}</span>.
+      <em>{{ reference.title }}</em>.
+      {%- if reference.journal %} {{ reference.journal }}{% if reference.volume %}, {{ reference.volume }}{% if reference.number %}({{ reference.number }}){% endif %}{% endif %}.{% endif %}
+      {%- if reference.publisher and reference.journal == nil %} {{ reference.publisher }}.{% endif %}
+      {%- if reference.pages and reference.pages contains '-' %} {{ reference.pages }}.{% endif %}
+      {%- if reference.year %} {{ reference.year }}.{% endif %}
+    </p>
+  {% endunless %}
+  <p class="reference__links"><a itemprop="sameAs" href="{{ doi_url }}">https://doi.org/{{ reference.doi }}</a><button type="button" class="cite-button" data-cite-key="{{ key }}" aria-label="Show BibTeX citation for {{ reference.title | escape }}" aria-expanded="false">Cite</button></p>
+  <pre class="cite-output" data-cite-output="{{ key }}" hidden></pre>
+</div>

@@ -18,6 +18,9 @@ class Page(HTMLParser):
         self.json_buffer = None
         self.scripts = []
         self.icons = []
+        self.references = []
+        self.cite_buttons = set()
+        self.cite_outputs = set()
         self.skip, self.main, self.menu, self.images = False, False, False, []
         self.feed(text)
 
@@ -39,6 +42,11 @@ class Page(HTMLParser):
             self.icons.append(attrs.get('class', ''))
         if tag == 'meta':
             self.metas[attrs.get('name', attrs.get('property'))] = attrs.get('content')
+        if tag == 'button' and 'cite-button' in attrs.get('class', '').split():
+            if attrs.get('data-cite-key'):
+                self.cite_buttons.add(attrs['data-cite-key'])
+        if tag == 'pre' and attrs.get('data-cite-output'):
+            self.cite_outputs.add(attrs['data-cite-output'])
         if tag == 'script' and attrs.get('type') == 'application/ld+json':
             self.json_buffer = ''
         if tag == 'a' and attrs.get('href') == '#main':
@@ -56,6 +64,26 @@ class Page(HTMLParser):
         if tag == 'script' and self.json_buffer is not None:
             self.json_ld.append(json.loads(self.json_buffer))
             self.json_buffer = None
+
+
+REFERENCE_RE = re.compile(r'<div class="reference"([^>]*)>(.*?)</div>', re.DOTALL)
+
+
+def reference_errors(relative, text, page):
+    errors = []
+    for head, block in REFERENCE_RE.findall(text):
+        if 'itemscope' not in head or 'itemtype="https://schema.org/' not in head:
+            errors.append(f'{relative}: reference block lacks itemscope/itemtype')
+        if not re.search(r'itemprop="name"', block):
+            errors.append(f'{relative}: reference block lacks a name')
+        if not re.search(r'itemprop="author".*?itemprop="familyName"', block, re.DOTALL):
+            errors.append(f'{relative}: reference block lacks author name parts')
+        if 'itemprop="propertyID" content="DOI"' not in block or 'itemprop="value"' not in block:
+            errors.append(f'{relative}: reference block lacks a DOI identifier')
+    missing = page.cite_buttons.symmetric_difference(page.cite_outputs)
+    for key in sorted(missing):
+        errors.append(f'{relative}: cite button/output mismatch for {key}')
+    return errors
 
 
 def mathjax_errors(page):
@@ -106,6 +134,9 @@ def check(root):
         text = file.read_text().lower()
         for forbidden in ('fonts.googleapis.com', 'fonts.gstatic.com', 'lorem ipsum', 'future blog post', 'github university', 'analytics.js', 'polyfill', 'jquery-1.12'):
             require(forbidden not in text, f'{relative}: unwanted template/runtime content: {forbidden}')
+        require('cite-button' not in text or 'assets/js/main.min.js' in text,
+                f'{relative}: cite buttons require the bundled script')
+        errors.extend(reference_errors(relative, file.read_text(), page))
         errors.extend(f'{relative}: {error}' for error in mathjax_errors(page))
     # Also check font and image references in CSS, including missing vendored assets.
     for file in root.rglob('*.css'):

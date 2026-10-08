@@ -6,6 +6,8 @@ excerpt: "Consistent names for genome assemblies and annotations support discove
 date: 2025-01-15
 venue: "GENETICS"
 paperurl: "https://doi.org/10.1093/genetics/iyaf006"
+doi: '10.1093/genetics/iyaf006'
+cite_key: 'Cannon2025'
 citation: "Ethalinda K S Cannon, David C Molik, Adam J Wright, Huiting Zhang, Loren Honaas, Kapeel Chougule, Sarah Dyer. “Guidelines for gene and genome assembly nomenclature.” GENETICS 229, no. 3: iyaf006 (2025)."
 ---
 

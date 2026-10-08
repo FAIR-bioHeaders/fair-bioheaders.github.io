@@ -6,6 +6,8 @@ excerpt: "Related context: a repository discovery tool for agricultural genomic,
 date: 2025-11-19
 venue: "microPublication Biology"
 paperurl: "https://doi.org/10.17912/micropub.biology.001896"
+doi: '10.17912/micropub.biology.001896'
+cite_key: 'Cabugos2025'
 citation: "Leyla Cabugos, Katheryn Buble, Jenna Daenzer, Sook Jung, Dorrie Main, Annarita Marrano, David Molik, Daniela Raciti, Adam Wright, Karen Yook, Leonore Reiser. “AgBioDatabase Finder: an online tool to help researchers find and submit agricultural genomic, genetic, and breeding data.” microPublication Biology 2025 (2025)."
 ---
 

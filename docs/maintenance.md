@@ -10,6 +10,8 @@ The sidebar and footer use text links, eliminating the need to ship full Font Aw
 
 Analytics and comments are disabled. MathJax is loaded only when a page explicitly sets `math: true`, at a fixed version; no current page needs it. There is no global polyfill. No tracking ID or service is introduced as part of this cleanup.
 
+Bibliography records live in `_data/references.yml` using a BibTeX-shaped schema (`type`, `title`, `authors`, `journal`, `year`, `volume`, `number`, `pages`, `doi`). `_includes/reference.html` renders each as Schema.org microdata (ScholarlyArticle, SoftwareSourceCode, or Dataset) plus a "Cite" button. `assets/js/cite.js` reads that microdata back into a BibTeX entry on demand, so the microdata is the single source of truth and no separate `.bib` copy can drift. Publications reference a record with `cite_key` in their front matter. Keep the mapping between Schema.org itemprops and BibTeX fields consistent when adding entries.
+
 The former adoption list is removed because the repository did not provide evidence for those deployment claims. The home page now describes the published standard and links maintained repositories. Verified adoption examples can be added with a supporting source.
 
 ## Dependencies and checks
@@ -29,5 +31,6 @@ The inherited template tag dates from February 2024, older than the upstream `v0
 - Every content page has description and social image metadata; home identities include both maintainer ORCIDs.
 - Current pages load no MathJax, polyfill, icon fonts, or analytics. Opted-in math pages emit an explicit marker and must load exactly the pinned MathJax script.
 - CI builds with lockfiles; generated JavaScript is reproducible.
+- Every `.reference` block carries Schema.org microdata with a title, author name parts, and a DOI identifier, and each cite button has a matching output element. `scripts/test_cite.mjs` covers the microdata-to-BibTeX mapping.
 
 The scheduled/manual Lychee step resolves relative links against the production URL and excludes this site, since `check_site.py` validates local paths and fragments on every build. `.lycheeignore` documents DOI and ISO exclusions for automated-client blocking. Run the workflow manually when changing this configuration to exercise the external-link step.

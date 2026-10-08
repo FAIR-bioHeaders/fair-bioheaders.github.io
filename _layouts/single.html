@@ -47,7 +47,13 @@ layout: default
       <section class="page__content" itemprop="text">
         {{ content }}
 
-        {% if page.citation and page.paperurl %}
+        {% if page.cite_key and site.data.references[page.cite_key] %}
+          {% assign reference = site.data.references[page.cite_key] %}
+          <div class="reference-block">
+            <h2 class="reference-block__title">Cite this work</h2>
+            {% include reference.html key=page.cite_key reference=reference %}
+          </div>
+        {% elsif page.citation and page.paperurl %}
           <p style="font-size: smaller">Recommended citation: {{ page.citation }} <a href="{{ page.paperurl }}"><u>{{ page.paperurl }}</u></a></p>
         {% elsif page.citation %}
           <p style="font-size: smaller">Recommended citation: {{ page.citation }} </p>

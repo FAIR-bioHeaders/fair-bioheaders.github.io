@@ -6,6 +6,8 @@ excerpt: "Related context: reporting standards and reproducibility across arthro
 date: 2026-07-23
 venue: "GENETICS"
 paperurl: "https://doi.org/10.1093/genetics/iyag172"
+doi: '10.1093/genetics/iyag172'
+cite_key: 'Tvedte2026'
 citation: "Eric S Tvedte, Gregor Bucher, David M Luecke, David C Molik, Terrence Sylvester, Mark Blaxter, Christine G Elsik, Kerstin Howe, Duane D McKenna, Terence D Murphy, Lukas Schrader, Cibele G Sotero-Caio, Robert M Waterhouse, Anna K Childers, Marc S Halfon, Monica F Poelchau. “Toward standardization in arthropod and biodiversity genome projects.” GENETICS 234, no. 1: iyag172 (2026)."
 ---
 

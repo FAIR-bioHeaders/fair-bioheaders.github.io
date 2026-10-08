@@ -31,6 +31,8 @@ jobs:
         run: bundle exec jekyll build --strict_front_matter
       - name: Test site regression checks
         run: python3 -m unittest discover -s scripts -p 'test_*.py'
+      - name: Test citation generator
+        run: node --test scripts/test_cite.mjs
       - name: Check links, metadata and sitemap
         run: python3 scripts/check_site.py _site
       - name: Check external links (weekly or on demand)

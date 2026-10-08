@@ -3,6 +3,7 @@
 import json
 import re
 import sys
+from datetime import datetime
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urljoin, urlsplit
@@ -100,19 +101,185 @@ def iter_references(text):
                 break
 
 
+class MicrodataParser(HTMLParser):
+    """Read nested Schema.org item scopes and their directly owned properties."""
+
+    VOID_TAGS = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
+                 'link', 'meta', 'param', 'source', 'track', 'wbr'}
+
+    def __init__(self, text):
+        super().__init__(convert_charrefs=True)
+        self.root = None
+        self.scopes = []
+        self.elements = []
+        self.feed(text)
+
+    @staticmethod
+    def add_property(props, name, value):
+        if name in props:
+            if not isinstance(props[name], list):
+                props[name] = [props[name]]
+            props[name].append(value)
+        else:
+            props[name] = value
+
+    def handle_starttag(self, tag, attributes):
+        attrs = dict(attributes)
+        names = attrs.get('itemprop', '').split()
+        parent = self.scopes[-1] if self.scopes else None
+        if 'itemscope' in attrs:
+            item = {
+                'type': attrs.get('itemtype', '').rsplit('/', 1)[-1],
+                'props': {},
+            }
+            if parent and names:
+                for name in names:
+                    self.add_property(parent['props'], name, item)
+            elif self.root is None:
+                self.root = item
+            self.scopes.append(item)
+            closes_scope = True
+        else:
+            if parent and names:
+                value = attrs.get('content', attrs.get('href', attrs.get('datetime', '')))
+                for name in names:
+                    self.add_property(parent['props'], name, value)
+            closes_scope = False
+        if tag not in self.VOID_TAGS:
+            self.elements.append((tag, closes_scope))
+
+    def handle_endtag(self, tag):
+        if tag in self.VOID_TAGS:
+            return
+        while self.elements:
+            element, closes_scope = self.elements.pop()
+            if closes_scope:
+                self.scopes.pop()
+            if element == tag:
+                break
+
+
+def first_item(value):
+    return value[0] if isinstance(value, list) and value else value
+
+
+def nested_items(item):
+    if not isinstance(item, dict):
+        return
+    yield item
+    for value in item.get('props', {}).values():
+        for child in value if isinstance(value, list) else [value]:
+            if isinstance(child, dict):
+                yield from nested_items(child)
+
+
+def container_hierarchy_errors(root, relative):
+    errors = []
+    scopes = list(nested_items(root))
+    owners = {
+        prop: [item for item in scopes if prop in item.get('props', {})]
+        for prop in ('issueNumber', 'volumeNumber')
+    }
+    issue = bool(owners['issueNumber'])
+    volume = bool(owners['volumeNumber'])
+    has_periodical = any(item.get('type') == 'Periodical' for item in scopes)
+    if issue and not volume:
+        expected = ('PublicationIssue', 'Periodical')
+    elif issue and volume:
+        expected = ('PublicationIssue', 'PublicationVolume', 'Periodical')
+    elif volume:
+        expected = ('PublicationVolume', 'Periodical')
+    elif has_periodical:
+        expected = ('Periodical',)
+    else:
+        expected = ()
+
+    chain = []
+    current = first_item(root.get('props', {}).get('isPartOf'))
+    while isinstance(current, dict):
+        chain.append(current)
+        current = first_item(current.get('props', {}).get('isPartOf'))
+    actual = tuple(item.get('type') for item in chain)
+    if actual != expected:
+        errors.append(f'{relative}: expected container hierarchy {" > ".join(expected)}, got {" > ".join(actual) or "none"}')
+    for prop, expected_type in (('issueNumber', 'PublicationIssue'),
+                                ('volumeNumber', 'PublicationVolume')):
+        if owners[prop] and (
+            len(owners[prop]) != 1 or owners[prop][0].get('type') != expected_type
+        ):
+            errors.append(f'{relative}: {prop} must belong only to a {expected_type}')
+    return errors
+
+
+def jsonld_container_errors(article, relative):
+    errors = []
+    chain = []
+    current = article.get('isPartOf')
+    while isinstance(current, dict):
+        chain.append(current)
+        current = current.get('isPartOf')
+    issue = any('issueNumber' in item for item in chain)
+    volume = any('volumeNumber' in item for item in chain)
+    if issue and volume:
+        expected = ('PublicationIssue', 'PublicationVolume', 'Periodical')
+    elif issue:
+        expected = ('PublicationIssue', 'Periodical')
+    elif volume:
+        expected = ('PublicationVolume', 'Periodical')
+    elif chain:
+        expected = ('Periodical',)
+    else:
+        expected = ()
+    actual = tuple(item.get('@type') for item in chain)
+    if actual != expected:
+        errors.append(
+            f'{relative}: expected JSON-LD container hierarchy '
+            f'{" > ".join(expected) or "none"}, got {" > ".join(actual) or "none"}'
+        )
+    for prop, expected_type in (('issueNumber', 'PublicationIssue'),
+                                ('volumeNumber', 'PublicationVolume')):
+        owners = [item for item in chain if prop in item]
+        if owners and (
+            len(owners) != 1 or owners[0].get('@type') != expected_type
+        ):
+            errors.append(f'{relative}: JSON-LD {prop} must belong only to a {expected_type}')
+    return errors
+
+
 def reference_errors(relative, text, page):
     errors = []
     for head, block in iter_references(text):
         if 'itemscope' not in head or 'itemtype="https://schema.org/' not in head:
             errors.append(f'{relative}: reference block lacks itemscope/itemtype')
-        if not re.search(r'itemprop="name"', block):
+        root = MicrodataParser(f'<div{head}>{block}</div>').root or {'type': '', 'props': {}}
+        props = root.get('props', {})
+        if not props.get('name'):
             errors.append(f'{relative}: reference block lacks a name')
-        if not re.search(r'itemprop="author".*?itemprop="familyName"', block, re.DOTALL):
+        authors = props.get('author', [])
+        authors = authors if isinstance(authors, list) else [authors]
+        if not any(
+            isinstance(author, dict) and author.get('props', {}).get('familyName')
+            for author in authors
+        ):
             errors.append(f'{relative}: reference block lacks author name parts')
-        has_doi = 'itemprop="propertyID" content="DOI"' in block and 'itemprop="value"' in block
-        has_repo = 'itemprop="codeRepository"' in block or bool(re.search(r'itemprop="(?:url|sameAs)"[^>]*(?:content|href)="https://github\.com/', block))
+        identifiers = list(nested_items(root))
+        has_doi = any(
+            item.get('props', {}).get('propertyID') == 'DOI'
+            and item.get('props', {}).get('value')
+            for item in identifiers
+        )
+        has_repo = any(item.get('props', {}).get('codeRepository') for item in identifiers)
+        has_repo = has_repo or any(
+            str(item.get('props', {}).get(prop, '')).startswith('https://github.com/')
+            for item in identifiers for prop in ('url', 'sameAs')
+        )
         if not has_doi and not has_repo:
             errors.append(f'{relative}: reference block lacks a DOI or repository identifier')
+        is_article = root.get('type') == 'ScholarlyArticle'
+        if is_article:
+            if not props.get('datePublished'):
+                errors.append(f'{relative}: article reference lacks datePublished')
+            errors.extend(container_hierarchy_errors(root, relative))
     expected = page.cite_buttons
     for label, actual in (
         ('output', page.cite_outputs),
@@ -121,6 +288,97 @@ def reference_errors(relative, text, page):
     ):
         for key in sorted(expected.symmetric_difference(actual)):
             errors.append(f'{relative}: cite button/{label} mismatch for {key}')
+    return errors
+
+
+ATOM = '{http://www.w3.org/2005/Atom}'
+
+
+def parse_timestamp(value):
+    if not value:
+        raise ValueError('timestamp is empty')
+    return datetime.fromisoformat(value.replace('Z', '+00:00'))
+
+
+def feed_errors(path, expected_url, expected_entries=None):
+    """Parse an Atom feed and check its canonical URL, expected entries, and dates."""
+    errors = []
+    if not path.is_file():
+        return [f'{path.name}: missing Atom feed']
+    try:
+        tree = ET.parse(path)
+    except ET.ParseError as error:
+        return [f'{path.name}: invalid Atom XML ({error})']
+    feed = tree.getroot()
+    self_link = None
+    for link in feed.findall(f'{ATOM}link'):
+        if link.get('rel') == 'self':
+            self_link = link.get('href')
+    if self_link != expected_url:
+        errors.append(f'{path.name}: feed self link must equal {expected_url}')
+    try:
+        parse_timestamp(feed.findtext(f'{ATOM}updated'))
+    except (TypeError, ValueError):
+        errors.append(f'{path.name}: feed has missing or invalid updated timestamp')
+
+    entries = feed.findall(f'{ATOM}entry')
+    entry_ids = []
+    entry_urls = []
+    origin = f'{urlsplit(expected_url).scheme}://{urlsplit(expected_url).netloc}'
+    for entry in entries:
+        eid = entry.findtext(f'{ATOM}id') or ''
+        entry_ids.append(eid)
+        if not eid.startswith(origin + '/'):
+            errors.append(f'{path.name}: entry id outside the expected origin: {eid}')
+        alternate_urls = [
+            link.get('href') for link in entry.findall(f'{ATOM}link')
+            if link.get('rel') == 'alternate' and link.get('href')
+        ]
+        entry_url = alternate_urls[0] if alternate_urls else ''
+        entry_urls.append(entry_url)
+        if not entry_url:
+            errors.append(f'{path.name}: entry missing its canonical alternate link: {eid}')
+        for field in ('published', 'updated'):
+            try:
+                parse_timestamp(entry.findtext(f'{ATOM}{field}'))
+            except (TypeError, ValueError):
+                errors.append(f'{path.name}: entry has missing or invalid {field} timestamp: {eid}')
+        for link in entry.findall(f'{ATOM}link'):
+            href = link.get('href') or ''
+            if href and not href.startswith(origin + '/') and not href.startswith('https://doi.org/'):
+                errors.append(f'{path.name}: entry link outside expected origins: {href}')
+    if expected_entries is not None:
+        if len(entry_urls) != len(set(entry_urls)):
+            errors.append(f'{path.name}: duplicate Atom entries')
+        if set(entry_urls) != set(expected_entries):
+            errors.append(f'{path.name}: Atom entry coverage does not match expected publications')
+        for entry, entry_url in zip(entries, entry_urls):
+            if entry_url not in expected_entries:
+                continue
+            try:
+                expected_date = parse_timestamp(expected_entries[entry_url])
+            except (TypeError, ValueError):
+                errors.append(f'{path.name}: invalid expected publication date for {entry_url}')
+                continue
+            for field in ('published', 'updated'):
+                value = entry.findtext(f'{ATOM}{field}')
+                try:
+                    actual_date = parse_timestamp(value)
+                except (TypeError, ValueError):
+                    continue
+                if actual_date != expected_date:
+                    errors.append(f'{path.name}: entry {field} does not match publication date: {entry_url}')
+    return errors
+
+
+def publication_itemlist_errors(item_list, rendered_urls):
+    errors = []
+    items = item_list.get('itemListElement', [])
+    urls = [item.get('item', {}).get('url') for item in items]
+    if len(urls) != len(set(urls)):
+        errors.append('ItemList contains duplicate publication URLs')
+    if urls != rendered_urls:
+        errors.append('ItemList URLs and order do not match rendered publication links')
     return errors
 
 
@@ -201,7 +459,7 @@ def check(root):
     for url in urls:
         path = urlsplit(url).path
         require(resolve(path).is_file(), f'Sitemap has missing page: {url}')
-        require(path == '/' or path in ('/publications/', '/resources/') or path.startswith('/publication/'), f'Unexpected sitemap page: {url}')
+        require(path == '/' or path in ('/publications/', '/resources/', '/guide/') or path.startswith('/publication/'), f'Unexpected sitemap page: {url}')
     org = html[root / 'index.html'].json_ld[0]
     require(org.get('@type') == 'Organization', 'Home identity must be an organization')
     members = {p['@id'] for p in org.get('member', [])}
@@ -220,13 +478,44 @@ def check(root):
     require(any(block.get('@type') == 'WebSite' for block in home_jsonld),
             'Home page must include WebSite JSON-LD')
     publications_jsonld = html[root / 'publications/index.html'].json_ld
-    require(any(block.get('@type') == 'ItemList' for block in publications_jsonld),
-            'Publications page must include an ItemList JSON-LD')
+    publications_page = html[root / 'publications/index.html']
+    rendered_publication_urls = [
+        urljoin(ORIGIN + '/publications/', href)
+        for href in publications_page.links
+        if urlsplit(urljoin(ORIGIN + '/publications/', href)).path.startswith('/publication/')
+    ]
+    item_lists = [b for b in publications_jsonld if b.get('@type') == 'ItemList']
+    require(bool(item_lists), 'Publications page must include an ItemList JSON-LD')
+    publication_pages = sorted(p for p in html if p.relative_to(root).as_posix().startswith('publication/'))
+    for item_list in item_lists:
+        items = item_list.get('itemListElement', [])
+        require(len(items) == len(publication_pages),
+                f'ItemList covers {len(items)} of {len(publication_pages)} publication pages')
+        positions = [item.get('position') for item in items]
+        require(positions == list(range(1, len(items) + 1)), 'ItemList positions must be sequential')
+        for error in publication_itemlist_errors(item_list, rendered_publication_urls):
+            errors.append(f'publications/index.html: {error}')
+        for item in items:
+            article = item.get('item', {})
+            require(article.get('@type') == 'ScholarlyArticle', 'ItemList entries must be ScholarlyArticle')
+            require(bool(article.get('name')), 'ItemList article missing a name')
+            require(str(article.get('url', '')).startswith(ORIGIN), 'ItemList article url outside the production origin')
+            require('isPartOf' in article, 'ItemList article missing a container')
+    publication_entries = {}
     for file, page in html.items():
         relative = file.relative_to(root).as_posix()
         types = {block.get('@type') for block in page.json_ld}
         if relative.startswith('publication/'):
             require('ScholarlyArticle' in types, f'{relative}: missing ScholarlyArticle JSON-LD')
+            article = next(b for b in page.json_ld if b.get('@type') == 'ScholarlyArticle')
+            article_url = article.get('url')
+            published_at = page.metas.get('article:published_time')
+            if article_url:
+                publication_entries[article_url] = published_at
+            require(bool(article.get('identifier', {}).get('value')), f'{relative}: ScholarlyArticle missing DOI identifier')
+            require(bool(article.get('datePublished')), f'{relative}: ScholarlyArticle missing datePublished')
+            require(bool(article.get('author')), f'{relative}: ScholarlyArticle missing authors')
+            errors.extend(jsonld_container_errors(article, relative))
             require(any('citation_title' == key for key in page.metas),
                     f'{relative}: missing Highwire citation_title meta')
             require(any('citation_author' == key for key in page.metas),
@@ -234,6 +523,12 @@ def check(root):
         if relative in ('terms/index.html', 'sitemap/index.html', '404.html'):
             require(page.metas.get('robots', '').startswith('noindex'),
                     f'{relative}: utility page should be noindex')
+    errors.extend(feed_errors(
+        root / 'publications/feed.xml',
+        ORIGIN + '/publications/feed.xml',
+        publication_entries,
+    ))
+    errors.extend(feed_errors(root / 'feed.xml', ORIGIN + '/feed.xml'))
     require((root / 'publications/feed.xml').is_file(), 'Missing publications Atom feed')
     require((root / 'feed.xml').is_file(), 'Missing site Atom feed')
     if errors:

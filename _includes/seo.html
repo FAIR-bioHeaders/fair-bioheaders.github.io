@@ -81,7 +81,11 @@
   "headline": {{ ref.title | jsonify }},
   "name": {{ ref.title | jsonify }},
   "url": {{ canonical_url | jsonify }},
-  {% if ref.journal %}"isPartOf": { "@type": "Periodical", "name": {{ ref.journal | jsonify }}{% if ref.volume %}, "volumeNumber": {{ ref.volume | jsonify }}{% endif %}{% if ref.number %}, "issueNumber": {{ ref.number | jsonify }}{% endif %} },{% endif %}
+  {% comment %}Container hierarchy: article -> issue and/or volume -> Periodical.{% endcomment %}
+  {% if ref.journal and ref.number and ref.volume %}"isPartOf": { "@type": "PublicationIssue", "issueNumber": {{ ref.number | jsonify }}, "isPartOf": { "@type": "PublicationVolume", "volumeNumber": {{ ref.volume | jsonify }}, "isPartOf": { "@type": "Periodical", "name": {{ ref.journal | jsonify }} } } },
+  {% elsif ref.journal and ref.number %}"isPartOf": { "@type": "PublicationIssue", "issueNumber": {{ ref.number | jsonify }}, "isPartOf": { "@type": "Periodical", "name": {{ ref.journal | jsonify }} } },
+  {% elsif ref.journal and ref.volume %}"isPartOf": { "@type": "PublicationVolume", "volumeNumber": {{ ref.volume | jsonify }}, "isPartOf": { "@type": "Periodical", "name": {{ ref.journal | jsonify }} } },
+  {% elsif ref.journal %}"isPartOf": { "@type": "Periodical", "name": {{ ref.journal | jsonify }} },{% endif %}
   "author": [
     {% for author in ref.authors %}{ "@type": "Person", "name": {{ author.given | append: ' ' | append: author.family | jsonify }} }{% unless forloop.last %},{% endunless %}{% endfor %}
   ],

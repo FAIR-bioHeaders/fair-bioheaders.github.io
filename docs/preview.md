@@ -30,6 +30,30 @@ python3 scripts/check_site.py _site
 
 Serve the rendered files with `python3 scripts/preview.py`. Node is still needed on the host to rebuild JavaScript. The container build is a preview; Ruby CI installs the committed dependency set from scratch.
 
+## Browser and accessibility checks
+
+After building `_site`, run the Playwright suite. It serves the site the same
+way GitHub Pages resolves extensionless URLs, then checks desktop and 320px
+layouts in both themes for horizontal overflow and masthead clearance, the skip
+link, the overflow menu (including Escape), theme persistence, console errors,
+the Cite/Copy interaction, and axe accessibility scans:
+
+```sh
+npx playwright install --with-deps chromium
+npm run test:browser
+```
+
+## Deployed-site smoke check
+
+A green source build does not prove the live endpoints are current. After a
+deployment, check the public homepage, sitemap, robots policy, and feeds, and
+parse the live XML sitemap (production origin, unique URLs, intended pages,
+reachable targets). It retries for propagation:
+
+```sh
+npm run test:deploy
+```
+
 ## CI
 
-Every PR and push to `main` rebuilds JavaScript, verifies that the committed bundle matches, builds Jekyll, and checks local links, CSS assets, fragments, sitemap URLs, metadata, and project identities. The workflow uploads `_site` as a preview artifact. Weekly and manual runs also check external links with Lychee; third-party rate limits may require a retry.
+Every PR and push to `main` rebuilds JavaScript, verifies that the committed bundle matches, builds Jekyll, runs the Python and Node regression tests, the Playwright browser/accessibility suite, and checks local links, CSS assets, fragments, sitemap URLs, metadata, and project identities. The workflow uploads `_site` as a preview artifact. Weekly and manual runs also check external links with Lychee; third-party rate limits may require a retry. A separate workflow runs the deployed-site smoke check after the Pages deployment completes.

@@ -35,6 +35,10 @@ jobs:
         run: node --test scripts/test_cite.mjs
       - name: Check links, metadata and sitemap
         run: python3 scripts/check_site.py _site
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - name: Browser and accessibility checks
+        run: npm run test:browser
       - name: Check external links (weekly or on demand)
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2

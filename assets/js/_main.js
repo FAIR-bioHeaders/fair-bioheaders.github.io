@@ -69,6 +69,9 @@ $(document).ready(function(){
   $("a[href$='.jpg'],a[href$='.jpeg'],a[href$='.JPG'],a[href$='.png'],a[href$='.gif']").addClass("image-popup");
 
   // Magnific-Popup options
+  // Make horizontally scrollable code blocks reachable by keyboard.
+  $(".highlight pre").attr("tabindex", "0");
+
   $(".image-popup").magnificPopup({
     type: 'image',
     tLoading: 'Loading image #%curr%...',

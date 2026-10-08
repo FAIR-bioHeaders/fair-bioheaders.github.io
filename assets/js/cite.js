@@ -109,19 +109,37 @@
     return text(p.pagination);
   }
 
+  // Walk the isPartOf container chain (PublicationIssue -> PublicationVolume ->
+  // Periodical) and collect the journal name, volume, and issue at whichever
+  // level they appear.
+  function containerInfo(value) {
+    var info = { journal: '', volume: '', issue: '' };
+    var current = first(value);
+    var guard = 0;
+    while (current && current.props && guard++ < 10) {
+      var p = current.props;
+      if (!info.journal && text(p.name)) info.journal = text(p.name);
+      if (!info.volume && text(p.volumeNumber)) info.volume = text(p.volumeNumber);
+      if (!info.issue && text(p.issueNumber)) info.issue = text(p.issueNumber);
+      current = first(p.isPartOf);
+    }
+    return info;
+  }
+
   function escapeBraces(value) {
     return String(value).replace(/([{}])/g, '\\$1');
   }
 
   function bibtex(key, item) {
     var p = item.props;
+    var container = containerInfo(p.isPartOf);
     var fields = [
       ['author', authors(p.author)],
       ['title', text(p.name) || text(p.headline)],
-      ['journal', text(propsOf(p.isPartOf).name)],
+      ['journal', container.journal],
       ['year', text(p.datePublished)],
-      ['volume', text(propsOf(p.isPartOf).volumeNumber)],
-      ['number', text(propsOf(p.isPartOf).issueNumber)],
+      ['volume', container.volume],
+      ['number', container.issue],
       ['pages', pages(p)],
       ['publisher', text(propsOf(p.publisher).name)],
       ['doi', doi(p.identifier)],

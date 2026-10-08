@@ -38,4 +38,14 @@ The inherited template tag dates from February 2024, older than the upstream `v0
 
 The scheduled/manual Lychee step resolves relative links against the production URL and excludes this site, since `check_site.py` validates local paths and fragments on every build. `.lycheeignore` documents DOI and ISO exclusions for automated-client blocking. Run the workflow manually when changing this configuration to exercise the external-link step.
 
+## Browser, accessibility, and deployment checks
+
+`npm run test:browser` runs a Playwright suite over the built `_site` at desktop and 320px widths in both themes. It checks horizontal overflow, masthead clearance, the skip link, the overflow menu (including Escape), theme persistence, console errors, and the Cite/Copy interaction, and runs axe accessibility scans that fail on any violation, including color contrast. New colors must pass axe against the code and footer backgrounds in both themes; the Rouge syntax palette has light values in `_sass/_syntax.scss` and dark overrides in `_project.scss`.
+
+`npm run test:deploy` (and the `deploy-smoke.yml` workflow) smoke-checks the deployed site after a Pages build: the homepage, sitemap, robots policy, and both feeds must respond, and the live XML sitemap is parsed for the production origin, unique URLs, intended indexable pages, and reachable targets. Keep the sitemap allow-list in `scripts/check_site.py` and `scripts/check_deployed.py` in sync when adding an indexable page.
+
+## Citation container hierarchy
+
+Articles model the levels actually present: issue and volume use `ScholarlyArticle` → `PublicationIssue` → `PublicationVolume` → `Periodical`; issue-only uses `PublicationIssue` → `Periodical`; volume-only uses `PublicationVolume` → `Periodical`; and records with neither use `Periodical`. `volumeNumber` belongs on `PublicationVolume` and `issueNumber` on `PublicationIssue`. Keep `_includes/reference.html`, `_includes/seo.html`, and the `containerInfo` reader in `assets/js/cite.js` consistent when changing this, and keep the semantic checks in `check_site.py` in step.
+
 The optional MathJax 3.2.2 script uses a verified SHA-384 integrity digest and `crossorigin="anonymous"`. A version change requires recomputing the digest from the CDN file and updating the template/checker together; MathJax may fetch additional components, so the entry-script digest is not a guarantee for all downstream requests.

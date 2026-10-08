@@ -3,6 +3,8 @@ main:
     url: /#about-the-project
   - title: "Publications"
     url: /publications/
+  - title: "Using FHR"
+    url: /guide/
   - title: "Resources & citation"
     url: /resources/
   - title: "GitHub"

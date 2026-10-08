@@ -3,8 +3,3 @@
 # real breakage rather than bot blocking.
 ^https://doi\.org/
 ^https://www\.iso\.org/
-
-# FHR-Nextflow is currently a private repository, so it 404s for anonymous
-# visitors and link checkers. Remove this exclusion once the repository is
-# public; until then the public link is expected to fail for outside users.
-^https://github\.com/FAIR-bioHeaders/FHR-Nextflow

@@ -42,14 +42,16 @@ Our [publications](/publications/) approach these ideas from different angles:
 
 FAIR BioHeaders is developed and maintained by:
 
-<ul class="about-us">
+<div class="about-us">
 {% for person in site.data.team %}
-  <li class="h-card vcard">
-    <span class="p-name fn">{{ person.name }}</span>
-    <a class="u-uid u-url url" href="{{ person.orcid }}">{{ person.orcid }}</a>
-  </li>
+  <div class="about-us__person h-card vcard">
+    <p class="about-us__name"><span class="p-name fn">{{ person.name }}</span></p>
+    <p class="about-us__role p-job-title">{{ person.role }}</p>
+    <p class="about-us__bio p-note">{{ person.bio }}</p>
+    <p class="about-us__orcid"><a class="u-uid u-url url" href="{{ person.orcid }}">{{ person.orcid }}</a></p>
+  </div>
 {% endfor %}
-</ul>
+</div>
 
 ## Get involved
 

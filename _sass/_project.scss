@@ -1,43 +1,201 @@
-// Project additions, including keyboard navigation and a locally stored theme.
+// Project additions, including keyboard navigation, a locally stored theme,
+// and the FAIR BioHeaders visual system.
+
+/* --------------------------------------------------------------------------
+   Brand tokens
+   -------------------------------------------------------------------------- */
+:root {
+  --brand-orange: #{$brand-orange};
+  --brand-yellow: #{$brand-yellow};
+  --brand-gradient: #{$brand-gradient};
+  --ink: #1a1a1a;
+  --paper: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   Keyboard navigation and accessibility
+   -------------------------------------------------------------------------- */
 .skip-link {
   position: fixed;
   top: -5em;
   left: 1em;
   z-index: 100;
   padding: .6em 1em;
-  background: #fff;
-  color: #1a405e;
+  background: #1a1a1a;
+  color: #fff;
+  font-weight: $font-weight-medium;
   &:focus { top: 1em; }
 }
-:focus-visible { outline: 3px solid #e77924; outline-offset: 3px; }
-.greedy-nav button:focus-visible { outline: 3px solid #e77924; }
+:focus-visible { outline: 3px solid var(--brand-orange); outline-offset: 3px; }
+.greedy-nav button:focus-visible { outline: 3px solid var(--brand-orange); }
 .navicon { display: block; }
+.theme-toggle { padding: .4em .8em; border: 1.5px solid currentColor; border-radius: .25em; background: transparent; color: inherit; font-size: .7em; font-weight: $font-weight-medium; cursor: pointer; }
+.theme-toggle[hidden] { display: none; }
+
+/* --------------------------------------------------------------------------
+   Masthead: bold, thin-ruled, hexagon-accented
+   -------------------------------------------------------------------------- */
+.masthead {
+  background: #fff;
+  border-bottom: 1px solid #ebecef;
+}
+.masthead::after {
+  content: "";
+  display: block;
+  height: 3px;
+  background: var(--brand-gradient);
+}
 .masthead__inner-wrap { display: flex; align-items: center; gap: 1em; }
 .masthead__menu { flex: 1; min-width: 0; }
-.theme-toggle { padding: .5em; border: 1px solid currentColor; border-radius: .25em; background: transparent; color: inherit; font-size: .7em; cursor: pointer; }
-.theme-toggle[hidden] { display: none; }
+.masthead__menu-item--lg {
+  padding-right: .5em;
+  a { font-weight: $font-weight-bold; letter-spacing: -0.02em; }
+}
+.masthead__menu-item a { font-weight: $font-weight-medium; }
+.greedy-nav {
+  min-width: 0;
+  background: transparent;
+  a { color: $masthead-link-color; &:hover { color: var(--brand-orange); } }
+  .visible-links a:before { background: var(--brand-gradient); height: 3px; }
+}
+
+/* --------------------------------------------------------------------------
+   Page title and headings
+   -------------------------------------------------------------------------- */
+.page__title {
+  position: relative;
+  padding-left: 1.1em;
+  font-weight: $font-weight-bold;
+  letter-spacing: -0.03em;
+
+  &:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: .18em;
+    width: .85em;
+    height: .85em;
+    background: var(--brand-gradient);
+    -webkit-mask: url("/images/hexagon.svg") center / contain no-repeat;
+            mask: url("/images/hexagon.svg") center / contain no-repeat;
+  }
+}
+.page__content {
+  h2 {
+    position: relative;
+    padding-bottom: .5em;
+    border-bottom: 1px solid #ebecef;
+    font-weight: $font-weight-bold;
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      width: 3.5em;
+      height: 3px;
+      background: var(--brand-gradient);
+    }
+  }
+  h3 {
+    font-weight: $font-weight-bold;
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Thin-line hexagon brand mark before the site name */
+.masthead__menu-item--lg a {
+  display: inline-flex;
+  align-items: center;
+  gap: .5em;
+
+  &:before {
+    content: "";
+    width: .95em;
+    height: .95em;
+    background: url("/images/hexagon.svg") center / contain no-repeat;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Sidebar identity card
+   -------------------------------------------------------------------------- */
 .project-links { padding: 0; list-style: none; font-size: .8em; }
 .author__avatar img { height: auto; }
-.about-us a { overflow-wrap: anywhere; }
+
+/* --------------------------------------------------------------------------
+   About Us: h-cards with bios
+   -------------------------------------------------------------------------- */
+.about-us {
+  display: grid;
+  gap: 1.5em;
+}
+.about-us__person {
+  position: relative;
+  padding: 1.25em 1.25em 1.25em 1.6em;
+  border: 1px solid #ebecef;
+  border-left: 4px solid var(--brand-orange);
+  border-radius: 4px;
+  background: #fff;
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 1.35em;
+    right: 1.1em;
+    width: .9em;
+    height: .9em;
+    border: 2px solid var(--brand-yellow);
+    clip-path: polygon(50% 0, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+    opacity: .55;
+  }
+}
+.about-us__name {
+  margin: 0 0 .1em;
+  font-size: $type-size-4;
+  font-weight: $font-weight-bold;
+  letter-spacing: -0.02em;
+}
+.about-us__role {
+  margin: 0 0 .7em;
+  color: $gray;
+  font-size: $type-size-6;
+  font-weight: $font-weight-medium;
+}
+.about-us__bio { margin: 0 0 .6em; }
+.about-us__orcid {
+  margin: 0;
+  font-size: $type-size-7;
+  a { overflow-wrap: anywhere; }
+}
+
+/* --------------------------------------------------------------------------
+   Light/dark preference
+   -------------------------------------------------------------------------- */
 .no-js .greedy-nav .visible-links { display: flex; flex-wrap: wrap; }
 .no-js .greedy-nav .visible-links li { display: block; }
 .no-js .nav-toggle { display: none; }
+
 html[data-theme="dark"] {
   color-scheme: dark;
-  &, body, .masthead, .greedy-nav, .greedy-nav .hidden-links { background: #171c22; color: #e5e9ef; }
-  a, .greedy-nav a { color: #9bd2f7; }
-  a:hover, .greedy-nav a:hover { color: #ffd09f; }
-  .page__footer { background: #222b35; color: #c8d4df; }
-  .page__footer a { color: #c8d4df; }
-  .page__meta, .page__date, .archive__item-excerpt { color: #c8d4df; }
-  .masthead, th, td, .greedy-nav .hidden-links li { border-color: #495562; }
-  .greedy-nav .hidden-links a:hover { background: #303c49; }
-  .greedy-nav .hidden-links:after { border-color: #171c22 transparent; }
-  .greedy-nav .hidden-links:before { border-color: #495562 transparent; }
-  code, pre, .highlight { background: #222b35; color: #e5e9ef; }
-}
+  --ink: #f2f3f5;
+  --paper: #14161a;
 
-.greedy-nav { min-width: 0; }
-.masthead__menu-item--lg { padding-right: .5em; }
+  &, body { background: #14161a; color: #e9eaec; }
+  .masthead { background: #14161a; border-bottom-color: #2b2f36; }
+  .greedy-nav, .greedy-nav .hidden-links { background: #14161a; }
+  a, .greedy-nav a { color: #ffb566; }
+  a:hover, .greedy-nav a:hover { color: var(--brand-yellow); }
+  .page__footer { background: #1c2027; color: #c8ced6; }
+  .page__footer a { color: #c8ced6; }
+  .page__meta, .page__date, .archive__item-excerpt { color: #c8ced6; }
+  .masthead, th, td, .greedy-nav .hidden-links li { border-color: #313640; }
+  .page__content h2 { border-bottom-color: #2b2f36; }
+  .greedy-nav .hidden-links a:hover { background: #242932; }
+  .greedy-nav .hidden-links:after { border-color: #14161a transparent; }
+  .greedy-nav .hidden-links:before { border-color: #313640 transparent; }
+  code, pre, .highlight { background: #1c2027; color: #e9eaec; }
+  .about-us__person { background: #1a1d23; border-color: #2b2f36; }
+  .about-us__role { color: #a9b0ba; }
+}
 
 [id] { scroll-margin-top: 5em; }

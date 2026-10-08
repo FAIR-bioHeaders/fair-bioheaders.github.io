@@ -1,4 +1,22 @@
 - name: Adam Wright
   orcid: https://orcid.org/0000-0002-5719-4024
+  role: Software Architect, Ontario Institute for Cancer Research
+  bio: >-
+    Adam Wright is a software architect in the Adaptive Oncology Program at the
+    Ontario Institute for Cancer Research, where he has worked since 2012. He
+    builds data infrastructure and curation tooling for genomic resources such as
+    Reactome, WormBase, and the Alliance of Genome Resources, with a focus on
+    making biological data interoperable and reusable. He is a co-author of the
+    FHR standard.
 - name: David Molik
   orcid: https://orcid.org/0000-0003-3192-6538
+  role: Department Head and Associate Professor, Open Publishing Exchange, Kansas State University Libraries
+  bio: >-
+    David Molik leads the Open Publishing Exchange and is an associate professor
+    at Kansas State University Libraries. His work spans scholarly communication,
+    research cyberinfrastructure, FAIR and AI-ready data, persistent identifiers,
+    computational reproducibility, and data publishing, and he contributes to
+    agricultural and biodiversity informatics through AgBioData, i5k, and related
+    initiatives. He previously worked as a computational biologist at the USDA
+    Agricultural Research Service and holds a Ph.D. from the University of Notre
+    Dame. He is a co-author of the FHR standard.

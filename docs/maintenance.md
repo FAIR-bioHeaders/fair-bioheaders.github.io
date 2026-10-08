@@ -20,7 +20,7 @@ Builds are verified with the committed lockfiles. Before accepting dependency up
 
 ## Review corrections
 
-The template tag dates from February 2024: in October 2026 this is about 2½ years, rather than the issue title's “~4 years.” The original SEO include already assigned a description fallback, but failed to emit a standard description tag and gated its Open Graph description on page excerpts. Both outputs now use the fallback. A `.nojekyll` file would disable this site's required Jekyll processing and must not be added. The existing `github.io` hostname needs no `CNAME`.
+The inherited template tag dates from February 2024, older than the upstream `v0.9` release and the issue title's “~4 years.” The original SEO include already assigned a description fallback, but failed to emit a standard description tag and gated its Open Graph description on page excerpts. Both outputs now use the fallback. A `.nojekyll` file would disable this site's required Jekyll processing and must not be added. The existing `github.io` hostname needs no `CNAME`.
 
 ## Acceptance checks
 

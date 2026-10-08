@@ -34,5 +34,20 @@ class MathJaxChecks(unittest.TestCase):
         self.assertEqual(mathjax_errors(Page('<p>The MathJax-script is optional.</p>')), [])
 
 
+class IconFontChecks(unittest.TestCase):
+    def test_plain_italic_is_allowed(self):
+        self.assertEqual(Page('<i>emphasis</i>').icons, [])
+
+    def test_font_awesome_markup_is_detected(self):
+        for markup in ('<i class="fa fa-clock-o"></i>',
+                       '<i class="fas fa-calendar"></i>',
+                       '<i class="fab fa-github"></i>',
+                       '<i class="far fa-star"></i>'):
+            self.assertTrue(Page(markup).icons, markup)
+
+    def test_unrelated_class_containing_fa_is_allowed(self):
+        self.assertEqual(Page('<i class="factual"></i>').icons, [])
+
+
 if __name__ == '__main__':
     unittest.main()

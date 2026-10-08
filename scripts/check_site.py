@@ -17,6 +17,7 @@ class Page(HTMLParser):
         self.links, self.ids, self.metas, self.json_ld = [], set(), {}, []
         self.json_buffer = None
         self.scripts = []
+        self.icons = []
         self.skip, self.main, self.menu, self.images = False, False, False, []
         self.feed(text)
 
@@ -33,6 +34,8 @@ class Page(HTMLParser):
             self.scripts.append(attrs)
         if tag == 'img':
             self.images.append(attrs)
+        if tag == 'i' and re.search(r'\b(fa|fas|far|fab|fal)\b', attrs.get('class', '')):
+            self.icons.append(attrs.get('class', ''))
         if tag == 'meta':
             self.metas[attrs.get('name', attrs.get('property'))] = attrs.get('content')
         if tag == 'script' and attrs.get('type') == 'application/ld+json':
@@ -97,17 +100,22 @@ def check(root):
             require(page.skip and page.main and page.menu, f'{relative}: missing keyboard navigation')
             for image in page.images:
                 require('alt' in image, f'{relative}: image lacks alt text')
+            for icon in page.icons:
+                require(False, f'{relative}: icon-font markup without a shipped icon font: {icon}')
         text = file.read_text().lower()
         for forbidden in ('fonts.googleapis.com', 'fonts.gstatic.com', 'lorem ipsum', 'future blog post', 'github university', 'analytics.js', 'polyfill', 'jquery-1.12'):
             require(forbidden not in text, f'{relative}: unwanted template/runtime content: {forbidden}')
         errors.extend(f'{relative}: {error}' for error in mathjax_errors(page))
     # Also check font and image references in CSS, including missing vendored assets.
     for file in root.rglob('*.css'):
-        for link in re.findall(r'url\([\'\"]?([^\)\'\"]+)', file.read_text()):
+        css = file.read_text()
+        for link in re.findall(r'url\([\'\"]?([^\)\'\"]+)', css):
             if urlsplit(link).scheme or link.startswith('#'):
                 continue
             base = ORIGIN + '/' + file.relative_to(root).as_posix()
             require(resolve(urlsplit(urljoin(base, link)).path).is_file(), f'{file.name}: missing CSS asset {link}')
+        for forbidden in ('font awesome', 'academicons'):
+            require(forbidden not in css.lower(), f'{file.name}: references removed icon font: {forbidden}')
     sitemap = ET.parse(root / 'sitemap.xml')
     urls = [loc.text for loc in sitemap.findall('.//{http://www.sitemaps.org/schemas/sitemap/0.9}loc')]
     require(len(urls) == len(set(urls)), 'Sitemap contains duplicate URLs')

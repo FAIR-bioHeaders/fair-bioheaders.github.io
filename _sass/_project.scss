@@ -233,3 +233,18 @@ html[data-theme="dark"] {
 }
 
 [id] { scroll-margin-top: 5em; }
+
+/* Respect reduced-motion preferences: drop the intro fades and transitions. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    -webkit-animation-duration: 0.001ms !important;
+            animation-duration: 0.001ms !important;
+    -webkit-animation-iteration-count: 1 !important;
+            animation-iteration-count: 1 !important;
+    -webkit-transition-duration: 0.001ms !important;
+            transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

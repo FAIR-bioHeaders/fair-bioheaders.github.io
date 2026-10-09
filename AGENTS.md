@@ -292,3 +292,10 @@ and 1.2 parser tests protect types and control characters. `yaml` is a dev-only
 test dependency and must not be loaded by the browser. Numeric object controls
 convert to numbers before validation. Error links use registered controls or
 focusable group fieldsets; clear removed controls from the registry.
+
+Field errors must join existing `aria-describedby` help references while invalid,
+and only the error reference should be removed when validation clears. Apply
+this to repeatable scalar controls as well as ordinary/nested inputs. Browser
+regressions check computed accessible descriptions and corrected-input cleanup.
+The converter round-trip in the PR validation notes is a local verification;
+CI currently checks microdata markup, not an installed-converter round-trip.

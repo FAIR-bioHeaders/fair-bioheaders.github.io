@@ -594,7 +594,8 @@
     input.value = array[index];
     input.addEventListener('input', function () { array[index] = input.value; markStale(); });
     row.appendChild(input);
-    registerControl(field.path + '.' + index, input, null);
+    row.appendChild(el('p', { class: 'tb-error', id: id + '-error', hidden: 'hidden' }));
+    registerControl(field.path + '.' + index, input, id + '-error');
     row.appendChild(el('button', { type: 'button', class: 'tb-remove', text: 'Remove',
       'aria-label': 'Remove ' + field.label + ' ' + (index + 1) })).addEventListener('click', function () {
       array.splice(index, 1);
@@ -801,7 +802,7 @@
       link.addEventListener('click', function () { target.focus(); });
       item.appendChild(link);
       list.appendChild(item);
-      markFieldError(error.path);
+      markFieldError(error.path, error.message);
     });
     summary.appendChild(el('h3', { text: 'Validation issues' }));
     summary.appendChild(list);
@@ -825,19 +826,30 @@
       if (entry.error) {
         var node = document.getElementById(entry.error);
         if (node) { node.textContent = ''; node.hidden = true; }
+        var remaining = (entry.input.getAttribute('aria-describedby') || '').split(/\s+/)
+          .filter(function (id) { return id && id !== entry.error; });
+        if (remaining.length) entry.input.setAttribute('aria-describedby', remaining.join(' '));
+        else entry.input.removeAttribute('aria-describedby');
       }
       entry.input.removeAttribute('aria-invalid');
     });
   }
 
-  function markFieldError(path) {
+  function markFieldError(path, message) {
     var key = path.join('.');
     var entry = controlRegistry[key];
     if (!entry) return;
     entry.input.setAttribute('aria-invalid', 'true');
     if (entry.error) {
       var node = document.getElementById(entry.error);
-      if (node) { node.textContent = 'This field has a validation issue.'; node.hidden = false; }
+      if (node) {
+        node.textContent += (node.textContent ? ' ' : '') + message;
+        node.hidden = false;
+        var descriptions = (entry.input.getAttribute('aria-describedby') || '').split(/\s+/)
+          .filter(Boolean);
+        if (descriptions.indexOf(entry.error) === -1) descriptions.push(entry.error);
+        entry.input.setAttribute('aria-describedby', descriptions.join(' '));
+      }
     }
   }
 

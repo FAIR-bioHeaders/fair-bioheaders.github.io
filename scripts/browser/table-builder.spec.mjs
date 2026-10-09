@@ -177,3 +177,32 @@ test('nested and missing-list errors link to real focusable targets', async ({ p
   await missing.click();
   await expect(page.locator('#tb-metadataAuthor')).toBeFocused();
 });
+
+test('field errors become accessible descriptions and clear without losing help', async ({ page }) => {
+  await fillValid(page);
+  const uri = page.locator('#tb-taxon-uri');
+  const error = page.locator('#tb-taxon-uri-error');
+  const help = await page.locator('#tb-taxon-uri-help').textContent();
+  await uri.fill('bad uri');
+  await page.click('#tb-add-relatedLink');
+  const related = page.locator('#relatedLink-0');
+  await related.fill('bad uri');
+  await page.click('#tb-generate');
+  await expect(uri).toHaveAttribute('aria-invalid', 'true');
+  await expect(error).toBeVisible();
+  await expect(error).toContainText('must be a URI');
+  await expect(uri).toHaveAttribute('aria-describedby', 'tb-taxon-uri-help tb-taxon-uri-error');
+  await expect(uri).toHaveAccessibleDescription(help + ' ' + await error.textContent());
+  await expect(related).toHaveAccessibleDescription('must be a URI');
+  await page.click('#tb-generate');
+  await expect(uri).toHaveAttribute('aria-describedby', 'tb-taxon-uri-help tb-taxon-uri-error');
+  await uri.fill('https://identifiers.org/taxonomy:9606');
+  await related.fill('https://example.org/');
+  await page.click('#tb-generate');
+  await expect(uri).not.toHaveAttribute('aria-invalid');
+  await expect(uri).toHaveAttribute('aria-describedby', 'tb-taxon-uri-help');
+  await expect(uri).toHaveAccessibleDescription(help);
+  await expect(error).toBeHidden();
+  await expect(related).not.toHaveAttribute('aria-describedby');
+  await expect(page.locator('#tb-download-yaml')).toBeEnabled();
+});

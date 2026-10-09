@@ -15,3 +15,24 @@ https://commons.wikimedia.org/wiki/File:Drosophilidae_compound_eye_edit1.jpg
 Upstream retouch: Papa Lima Whiskey. Locally resized and compressed.
 
 Source revisions and additional provenance: _data/image_credits.yml.
+
+insect-eggs-400.jpg, insect-eggs-400.webp, insect-eggs-800.jpg, insect-eggs-800.webp:
+Bug Eggs (Heteroptera, Pentatomidae) - Egg width 1 mm.jpg by Gilles San Martin; CC BY-SA 2.0.
+https://commons.wikimedia.org/wiki/File:Bug_Eggs_(Heteroptera,_Pentatomidae)_-_Egg_width_1_mm.jpg
+https://creativecommons.org/licenses/by-sa/2.0
+Resized and JPEG/WebP-compressed. Full frame retained; no recoloring.
+These derivatives are distributed under CC BY-SA 2.0.
+
+turtle-shell-400.jpg, turtle-shell-400.webp, turtle-shell-800.jpg, turtle-shell-800.webp:
+Reflected tortoise shell (6063989199).jpg by pamsai; CC BY-SA 2.0.
+https://commons.wikimedia.org/wiki/File:Reflected_tortoise_shell_(6063989199).jpg
+https://creativecommons.org/licenses/by-sa/2.0
+Resized and JPEG/WebP-compressed. Full frame retained; no recoloring.
+These derivatives are distributed under CC BY-SA 2.0.
+
+pineapple-400.jpg, pineapple-400.webp, pineapple-800.jpg, pineapple-800.webp:
+Pineapple close-up (81928).jpg by Rhododendrites; CC BY-SA 4.0.
+https://commons.wikimedia.org/wiki/File:Pineapple_close-up_(81928).jpg
+https://creativecommons.org/licenses/by-sa/4.0
+Resized and JPEG/WebP-compressed. Full frame retained; no recoloring.
+These derivatives are distributed under CC BY-SA 4.0.

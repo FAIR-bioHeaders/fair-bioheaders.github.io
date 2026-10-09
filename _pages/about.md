@@ -10,7 +10,7 @@ redirect_from:
 <div class="project-intro">
   <div class="project-intro__copy">
     <p class="project-eyebrow">Reference genomes · Metadata · Provenance</p>
-    <h2>Keep the context.<br>Carry it with the genome.</h2>
+    <p class="project-intro__lead">Keep the context.<br>Carry it with the genome.</p>
     <p>FAIR BioHeaders builds an open standard, the FAIR Header Reference genome (FHR), that keeps reference genome metadata and provenance close to sequence data — helping researchers identify the reference used in an analysis and retain the information needed to reproduce it.</p>
     <div class="project-actions">
       <a class="project-action project-action--primary" href="{{ '/guide/' | relative_url }}">Get started with FHR <span aria-hidden="true">↗</span></a>
@@ -44,6 +44,15 @@ FAIR BioHeaders grew out of a problem described in the [FHR standard paper](http
 - **Extensible and expressive.** A small set of required fields keeps implementation easy while allowing projects to record more when they need it.
 - **Low barrier to adoption.** Few dependencies and a small codebase make the standard and its tooling straightforward to use and maintain.
 
+### How our work fits together with others
+
+[Publications we’ve had a part in](/publications/) approach these ideas from different angles:
+
+- **Naming** — [Guidelines for gene and genome assembly nomenclature](https://doi.org/10.1093/genetics/iyaf006) proposes conventions so assemblies can be identified and linked across datasets and resources.
+- **Reporting** — [Toward standardization in arthropod and biodiversity genome projects](https://doi.org/10.1093/genetics/iyag172) surveys genome projects and documents the gaps in sample, assembly, quality, and submission reporting that FHR helps close.
+- **Discovery** — [AgBioDatabase Finder](https://doi.org/10.17912/micropub.biology.001896) helps researchers find where data can be deposited and discovered, complementing the metadata carried with the files.
+- **Community** — [The future is FAIR](https://doi.org/10.1093/database/baag058) places FHR within the wider AgBioData effort to make genomic data easier to discover, integrate, and reuse.
+
 <div class="biology-feature">
   <figure class="biology-image biology-image--eye">
     <picture>
@@ -53,21 +62,12 @@ FAIR BioHeaders grew out of a problem described in the [FHR standard paper](http
     <figcaption>Fruit-fly eye, SEM · <a href="{{ site.data.image_credits.compound_eye.source }}">Louisa Howard / Dartmouth College</a> · <a href="{{ site.data.image_credits.compound_eye.license_url }}">public domain</a> · retouched, resized</figcaption>
   </figure>
   <div class="biology-feature__copy">
-    <p class="project-eyebrow">Patterns across biology</p>
-    <h3>A biological thread</h3>
-    <p>From honeycomb to the facets of a fruit fly’s eye, repeating forms give our hexagon mark a connection to the organisms behind the data. Our standards serve reference genomes across biodiversity.</p>
-    <a href="{{ '/publications/' | relative_url }}">Meet the ideas behind FHR <span aria-hidden="true">→</span></a>
+    <p class="project-eyebrow">DNA · Structure</p>
+    <h3 id="why-the-hexagon">Why the hexagon?</h3>
+    <p>Our hexagon comes from the six-membered rings in all four DNA bases: thymine, cytosine, guanine, and adenine. Thymine and cytosine each have one six-membered ring; adenine and guanine have a six-membered ring fused to a five-membered ring.</p>
+    <p>Patterns in honeycomb, insect eggs, turtle shells, and fruit echo this motif across biodiversity. <a href="https://www.ncbi.nlm.nih.gov/books/NBK21134/">Explore the structure of DNA</a>.</p>
   </div>
 </div>
-
-### How our work fits together with others
-
-[Publications we’ve had a part in](/publications/) approach these ideas from different angles:
-
-- **Naming** — [Guidelines for gene and genome assembly nomenclature](https://doi.org/10.1093/genetics/iyaf006) proposes conventions so assemblies can be identified and linked across datasets and resources.
-- **Reporting** — [Toward standardization in arthropod and biodiversity genome projects](https://doi.org/10.1093/genetics/iyag172) surveys genome projects and documents the gaps in sample, assembly, quality, and submission reporting that FHR helps close.
-- **Discovery** — [AgBioDatabase Finder](https://doi.org/10.17912/micropub.biology.001896) helps researchers find where data can be deposited and discovered, complementing the metadata carried with the files.
-- **Community** — [The future is FAIR](https://doi.org/10.1093/database/baag058) places FHR within the wider AgBioData effort to make genomic data easier to discover, integrate, and reuse.
 
 ## Use the standard
 

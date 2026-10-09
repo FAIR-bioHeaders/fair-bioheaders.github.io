@@ -158,6 +158,18 @@ Make focused changes that preserve published URLs and the project's metadata
 guarantees. Avoid reintroducing unused template features. Update `docs/` and the
 PR description when behavior or conventions change.
 
+## Spacing and typography
+
+`_sass/_project.scss` defines one vertical-rhythm scale (`$space-section`,
+`$space-subhead`, `$space-block`, `$space-text`) applied to `.page__content`
+direct sections and to the project/imagery blocks. Use it for new sections
+rather than ad-hoc margins so the rhythm stays consistent across pages. Each
+page has a single `h1` (`.page__title`); on the home page the hero tagline is a
+`.project-intro__lead` paragraph, not a heading, so the `h1` remains the largest
+element, including on mobile: stack the logo/title there so the title has room
+without shrinking below the tagline. Keep heading levels in order (h2 for
+sections, h3 for subsections).
+
 ## Biological imagery (issue #11)
 
 The homepage has no author sidebar and uses `.page--home` for its full-width
@@ -182,3 +194,18 @@ CSS/fonts/images can cause misleading layout failures. Browser layout checks
 wait for the local font and reduced-motion rendering; axe waits for existing
 keyboard initialization of code scrollers. Preserve those assertions when
 adjusting test timing.
+
+## DNA identity and interior imagery (issue #13)
+
+The hexagon's primary meaning is the six-membered ring in all four DNA bases.
+Thymine/cytosine have one such ring; adenine/guanine also have a fused five-membered
+ring. Nature patterns support this molecular identity; they do not replace it.
+Preserve the homepage `#why-the-hexagon` explanation and links from interior pages.
+`nature-panel.html` renders different manifest-backed images on Publications
+(insect eggs), Guide (tortoise scutes), and Resources (pineapple eyes). Keep full
+frames, visible source/license credits, local 400/800px WebP/JPEG variants, and
+intrinsic dimensions. Do not infer perfect hexagons or an unverified species.
+These three panels are near the top and load eagerly; below-fold homepage imagery
+remains lazy. The new egg/tortoise derivatives are CC BY-SA 2.0, pineapple CC BY-SA
+4.0; retain their independent image licenses. Run image decode/credit checks and
+axe/layout checks on all three pages in both themes and widths.

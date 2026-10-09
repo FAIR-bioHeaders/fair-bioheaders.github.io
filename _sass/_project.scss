@@ -1,3 +1,9 @@
+/* Shared vertical-rhythm scale for prose and the project/imagery blocks. */
+$space-section: 3rem;   /* above a section heading */
+$space-subhead: 2rem;   /* above a subheading */
+$space-block: 2rem;     /* around project and imagery blocks */
+$space-text: 1.3em;     /* paragraph and list rhythm */
+
 /* Public Sans v2.001, self-hosted; license in assets/fonts/public-sans. */
 @font-face {
   font-family: "Public Sans";
@@ -354,9 +360,35 @@ html[data-theme="dark"] {
   float: none;
   padding-left: 0;
   padding-right: 0;
-  .page__title { font-size: 1.35em; margin-bottom: 1.5em; }
-  .page__content > h2 { margin-top: 2.5em; }
+  .page__title { font-size: 2em; }
   .about-us { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* --------------------------------------------------------------------------
+   Vertical rhythm
+   One spacing scale for prose and the project/imagery blocks so section
+   breaks, paragraphs, and lists read consistently on every page.
+   -------------------------------------------------------------------------- */
+.page__content {
+  > h2 {
+    margin-top: $space-section;
+    margin-bottom: .55em;
+  }
+  > h3 {
+    margin-top: $space-subhead;
+    margin-bottom: .5em;
+  }
+  > p {
+    margin-bottom: $space-text;
+  }
+  > ul,
+  > ol {
+    margin: 0 0 $space-text;
+    padding-left: 1.4em;
+  }
+  > :first-child {
+    margin-top: 0;
+  }
 }
 .project-intro {
   display: grid;
@@ -367,15 +399,15 @@ html[data-theme="dark"] {
   background: var(--surface-warm);
   border: 1px solid var(--surface-border);
   border-radius: 1em;
-  .project-intro__copy h2 {
-    margin: .4em 0 .6em;
-    padding: 0;
-    border: 0;
-    font-size: clamp(1.6em, 3.4vw, 2.6em);
-    line-height: 1.12;
-    letter-spacing: -.04em;
-    &::after { content: none; }
+  .project-intro__lead {
+    margin: .4em 0 .7em;
+    font-family: $header-font-family;
+    font-size: 1.7em;
+    font-weight: $font-weight-bold;
+    line-height: 1.16;
+    letter-spacing: -.03em;
   }
+  .project-actions { margin-top: 1.5em; }
 }
 .project-eyebrow {
   display: block;
@@ -421,7 +453,7 @@ html[data-theme="dark"] {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1em;
-  margin: 1.5em 0 3em;
+  margin: $space-block 0;
   a {
     display: flex;
     flex-direction: column;
@@ -443,12 +475,12 @@ html[data-theme="dark"] {
   grid-template-columns: minmax(0, .8fr) minmax(0, 1.4fr);
   align-items: center;
   gap: 2em;
-  margin: 3em 0;
+  margin: $space-block 0;
   padding: 1.5em;
   background: var(--surface-soft);
   border: 1px solid var(--surface-border);
   border-radius: .7em;
-  h3 { margin: .5em 0; font-size: 1.5em; }
+  h3 { margin: .5em 0; font-size: 1.4em; }
 }
 .archive__item { padding: 1em 0; border-bottom: 1px solid var(--surface-border); }
 .archive__item-title { line-height: 1.35; }
@@ -470,7 +502,7 @@ html[data-theme="dark"] {
   display: flex;
   align-items: center;
   gap: 1em;
-  margin-bottom: 1.5em;
+  margin-bottom: $space-block;
   .home-brand__logo {
     display: block;
     width: 144px;
@@ -484,7 +516,29 @@ html[data-theme="dark"] {
   .page__title::before { content: none; }
 }
 @media (max-width: 599px) {
-  .home-brand { gap: .7em; }
+  .home-brand { gap: .7em; flex-direction: column; align-items: flex-start; }
   .home-brand .home-brand__logo { width: 112px; height: 112px; flex-basis: 112px; }
-  .home-brand .page__title { font-size: 1.15em; }
+  .home-brand .page__title { font-size: 2em; }
+}
+
+/* Interior imagery supports the reading flow without a tall hero or text overlay. */
+.nature-panel {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  align-items: center;
+  gap: 1.5em;
+  padding: 1.25em;
+  margin: $space-block 0;
+  border: 1px solid var(--surface-border);
+  border-radius: .7em;
+  background: var(--surface-soft);
+  img { border-radius: .4em; }
+  h2 { margin: .4em 0 .6em; padding: 0; border: 0; font-size: 1.2em; }
+  h2::after { display: none; }
+  &__copy { min-width: 0; font-size: .8em; }
+  &__copy p { margin-bottom: .7em; }
+}
+@media (max-width: 599px) {
+  .nature-panel { grid-template-columns: minmax(0, 1fr); gap: 1em; }
+  .nature-panel .biology-image { width: 100%; max-width: 320px; margin: 0 auto; }
 }

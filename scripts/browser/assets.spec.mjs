@@ -11,7 +11,7 @@ test('ordinary pages request only local assets', async ({ page }) => {
     const url = request.url();
     if (!url.startsWith('http://127.0.0.1:4000/')) external.push(url);
   });
-  for (const path of ['/', '/publications/', '/guide/', '/resources/']) {
+  for (const path of ['/', '/publications/', '/guide/', '/resources/', '/table-builder/']) {
     await page.goto(path);
     await page.waitForLoadState('networkidle');
   }

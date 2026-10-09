@@ -1,5 +1,23 @@
 # Website maintenance
 
+## JSON schema source of truth
+
+Maintainer decision (2026-10-09): the JSON schemas served from the owning
+repository's raw `main` branch are the single source of truth for FH* validation
+and form fields. For FHR this is
+`https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json`.
+Use the actual schema path in its owning repository for other header types.
+LinkML models, generated bindings, bundled copies and release snapshots must not
+silently replace that authority or define divergent required fields.
+
+Tools may bundle/cache a copy for availability, but must document its raw-main
+source, retrieval/build provenance and refresh behavior; a stale copy must not
+be advertised as current-main validation. Record a retrieved commit/digest when
+useful for reproducibility without making it a different canonical schema URL.
+Keep schemaVersion, software/release version and resource version distinct.
+Do not require persistent/versioned schema URLs as a prerequisite for the table
+builder. Changing this source-of-truth policy needs an explicit maintainer decision.
+
 ## Decision for issue #6
 
 Trim the existing theme into a project-specific site instead of merging the entire Academic Pages v0.9 template. The inherited npm version 0.8.1.1 identified the template's 2024 origin, not a deployed theme dependency. The project now has its own package identity. Do not infer that it is upgraded to upstream v0.9.
@@ -58,3 +76,38 @@ for the selected direction, source/license documentation, preparation commands,
 and responsive behavior. Image licenses are independent of the project code licensing;
 keep the visible credits and `_data/image_credits.yml` synchronized. Existing
 publication/citation metadata and navigation remain part of the acceptance checks.
+
+## FHR table builder
+
+`/table-builder/` is an FHR-only browser prototype (issue #16). One form drives
+one typed record, which is validated against the FHR JSON schema, previewed as a
+readable table, and serialized to a standalone HTML document (with FHR
+microdata) and a YAML metadata file. All processing is local; there is no
+backend, upload, login, or persistence.
+
+- **Schema copy:** `assets/schema/fhr.json` is a cache of
+  `https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json`.
+  It was retrieved from FHR-Specification `main` commit `21fef56` on 2026-10-09
+  (sha256 `e3d3843e1a1646e12495ccc9a615df94b7abe71b833c5f336c59444e0a49620a`).
+  Refresh it by re-downloading that URL and updating this note; the raw-main URL
+  remains the canonical schema, and a stale copy must not be presented as
+  current-main validation.
+- **Validation is structural only.** It follows the schema's required fields,
+  types, patterns, formats, and `additionalProperties`. Passing it is not a
+  claim about biological quality and does not verify a checksum against any file.
+- **Microdata:** the standalone HTML emits the same Schema.org item scope that
+  the FHR converter writes and reads (`_html_value`/`_input_microdata`). It
+  round-trips through `fhr-convert` in the FHR-File-Converter. Keep
+  `assets/js/table-builder.js` in step with that convention.
+- **Assets and JS:** `table-builder.js` loads only on `/table-builder/` (like
+  `theme.js`, it is not part of the bundled `main.min.js`). Node unit tests live
+  in `scripts/test_table_builder.mjs`; browser checks in
+  `scripts/browser/table-builder.spec.mjs`. The page is indexable and in the
+  sitemap allow-list.
+- **Browser coverage:** the Playwright project runs Chromium at desktop and 320px
+  widths (light and dark). Firefox and WebKit were not added to CI to keep the
+  browser install small; the download and cleanup paths use only standard
+  `Blob`/`URL.createObjectURL`/anchor behavior, and this limitation is noted in
+  the PR. A synthetic example pair for review is committed at
+  `docs/table-builder-example.html` and `docs/table-builder-example.yaml` (not
+  deployed, since `docs/` is excluded).

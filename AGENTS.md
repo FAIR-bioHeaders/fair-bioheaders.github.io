@@ -1,5 +1,23 @@
 # AGENTS.md
 
+## JSON schema source of truth
+
+Maintainer decision (2026-10-09): the JSON schemas served from the owning
+repository's raw `main` branch are the single source of truth for FH* validation
+and form fields. For FHR this is
+`https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json`.
+Use the actual schema path in its owning repository for other header types.
+LinkML models, generated bindings, bundled copies and release snapshots must not
+silently replace that authority or define divergent required fields.
+
+Tools may bundle/cache a copy for availability, but must document its raw-main
+source, retrieval/build provenance and refresh behavior; a stale copy must not
+be advertised as current-main validation. Record a retrieved commit/digest when
+useful for reproducibility without making it a different canonical schema URL.
+Keep schemaVersion, software/release version and resource version distinct.
+Do not require persistent/versioned schema URLs as a prerequisite for the table
+builder. Changing this source-of-truth policy needs an explicit maintainer decision.
+
 Guidance for automated agents working in this repository. This is the project
 website for FAIR BioHeaders, a trimmed Academic Pages / Minimal Mistakes Jekyll
 site published by GitHub Pages from `main` at the repository root.
@@ -218,3 +236,27 @@ material, previously granted permissions, and third-party licenses/notices;
 do not label all current contributors as government employees. See LICENSE
 for scope. Do not rewrite historical releases or silently relicense upstream
 material. Keep README badges, package metadata and citation metadata consistent.
+
+## FHR table builder (issue #16)
+
+`/table-builder/` is an FHR-only browser prototype: one form -> one typed record ->
+schema validation against the raw-main FHR JSON schema -> readable table +
+standalone HTML (with FHR microdata) + YAML metadata, with local downloads.
+Keep it FHR-only; do not add other header types, uploads, or persistence.
+
+- The canonical schema is the raw-main FHR JSON at
+  `https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json`.
+  `assets/schema/fhr.json` is a documented cache (see `docs/maintenance.md` for
+  its retrieved commit/digest). Refresh and re-document it rather than pointing
+  elsewhere; never present a stale copy as current-main validation.
+- The standalone HTML microdata must keep round-tripping through the converter
+  (`_html_value`/`_input_microdata` in FHR-File-Converter). `table-builder.js`
+  owns the record->table/microdata/YAML mapping; unit tests are in
+  `scripts/test_table_builder.mjs` and browser tests in
+  `scripts/browser/table-builder.spec.mjs`.
+- `table-builder.js` loads only on that page (not bundled into `main.min.js`,
+  like `theme.js`). It uses native Blob/object-URL downloads and revokes URLs on
+  page hide; keep downloads exactly equal to the displayed source, mark output
+  stale on edit, and never claim a checksum is verified or a file was saved.
+- The page is indexable; keep `/table-builder/` in the sitemap allow-lists in
+  `scripts/check_site.py` and `scripts/check_deployed.py`.

@@ -478,7 +478,7 @@ def check(root):
     for url in urls:
         path = urlsplit(url).path
         require(resolve(path).is_file(), f'Sitemap has missing page: {url}')
-        require(path == '/' or path in ('/publications/', '/resources/', '/guide/') or path.startswith('/publication/'), f'Unexpected sitemap page: {url}')
+        require(path == '/' or path in ('/publications/', '/resources/', '/guide/', '/table-builder/') or path.startswith('/publication/'), f'Unexpected sitemap page: {url}')
     org = html[root / 'index.html'].json_ld[0]
     require(org.get('@type') == 'Organization', 'Home identity must be an organization')
     members = {p['@id'] for p in org.get('member', [])}

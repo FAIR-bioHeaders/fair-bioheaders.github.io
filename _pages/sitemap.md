@@ -8,6 +8,7 @@ sitemap: false
 - [Home and team](/)
 - [Publications](/publications/)
 - [Using FHR](/guide/)
+- [FHR table builder](/table-builder/)
 - [Resources and citation](/resources/)
 - [Privacy](/terms/)
 

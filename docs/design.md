@@ -165,7 +165,8 @@ One vertical-rhythm scale in `_sass/_project.scss` (`$space-section`,
 paragraphs, lists, and the project/imagery blocks, so the home, publications,
 guide, and resources pages share the same spacing. The homepage `h1` is larger
 than the hero tagline, which is a `.project-intro__lead` paragraph rather than a
-heading; `page--home` uses the same section rhythm as interior pages.
+heading. On mobile, the brand stacks its logo above the title to preserve that
+hierarchy without squeezing the title into a narrow column; `page--home` uses the same section rhythm as interior pages.
 
 The "Why the hexagon?" feature closes the "About the project" section, after the
 related-work list it would otherwise interrupt; interior nature panels sit after

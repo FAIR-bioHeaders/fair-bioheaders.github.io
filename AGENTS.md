@@ -166,7 +166,9 @@ direct sections and to the project/imagery blocks. Use it for new sections
 rather than ad-hoc margins so the rhythm stays consistent across pages. Each
 page has a single `h1` (`.page__title`); on the home page the hero tagline is a
 `.project-intro__lead` paragraph, not a heading, so the `h1` remains the largest
-element. Keep heading levels in order (h2 for sections, h3 for subsections).
+element, including on mobile: stack the logo/title there so the title has room
+without shrinking below the tagline. Keep heading levels in order (h2 for
+sections, h3 for subsections).
 
 ## Biological imagery (issue #11)
 

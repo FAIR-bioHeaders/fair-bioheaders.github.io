@@ -97,4 +97,25 @@ test('homepage retains the original logo alongside its heading', async ({ page }
   await expect(logo).toHaveAttribute('alt', 'FAIR BioHeaders logo');
   await logo.evaluate(image => image.decode());
   await expect(page.locator('.home-brand h1')).toHaveText('FAIR BioHeaders');
+  const hierarchy = await page.evaluate(() => ({
+    title: parseFloat(getComputedStyle(document.querySelector('.home-brand h1')).fontSize),
+    lead: parseFloat(getComputedStyle(document.querySelector('.project-intro__lead')).fontSize)
+  }));
+  expect(hierarchy.title).toBeGreaterThan(hierarchy.lead);
+});
+
+// The old 80vw hint selected 800px files at 550px despite a 320px CSS cap.
+test('intermediate mobile widths select the small nature-image candidate', async ({ page }) => {
+  await page.setViewportSize({ width: 550, height: 900 });
+  for (const path of ['/publications/', '/guide/', '/resources/']) {
+    await page.goto(path);
+    const img = page.locator('.nature-panel img');
+    await img.evaluate(image => image.decode());
+    const selected = await img.evaluate(image => ({
+      width: image.getBoundingClientRect().width,
+      source: image.currentSrc
+    }));
+    expect(selected.width).toBeLessThanOrEqual(320);
+    expect(selected.source).toMatch(/-400\.webp$/);
+  }
 });

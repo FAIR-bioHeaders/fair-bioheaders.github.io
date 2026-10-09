@@ -55,6 +55,6 @@ The optional MathJax 3.2.2 script uses a verified SHA-384 integrity digest and `
 The homepage uses biological hexagon imagery and a wider project introduction,
 with clear paths to the specification, tools, and resources. See `docs/design.md`
 for the selected direction, source/license documentation, preparation commands,
-and responsive behavior. Image licenses are independent of the MIT code license;
+and responsive behavior. Image licenses are independent of the project code licensing;
 keep the visible credits and `_data/image_credits.yml` synchronized. Existing
 publication/citation metadata and navigation remain part of the acceptance checks.

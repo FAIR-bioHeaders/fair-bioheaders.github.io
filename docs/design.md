@@ -26,7 +26,7 @@ request image files from Wikimedia or Dartmouth.
   [the file page](https://commons.wikimedia.org/wiki/File:Honigwabe.jpg).
   The subject is honeycomb with open and capped cells. Resizing/compression and
   a CSS hexagonal crop are disclosed in the visible caption. These image
-  derivatives remain CC BY-SA 3.0; the repository's MIT license does not replace
+  derivatives remain CC BY-SA 3.0; the repository's project code license does not replace
   their license. Do not remove attribution or the license link.
 - **Fruit-fly eye:** Louisa Howard / Dartmouth College, scanning electron
   micrograph; the [selected version](https://commons.wikimedia.org/wiki/File:Drosophilidae_compound_eye_edit1.jpg)
@@ -138,7 +138,7 @@ image, create 400/800px variants using the same existing commands (`sips -Z WIDT
 -o OUTPUT`). Dimensions describe each largest JPEG; full frames are preserved.
 Originals are not deployed. The manifest records exact source revisions, original
 hashes, creators, licensing, and modifications. `images/biology/LICENSE.txt`
-preserves the selected licenses independently of the code's MIT license.
+preserves the selected licenses independently of the code's project license.
 
 ### Added image payloads
 

@@ -54,6 +54,12 @@ test('missing required fields are reported with paths', () => {
   assert.ok(errors.some((e) => e.path.join('.') === 'taxon'));
 });
 
+test('taxon subfields remain optional within the required object', () => {
+  const record = exampleRecord();
+  record.taxon = { name: 'Homo sapiens' };
+  assert.deepEqual(tb.validateRecord(record, schema), []);
+});
+
 test('type, pattern and format violations are reported', () => {
   const record = exampleRecord();
   record.schemaVersion = 'one';
@@ -61,12 +67,14 @@ test('type, pattern and format violations are reported', () => {
   record.checksum = 'short';
   record.vitalStats.gcContent = 150;
   record.taxon.uri = 'not a uri';
+  record.assemblyProtocol = 'https://bad host';
   const paths = tb.validateRecord(record, schema).map((e) => e.path.join('.'));
   assert.ok(paths.includes('schemaVersion'));
   assert.ok(paths.includes('scholarlyArticle'));
   assert.ok(paths.includes('checksum'));
   assert.ok(paths.includes('vitalStats.gcContent'));
   assert.ok(paths.includes('taxon.uri'));
+  assert.ok(paths.includes('assemblyProtocol'));
 });
 
 test('unknown properties are rejected', () => {
@@ -100,6 +108,8 @@ test('YAML quotes values that would otherwise change type', () => {
   record.version = '1.0';
   assert.match(tb.toYaml(record), /^genome: 'true'$/m);
   assert.match(tb.toYaml(record), /^version: '1\.0'$/m);
+  record.genome = '- draft';
+  assert.match(tb.toYaml(record), /^genome: '- draft'$/m);
 });
 
 test('microdata preserves types, nesting, and array markers', () => {
@@ -127,8 +137,12 @@ test('the table groups fields and keeps author order', () => {
   const groups = rows.map((g) => g.group);
   assert.deepEqual(groups, ['Resource', 'Genome identity', 'Taxon', 'Authors', 'Dates', 'Provenance', 'Assembly', 'Assembly statistics', 'File integrity']);
   const authors = rows.find((g) => g.group === 'Authors');
-  assert.match(authors.rows[0].value, /Adam Wright/);
-  assert.match(authors.rows[1].value, /David Molik/);
+  assert.deepEqual(authors.rows.filter((row) => row.label.endsWith('— Name')).map((row) => row.value),
+    ['Adam Wright', 'David Molik']);
+  const statistics = rows.find((g) => g.group === 'Assembly statistics');
+  assert.ok(statistics.rows.some((row) => row.label === 'N50 (bp)' && row.value === '16'));
+  assert.ok(statistics.rows.some((row) => row.label === 'L50 (contigs)' && row.value === '1'));
+  assert.ok(statistics.rows.some((row) => row.label === 'GC content (%)' && row.value === '37.5'));
 });
 
 test('zero and false values are preserved, absence is not invented', () => {

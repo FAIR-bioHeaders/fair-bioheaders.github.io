@@ -51,8 +51,8 @@
       id: 'taxon', legend: 'Taxon',
       fields: [
         { path: 'taxon', label: 'Taxon', kind: 'object', required: true, fields: [
-          { name: 'name', label: 'Taxon name', kind: 'text', required: true },
-          { name: 'uri', label: 'Taxon URI', kind: 'text', format: 'uri', required: true,
+          { name: 'name', label: 'Taxon name', kind: 'text' },
+          { name: 'uri', label: 'Taxon URI', kind: 'text', format: 'uri',
             help: 'e.g. https://identifiers.org/taxonomy:9606' }
         ] }
       ]
@@ -173,7 +173,12 @@
   }
 
   function isUri(value) {
-    return /^[a-z][a-z0-9+.-]*:/i.test(value);
+    try {
+      new URL(value);
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   function isDate(value) {
@@ -270,6 +275,7 @@
     if (/^[-+]?(\d[\d_]*)(\.\d*)?([eE][-+]?\d+)?$/.test(text)) return false;
     if (/^\d{4}-\d{2}-\d{2}/.test(text)) return false;
     if (/^[!&*?|>%@`"'#,{}\[\]]/.test(text)) return false;
+    if (/^-(?:\s|$)/.test(text)) return false;
     if (/: /.test(text) || /:$/.test(text) || / #/.test(text)) return false;
     return true;
   }
@@ -397,12 +403,23 @@
         if (value === undefined) return;
         if (field.kind === 'object') {
           if (value && Object.keys(value).length) {
-            groupRows.push({ label: field.label, value: displayValue(value) });
+            field.fields.forEach(function (subfield) {
+              if (value[subfield.name] !== undefined && value[subfield.name] !== '') {
+                groupRows.push({ label: subfield.label, value: displayValue(value[subfield.name]) });
+              }
+            });
           }
         } else if (field.kind === 'objectList') {
           if (Array.isArray(value) && value.length) {
             value.forEach(function (item, index) {
-              groupRows.push({ label: field.label + ' ' + (index + 1), value: displayValue(item) });
+              field.fields.forEach(function (subfield) {
+                if (item[subfield.name] !== undefined && item[subfield.name] !== '') {
+                  groupRows.push({
+                    label: field.label + ' ' + (index + 1) + ' — ' + subfield.label,
+                    value: displayValue(item[subfield.name])
+                  });
+                }
+              });
             });
           }
         } else if (Array.isArray(value)) {

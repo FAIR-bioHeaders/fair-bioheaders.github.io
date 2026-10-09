@@ -1,0 +1,19 @@
+# Asset provenance. Rendered credits use these URLs; keep license scope per image.
+honeycomb:
+  title: Honigwabe
+  creator: Waugsberg
+  source: https://commons.wikimedia.org/wiki/File:Honigwabe.jpg
+  source_revision: https://commons.wikimedia.org/w/index.php?title=File:Honigwabe.jpg&oldid=1054553293
+  license: CC BY-SA 3.0
+  license_url: https://creativecommons.org/licenses/by-sa/3.0/
+  modifications: Resized and JPEG/WebP-compressed; displayed within a CSS hexagonal crop. No recoloring.
+  assets: [honeycomb-480.jpg, honeycomb-960.jpg, honeycomb-480.webp, honeycomb-960.webp]
+compound_eye:
+  title: Drosophilidae compound eye edit1
+  creator: Louisa Howard / Dartmouth College
+  source: https://commons.wikimedia.org/wiki/File:Drosophilidae_compound_eye_edit1.jpg
+  source_revision: https://commons.wikimedia.org/w/index.php?title=File:Drosophilidae_compound_eye_edit1.jpg&oldid=1213575839
+  license: Public domain dedication by Dartmouth College
+  license_url: https://commons.wikimedia.org/wiki/File:Drosophilidae_compound_eye_edit1.jpg#Licensing
+  modifications: Upstream retouch by Papa Lima Whiskey; resized and JPEG/WebP-compressed locally. Full frame retained, including scale bar. No recoloring.
+  assets: [compound-eye-400.jpg, compound-eye-800.jpg, compound-eye-400.webp, compound-eye-800.webp]

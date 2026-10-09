@@ -57,3 +57,9 @@ npm run test:deploy
 ## CI
 
 Every PR and push to `main` rebuilds JavaScript, verifies that the committed bundle matches, builds Jekyll, runs the Python and Node regression tests, the Playwright browser/accessibility suite, and checks local links, CSS assets, fragments, sitemap URLs, metadata, and project identities. The workflow uploads `_site` as a preview artifact. Weekly and manual runs also check external links with Lychee; third-party rate limits may require a retry. A separate workflow runs the deployed-site smoke check after the Pages deployment completes.
+
+The threaded preview server reserves a connection backlog of 128 for parallel
+browser asset requests. Restart an already running preview after changing
+`scripts/preview.py`; Playwright may reuse it. A stale or overloaded preview can
+reset font/CSS/image requests and produce misleading layout or accessibility
+failures. Do not dismiss network errors as passing checks.

@@ -180,7 +180,7 @@ introductory and supporting headings
 remain real headings. Image credits live in `_data/image_credits.yml`, rendered
 beside the images, with detailed provenance in `docs/design.md` and per-image
 license scope in `images/biology/LICENSE.txt`. Honeycomb derivatives are CC BY-SA
-3.0, separately from the repository's MIT code license. Do not remove credits or
+3.0, separately from the repository's project code licensing. Do not remove credits or
 crop the eye micrograph's scale bar. Use local responsive WebP/JPEG pairs, explicit
 dimensions, and meaningful alt text. Keep caption text outside hexagonal masks.
 The main image is eager; the supporting image is lazy. Review artifacts under
@@ -209,3 +209,12 @@ These three panels are near the top and load eagerly; below-fold homepage imager
 remains lazy. The new egg/tortoise derivatives are CC BY-SA 2.0, pineapple CC BY-SA
 4.0; retain their independent image licenses. Run image decode/credit checks and
 axe/layout checks on all three pages in both themes and widths.
+
+## Licensing policy (2026-10-09)
+
+New FAIR BioHeaders project contributions from March 2025 onward use MPL-2.0.
+David Molik left USDA in February 2025. Preserve historical USDA public-domain
+material, previously granted permissions, and third-party licenses/notices;
+do not label all current contributors as government employees. See LICENSE
+for scope. Do not rewrite historical releases or silently relicense upstream
+material. Keep README badges, package metadata and citation metadata consistent.

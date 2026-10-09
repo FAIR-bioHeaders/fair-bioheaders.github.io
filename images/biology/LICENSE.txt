@@ -1,4 +1,4 @@
-Image licenses are separate from the repository's MIT code license.
+Image licenses are separate from the repository's project code licensing.
 
 honeycomb-480.jpg, honeycomb-960.jpg, honeycomb-480.webp, honeycomb-960.webp:
 Honigwabe by Waugsberg; CC BY-SA 3.0 Unported.

@@ -26,11 +26,11 @@ redirect_from:
   </figure>
 </div>
 
-<div class="project-paths" aria-label="Explore FAIR BioHeaders">
+<nav class="project-paths" aria-label="Explore FAIR BioHeaders">
   <a href="https://github.com/FAIR-bioHeaders/FHR-Specification"><span class="project-eyebrow">01 / Standard</span><strong>A shared language</strong><span>Metadata fields and schemas for reference genomes.</span></a>
   <a href="https://github.com/FAIR-bioHeaders/FHR-File-Converter"><span class="project-eyebrow">02 / Tools</span><strong>Put it into practice</strong><span>Convert headers and work with supported representations.</span></a>
   <a href="{{ '/resources/' | relative_url }}"><span class="project-eyebrow">03 / Resources</span><strong>Build on the work</strong><span>Repositories, archived releases, and citation guidance.</span></a>
-</div>
+</nav>
 
 ## About the project
 
@@ -50,7 +50,7 @@ FAIR BioHeaders grew out of a problem described in the [FHR standard paper](http
       <source type="image/webp" srcset="{{ '/images/biology/compound-eye-400.webp' | relative_url }} 400w, {{ '/images/biology/compound-eye-800.webp' | relative_url }} 800w" sizes="(min-width: 900px) 320px, (min-width: 600px) 240px, 90vw">
     <img src="{{ '/images/biology/compound-eye-800.jpg' | relative_url }}" srcset="{{ '/images/biology/compound-eye-400.jpg' | relative_url }} 400w, {{ '/images/biology/compound-eye-800.jpg' | relative_url }} 800w" sizes="(min-width: 900px) 320px, (min-width: 600px) 240px, 90vw" width="800" height="639" alt="Black-and-white electron micrograph of closely packed fruit-fly eye facets and bristles" loading="lazy" decoding="async">
     </picture>
-    <figcaption>Fruit-fly eye, SEM · <a href="{{ site.data.image_credits.compound_eye.source }}">Louisa Howard / Dartmouth College</a> · public domain · retouched, resized</figcaption>
+    <figcaption>Fruit-fly eye, SEM · <a href="{{ site.data.image_credits.compound_eye.source }}">Louisa Howard / Dartmouth College</a> · <a href="{{ site.data.image_credits.compound_eye.license_url }}">public domain</a> · retouched, resized</figcaption>
   </figure>
   <div class="biology-feature__copy">
     <p class="project-eyebrow">Patterns across biology</p>

@@ -5,6 +5,8 @@ main:
     url: /publications/
   - title: "Using FHR"
     url: /guide/
+  - title: "Table builder"
+    url: /table-builder/
   - title: "Resources & citation"
     url: /resources/
   - title: "GitHub"

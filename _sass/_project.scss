@@ -464,3 +464,27 @@ html[data-theme="dark"] {
   .project-paths { gap: .7em; }
   .project-action { width: 100%; }
 }
+
+/* Retain the original project logo independently of biological decoration. */
+.home-brand {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 1.5em;
+  .home-brand__logo {
+    display: block;
+    width: 144px;
+    height: 144px;
+    flex: 0 0 144px;
+    background: #fff;
+    border: 1px solid var(--surface-border);
+    border-radius: 50%;
+  }
+  .page__title { margin: 0; padding-left: 0; line-height: 1.2; }
+  .page__title::before { content: none; }
+}
+@media (max-width: 599px) {
+  .home-brand { gap: .7em; }
+  .home-brand .home-brand__logo { width: 112px; height: 112px; flex-basis: 112px; }
+  .home-brand .page__title { font-size: 1.15em; }
+}

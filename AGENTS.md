@@ -161,7 +161,10 @@ PR description when behavior or conventions change.
 ## Biological imagery (issue #11)
 
 The homepage has no author sidebar and uses `.page--home` for its full-width
-composition. Keep the main h1 and metadata; introductory and supporting headings
+composition. Keep the original `images/logo.png` beside the homepage h1 in
+`.home-brand`, with its white backing in both themes; biological imagery and
+the small navigation hexagon do not replace it. Keep the main h1 and metadata;
+introductory and supporting headings
 remain real headings. Image credits live in `_data/image_credits.yml`, rendered
 beside the images, with detailed provenance in `docs/design.md` and per-image
 license scope in `images/biology/LICENSE.txt`. Honeycomb derivatives are CC BY-SA
@@ -172,3 +175,10 @@ The main image is eager; the supporting image is lazy. Review artifacts under
 `docs/design/` are excluded from deployment. Run browser/axe checks in both themes
 and widths after changing layout or colors; `assets.spec.mjs` verifies decoding
 and local responsive image selection.
+
+Parallel browser checks need the current `scripts/preview.py` server (backlog
+128); restart a stale reused server after editing it. Connection resets for
+CSS/fonts/images can cause misleading layout failures. Browser layout checks
+wait for the local font and reduced-motion rendering; axe waits for existing
+keyboard initialization of code scrollers. Preserve those assertions when
+adjusting test timing.

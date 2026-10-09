@@ -24,7 +24,10 @@ test('the bundled fonts load from the site', async ({ page }) => {
     if (/\.woff2(\?|$)/.test(response.url())) fonts.push(response.url());
   });
   await page.goto('/');
-  await page.evaluate(() => document.fonts.ready);
+  await page.evaluate(async () => {
+    await document.fonts.load('400 16px "Public Sans"');
+    await document.fonts.ready;
+  });
   expect(fonts.length).toBeGreaterThan(0);
   for (const url of fonts) {
     expect(url.startsWith('http://127.0.0.1:4000/')).toBe(true);
@@ -46,16 +49,22 @@ test('an opted-in math page loads only the pinned MathJax script', async ({ page
 });
 
 test('biological images decode with reserved space and local responsive sources', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
+  await page.evaluate(async () => {
+    await document.fonts.load('400 16px "Public Sans"');
+    await document.fonts.ready;
+  });
   const pictures = page.locator('.biology-image picture');
   await expect(pictures).toHaveCount(2);
   for (const picture of await pictures.all()) {
     const img = picture.locator('img');
     await img.scrollIntoViewIfNeeded();
-    // Lazy loading and responsive candidate changes can abort an in-flight decode.
+    // Wait for lazy loading before decoding; decode() can reject an unloaded candidate.
     await expect.poll(() => img.evaluate(image =>
-      image.decode().then(() => image.complete && image.naturalWidth > 0).catch(() => false)
+      image.complete && image.naturalWidth > 0
     )).toBe(true);
+    await img.evaluate(image => image.decode());
     const info = await img.evaluate(image => ({
       width: image.width, height: image.height,
       naturalWidth: image.naturalWidth,
@@ -72,4 +81,14 @@ test('biological images decode with reserved space and local responsive sources'
     expect(info.currentSrc).toMatch(/^http:\/\/127\.0\.0\.1:4000\/images\/biology\/.*\.webp$/);
     expect(info.alt.length).toBeGreaterThan(0);
   }
+});
+
+test('homepage retains the original logo alongside its heading', async ({ page }) => {
+  await page.goto('/');
+  const logo = page.locator('.home-brand__logo');
+  await expect(logo).toBeVisible();
+  await expect(logo).toHaveAttribute('src', '/images/logo.png');
+  await expect(logo).toHaveAttribute('alt', 'FAIR BioHeaders logo');
+  await logo.evaluate(image => image.decode());
+  await expect(page.locator('.home-brand h1')).toHaveText('FAIR BioHeaders');
 });

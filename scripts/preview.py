@@ -13,6 +13,11 @@ class Handler(SimpleHTTPRequestHandler):
             return target + '.html'
         return target
 
+class PreviewServer(ThreadingHTTPServer):
+    # Parallel browsers open bursts of connections for fonts, images, and scripts.
+    # A small listen backlog can reset those requests before a handler accepts them.
+    request_queue_size = 128
+
 if __name__ == '__main__':
     print('Preview: http://127.0.0.1:4000', flush=True)
-    ThreadingHTTPServer(('127.0.0.1', 4000), Handler).serve_forever()
+    PreviewServer(('127.0.0.1', 4000), Handler).serve_forever()

@@ -25,7 +25,10 @@ layout: default
 
     <div class="page__inner-wrap">
       {% unless page.header.overlay_color or page.header.overlay_image %}
-        <header>
+        <header{% if page.url == "/" %} class="home-brand"{% endif %}>
+          {% if page.url == "/" %}
+            <img class="home-brand__logo" src="{{ "/images/logo.png" | relative_url }}" width="144" height="144" alt="FAIR BioHeaders logo">
+          {% endif %}
           {% if page.title %}<h1 class="page__title" itemprop="headline">{{ page.title | markdownify | remove: "<p>" | remove: "</p>" }}</h1>{% endif %}
           {% if page.read_time %}
             <p class="page__meta">{% include read-time.html %}</p>

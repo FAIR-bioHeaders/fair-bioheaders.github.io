@@ -5,6 +5,20 @@ import AxeBuilder from '@axe-core/playwright';
 // resources (repo references + citations).
 const PAGES = ['/', '/publications/', '/guide/', '/resources/'];
 
+// Inspect settled layouts, not the intro animation or a fallback-font frame.
+test.beforeEach(async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+});
+
+async function openPage(page, path) {
+  await page.goto(path);
+  await page.evaluate(async () => {
+    await document.fonts.load('400 16px "Public Sans"');
+    await document.fonts.ready;
+  });
+}
+
+
 // Emulate the color scheme before navigation so theme.js picks it up, and
 // reduce motion so transitions are not sampled mid-animation.
 async function withTheme(page, value) {
@@ -14,14 +28,14 @@ async function withTheme(page, value) {
 test.describe('layout and motion', () => {
   for (const path of PAGES) {
     test(`no horizontal overflow on ${path}`, async ({ page }) => {
-      await page.goto(path);
+      await openPage(page, path);
       const overflow = await page.evaluate(() =>
         document.documentElement.scrollWidth - document.documentElement.clientWidth);
       expect(overflow).toBeLessThanOrEqual(1);
     });
 
     test(`article clears the fixed masthead on ${path}`, async ({ page }) => {
-      await page.goto(path);
+      await openPage(page, path);
       const clears = await page.evaluate(() => {
         const masthead = document.querySelector('.masthead');
         const main = document.querySelector('#main');
@@ -34,7 +48,7 @@ test.describe('layout and motion', () => {
 
   test('reduced motion disables the intro animation', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('/');
+    await openPage(page, '/');
     const duration = await page.evaluate(() => getComputedStyle(document.querySelector('#main')).animationDuration);
     expect(duration === '0.001ms' || parseFloat(duration) < 0.01).toBe(true);
   });
@@ -42,7 +56,7 @@ test.describe('layout and motion', () => {
 
 test.describe('keyboard and theme', () => {
   test('skip link focuses the main landmark', async ({ page }) => {
-    await page.goto('/');
+    await openPage(page, '/');
     await page.keyboard.press('Tab');
     await expect(page.locator('.skip-link')).toBeFocused();
     await page.keyboard.press('Enter');
@@ -51,7 +65,7 @@ test.describe('keyboard and theme', () => {
 
   test('overflow menu opens, closes on Escape, and reports aria-expanded', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 });
-    await page.goto('/');
+    await openPage(page, '/');
     const toggle = page.locator('.nav-toggle');
     await toggle.click();
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
@@ -61,7 +75,7 @@ test.describe('keyboard and theme', () => {
 
   test('theme toggle persists across reloads', async ({ page }) => {
     await withTheme(page, 'light');
-    await page.goto('/');
+    await openPage(page, '/');
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
     await page.locator('#theme-toggle').click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
@@ -76,7 +90,7 @@ test.describe('keyboard and theme', () => {
     });
     page.on('pageerror', (error) => errors.push(String(error)));
     for (const path of PAGES) {
-      await page.goto(path);
+      await openPage(page, path);
     }
     expect(errors).toEqual([]);
   });
@@ -85,7 +99,7 @@ test.describe('keyboard and theme', () => {
 test.describe('citation controls', () => {
   test('Cite reveals BibTeX and Copy updates the button', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
-    await page.goto('/resources/');
+    await openPage(page, '/resources/');
     const reference = page.locator('#Wright2024');
     await reference.locator('.cite-button').click();
     const output = reference.locator('.cite-output');
@@ -105,7 +119,7 @@ test.describe('citation controls', () => {
       });
       document.execCommand = () => true;
     });
-    await page.goto('/resources/');
+    await openPage(page, '/resources/');
     const reference = page.locator('#Wright2024');
     await reference.locator('.cite-button').click();
     await reference.locator('.cite-copy').click();
@@ -120,7 +134,7 @@ test.describe('citation controls', () => {
       });
       document.execCommand = () => false;
     });
-    await page.goto('/resources/');
+    await openPage(page, '/resources/');
     const reference = page.locator('#Wright2024');
     await reference.locator('.cite-button').click();
     await reference.locator('.cite-copy').click();
@@ -133,8 +147,10 @@ test.describe('accessibility', () => {
     for (const value of ['light', 'dark']) {
       test(`axe passes on ${path} (${value})`, async ({ page }) => {
         await withTheme(page, value);
-        await page.goto(path);
-        await page.evaluate(() => document.fonts.ready);
+        await openPage(page, path);
+        // The existing ready handler makes code scrollers keyboard reachable.
+        await page.waitForFunction(() => [...document.querySelectorAll(".highlight pre")]
+          .every(pre => pre.tabIndex >= 0));
         const results = await new AxeBuilder({ page }).analyze();
         expect(results.violations).toEqual([]);
       });

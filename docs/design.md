@@ -1,7 +1,9 @@
 # Biological imagery and layout
 
 Issue #11 introduces a wider homepage with an adjacent text/image composition,
-three routes into the project, and a secondary microscopy feature. The logo,
+three routes into the project, and a secondary microscopy feature. The original
+`images/logo.png` appears beside the homepage h1 in a compact brand area, with a
+white backing in both themes; the small navigation hexagon is a separate accent. The logo,
 orange/yellow accents, locally hosted Public Sans, publication URLs, and citation
 components remain the visual and semantic anchors. Publications gain more space
 between entries; resource tables keep their existing structure.

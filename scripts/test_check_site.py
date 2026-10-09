@@ -6,6 +6,7 @@ from check_site import (
     feed_errors,
     jsonld_container_errors,
     mathjax_errors,
+    parse_srcset,
     publication_itemlist_errors,
     reference_errors,
     MATHJAX_INTEGRITY,
@@ -304,6 +305,23 @@ class ElementIDChecks(unittest.TestCase):
 
     def test_distinct_ids_are_allowed(self):
         self.assertEqual(Page('<div id="a"></div><pre id="b"></pre>').duplicate_ids, set())
+
+
+class SrcsetChecks(unittest.TestCase):
+    def test_width_descriptors_are_stripped(self):
+        self.assertEqual(parse_srcset('/a.webp 480w, /b.webp 960w'), ['/a.webp', '/b.webp'])
+
+    def test_density_descriptors_are_stripped(self):
+        self.assertEqual(parse_srcset('/a.png 1x, /b.png 2x'), ['/a.png', '/b.png'])
+
+    def test_empty_and_descriptorless_candidates(self):
+        self.assertEqual(parse_srcset(''), [])
+        self.assertEqual(parse_srcset('/only.webp'), ['/only.webp'])
+
+    def test_srcset_urls_are_checked(self):
+        # A broken variant that only appears in srcset must be reported.
+        page = Page('<img src="/images/ok.jpg" srcset="/images/ok.jpg 480w, /images/missing.jpg 960w" alt="x">')
+        self.assertIn('/images/missing.jpg', page.links)
 
 
 class IconFontChecks(unittest.TestCase):

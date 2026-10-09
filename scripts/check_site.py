@@ -41,6 +41,9 @@ class Page(HTMLParser):
         for key in ('href', 'src'):
             if attrs.get(key):
                 self.links.append(attrs[key])
+        for key in ('srcset', 'imagesrcset'):
+            for url in parse_srcset(attrs.get(key, '')):
+                self.links.append(url)
         if tag == 'script':
             self.scripts.append(attrs)
         if tag == 'img':
@@ -80,6 +83,22 @@ class Page(HTMLParser):
             except json.JSONDecodeError as error:
                 self.json_errors.append(str(error))
             self.json_buffer = None
+
+
+def parse_srcset(value):
+    """Extract the URLs from a srcset/imagesrcset attribute value.
+
+    Each candidate is a URL optionally followed by a width/density descriptor,
+    separated by commas. URLs cannot contain unescaped spaces or commas here, so
+    a simple split keeps this dependency-free.
+    """
+    urls = []
+    for candidate in value.split(','):
+        candidate = candidate.strip()
+        if not candidate:
+            continue
+        urls.append(candidate.split()[0])
+    return urls
 
 
 REFERENCE_RE = re.compile(r'<div class="reference"([^>]*)>')

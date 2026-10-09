@@ -2,8 +2,8 @@
 <div class="nature-panel">
   <figure class="biology-image">
     <picture>
-      <source type="image/webp" srcset="{{ '/images/biology/' | relative_url }}{{ include.key }}-400.webp 400w, {{ '/images/biology/' | relative_url }}{{ include.key }}-800.webp 800w" sizes="(min-width: 600px) 220px, 80vw">
-      <img src="{{ '/images/biology/' | relative_url }}{{ include.key }}-800.jpg" srcset="{{ '/images/biology/' | relative_url }}{{ include.key }}-400.jpg 400w, {{ '/images/biology/' | relative_url }}{{ include.key }}-800.jpg 800w" sizes="(min-width: 600px) 220px, 80vw" width="{{ image.width }}" height="{{ image.height }}" alt="{{ image.alt | escape }}" decoding="async">
+      <source type="image/webp" srcset="{{ '/images/biology/' | relative_url }}{{ include.key }}-400.webp 400w, {{ '/images/biology/' | relative_url }}{{ include.key }}-800.webp 800w" sizes="(min-width: 600px) 220px, (min-width: 400px) 320px, 80vw">
+      <img src="{{ '/images/biology/' | relative_url }}{{ include.key }}-800.jpg" srcset="{{ '/images/biology/' | relative_url }}{{ include.key }}-400.jpg 400w, {{ '/images/biology/' | relative_url }}{{ include.key }}-800.jpg 800w" sizes="(min-width: 600px) 220px, (min-width: 400px) 320px, 80vw" width="{{ image.width }}" height="{{ image.height }}" alt="{{ image.alt | escape }}" decoding="async">
     </picture>
     <figcaption>{{ image.credit_title | escape }} · <a href="{{ image.source | escape }}">{{ image.creator | escape }}</a> · <a href="{{ image.license_url | escape }}">{{ image.license | escape }}</a> · resized, compressed</figcaption>
   </figure>

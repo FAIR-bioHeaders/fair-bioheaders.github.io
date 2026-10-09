@@ -157,3 +157,17 @@ Review screenshots for all three pages in light/dark desktop/mobile layouts live
 in `docs/design/issue-13/` (excluded from deployment). The asset browser check now
 decodes imagery and checks visible source/license links across all four primary
 pages; existing axe, overflow, navigation, local-network and citation checks apply.
+
+### Spacing and reading order
+
+One vertical-rhythm scale in `_sass/_project.scss` (`$space-section`,
+`$space-subhead`, `$space-block`, `$space-text`) governs section headings,
+paragraphs, lists, and the project/imagery blocks, so the home, publications,
+guide, and resources pages share the same spacing. The homepage `h1` is larger
+than the hero tagline, which is a `.project-intro__lead` paragraph rather than a
+heading; `page--home` uses the same section rhythm as interior pages.
+
+The "Why the hexagon?" feature closes the "About the project" section, after the
+related-work list it would otherwise interrupt; interior nature panels sit after
+a short page introduction rather than leading the page, and each links back to
+`/#why-the-hexagon`.

@@ -158,6 +158,16 @@ Make focused changes that preserve published URLs and the project's metadata
 guarantees. Avoid reintroducing unused template features. Update `docs/` and the
 PR description when behavior or conventions change.
 
+## Spacing and typography
+
+`_sass/_project.scss` defines one vertical-rhythm scale (`$space-section`,
+`$space-subhead`, `$space-block`, `$space-text`) applied to `.page__content`
+direct sections and to the project/imagery blocks. Use it for new sections
+rather than ad-hoc margins so the rhythm stays consistent across pages. Each
+page has a single `h1` (`.page__title`); on the home page the hero tagline is a
+`.project-intro__lead` paragraph, not a heading, so the `h1` remains the largest
+element. Keep heading levels in order (h2 for sections, h3 for subsections).
+
 ## Biological imagery (issue #11)
 
 The homepage has no author sidebar and uses `.page--home` for its full-width

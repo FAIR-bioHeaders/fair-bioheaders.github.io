@@ -1,5 +1,23 @@
 # AGENTS.md
 
+## JSON schema source of truth
+
+Maintainer decision (2026-10-09): the JSON schemas served from the owning
+repository's raw `main` branch are the single source of truth for FH* validation
+and form fields. For FHR this is
+`https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json`.
+Use the actual schema path in its owning repository for other header types.
+LinkML models, generated bindings, bundled copies and release snapshots must not
+silently replace that authority or define divergent required fields.
+
+Tools may bundle/cache a copy for availability, but must document its raw-main
+source, retrieval/build provenance and refresh behavior; a stale copy must not
+be advertised as current-main validation. Record a retrieved commit/digest when
+useful for reproducibility without making it a different canonical schema URL.
+Keep schemaVersion, software/release version and resource version distinct.
+Do not require persistent/versioned schema URLs as a prerequisite for the table
+builder. Changing this source-of-truth policy needs an explicit maintainer decision.
+
 Guidance for automated agents working in this repository. This is the project
 website for FAIR BioHeaders, a trimmed Academic Pages / Minimal Mistakes Jekyll
 site published by GitHub Pages from `main` at the repository root.
@@ -218,3 +236,66 @@ material, previously granted permissions, and third-party licenses/notices;
 do not label all current contributors as government employees. See LICENSE
 for scope. Do not rewrite historical releases or silently relicense upstream
 material. Keep README badges, package metadata and citation metadata consistent.
+
+## FHR table builder (issue #16)
+
+`/table-builder/` is an FHR-only browser prototype: one form -> one typed record ->
+validation against the selected supported FHR schema snapshot -> readable table +
+standalone HTML (with FHR microdata) + YAML metadata, with local downloads.
+Keep it FHR-only; do not add other header types, uploads, or persistence.
+
+- The canonical schema is the raw-main FHR JSON at
+  `https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json`.
+  `assets/schema/fhr.json` is a documented cache (see `docs/maintenance.md` for
+  its retrieved commit/digest). Refresh and re-document the development cache; never present a stale copy as
+  current-main validation. Released aliases use their separate fixed snapshot
+  as described in the version-aware decision below.
+- The standalone HTML microdata must keep round-tripping through the converter
+  (`_html_value`/`_input_microdata` in FHR-File-Converter). `table-builder.js`
+  owns the record->table/microdata/YAML mapping; unit tests are in
+  `scripts/test_table_builder.mjs` and browser tests in
+  `scripts/browser/table-builder.spec.mjs`.
+- `table-builder.js` loads only on that page (not bundled into `main.min.js`,
+  like `theme.js`). It uses native Blob/object-URL downloads and revokes URLs on
+  page hide; keep downloads exactly equal to the displayed source, mark output
+  stale on edit, and never claim a checksum is verified or a file was saved.
+- The page is indexable; keep `/table-builder/` in the sitemap allow-lists in
+  `scripts/check_site.py` and `scripts/check_deployed.py`.
+
+
+### Version-aware validation decision (2026-10-09)
+
+The repository/raw-main copy remains canonical for development. Validation must
+honor a record's cited schema version; versioned w3id aliases resolve to fixed
+repository releases/revisions. A latest-schema check is explicit, never a silent
+replacement for a cited version (FHR-Specification #44, #35, #54).
+
+The builder defaults to `https://w3id.org/fair-bioheaders/fhr/v0.3.1` and uses
+`assets/schema/fhr-v0.3.1.json`, verified byte-for-byte against the v0.3.1 tag at
+commit `378b534dda9c1d759f25b4b32287172402492233` on 2026-10-09. SHA-256:
+`e3d3843e1a1646e12495ccc9a615df94b7abe71b833c5f336c59444e0a49620a`.
+The tag raw URL and that exact commit raw URL are also supported aliases.
+Keep this released snapshot fixed when refreshing `assets/schema/fhr.json`.
+The unit test pins its digest. Add separate snapshots and tests when supporting
+new releases; do not route new version aliases to whichever schema is current.
+
+Explicit raw-main selection validates the separately documented development
+cache, not a live fetch or a promise that the cache is current main. The UI names
+that snapshot in its result. Unsupported targets block downloads. Both schema
+files load locally; selecting a URL never causes arbitrary network requests.
+The numeric `schemaVersion` field (1.0) is distinct from the release tag (v0.3.1).
+HTML microdata retains the canonical itemtype for converter compatibility; its
+`schema` property carries the selected record schema URL.
+
+String values are always YAML double-quoted using JSON escapes. Real YAML 1.1
+and 1.2 parser tests protect types and control characters. `yaml` is a dev-only
+test dependency and must not be loaded by the browser. Numeric object controls
+convert to numbers before validation. Error links use registered controls or
+focusable group fieldsets; clear removed controls from the registry.
+
+Field errors must join existing `aria-describedby` help references while invalid,
+and only the error reference should be removed when validation clears. Apply
+this to repeatable scalar controls as well as ordinary/nested inputs. Browser
+regressions check computed accessible descriptions and corrected-input cleanup.
+The converter round-trip in the PR validation notes is a local verification;
+CI currently checks microdata markup, not an installed-converter round-trip.

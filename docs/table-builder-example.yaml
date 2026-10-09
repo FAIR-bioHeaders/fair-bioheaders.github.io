@@ -1,0 +1,36 @@
+schema: "https://w3id.org/fair-bioheaders/fhr/v0.3.1"
+schemaVersion: 1.0
+genome: "Synthetic human reference example"
+genomeSynonym:
+- "synthetic example"
+taxon:
+  name: "Homo sapiens"
+  uri: "https://identifiers.org/taxonomy:9606"
+version: "0.0.1"
+metadataAuthor:
+- name: "Adam Wright"
+  uri: "https://orcid.org/0000-0002-5719-4024"
+assemblyAuthor:
+- name: "David Molik"
+  uri: "https://orcid.org/0000-0003-3192-6538"
+dateCreated: "2022-03-21"
+accessionID:
+  name: "PBARC"
+  url: "https://www.ars.usda.gov/pacific-west-area/hilo-hi/daniel-k-inouye-us-pacific-basin-agricultural-research-center/"
+instrument:
+- "Example sequencer"
+scholarlyArticle: "10.1093/bib/bbae122"
+masking: "soft-masked"
+vitalStats:
+  N50: 16
+  L50: 1
+  gcContent: 37.5
+  readTechnology: "HiFi"
+checksum: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+assemblySoftware:
+- name: "hifiasm"
+  version: "0.19.8"
+  uri: "https://github.com/chhylp123/hifiasm"
+  commandLineOption:
+  - "-t"
+  - "2"

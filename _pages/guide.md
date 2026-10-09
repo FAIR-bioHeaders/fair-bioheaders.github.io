@@ -13,6 +13,9 @@ are placeholders.
 
 {% include nature-panel.html key="turtle-shell" %}
 
+Prefer a form? The [FHR table builder](/table-builder/) builds the metadata,
+validates it against the schema, and downloads the table and metadata file.
+
 ## A worked example
 
 Start with ordinary FASTA that carries no FHR metadata:

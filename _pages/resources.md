@@ -41,3 +41,5 @@ For a general description of FHR, cite the published paper. Select **Cite** to v
 For direct use of the specification or converter, cite the resource in the [project repositories](#project-repositories) list above.
 
 These are concept DOIs, which group releases. For reproducible use of a specific release, select its version DOI from the Zenodo record. See [FHR Citation](https://github.com/FAIR-bioHeaders/FHR-Citation) for maintained metadata and [downloadable BibTeX](https://github.com/FAIR-bioHeaders/FHR-Citation/blob/main/citation.bib).
+
+To assemble a metadata record and a readable table in the browser, use the [FHR table builder](/table-builder/).

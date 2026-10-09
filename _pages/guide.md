@@ -11,6 +11,8 @@ commands below were run against the released `fhr` package (0.3.3) and the
 shipped with the converter; the sample is redistributable and its identifiers
 are placeholders.
 
+{% include nature-panel.html key="turtle-shell" %}
+
 ## A worked example
 
 Start with ordinary FASTA that carries no FHR metadata:

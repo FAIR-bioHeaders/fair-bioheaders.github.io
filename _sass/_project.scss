@@ -488,3 +488,25 @@ html[data-theme="dark"] {
   .home-brand .home-brand__logo { width: 112px; height: 112px; flex-basis: 112px; }
   .home-brand .page__title { font-size: 1.15em; }
 }
+
+/* Interior imagery supports the reading flow without a tall hero or text overlay. */
+.nature-panel {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  align-items: center;
+  gap: 1.5em;
+  padding: 1em;
+  margin: 1.5em 0 2em;
+  border: 1px solid var(--surface-border);
+  border-radius: .7em;
+  background: var(--surface-soft);
+  img { border-radius: .4em; }
+  h2 { margin: .4em 0 .6em; padding: 0; border: 0; font-size: 1.15em; }
+  h2::after { display: none; }
+  &__copy { min-width: 0; font-size: .8em; }
+  &__copy p { margin-bottom: .7em; }
+}
+@media (max-width: 599px) {
+  .nature-panel { grid-template-columns: minmax(0, 1fr); gap: 1em; }
+  .nature-panel .biology-image { width: 100%; max-width: 320px; margin: 0 auto; }
+}

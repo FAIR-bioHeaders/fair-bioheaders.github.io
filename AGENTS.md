@@ -182,3 +182,18 @@ CSS/fonts/images can cause misleading layout failures. Browser layout checks
 wait for the local font and reduced-motion rendering; axe waits for existing
 keyboard initialization of code scrollers. Preserve those assertions when
 adjusting test timing.
+
+## DNA identity and interior imagery (issue #13)
+
+The hexagon's primary meaning is the six-membered ring in all four DNA bases.
+Thymine/cytosine have one such ring; adenine/guanine also have a fused five-membered
+ring. Nature patterns support this molecular identity; they do not replace it.
+Preserve the homepage `#why-the-hexagon` explanation and links from interior pages.
+`nature-panel.html` renders different manifest-backed images on Publications
+(insect eggs), Guide (tortoise scutes), and Resources (pineapple eyes). Keep full
+frames, visible source/license credits, local 400/800px WebP/JPEG variants, and
+intrinsic dimensions. Do not infer perfect hexagons or an unverified species.
+These three panels are near the top and load eagerly; below-fold homepage imagery
+remains lazy. The new egg/tortoise derivatives are CC BY-SA 2.0, pineapple CC BY-SA
+4.0; retain their independent image licenses. Run image decode/credit checks and
+axe/layout checks on all three pages in both themes and widths.

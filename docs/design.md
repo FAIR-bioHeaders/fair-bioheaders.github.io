@@ -93,3 +93,67 @@ The large WebP pair totals 122,424 bytes; the small pair totals 50,800 bytes.
 The previous homepage had no biological image payload. Both JPEG variants remain
 available as fallbacks. Capture full-page transfer metrics separately if evaluating
 site-wide performance; these numbers are image bytes, not total page weight.
+
+## Interior pages and DNA identity (issue #13)
+
+The primary reason for the hexagon is molecular: all four DNA bases contain a
+six-membered ring. Thymine and cytosine are pyrimidines with one such ring;
+adenine and guanine are purines with a fused six- and five-membered ring system.
+See [NCBI's DNA structure chapter](https://www.ncbi.nlm.nih.gov/books/NBK21134/).
+The homepage now states this explicitly at `#why-the-hexagon`; the interior panels
+link to that explanation. Nature imagery supports this identity without implying
+that every polygon is a perfect hexagon or that every base is just one hexagon.
+
+Each interior page uses a distinct full-frame photograph in a compact shared
+`nature-panel.html` composition, with text beside the image and a stacked mobile
+layout. There are no new masks, recoloring, overlays, animation, or external asset
+requests. Credit links use the manifest. Near-top images load eagerly with
+reserved dimensions, local responsive WebP sources and JPEG fallbacks.
+
+- **Publications — insect eggs:** Gilles San Martin's *Bug Eggs (Heteroptera,
+  Pentatomidae) - Egg width 1 mm*, CC BY-SA 2.0, a focus-stacked microscope image.
+  The round eggs display fine polygonal texture and close packing. Retain the
+  full frame; do not describe the eggs themselves as hexagonal prisms or infer
+  a more specific species. See the source and revision in the manifest.
+- **Guide — tortoise shell:** pamsai's *Reflected tortoise shell (6063989199)*,
+  CC BY-SA 2.0. This Galápagos giant tortoise photograph clearly shows polygonal
+  scutes and growth rings, including near-hexagonal outlines. No species beyond
+  the source's description is asserted.
+- **Resources — pineapple:** Rhododendrites' *Pineapple close-up (81928)*,
+  CC BY-SA 4.0. Polygonal fruitlets/eyes supply the repeating pattern; the caption
+  does not claim a regular hexagonal lattice.
+
+The original museum-shell candidate was rejected because the hollow interior
+and background dominated its scutes. A distant wood-turtle view was rejected
+because its pattern was unclear at display size. A file named “Tortoise shell”
+was a butterfly photograph and was also rejected: filenames alone are not subject
+verification. Selected originals were inspected visually before resizing.
+
+### Reproduce the derivatives
+
+Download the pinned source revision's original to a temporary directory; verify
+its `original_sha256` against the manifest before processing. For each selected
+image, create 400/800px variants using the same existing commands (`sips -Z WIDTH
+-s formatOptions 70 INPUT --out OUTPUT` and `cwebp -q 76 -resize WIDTH 0 INPUT
+-o OUTPUT`). Dimensions describe each largest JPEG; full frames are preserved.
+Originals are not deployed. The manifest records exact source revisions, original
+hashes, creators, licensing, and modifications. `images/biology/LICENSE.txt`
+preserves the selected licenses independently of the code's MIT license.
+
+### Added image payloads
+
+Each page loads one variant, not all files below. Bytes from final assets:
+
+| Image | Width | WebP bytes | JPEG bytes |
+| --- | ---: | ---: | ---: |
+| insect-eggs | 400 | 11,196 | 31,270 |
+| insect-eggs | 800 | 44,338 | 117,396 |
+| turtle-shell | 400 | 7,456 | 26,235 |
+| turtle-shell | 800 | 21,676 | 81,921 |
+| pineapple | 400 | 28,716 | 54,721 |
+| pineapple | 800 | 84,570 | 184,615 |
+
+Review screenshots for all three pages in light/dark desktop/mobile layouts live
+in `docs/design/issue-13/` (excluded from deployment). The asset browser check now
+decodes imagery and checks visible source/license links across all four primary
+pages; existing axe, overflow, navigation, local-network and citation checks apply.

@@ -17,3 +17,54 @@ compound_eye:
   license_url: https://commons.wikimedia.org/wiki/File:Drosophilidae_compound_eye_edit1.jpg#Licensing
   modifications: Upstream retouch by Papa Lima Whiskey; resized and JPEG/WebP-compressed locally. Full frame retained, including scale bar. No recoloring.
   assets: [compound-eye-400.jpg, compound-eye-800.jpg, compound-eye-400.webp, compound-eye-800.webp]
+
+insect-eggs:
+  credit_title: "Bug eggs (Heteroptera, Pentatomidae)"
+  title: "Bug Eggs (Heteroptera, Pentatomidae) - Egg width 1 mm.jpg"
+  creator: "Gilles San Martin"
+  source: "https://commons.wikimedia.org/wiki/File:Bug_Eggs_(Heteroptera,_Pentatomidae)_-_Egg_width_1_mm.jpg"
+  source_revision: "https://commons.wikimedia.org/w/index.php?title=File%3ABug_Eggs_%28Heteroptera%2C_Pentatomidae%29_-_Egg_width_1_mm.jpg&oldid=886493327"
+  original_sha256: "28efffd20fa6c609fed3aa9885aa94f7ec44e836e074bce54e950f5444698c5a"
+  license: "CC BY-SA 2.0"
+  license_url: "https://creativecommons.org/licenses/by-sa/2.0"
+  modifications: "Resized and JPEG/WebP-compressed. Full frame retained; no recoloring."
+  assets: ["insect-eggs-400.jpg", "insect-eggs-400.webp", "insect-eggs-800.jpg", "insect-eggs-800.webp"]
+  heading: "Packed insect eggs"
+  alt: "Closely packed, round insect eggs with fine polygonal surface texture"
+  description: "These rounded bug eggs show fine polygonal surface texture and close packing: repeating forms at a microscopic scale."
+  width: 800
+  height: 530
+
+turtle-shell:
+  credit_title: "Reflected tortoise shell"
+  title: "Reflected tortoise shell (6063989199).jpg"
+  creator: "pamsai"
+  source: "https://commons.wikimedia.org/wiki/File:Reflected_tortoise_shell_(6063989199).jpg"
+  source_revision: "https://commons.wikimedia.org/w/index.php?title=File%3AReflected_tortoise_shell_%286063989199%29.jpg&oldid=1204827012"
+  original_sha256: "c6193f5781fffd1d425bd172d4c191ae6702c859ffca35a9fa6d0fb80ec76e67"
+  license: "CC BY-SA 2.0"
+  license_url: "https://creativecommons.org/licenses/by-sa/2.0"
+  modifications: "Resized and JPEG/WebP-compressed. Full frame retained; no recoloring."
+  assets: ["turtle-shell-400.jpg", "turtle-shell-400.webp", "turtle-shell-800.jpg", "turtle-shell-800.webp"]
+  heading: "A mosaic of scutes"
+  alt: "Giant tortoise in water with polygonal shell scutes and their growth rings visible"
+  description: "A tortoise shell brings the pattern to a larger scale: its scutes form a mosaic of polygons, including near-hexagonal shapes."
+  width: 800
+  height: 584
+
+pineapple:
+  credit_title: "Pineapple close-up"
+  title: "Pineapple close-up (81928).jpg"
+  creator: "Rhododendrites"
+  source: "https://commons.wikimedia.org/wiki/File:Pineapple_close-up_(81928).jpg"
+  source_revision: "https://commons.wikimedia.org/w/index.php?title=File%3APineapple_close-up_%2881928%29.jpg&oldid=858239822"
+  original_sha256: "7d8a1ec09f8837647e46e6ac2c8dbb9d13517c7b006f50f9896d9ac0eca637d6"
+  license: "CC BY-SA 4.0"
+  license_url: "https://creativecommons.org/licenses/by-sa/4.0"
+  modifications: "Resized and JPEG/WebP-compressed. Full frame retained; no recoloring."
+  assets: ["pineapple-400.jpg", "pineapple-400.webp", "pineapple-800.jpg", "pineapple-800.webp"]
+  heading: "Patterns in fruit"
+  alt: "Close-up of pineapple skin with golden polygonal eyes and green edges"
+  description: "A pineapple’s polygonal eyes create another repeating pattern in nature, with varied shapes arranged across the fruit’s surface."
+  width: 800
+  height: 705

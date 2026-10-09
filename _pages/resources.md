@@ -4,6 +4,8 @@ permalink: /resources/
 excerpt: "FAIR BioHeaders specifications, converters, workflows, and citation guidance."
 ---
 
+{% include nature-panel.html key="pineapple" %}
+
 ## Project repositories
 
 | Resource | Purpose | Status |

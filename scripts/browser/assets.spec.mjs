@@ -50,36 +50,42 @@ test('an opted-in math page loads only the pinned MathJax script', async ({ page
 
 test('biological images decode with reserved space and local responsive sources', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/');
-  await page.evaluate(async () => {
-    await document.fonts.load('400 16px "Public Sans"');
-    await document.fonts.ready;
-  });
-  const pictures = page.locator('.biology-image picture');
-  await expect(pictures).toHaveCount(2);
-  for (const picture of await pictures.all()) {
-    const img = picture.locator('img');
-    await img.scrollIntoViewIfNeeded();
-    // Wait for lazy loading before decoding; decode() can reject an unloaded candidate.
-    await expect.poll(() => img.evaluate(image =>
-      image.complete && image.naturalWidth > 0
-    )).toBe(true);
-    await img.evaluate(image => image.decode());
-    const info = await img.evaluate(image => ({
-      width: image.width, height: image.height,
-      naturalWidth: image.naturalWidth,
-      declaredWidth: image.getAttribute('width'),
-      declaredHeight: image.getAttribute('height'),
-      currentSrc: image.currentSrc,
-      alt: image.alt
-    }));
-    expect(info.naturalWidth).toBeGreaterThan(0);
-    expect(Number(info.declaredWidth)).toBeGreaterThan(0);
-    expect(Number(info.declaredHeight)).toBeGreaterThan(0);
-    expect(info.width).toBeGreaterThan(0);
-    expect(info.height).toBeGreaterThan(0);
-    expect(info.currentSrc).toMatch(/^http:\/\/127\.0\.0\.1:4000\/images\/biology\/.*\.webp$/);
-    expect(info.alt.length).toBeGreaterThan(0);
+  for (const [path, count] of [['/', 2], ['/publications/', 1], ['/guide/', 1], ['/resources/', 1]]) {
+    await page.goto(path);
+    await page.evaluate(async () => {
+      await document.fonts.load('400 16px "Public Sans"');
+      await document.fonts.ready;
+    });
+    const pictures = page.locator('.biology-image picture');
+    await expect(pictures).toHaveCount(count);
+    for (const picture of await pictures.all()) {
+      const img = picture.locator('img');
+      await img.scrollIntoViewIfNeeded();
+      // Wait for lazy loading before decoding; decode() can reject an unloaded candidate.
+      await expect.poll(() => img.evaluate(image =>
+        image.complete && image.naturalWidth > 0
+      )).toBe(true);
+      await img.evaluate(image => image.decode());
+      const info = await img.evaluate(image => ({
+        width: image.width, height: image.height,
+        naturalWidth: image.naturalWidth,
+        declaredWidth: image.getAttribute('width'),
+        declaredHeight: image.getAttribute('height'),
+        currentSrc: image.currentSrc,
+        alt: image.alt
+      }));
+      expect(info.naturalWidth).toBeGreaterThan(0);
+      expect(Number(info.declaredWidth)).toBeGreaterThan(0);
+      expect(Number(info.declaredHeight)).toBeGreaterThan(0);
+      expect(info.width).toBeGreaterThan(0);
+      expect(info.height).toBeGreaterThan(0);
+      expect(info.currentSrc).toMatch(/^http:\/\/127\.0\.0\.1:4000\/images\/biology\/.*\.webp$/);
+      expect(info.alt.length).toBeGreaterThan(0);
+      const credits = picture.locator('..').locator('figcaption a');
+      await expect(credits).toHaveCount(2);
+      await expect(credits.nth(0)).toHaveAttribute('href', /^https:\/\/commons\.wikimedia\.org\//);
+      await expect(credits.nth(1)).toHaveAttribute('href', /^https:\/\/(creativecommons\.org|commons\.wikimedia\.org)\//);
+    }
   }
 });
 

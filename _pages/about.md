@@ -54,8 +54,9 @@ FAIR BioHeaders grew out of a problem described in the [FHR standard paper](http
   </figure>
   <div class="biology-feature__copy">
     <p class="project-eyebrow">Patterns across biology</p>
-    <h3>A biological thread</h3>
-    <p>From honeycomb to the facets of a fruit fly’s eye, repeating forms give our hexagon mark a connection to the organisms behind the data. Our standards serve reference genomes across biodiversity.</p>
+    <h3 id="why-the-hexagon">Why the hexagon?</h3>
+    <p>Our hexagon comes from the six-membered rings in all four DNA bases: thymine, cytosine, guanine, and adenine. Thymine and cytosine each have one six-membered ring; adenine and guanine have a six-membered ring fused to a five-membered ring.</p>
+    <p>Patterns in honeycomb, insect eggs, turtle shells, and fruit echo this motif across biodiversity. <a href="https://www.ncbi.nlm.nih.gov/books/NBK21134/">Explore the structure of DNA</a>.</p>
     <a href="{{ '/publications/' | relative_url }}">Meet the ideas behind FHR <span aria-hidden="true">→</span></a>
   </div>
 </div>

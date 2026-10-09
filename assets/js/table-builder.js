@@ -1,7 +1,7 @@
 /* ==========================================================================
    FHR-only table builder
    Builds one typed FHR metadata record from a form, validates it against the
-   authoritative raw-main FHR JSON schema, and produces a readable table, a
+   selected supported repository schema snapshot, and produces a readable table, a
    standalone HTML document (with FHR microdata), and a YAML metadata file.
 
    The pure functions are exported for Node tests; the DOM wiring runs only in
@@ -14,6 +14,16 @@
   // Authoritative schema. The bundled copy under assets/schema/fhr.json is a
   // cache of this URL; see docs/maintenance.md for provenance and refresh.
   var SCHEMA_URL = 'https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json';
+
+  var RELEASE_URL = 'https://w3id.org/fair-bioheaders/fhr/v0.3.1';
+  var RELEASE_RAW_URL = 'https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.3.1/fhr.json';
+  var RELEASE_COMMIT_URL = 'https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/378b534dda9c1d759f25b4b32287172402492233/fhr.json';
+
+  function selectSchema(target, development, release) {
+    if (target === SCHEMA_URL) return development;
+    if ([RELEASE_URL, RELEASE_RAW_URL, RELEASE_COMMIT_URL].indexOf(target) !== -1) return release;
+    return null;
+  }
 
   // Canonical output order, matching the schema's property order.
   var FIELD_ORDER = [
@@ -32,8 +42,8 @@
     {
       id: 'resource', legend: 'Resource',
       fields: [
-        { path: 'schema', label: 'FHR schema URL', kind: 'text', required: true, default: SCHEMA_URL,
-          help: 'Authoritative raw-main schema this record targets.' },
+        { path: 'schema', label: 'FHR schema URL', kind: 'text', required: true, default: RELEASE_URL,
+          help: 'Use the supported v0.3.1 release alias, or explicitly select raw-main for the documented development snapshot.' },
         { path: 'schemaVersion', label: 'Schema version', kind: 'number', required: true, default: '1.0',
           help: 'Value of the schemaVersion field (currently 1.0).' }
       ]
@@ -266,20 +276,6 @@
 
   // ------------------------------------------------------------- serialization
 
-  function isPlainSafe(value) {
-    var text = String(value);
-    if (text === '') return false;
-    if (/^\s|\s$/.test(text)) return false;
-    if (/[\n\r\t]/.test(text)) return false;
-    if (/^(true|false|null|yes|no|on|off|~)$/i.test(text)) return false;
-    if (/^[-+]?(\d[\d_]*)(\.\d*)?([eE][-+]?\d+)?$/.test(text)) return false;
-    if (/^\d{4}-\d{2}-\d{2}/.test(text)) return false;
-    if (/^[!&*?|>%@`"'#,{}\[\]]/.test(text)) return false;
-    if (/^-(?:\s|$)/.test(text)) return false;
-    if (/: /.test(text) || /:$/.test(text) || / #/.test(text)) return false;
-    return true;
-  }
-
   function yamlScalar(value, declaredType) {
     if (value === null) return 'null';
     if (typeof value === 'boolean') return value ? 'true' : 'false';
@@ -289,7 +285,9 @@
       return declaredType === 'number' && Number.isInteger(value) ? value.toFixed(1) : String(value);
     }
     var text = String(value);
-    return isPlainSafe(text) ? text : "'" + text.replace(/'/g, "''") + "'";
+    return JSON.stringify(text).replace(/[\u0085\u2028\u2029]/g, function (character) {
+      return '\\u' + character.charCodeAt(0).toString(16).padStart(4, '0');
+    });
   }
 
   function emitMap(object, indent, order, schema) {
@@ -461,6 +459,8 @@
 
   var api = {
     SCHEMA_URL: SCHEMA_URL,
+    RELEASE_URL: RELEASE_URL,
+    selectSchema: selectSchema,
     FIELD_ORDER: FIELD_ORDER,
     GROUPS: GROUPS,
     escapeHtml: escapeHtml,
@@ -487,6 +487,7 @@
   var stale = false;
   var objectUrls = [];
   var schema = null;
+  var releaseSchema = null;
 
   function el(tag, attrs, children) {
     var node = document.createElement(tag);
@@ -567,7 +568,7 @@
 
   function stringListField(field, array) {
     var base = field.id || slug(field.path);
-    var wrap = el('fieldset', { class: 'tb-list' });
+    var wrap = el('fieldset', { class: 'tb-list', id: fieldId(field.path), tabindex: '-1' });
     wrap.appendChild(el('legend', { text: field.label }));
     if (field.help) wrap.appendChild(el('p', { class: 'tb-help', text: field.help }));
     var rows = el('div', { class: 'tb-list__rows' });
@@ -593,6 +594,7 @@
     input.value = array[index];
     input.addEventListener('input', function () { array[index] = input.value; markStale(); });
     row.appendChild(input);
+    registerControl(field.path + '.' + index, input, null);
     row.appendChild(el('button', { type: 'button', class: 'tb-remove', text: 'Remove',
       'aria-label': 'Remove ' + field.label + ' ' + (index + 1) })).addEventListener('click', function () {
       array.splice(index, 1);
@@ -605,14 +607,15 @@
   }
 
   function objectField(field, object) {
-    var wrap = el('fieldset', { class: 'tb-object' });
+    var wrap = el('fieldset', { class: 'tb-object', id: fieldId(field.path), tabindex: '-1' });
     wrap.appendChild(el('legend', { text: field.label }));
     field.fields.forEach(function (sub) {
       var path = field.path + '.' + sub.name;
       wrap.appendChild(objectSubfield(sub, path, function () {
         return object[sub.name] === undefined ? '' : object[sub.name];
       }, function (value) {
-        if (value === '') delete object[sub.name]; else object[sub.name] = value;
+        if (value === '') delete object[sub.name];
+        else object[sub.name] = sub.kind === 'number' || sub.kind === 'integer' ? Number(value) : value;
       }));
     });
     return wrap;
@@ -624,7 +627,7 @@
   }
 
   function objectListField(field, array) {
-    var wrap = el('fieldset', { class: 'tb-list' });
+    var wrap = el('fieldset', { class: 'tb-list', id: fieldId(field.path), tabindex: '-1' });
     wrap.appendChild(el('legend', { text: field.label }));
     if (field.help) wrap.appendChild(el('p', { class: 'tb-help', text: field.help }));
     var rows = el('div', { class: 'tb-list__rows' });
@@ -646,7 +649,7 @@
     field.fields.forEach(function (sub) {
       if (sub.kind === 'stringList') {
         if (!Array.isArray(array[index][sub.name])) array[index][sub.name] = [];
-        row.appendChild(stringListField({ path: field.path + '-' + index + '-' + sub.name,
+        row.appendChild(stringListField({ path: field.path + '.' + index + '.' + sub.name,
           id: field.path + '-' + index + '-' + sub.name,
           label: sub.label, kind: 'stringList', help: sub.help }, array[index][sub.name]));
       } else {
@@ -669,6 +672,9 @@
   }
 
   function rerenderList(rows, builder) {
+    Object.keys(controlRegistry).forEach(function (path) {
+      if (rows.contains(controlRegistry[path].input)) delete controlRegistry[path];
+    });
     rows.textContent = '';
     builder();
   }
@@ -760,17 +766,19 @@
 
   function renderOutputs() {
     var record = buildRecord();
-    var errors = schema ? validateRecord(record, schema) : [{ path: [], message: 'schema not loaded' }];
+    var selected = selectSchema(record.schema, schema, releaseSchema);
+    var errors = selected ? validateRecord(record, selected) : [{ path: ['schema'],
+      message: 'Unsupported schema target. This builder supports the v0.3.1 alias and its release/commit URLs, or the documented raw-main development snapshot.' }];
     renderErrorSummary(errors);
     renderTable(record);
-    outputs = { record: record, html: standaloneHtml(record, schema), yaml: toYaml(record, schema) };
+    outputs = { record: record, html: standaloneHtml(record, selected), yaml: toYaml(record, selected) };
     document.getElementById('tb-html-source').textContent = outputs.html;
     document.getElementById('tb-yaml-source').textContent = outputs.yaml;
     stale = false;
     var ready = errors.length === 0;
     toggleDownloads(ready);
     if (ready) {
-      setStatus('Structural validation passed against the FHR schema. The checksum is not verified against any file.', 'ok');
+      setStatus('Structural validation passed against ' + (record.schema === SCHEMA_URL ? 'the cached raw-main development snapshot' : 'FHR v0.3.1') + '. The checksum is not verified against any file.', 'ok');
     } else {
       setStatus('Incomplete or invalid: ' + errors.length + ' issue' + (errors.length === 1 ? '' : 's') +
         '. A draft preview is shown; downloads are disabled until it validates.', 'error');
@@ -787,14 +795,28 @@
     errors.forEach(function (error) {
       var pointer = error.path.join('.');
       var item = el('li');
-      var link = el('a', { href: '#' + fieldId(pointer.split('.').slice(0, -1).join('.') || pointer),
+      var target = errorTarget(error.path);
+      var link = el('a', { href: '#' + target.id,
         text: (pointer ? pointer + ': ' : '') + error.message });
+      link.addEventListener('click', function () { target.focus(); });
       item.appendChild(link);
       list.appendChild(item);
       markFieldError(error.path);
     });
     summary.appendChild(el('h3', { text: 'Validation issues' }));
     summary.appendChild(list);
+  }
+
+  function errorTarget(path) {
+    var parts = path.slice();
+    while (parts.length) {
+      var key = parts.join('.');
+      if (controlRegistry[key]) return controlRegistry[key].input;
+      var group = document.getElementById(fieldId(key));
+      if (group) return group;
+      parts.pop();
+    }
+    return document.getElementById('tb-generate');
   }
 
   function clearFieldErrors() {
@@ -881,13 +903,18 @@
   function init() {
     var container = document.getElementById('table-builder');
     if (!container) return;
-    fetch(container.getAttribute('data-schema') || '/assets/schema/fhr.json')
-      .then(function (response) {
+    function load(url) {
+      return fetch(url).then(function (response) {
         if (!response.ok) throw new Error('schema request failed');
         return response.json();
-      })
-      .then(function (loaded) {
-        schema = loaded;
+      });
+    }
+    Promise.all([
+      load(container.getAttribute('data-schema') || '/assets/schema/fhr.json'),
+      load(container.getAttribute('data-release-schema') || '/assets/schema/fhr-v0.3.1.json')
+    ]).then(function (loaded) {
+        schema = loaded[0];
+        releaseSchema = loaded[1];
         renderForm(document.getElementById('tb-form'));
         document.getElementById('tb-generate').addEventListener('click', renderOutputs);
         document.getElementById('tb-download-html').addEventListener('click', function () { download('html'); });

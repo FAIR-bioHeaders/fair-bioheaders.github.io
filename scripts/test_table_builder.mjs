@@ -3,6 +3,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { parse } from 'yaml';
 
 const require = createRequire(import.meta.url);
 const tb = require('../assets/js/table-builder.js');
@@ -89,27 +91,38 @@ test('masking enum is enforced', () => {
   assert.ok(tb.validateRecord(record, schema).some((e) => e.path.join('.') === 'masking'));
 });
 
-test('YAML output round-trips through the schema-prescribed shapes', () => {
-  const yaml = tb.toYaml(exampleRecord(), schema);
-  assert.match(yaml, /^schema: https:\/\/raw\.githubusercontent\.com\//m);
+test('YAML output round-trips through an actual parser without changing types', () => {
+  const record = exampleRecord();
+  const yaml = tb.toYaml(record, schema);
+  assert.deepEqual(parse(yaml), record);
   assert.match(yaml, /^schemaVersion: 1\.0$/m);
-  assert.match(yaml, /^metadataAuthor:$/m);
-  assert.match(yaml, /^- name: Adam Wright$/m);
-  assert.match(yaml, /^  uri: https:\/\/orcid\.org\/0000-0002-5719-4024$/m);
-  assert.match(yaml, /^assemblySoftware:$/m);
-  assert.match(yaml, /^  commandLineOption:$/m);
-  assert.match(yaml, /^  - -t$/m);
-  assert.match(yaml, /^  - '2'$/m);
 });
 
-test('YAML quotes values that would otherwise change type', () => {
-  const record = exampleRecord();
-  record.genome = 'true';
-  record.version = '1.0';
-  assert.match(tb.toYaml(record), /^genome: 'true'$/m);
-  assert.match(tb.toYaml(record), /^version: '1\.0'$/m);
-  record.genome = '- draft';
-  assert.match(tb.toYaml(record), /^genome: '- draft'$/m);
+test('YAML preserves ambiguous strings and control characters', () => {
+  for (const value of ['true', '1.0', '- draft', '0x10', '.inf', '1:20', '.5', '.nan',
+    '2026-10-09', 'line\nbreak', 'tab\tvalue', 'quote"', 'null', 'yes', '', 'a\u0085b', 'a\u2028b', 'a\u2029b']) {
+    const record = { genome: value };
+    for (const version of ['1.1', '1.2']) {
+      assert.deepEqual(parse(tb.toYaml(record, schema), { version }), record);
+    }
+  }
+});
+
+test('schema selection honors supported release aliases and never falls back', () => {
+  const development = { properties: { genome: { type: 'string', minLength: 20 } } };
+  const release = { properties: { genome: { type: 'string' } } };
+  const record = { genome: 'short' };
+  assert.equal(tb.selectSchema(tb.RELEASE_URL, development, release), release);
+  assert.equal(tb.selectSchema(tb.SCHEMA_URL, development, release), development);
+  assert.deepEqual(tb.validateRecord(record, tb.selectSchema(tb.RELEASE_URL, development, release)), []);
+  assert.equal(tb.validateRecord(record, tb.selectSchema(tb.SCHEMA_URL, development, release)).length, 1);
+  assert.equal(tb.selectSchema('https://w3id.org/fair-bioheaders/fhr/v999', development, release), null);
+});
+
+test('v0.3.1 snapshot stays fixed independently of the development cache', () => {
+  const bytes = readFileSync(new URL('../assets/schema/fhr-v0.3.1.json', import.meta.url));
+  assert.equal(createHash('sha256').update(bytes).digest('hex'),
+    'e3d3843e1a1646e12495ccc9a615df94b7abe71b833c5f336c59444e0a49620a');
 });
 
 test('microdata preserves types, nesting, and array markers', () => {

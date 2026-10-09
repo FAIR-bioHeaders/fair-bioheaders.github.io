@@ -51,7 +51,7 @@ test('a valid record produces the table and both source blocks', async ({ page }
   await expect(page.locator('#tb-table')).toContainText('Adam Wright');
   await expect(page.locator('#tb-html-source')).toContainText('<!doctype html>');
   await expect(page.locator('#tb-html-source')).toContainText('itemscope');
-  await expect(page.locator('#tb-yaml-source')).toContainText('genome: Synthetic human reference example');
+  await expect(page.locator('#tb-yaml-source')).toContainText('genome: "Synthetic human reference example"');
   await expect(page.locator('#tb-download-yaml')).toBeEnabled();
 });
 
@@ -125,4 +125,55 @@ test('no console errors while generating and downloading', async ({ page }) => {
   await fillValid(page);
   await Promise.all([page.waitForEvent('download'), page.click('#tb-download-yaml')]);
   expect(errors).toEqual([]);
+});
+
+test('form statistics are typed numbers and survive YAML parsing', async ({ page }) => {
+  await fillValid(page);
+  await page.fill('#tb-vitalStats-N50', '100');
+  await page.fill('#tb-vitalStats-L50', '0');
+  await page.fill('#tb-vitalStats-gcContent', '37.5');
+  await page.click('#tb-generate');
+  await expect(page.locator('#tb-download-yaml')).toBeEnabled();
+  const { parse } = await import('yaml');
+  const record = parse(await page.textContent('#tb-yaml-source'));
+  expect(record.vitalStats).toEqual({ N50: 100, L50: 0, gcContent: 37.5 });
+  await expect(page.locator('#tb-table')).toContainText('N50 (bp)');
+});
+
+test('unsupported schema targets block downloads and supported targets are explicit', async ({ page }) => {
+  await fillValid(page);
+  await expect(page.locator('#tb-schema')).toHaveValue('https://w3id.org/fair-bioheaders/fhr/v0.3.1');
+  await expect(page.locator('#tb-status')).toContainText('FHR v0.3.1');
+  await expect(page.locator('#tb-html-source')).toContainText('itemprop="schema" data-fhr-type="string">https://w3id.org/fair-bioheaders/fhr/v0.3.1</span>');
+  await page.fill('#tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v999');
+  await page.click('#tb-generate');
+  await expect(page.locator('#tb-download-yaml')).toBeDisabled();
+  await expect(page.locator('#tb-errors')).toContainText('Unsupported schema target');
+  await page.fill('#tb-schema', 'https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json');
+  await page.click('#tb-generate');
+  await expect(page.locator('#tb-status')).toContainText('cached raw-main development snapshot');
+  await expect(page.locator('#tb-download-yaml')).toBeEnabled();
+});
+
+test('nested and missing-list errors link to real focusable targets', async ({ page }) => {
+  await fillValid(page);
+  await page.fill('#tb-taxon-uri', 'bad uri');
+  await page.fill('#tb-metadataAuthor-0-uri', 'bad uri');
+  await page.fill('#tb-vitalStats-gcContent', '150');
+  await page.click('#tb-add-relatedLink');
+  await page.locator('#relatedLink-0').fill('bad uri');
+  await page.click('#tb-generate');
+  const links = page.locator('#tb-errors a');
+  for (let i = 0; i < await links.count(); i++) {
+    const link = links.nth(i);
+    const target = await link.getAttribute('href');
+    await expect(page.locator(target)).toHaveCount(1);
+    await link.click();
+    await expect(page.locator(target)).toBeFocused();
+  }
+  await page.locator('#tb-row-metadataAuthor-0 .tb-remove').click();
+  await page.click('#tb-generate');
+  const missing = page.locator('#tb-errors a').filter({ hasText: 'metadataAuthor: is required' });
+  await missing.click();
+  await expect(page.locator('#tb-metadataAuthor')).toBeFocused();
 });

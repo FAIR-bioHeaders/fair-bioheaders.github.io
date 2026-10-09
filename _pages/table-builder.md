@@ -13,7 +13,7 @@ and annotation headers are not included.
 
 **Schema:** requiredness and types follow
 [the raw `main` FHR JSON schema](https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json).
-This page uses a cached copy of that schema (`assets/schema/fhr.json`); see
+By default, records target [FHR v0.3.1](https://w3id.org/fair-bioheaders/fhr/v0.3.1), validated against its fixed local snapshot (`assets/schema/fhr-v0.3.1.json`). You can explicitly target raw-main to check against the documented development snapshot (`assets/schema/fhr.json`). Unsupported targets block downloads; they never fall back to another version. See
 [maintenance](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/blob/main/docs/maintenance.md)
 for retrieval provenance and refresh behavior. Validation here is structural
 only: passing it is not a claim about biological quality, it does not verify a
@@ -22,7 +22,7 @@ checksum against any file, and it is not a journal or repository acceptance.
 ## What it checks
 
 - **Schema validity** — required fields, scalar types, patterns, and unknown
-  properties, following the raw-main contract. It does not tighten the schema or
+  properties, following the selected supported schema contract. It does not tighten the schema or
   add new required fields.
 - **Completeness** — missing required fields are listed with links back to the
   field, and downloads stay disabled until the record validates.
@@ -42,7 +42,7 @@ are disabled until you generate again.
   guide</a> to build a header or metadata file by hand.</p>
 </noscript>
 
-<div id="table-builder" data-schema="{{ '/assets/schema/fhr.json' | relative_url }}">
+<div id="table-builder" data-schema="{{ '/assets/schema/fhr.json' | relative_url }}" data-release-schema="{{ '/assets/schema/fhr-v0.3.1.json' | relative_url }}">
   <div id="tb-form"></div>
 
   <div class="tb-actions">

@@ -95,7 +95,7 @@ backend, upload, login, or persistence.
 - **Validation is structural only.** It follows the schema's required fields,
   types, patterns, formats, and `additionalProperties`. Passing it is not a
   claim about biological quality and does not verify a checksum against any file.
-- **Microdata:** the standalone HTML emits the same Schema.org item scope that
+- **Microdata:** the standalone HTML emits the same FHR item scope that
   the FHR converter writes and reads (`_html_value`/`_input_microdata`). It
   round-trips through `fhr-convert` in the FHR-File-Converter. Keep
   `assets/js/table-builder.js` in step with that convention.
@@ -111,3 +111,34 @@ backend, upload, login, or persistence.
   the PR. A synthetic example pair for review is committed at
   `docs/table-builder-example.html` and `docs/table-builder-example.yaml` (not
   deployed, since `docs/` is excluded).
+
+
+### Version-aware validation decision (2026-10-09)
+
+The repository/raw-main copy remains canonical for development. Validation must
+honor a record's cited schema version; versioned w3id aliases resolve to fixed
+repository releases/revisions. A latest-schema check is explicit, never a silent
+replacement for a cited version (FHR-Specification #44, #35, #54).
+
+The builder defaults to `https://w3id.org/fair-bioheaders/fhr/v0.3.1` and uses
+`assets/schema/fhr-v0.3.1.json`, verified byte-for-byte against the v0.3.1 tag at
+commit `378b534dda9c1d759f25b4b32287172402492233` on 2026-10-09. SHA-256:
+`e3d3843e1a1646e12495ccc9a615df94b7abe71b833c5f336c59444e0a49620a`.
+The tag raw URL and that exact commit raw URL are also supported aliases.
+Keep this released snapshot fixed when refreshing `assets/schema/fhr.json`.
+The unit test pins its digest. Add separate snapshots and tests when supporting
+new releases; do not route new version aliases to whichever schema is current.
+
+Explicit raw-main selection validates the separately documented development
+cache, not a live fetch or a promise that the cache is current main. The UI names
+that snapshot in its result. Unsupported targets block downloads. Both schema
+files load locally; selecting a URL never causes arbitrary network requests.
+The numeric `schemaVersion` field (1.0) is distinct from the release tag (v0.3.1).
+HTML microdata retains the canonical itemtype for converter compatibility; its
+`schema` property carries the selected record schema URL.
+
+String values are always YAML double-quoted using JSON escapes. Real YAML 1.1
+and 1.2 parser tests protect types and control characters. `yaml` is a dev-only
+test dependency and must not be loaded by the browser. Numeric object controls
+convert to numbers before validation. Error links use registered controls or
+focusable group fieldsets; clear removed controls from the registry.

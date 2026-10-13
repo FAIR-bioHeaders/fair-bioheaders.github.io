@@ -4,7 +4,7 @@ from unittest import mock
 
 import check_deployed
 
-ORIGIN = 'https://fair-bioheaders.github.io'
+ORIGIN = 'https://fhref.org'
 SITEMAP = (
     '<?xml version="1.0" encoding="UTF-8"?>'
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'

@@ -177,28 +177,28 @@ class ReferenceChecks(unittest.TestCase):
 
 class ItemListChecks(unittest.TestCase):
     def test_exact_ordered_urls_pass(self):
-        urls = ['https://fair-bioheaders.github.io/publication/a',
-                'https://fair-bioheaders.github.io/publication/b']
+        urls = ['https://fhref.org/publication/a',
+                'https://fhref.org/publication/b']
         item_list = {'itemListElement': [
             {'item': {'url': url}} for url in urls
         ]}
         self.assertEqual(publication_itemlist_errors(item_list, urls), [])
 
     def test_duplicate_item_url_is_reported(self):
-        duplicate = 'https://fair-bioheaders.github.io/publication/a'
+        duplicate = 'https://fhref.org/publication/a'
         item_list = {'itemListElement': [
             {'item': {'url': duplicate}}, {'item': {'url': duplicate}}
         ]}
         errors = publication_itemlist_errors(
             item_list,
-            [duplicate, 'https://fair-bioheaders.github.io/publication/b'],
+            [duplicate, 'https://fhref.org/publication/b'],
         )
         self.assertTrue(any('duplicate' in error for error in errors))
         self.assertTrue(any('order do not match' in error for error in errors))
 
     def test_wrong_order_is_reported(self):
-        urls = ['https://fair-bioheaders.github.io/publication/a',
-                'https://fair-bioheaders.github.io/publication/b']
+        urls = ['https://fhref.org/publication/a',
+                'https://fhref.org/publication/b']
         item_list = {'itemListElement': [
             {'item': {'url': urls[1]}}, {'item': {'url': urls[0]}}
         ]}
@@ -227,8 +227,8 @@ class JsonLdHierarchyChecks(unittest.TestCase):
 
 
 class FeedChecks(unittest.TestCase):
-    FEED_URL = 'https://fair-bioheaders.github.io/publications/feed.xml'
-    ENTRY_URL = 'https://fair-bioheaders.github.io/publication/x'
+    FEED_URL = 'https://fhref.org/publications/feed.xml'
+    ENTRY_URL = 'https://fhref.org/publication/x'
     ENTRY_DATE = '2026-01-01T00:00:00+00:00'
 
     def write_feed(self, feed):

@@ -42,7 +42,7 @@ Builds are verified with the committed lockfiles. Before accepting dependency up
 
 ## Review corrections
 
-The inherited template tag dates from February 2024, older than the upstream `v0.9` release and the issue title's “~4 years.” The original SEO include already assigned a description fallback, but failed to emit a standard description tag and gated its Open Graph description on page excerpts. Both outputs now use the fallback. A `.nojekyll` file would disable this site's required Jekyll processing and must not be added. The existing `github.io` hostname needs no `CNAME`.
+The inherited template tag dates from February 2024, older than the upstream `v0.9` release and the issue title's “~4 years.” The original SEO include already assigned a description fallback, but failed to emit a standard description tag and gated its Open Graph description on page excerpts. Both outputs now use the fallback. A `.nojekyll` file would disable this site's required Jekyll processing and must not be added. The production origin is `https://fhref.org` with an empty `baseurl`. Pages publishes `main` from the repository root, so preserve the existing root `CNAME` containing only `fhref.org`, aligned with Settings → Pages. The site-check workflow builds a preview artifact and does not deploy it. Production metadata checks, deployed smoke checks, and Lychee use the custom domain. See [GitHub’s custom-domain documentation](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
 
 ## Acceptance checks
 

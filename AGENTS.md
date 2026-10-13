@@ -97,8 +97,9 @@ sitemap, robots policy, and feeds. Toolchain is pinned in `.ruby-version`
   URLs, icon-font markup (`fa-*`, `fas`, `fab`, `academicons`, "font awesome"),
   Universal Analytics, `polyfill`, jQuery 1.12, and template demo text. Icons are
   CSS/hexagon accents and text, not an icon font.
-- **`.nojekyll` and `CNAME` must not be added.** The former disables the Jekyll
-  processing this site requires; the latter is unnecessary on `github.io`.
+- **`.nojekyll` must not be added.** It disables the Jekyll processing this site
+  requires. Preserve the root `CNAME` containing `fhref.org` for branch-based
+  Pages publishing, and keep `_config.yml` and production checks on that origin.
 - **Preserve published URLs.** Publication `permalink`s are stable and indexed.
   Do not rename or restructure them without an explicit request.
 - **The sitemap is allow-listed.** Only `/`, `/publications/`, `/resources/`, and

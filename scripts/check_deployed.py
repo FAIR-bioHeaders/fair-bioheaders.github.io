@@ -24,7 +24,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 from urllib.parse import urlsplit
 
-DEFAULT_ORIGIN = 'https://fair-bioheaders.github.io'
+DEFAULT_ORIGIN = 'https://fhref.org'
 SM_NS = '{http://www.sitemaps.org/schemas/sitemap/0.9}'
 INDEXABLE = ('/', '/publications/', '/resources/', '/guide/', '/table-builder/')
 SITEMAP_PREFIX = '/publication/'

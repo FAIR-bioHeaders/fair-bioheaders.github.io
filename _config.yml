@@ -4,7 +4,7 @@ title: FAIR BioHeaders
 title_separator: "-"
 name: FAIR BioHeaders
 description: "FAIR BioHeaders keeps reference genome metadata and provenance close to sequence data, supporting discovery, interoperability, and reuse."
-url: https://fair-bioheaders.github.io
+url: https://fhref.org
 baseurl: ""
 repository: FAIR-bioHeaders/fair-bioheaders.github.io
 timezone: Etc/UTC

@@ -19,7 +19,7 @@
   "bugs": {
     "url": "https://github.com/fair-bioheaders/fair-bioheaders.github.io/issues"
   },
-  "homepage": "https://fair-bioheaders.github.io",
+  "homepage": "https://fhref.org",
   "engines": {
     "node": ">=24"
   },

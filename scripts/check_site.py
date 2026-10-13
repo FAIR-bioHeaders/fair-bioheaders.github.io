@@ -9,7 +9,7 @@ from pathlib import Path
 from urllib.parse import unquote, urljoin, urlsplit
 import xml.etree.ElementTree as ET
 
-ORIGIN = 'https://fair-bioheaders.github.io'
+ORIGIN = 'https://fhref.org'
 MATHJAX_INTEGRITY = 'sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei'
 MATHJAX_URL = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js'
 

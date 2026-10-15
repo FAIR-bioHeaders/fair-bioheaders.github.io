@@ -6,8 +6,8 @@ excerpt: "A worked example, scope, and compatibility guidance for adopting the F
 
 This guide shows one verified end-to-end example of adding FHR metadata to a
 FASTA file, explains how FHR and FHT differ, and answers common questions. All
-commands below were run against the released `fhr` package (0.3.3) and the
-[synthetic example](https://github.com/FAIR-bioHeaders/FHR-File-Converter/tree/main/examples)
+historical worked-example commands were verified against `fhr` 0.3.3 and the
+[synthetic example](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/tree/v0.3.3/examples)
 shipped with the converter; the sample is redistributable and its identifiers
 are placeholders.
 
@@ -16,7 +16,7 @@ are placeholders.
 Prefer a form? The [FHR table builder](/table-builder/) builds the metadata,
 validates it against the schema, and downloads the table and metadata file.
 
-## A worked example
+## A historical worked example (fhr 0.3.3)
 
 Start with ordinary FASTA that carries no FHR metadata:
 
@@ -25,8 +25,8 @@ Start with ordinary FASTA that carries no FHR metadata:
 ACGTACGTACGTACGT
 ```
 
-Supply the metadata as a small YAML file (fields are described in the
-[FHR specification](https://github.com/FAIR-bioHeaders/FHR-Specification)):
+Supply the metadata as a small YAML file (fields for this example are described
+in the [v0.3.1 contract](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.3.1/fhr.json)):
 
 ```yaml
 schema: https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json
@@ -88,27 +88,43 @@ fhr-convert genome.fhr.fasta genome.fhr.json
 fhr-validate genome.fhr.json
 ```
 
-## Scope: FHR, FHT, and where metadata lives
+## Scope: the header family and where metadata lives
 
 - **FHR** (FAIR Header Reference genome) describes reference **genomes**. **FHT**
   is a companion draft for reference **transcriptomes**; the two are separate
   specifications in the same family, and FHT is still draft.
+- **FHP** describes protein FASTA and **FHGFF3** describes annotation metadata.
+  Their schemaVersion `"1.0"` contracts are included alongside FHR in the
+  [shared specification v0.4.0](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/releases/tag/v0.4.0).
+  FHP/FHGFF3 JSON-LD and HTML microdata are still follow-up work.
 - **File-carried metadata** travels with the sequence in `;~` (FASTA) or `#~`
   (GFA) header comments, so the metadata cannot drift away from the data it
   describes. **Repository metadata** is held by the archive that stores the
   sequence; the two are complementary, not alternatives.
-- FHR adds header comment lines only. Because those lines are comments, existing
-  FASTA/GFA tooling continues to read the sequence unchanged — FHR does not
-  require, and does not claim, special support from every tool.
+- Header handling varies by tool. Many FASTA indexers require a stripped copy;
+  follow the [tool compatibility guidance](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/TOOL_COMPATIBILITY.md)
+  and keep the metadata-bearing original. Comments alone do not guarantee
+  compatibility with every parser.
 
 ## Version compatibility
 
-- The current FHR schema is `schemaVersion: 1`. Required fields and the version
-  number have been stable across the 0.3 releases; new optional fields may be
-  added over time.
-- The released `fhr` Python package is version **0.3.3**. Pin a version in
-  automation and validate with `fhr-validate` or `fhr-fasta-validate` after
-  writing files.
+- The released FHR contract is now `schemaVersion: "2.0"` (a string), in shared
+  specification v0.4.0. `schemaVersion`, repository release tags and the
+  assembly's `version` describe different things.
+- The current family package is **fair-bioheaders 0.7.0**, installed with
+  `python -m pip install fair-bioheaders==0.7.0`. Its `bioheaders` CLI performs
+  conversion, validation and checksums; the legacy `fhr-*` commands remain
+  supported. See the [toolkit usage](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools).
+- The worked example above is preserved as the recorded **fhr 0.3.3** workflow.
+  Its numeric schemaVersion and raw-main header are historical, not a current
+  v0.4 recipe. The raw-main URL now selects the current contract. For new work,
+  use the reviewed [release examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.4.0/examples)
+  and a fixed versioned schema URL; unknown schema versions are unsupported,
+  never silently replaced. The [schema-version policy](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/SCHEMA-VERSIONS.md)
+  explains migration and compatibility checks.
+- The browser table builder still targets v0.3.1 by default. It has not yet
+  acquired the full family or v0.4 form; a released specification is not a claim
+  that this browser supports it.
 - **Concept DOIs** (for example the [FHR Specification](https://doi.org/10.5281/zenodo.6762549))
   group all releases of a resource. For a reproducible citation, use the
   **version DOI** for the specific release you used; see
@@ -127,9 +143,11 @@ the output path. Inspect the error, correct the metadata, and re-run.
 
 **Do I report schema problems or converter problems in the same place?**
 No. Schema and specification questions belong with
-[FHR-Specification](https://github.com/FAIR-bioHeaders/FHR-Specification);
+[FHR development](https://github.com/FAIR-bioHeaders/FHR-Specification/issues);
+shared publication questions belong with
+[FAIR BioHeaders Specification](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues);
 conversion and validation bugs belong with
-[FHR-File-Converter](https://github.com/FAIR-bioHeaders/FHR-File-Converter).
+[FAIR BioHeaders Tools](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/issues).
 
 **Do I have to use the converter?**
 No. The format is plain text; you can write or parse the `;~` header directly.

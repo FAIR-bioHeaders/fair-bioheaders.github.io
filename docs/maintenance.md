@@ -1,22 +1,29 @@
 # Website maintenance
 
-## JSON schema source of truth
+## Schema authority and repository roles
 
-Maintainer decision (2026-10-09): the JSON schemas served from the owning
-repository's raw `main` branch are the single source of truth for FH* validation
-and form fields. For FHR this is
-`https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json`.
-Use the actual schema path in its owning repository for other header types.
-LinkML models, generated bindings, bundled copies and release snapshots must not
-silently replace that authority or define divergent required fields.
+The October 14, 2026 maintainer decision separates per-type development from
+shared final publication. `FAIR-bioHeaders-Specification` publishes the reviewed
+schemas, shared core, version registry, vocabulary and release artifacts.
+FHR-Specification, FHT-Specification, FHP-Specification and FHGFF3 are development
+homes; compatibility files in the fresh FHR repository retain established raw
+URLs. See the [migration record](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/107).
 
-Tools may bundle/cache a copy for availability, but must document its raw-main
-source, retrieval/build provenance and refresh behavior; a stale copy must not
-be advertised as current-main validation. Record a retrieved commit/digest when
-useful for reproducibility without making it a different canonical schema URL.
-Keep schemaVersion, software/release version and resource version distinct.
-Do not require persistent/versioned schema URLs as a prerequisite for the table
-builder. Changing this source-of-truth policy needs an explicit maintainer decision.
+Validate against the record's cited supported release, using its fixed w3id or
+raw-tag alias. Raw-main means the current contract, with no v0.3 fallback;
+unknown versions must not silently substitute another schema. A latest-schema
+check is a separate explicit compatibility/migration operation. LinkML bindings
+and offline caches follow the reviewed JSON contract, rather than becoming
+independent authorities. Keep schemaVersion, software/repository release and
+biological resource version distinct.
+
+The FHR-only builder still supports v0.3.1 and its separately documented
+October 9 development cache. It does not implement the newly released v0.4 form.
+Do not refresh a schema cache without updating its form, typed serialization,
+fixtures and provenance in a dedicated schema-support change. Repository-link
+cleanup must not rewrite existing embedded schema URLs/checksums or frozen
+release snapshots. Never present the October 9 cache as validation of current
+raw-main. See [the resource audit](resource-audit.md).
 
 ## Decision for issue #6
 
@@ -90,14 +97,14 @@ backend, upload, login, or persistence.
   It was retrieved from FHR-Specification `main` commit `21fef56` on 2026-10-09
   (sha256 `e3d3843e1a1646e12495ccc9a615df94b7abe71b833c5f336c59444e0a49620a`).
   Refresh it by re-downloading that URL and updating this note; the raw-main URL
-  remains the canonical schema, and a stale copy must not be presented as
-  current-main validation.
+  remains a supported compatibility URL, but this October 9 cache no longer
+  represents current main. Schema-support updates are separate from link cleanup.
 - **Validation is structural only.** It follows the schema's required fields,
   types, patterns, formats, and `additionalProperties`. Passing it is not a
   claim about biological quality and does not verify a checksum against any file.
 - **Microdata:** the standalone HTML emits the same FHR item scope that
   the FHR converter writes and reads (`_html_value`/`_input_microdata`). It
-  round-trips through `fhr-convert` in the FHR-File-Converter. Keep
+  round-trips through `fhr-convert` in FAIR-bioHeaders-Tools. Keep
   `assets/js/table-builder.js` in step with that convention.
 - **Assets and JS:** `table-builder.js` loads only on `/table-builder/` (like
   `theme.js`, it is not part of the bundled `main.min.js`). Node unit tests live
@@ -118,7 +125,7 @@ backend, upload, login, or persistence.
 The repository/raw-main copy remains canonical for development. Validation must
 honor a record's cited schema version; versioned w3id aliases resolve to fixed
 repository releases/revisions. A latest-schema check is explicit, never a silent
-replacement for a cited version (FHR-Specification #44, #35, #54).
+replacement for a cited version (FAIR-bioHeaders-Specification #44, #35, #54).
 
 The builder defaults to `https://w3id.org/fair-bioheaders/fhr/v0.3.1` and uses
 `assets/schema/fhr-v0.3.1.json`, verified byte-for-byte against the v0.3.1 tag at
@@ -149,3 +156,23 @@ this to repeatable scalar controls as well as ordinary/nested inputs. Browser
 regressions check computed accessible descriptions and corrected-input cleanup.
 The converter round-trip in the PR validation notes is a local verification;
 CI currently checks microdata markup, not an installed-converter round-trip.
+
+## Resource and citation data after the repository split
+
+`_data/references.yml` holds actual resource citation records; stable citation
+keys retain the DataCite titles FHR Specification / FHR File Converter.
+`resource_name` is the current overview label, and `release`/`version_doi`
+provide explicit release links without replacing the concept DOI in Cite output.
+`_data/development.yml` holds the four per-type development homes without
+inventing independent release citations. Published artifacts link to the shared
+publication repository; active converter links use FAIR-bioHeaders-Tools.
+FHT remains Draft, and Nextflow remains Demo. The standalone FHT converter is
+retired and has no active download link.
+
+The current specification/toolkit records use MPL-2.0, verified against the
+October 14 DataCite/CITATION records. Supporting resource notices retain
+historical public-domain/third-party exceptions. Do not relabel older releases
+or use a copied per-type CITATION DOI as that type's independent identity.
+See [resource-audit.md](resource-audit.md) for exact primary sources and the
+intentional historical guide/builder URLs. New ownership/citation requirements
+are checked in rendered resources and browser regression tests.

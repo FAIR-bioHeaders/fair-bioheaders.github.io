@@ -1,22 +1,29 @@
 # AGENTS.md
 
-## JSON schema source of truth
+## Schema authority and repository roles
 
-Maintainer decision (2026-10-09): the JSON schemas served from the owning
-repository's raw `main` branch are the single source of truth for FH* validation
-and form fields. For FHR this is
-`https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json`.
-Use the actual schema path in its owning repository for other header types.
-LinkML models, generated bindings, bundled copies and release snapshots must not
-silently replace that authority or define divergent required fields.
+The October 14, 2026 maintainer decision separates per-type development from
+shared final publication. `FAIR-bioHeaders-Specification` publishes the reviewed
+schemas, shared core, version registry, vocabulary and release artifacts.
+FHR-Specification, FHT-Specification, FHP-Specification and FHGFF3 are development
+homes; compatibility files in the fresh FHR repository retain established raw
+URLs. See the [migration record](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/107).
 
-Tools may bundle/cache a copy for availability, but must document its raw-main
-source, retrieval/build provenance and refresh behavior; a stale copy must not
-be advertised as current-main validation. Record a retrieved commit/digest when
-useful for reproducibility without making it a different canonical schema URL.
-Keep schemaVersion, software/release version and resource version distinct.
-Do not require persistent/versioned schema URLs as a prerequisite for the table
-builder. Changing this source-of-truth policy needs an explicit maintainer decision.
+Validate against the record's cited supported release, using its fixed w3id or
+raw-tag alias. Raw-main means the current contract, with no v0.3 fallback;
+unknown versions must not silently substitute another schema. A latest-schema
+check is a separate explicit compatibility/migration operation. LinkML bindings
+and offline caches follow the reviewed JSON contract, rather than becoming
+independent authorities. Keep schemaVersion, software/repository release and
+biological resource version distinct.
+
+The FHR-only builder still supports v0.3.1 and its separately documented
+October 9 development cache. It does not implement the newly released v0.4 form.
+Do not refresh a schema cache without updating its form, typed serialization,
+fixtures and provenance in a dedicated schema-support change. Repository-link
+cleanup must not rewrite existing embedded schema URLs/checksums or frozen
+release snapshots. Never present the October 9 cache as validation of current
+raw-main. See [the resource audit](docs/resource-audit.md).
 
 Guidance for automated agents working in this repository. This is the project
 website for FAIR BioHeaders, a trimmed Academic Pages / Minimal Mistakes Jekyll
@@ -120,8 +127,11 @@ sitemap, robots policy, and feeds. Toolchain is pinned in `.ruby-version`
 - A reference record needs either a `doi` or a `repository`; software/dataset
   records also carry `repository` and `license`; software records may carry
   `programming_language`. Repository entries need `purpose` and `status`
-  (`Published`, `Draft`, or `Demo`). Keep both FHT repositories Draft and
-  FHR Nextflow Demo unless the user explicitly changes these statuses.
+  (`Published`, `Draft`, or `Demo`). Keep FHR Nextflow Demo. Development
+  entries in `_data/development.yml` use Development, with FHT Draft until its
+  contract is released. Do not advertise the retired FHT converter as active.
+  Keep registered citation titles separate from `resource_name` display labels;
+  version DOI links must identify the exact release.
 - Maintainer identities live in `_data/team.yml` and render as h-cards and Person
   JSON-LD. Do not invent social accounts, Wikidata IDs, or affiliations — use
   verified sources (ORCID, Crossref, the project's `CITATION.cff` files).
@@ -161,8 +171,8 @@ sitemap, robots policy, and feeds. Toolchain is pinned in `.ruby-version`
   `aria-controls` consistent, preserve author order/DOIs, and support clipboard
   failure. The Node parser tests do not prove browser interaction works.
 - Current automation covers production builds, deterministic JS, Python site
-  regressions, Node citation mapping, and weekly/manual external links. Browser
-  accessibility/layout/network tests have been discussed but are not implemented.
+  regressions, Node citation mapping, Chromium browser/accessibility/layout
+  checks, and weekly/manual external links.
   Inspect changed views in a browser at desktop and 320px, in both themes, using
   keyboard navigation and reduced-motion preferences. Check Cite/Copy after
   citation changes. Do not claim those checks ran unless actually performed.
@@ -245,14 +255,14 @@ validation against the selected supported FHR schema snapshot -> readable table 
 standalone HTML (with FHR microdata) + YAML metadata, with local downloads.
 Keep it FHR-only; do not add other header types, uploads, or persistence.
 
-- The canonical schema is the raw-main FHR JSON at
+- The established FHR raw-main compatibility URL is
   `https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json`.
   `assets/schema/fhr.json` is a documented cache (see `docs/maintenance.md` for
-  its retrieved commit/digest). Refresh and re-document the development cache; never present a stale copy as
+  its retrieved commit/digest). Refresh schema support in a dedicated change; never present a stale copy as
   current-main validation. Released aliases use their separate fixed snapshot
   as described in the version-aware decision below.
 - The standalone HTML microdata must keep round-tripping through the converter
-  (`_html_value`/`_input_microdata` in FHR-File-Converter). `table-builder.js`
+  (`_html_value`/`_input_microdata` in FAIR-bioHeaders-Tools). `table-builder.js`
   owns the record->table/microdata/YAML mapping; unit tests are in
   `scripts/test_table_builder.mjs` and browser tests in
   `scripts/browser/table-builder.spec.mjs`.
@@ -269,7 +279,7 @@ Keep it FHR-only; do not add other header types, uploads, or persistence.
 The repository/raw-main copy remains canonical for development. Validation must
 honor a record's cited schema version; versioned w3id aliases resolve to fixed
 repository releases/revisions. A latest-schema check is explicit, never a silent
-replacement for a cited version (FHR-Specification #44, #35, #54).
+replacement for a cited version (FAIR-bioHeaders-Specification #44, #35, #54).
 
 The builder defaults to `https://w3id.org/fair-bioheaders/fhr/v0.3.1` and uses
 `assets/schema/fhr-v0.3.1.json`, verified byte-for-byte against the v0.3.1 tag at

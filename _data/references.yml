@@ -141,7 +141,10 @@ Marrano2026:
 
 FHR_Specification:
   status: Published
-  purpose: Reference genome metadata specification and schemas
+  resource_name: FAIR BioHeaders Specification
+  purpose: Shared released genome, protein and annotation specifications
+  release: v0.4.0
+  version_doi: 10.5281/zenodo.23376528
   type: dataset
   title: "FHR Specification"
   authors:
@@ -150,12 +153,16 @@ FHR_Specification:
   publisher: Zenodo
   year: 2026
   doi: 10.5281/zenodo.6762549
-  repository: https://github.com/FAIR-bioHeaders/FHR-Specification
-  license: PDDL-1.0
+  repository: https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification
+  license: MPL-2.0
+  note: "The registered citation title remains FHR Specification; this repository now publishes the family specifications."
 
 FHR_File_Converter:
   status: Published
-  purpose: Processing library and conversion tools
+  resource_name: FAIR BioHeaders Tools
+  purpose: Family metadata conversion, validation and file checksums
+  release: v0.7.0
+  version_doi: 10.5281/zenodo.23376802
   type: software
   title: "FHR File Converter"
   authors:
@@ -164,9 +171,10 @@ FHR_File_Converter:
   publisher: Zenodo
   year: 2026
   doi: 10.5281/zenodo.6762547
-  repository: https://github.com/FAIR-bioHeaders/FHR-File-Converter
+  repository: https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools
   programming_language: Python
-  license: PDDL-1.0
+  license: MPL-2.0
+  note: "The registered citation title remains FHR File Converter; the active package is fair-bioheaders."
 
 FHR_Nextflow:
   status: Demo
@@ -182,33 +190,6 @@ FHR_Nextflow:
   license: MPL-2.0
   note: "Development prototype; no published release or DOI."
 
-FHT_Specification:
-  status: Draft
-  purpose: Companion FHT specification
-  type: dataset
-  title: "FHT Specification"
-  authors:
-    - { family: Molik, given: David }
-    - { family: Wright, given: Adam }
-  year: 2023
-  repository: https://github.com/FAIR-bioHeaders/FHT-Specification
-  license: PDDL-1.0
-  note: "Draft companion specification for reference transcriptomes."
-
-FHT_File_Converter:
-  status: Draft
-  purpose: Companion FHT conversion tools
-  type: software
-  title: "FHT File Converter"
-  authors:
-    - { family: Molik, given: David }
-    - { family: Wright, given: Adam }
-  year: 2023
-  repository: https://github.com/FAIR-bioHeaders/FHT-File-Converter
-  programming_language: Python
-  license: PDDL-1.0
-  note: "Draft companion converter for reference transcriptomes."
-
 FHR_Citation:
   status: Published
   purpose: Maintained citation metadata and BibTeX
@@ -219,5 +200,5 @@ FHR_Citation:
     - { family: Wright, given: Adam }
   year: 2026
   repository: https://github.com/FAIR-bioHeaders/FHR-Citation
-  license: PDDL-1.0
+  license: MPL-2.0
   note: "Maintained citation metadata and BibTeX."

@@ -1,6 +1,6 @@
 # Contributing
 
-Report problems and propose changes in the [website issue tracker](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues). Questions about FHR schemas or tools belong in the corresponding [project repositories](https://github.com/FAIR-bioHeaders).
+Report problems and propose changes in the [website issue tracker](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues). Type-specific schema changes belong in FHR-Specification, FHT-Specification, FHP-Specification or FHGFF3. Shared release/core questions belong in [FAIR-bioHeaders-Specification](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues); conversion/validation bugs belong in [FAIR-bioHeaders-Tools](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/issues).
 
 Create a branch from `main`, make the change, and open a pull request. Use [the preview instructions](docs/preview.md) to build and check the site. Keep new content focused on the project and its related research, verify claims against primary sources, and preserve published URLs.
 

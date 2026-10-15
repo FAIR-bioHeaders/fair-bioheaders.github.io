@@ -27,8 +27,8 @@ redirect_from:
 </div>
 
 <nav class="project-paths" aria-label="Explore FAIR BioHeaders">
-  <a href="https://github.com/FAIR-bioHeaders/FHR-Specification"><span class="project-eyebrow">01 / Standard</span><strong>A shared language</strong><span>Metadata fields and schemas for reference genomes.</span></a>
-  <a href="https://github.com/FAIR-bioHeaders/FHR-File-Converter"><span class="project-eyebrow">02 / Tools</span><strong>Put it into practice</strong><span>Convert headers and work with supported representations.</span></a>
+  <a href="https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification"><span class="project-eyebrow">01 / Standard</span><strong>A shared language</strong><span>Released genome, protein and annotation metadata contracts.</span></a>
+  <a href="https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools"><span class="project-eyebrow">02 / Tools</span><strong>Put it into practice</strong><span>Convert headers and work with supported representations.</span></a>
   <a href="{{ '/resources/' | relative_url }}"><span class="project-eyebrow">03 / Resources</span><strong>Build on the work</strong><span>Repositories, archived releases, and citation guidance.</span></a>
 </nav>
 
@@ -71,8 +71,8 @@ FAIR BioHeaders grew out of a problem described in the [FHR standard paper](http
 
 ## Use the standard
 
-- Read the [FHR specification](https://github.com/FAIR-bioHeaders/FHR-Specification) for metadata fields and schemas.
-- Use the [FHR file converter](https://github.com/FAIR-bioHeaders/FHR-File-Converter) to work with supported representations.
+- Read the [shared specifications](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification) for metadata fields and schemas.
+- Use [FAIR BioHeaders Tools](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools) to work with supported representations.
 - Explore the [Nextflow workflows](https://github.com/FAIR-bioHeaders/FHR-Nextflow) for pipeline integration.
 
 [Resources and citation guidance](/resources/) collect the maintained repositories and archive links.

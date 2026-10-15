@@ -310,6 +310,48 @@ def reference_errors(relative, text, page):
     return errors
 
 
+def resource_errors(text):
+    """Keep published citation identity distinct from development links."""
+    errors = []
+    base = 'https://github.com/FAIR-bioHeaders/'
+    links = set(Page(text).links)
+    for repo in ('FAIR-bioHeaders-Specification', 'FAIR-bioHeaders-Tools',
+                 'FHR-Specification', 'FHT-Specification',
+                 'FHP-Specification', 'FHGFF3'):
+        if base + repo not in links:
+            errors.append(f'resources: missing current repository link {repo}')
+    for repo in ('FHR-File-Converter', 'FHT-File-Converter'):
+        if any(link.startswith(base + repo) for link in links):
+            errors.append(f'resources: obsolete active converter link {repo}')
+    references = {}
+    for head, block in iter_references(text):
+        match = re.search(r'\bid="([^"]+)"', head)
+        if match:
+            references[match[1]] = MicrodataParser(f'<div{head}>{block}</div>').root
+    expected = {
+        'FHR_Specification': ('FHR Specification', 'FAIR-bioHeaders-Specification',
+                              '10.5281/zenodo.6762549'),
+        'FHR_File_Converter': ('FHR File Converter', 'FAIR-bioHeaders-Tools',
+                              '10.5281/zenodo.6762547'),
+    }
+    for key, (title, repo, doi) in expected.items():
+        root = references.get(key) or {'props': {}}
+        props = root.get('props', {})
+        if props.get('name') != title:
+            errors.append(f'resources: {key} must retain its registered citation title')
+        if props.get('url') != base + repo:
+            errors.append(f'resources: {key} citation must identify its owning repository')
+        identifiers = {item.get('props', {}).get('value')
+                       for item in nested_items(root)
+                       if item.get('props', {}).get('propertyID') == 'DOI'}
+        if identifiers != {doi}:
+            errors.append(f'resources: {key} must retain its concept DOI identity')
+        license_item = first_item(props.get('license')) or {}
+        if license_item.get('props', {}).get('name') != 'MPL-2.0':
+            errors.append(f'resources: {key} current license metadata must be MPL-2.0')
+    return errors
+
+
 ATOM = '{http://www.w3.org/2005/Atom}'
 
 
@@ -458,6 +500,8 @@ def check(root):
         for error in page.json_errors:
             errors.append(f'{relative}: invalid JSON-LD ({error})')
         errors.extend(reference_errors(relative, file.read_text(), page))
+        if relative == 'resources/index.html':
+            errors.extend(resource_errors(file.read_text()))
         errors.extend(f'{relative}: {error}' for error in mathjax_errors(page))
     # Also check font and image references in CSS, including missing vendored assets.
     for file in root.rglob('*.css'):

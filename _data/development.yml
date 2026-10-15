@@ -1,0 +1,21 @@
+# Development homes, not independent final-release citation records.
+- key: FHR_Development
+  name: FHR development
+  purpose: Reference genome metadata
+  status: Development
+  repository: https://github.com/FAIR-bioHeaders/FHR-Specification
+- key: FHT_Specification
+  name: FHT development
+  purpose: Transcriptome metadata; field set under consultation
+  status: Draft
+  repository: https://github.com/FAIR-bioHeaders/FHT-Specification
+- key: FHP_Development
+  name: FHP development
+  purpose: Protein FASTA metadata
+  status: Development
+  repository: https://github.com/FAIR-bioHeaders/FHP-Specification
+- key: FHGFF3_Development
+  name: FHGFF3 development
+  purpose: GFF3 annotation headers and related model work
+  status: Development
+  repository: https://github.com/FAIR-bioHeaders/FHGFF3

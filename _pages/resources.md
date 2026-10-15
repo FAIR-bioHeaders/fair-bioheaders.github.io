@@ -4,20 +4,51 @@ permalink: /resources/
 excerpt: "FAIR BioHeaders specifications, converters, workflows, and citation guidance."
 ---
 
-Specifications, converters, workflows, and citation guidance for the FAIR BioHeaders project.
+Released specifications, tools, development repositories, and citation guidance for the FAIR BioHeaders project.
 
 {% include nature-panel.html key="pineapple" %}
 
 ## Project repositories
 
+The shared specification repository publishes the reviewed family contracts:
+FHR for reference genomes, FHP for protein FASTA, and FHGFF3 for annotations
+are included in **v0.4.0**. FHT transcriptome metadata is still a draft.
+FAIR BioHeaders Tools is the single active conversion and validation package.
+
 | Resource | Purpose | Status |
 | --- | --- | --- |
-{% for key in site.data.reference_order %}{% assign reference = site.data.references[key] %}{% if reference.repository %}| [{{ reference.title }}]({{ reference.repository }}) | {{ reference.purpose }} | {{ reference.status }} |
+{% for key in site.data.reference_order %}{% assign reference = site.data.references[key] %}{% if reference.repository %}| [{{ reference.resource_name | default: reference.title }}]({{ reference.repository }}) | {{ reference.purpose }} | {{ reference.status }}{% if reference.release %} ({{ reference.release }}){% endif %} |
 {% endif %}{% endfor %}
+
+For GFF3 feature checks, use the [GFF3 validator](https://github.com/FAIR-bioHeaders/gff3-validator).
+Schema validity, file checksums, and biological validation are different checks;
+not every header type supports every serialization yet.
+
+### Type development
+
+Propose field changes and report type-specific specification problems in these
+repositories. Final reviewed specifications are published together in the
+shared repository above; these development homes do not have separate final-release DOIs.
+
+| Resource | Purpose | Status |
+| --- | --- | --- |
+{% for resource in site.data.development %}| <span id="{{ resource.key | escape }}">[{{ resource.name }}]({{ resource.repository }})</span> | {{ resource.purpose }} | {{ resource.status }} |
+{% endfor %}
+
+<span id="FHT_File_Converter"></span>The standalone FHT File Converter is retired.
+Use FAIR BioHeaders Tools for active tooling; FHT support awaits the reviewed
+transcriptome contract. The former converter is not an active download or support destination.
 
 ### Repository citations
 
-Select **Cite** to view and copy a repository’s BibTeX entry.
+Select **Cite** to view and copy a resource’s BibTeX entry. The specification and
+toolkit DOI records retain their registered titles, *FHR Specification* and
+*FHR File Converter*, even though their repositories now serve the family.
+Version DOI links identify the specific published releases.
+
+Current project contributions use MPL-2.0 subject to each repository’s retained
+historical permissions and third-party notices. See its LICENSE for scope;
+older releases retain their original permissions.
 
 <div class="repo-references">
 {% for key in site.data.reference_order %}{% assign reference = site.data.references[key] %}{% if reference.repository %}{% include reference.html key=key reference=reference %}

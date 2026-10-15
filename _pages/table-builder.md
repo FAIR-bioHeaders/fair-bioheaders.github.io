@@ -5,15 +5,17 @@ excerpt: "A browser-only prototype that builds a readable genome metadata table 
 ---
 
 This is an **FHR-only prototype**. It builds one reference-genome metadata
-record at a time from a form, validates it against the authoritative FHR JSON
-schema, and produces a readable table plus a metadata file you can download.
+record at a time from a form, validates it against a supported FHR schema
+snapshot, and produces a readable table plus a metadata file you can download.
 Everything runs in your browser; nothing is uploaded and nothing is saved to
 this site. This tool is for FHR reference genomes only; transcriptome, protein,
 and annotation headers are not included.
 
-**Schema:** requiredness and types follow
-[the raw `main` FHR JSON schema](https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json).
-By default, records target [FHR v0.3.1](https://w3id.org/fair-bioheaders/fhr/v0.3.1), validated against its fixed local snapshot (`assets/schema/fhr-v0.3.1.json`). You can explicitly target raw-main to check against the documented development snapshot (`assets/schema/fhr.json`). Unsupported targets block downloads; they never fall back to another version. See
+**Schema:** requiredness and types follow the selected supported snapshot.
+Current released contracts are published in
+[FAIR BioHeaders Specification](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification).
+The latest shared specification is v0.4.0, but this prototype does not yet
+support its form or the other header types. By default, records target [FHR v0.3.1](https://w3id.org/fair-bioheaders/fhr/v0.3.1), validated against its fixed local snapshot (`assets/schema/fhr-v0.3.1.json`). You can explicitly target raw-main to check against the documented development snapshot (`assets/schema/fhr.json`). Unsupported targets block downloads; they never fall back to another version. See
 [maintenance](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/blob/main/docs/maintenance.md)
 for retrieval provenance and refresh behavior. Validation here is structural
 only: passing it is not a claim about biological quality, it does not verify a
@@ -37,7 +39,7 @@ are disabled until you generate again.
 
 <noscript>
   <p><strong>JavaScript is required to use the form.</strong> You can still
-  read the <a href="https://github.com/FAIR-bioHeaders/FHR-Specification/tree/main/examples">FHR
+  read the <a href="https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.3.1/examples">FHR
   examples</a> and use the <a href="{{ '/guide/' | relative_url }}">Using FHR
   guide</a> to build a header or metadata file by hand.</p>
 </noscript>

@@ -101,6 +101,7 @@ are the single source of truth for the generated citation.
     {% elsif reference.repository %}<a itemprop="sameAs{% if reference.type == 'software' %} codeRepository{% endif %}" href="{{ reference.repository | escape }}">{{ reference.repository | escape }}</a>
     {% endif %}
     {% if reference.note %}<span class="reference__note">{{ reference.note | escape }}</span>{% endif %}
+    {% if reference.version_doi %}<a class="reference__version" href="https://doi.org/{{ reference.version_doi | escape }}">{{ reference.release | escape }} version DOI</a>{% endif %}
     <button type="button" class="cite-button" data-cite-key="{{ key | escape }}" aria-label="Show BibTeX citation for {{ reference.title | escape }}" aria-expanded="false" aria-controls="cite-panel-{{ key | escape }}">Cite</button>
   </p>
   <div class="cite-panel" id="cite-panel-{{ key | escape }}" data-cite-panel="{{ key | escape }}" hidden>

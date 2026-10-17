@@ -17,8 +17,8 @@ and offline caches follow the reviewed JSON contract, rather than becoming
 independent authorities. Keep schemaVersion, software/repository release and
 biological resource version distinct.
 
-The FHR-only builder still supports v0.3.1 and its separately documented
-October 9 development cache. It does not implement the newly released v0.4 form.
+The family builder defaults to released FHR v0.4.0 (string schemaVersion 2.0),
+with explicit legacy v0.3.1 and historical October 9 cache support.
 Do not refresh a schema cache without updating its form, typed serialization,
 fixtures and provenance in a dedicated schema-support change. Repository-link
 cleanup must not rewrite existing embedded schema URLs/checksums or frozen
@@ -84,12 +84,12 @@ and responsive behavior. Image licenses are independent of the project code lice
 keep the visible credits and `_data/image_credits.yml` synchronized. Existing
 publication/citation metadata and navigation remain part of the acceptance checks.
 
-## FHR table builder
+## FAIR BioHeaders table builder
 
-`/table-builder/` is an FHR-only browser prototype (issue #16). One form drives
-one typed record, which is validated against the FHR JSON schema, previewed as a
-readable table, and serialized to a standalone HTML document (with FHR
-microdata) and a YAML metadata file. All processing is local; there is no
+`/table-builder/` supports released FHR, FHP and FHGFF3 metadata (issues #16/#15).
+Each form drives one typed record, validated against its selected schema,
+previewed as a readable table, and serialized as standalone HTML and YAML.
+Only FHR HTML includes microdata. All processing is local; there is no
 backend, upload, login, or persistence.
 
 - **Schema copy:** `assets/schema/fhr.json` is a cache of
@@ -127,7 +127,7 @@ honor a record's cited schema version; versioned w3id aliases resolve to fixed
 repository releases/revisions. A latest-schema check is explicit, never a silent
 replacement for a cited version (FAIR-bioHeaders-Specification #44, #35, #54).
 
-The builder defaults to `https://w3id.org/fair-bioheaders/fhr/v0.3.1` and uses
+The legacy v0.3.1 selection uses
 `assets/schema/fhr-v0.3.1.json`, verified byte-for-byte against the v0.3.1 tag at
 commit `378b534dda9c1d759f25b4b32287172402492233` on 2026-10-09. SHA-256:
 `e3d3843e1a1646e12495ccc9a615df94b7abe71b833c5f336c59444e0a49620a`.
@@ -138,7 +138,7 @@ new releases; do not route new version aliases to whichever schema is current.
 
 Explicit raw-main selection validates the separately documented development
 cache, not a live fetch or a promise that the cache is current main. The UI names
-that snapshot in its result. Unsupported targets block downloads. Both schema
+that snapshot in its result. Unsupported targets block downloads. All schema
 files load locally; selecting a URL never causes arbitrary network requests.
 The numeric `schemaVersion` field (1.0) is distinct from the release tag (v0.3.1).
 HTML microdata retains the canonical itemtype for converter compatibility; its
@@ -176,3 +176,52 @@ or use a copied per-type CITATION DOI as that type's independent identity.
 See [resource-audit.md](resource-audit.md) for exact primary sources and the
 intentional historical guide/builder URLs. New ownership/citation requirements
 are checked in rendered resources and browser regression tests.
+
+### FHR v0.4.0 builder support (issue #15, first slice)
+
+The default schema URL is `https://w3id.org/fair-bioheaders/fhr/v0.4.0`;
+the shared publication repository's v0.4.0 raw-tag URL is its supported alias.
+`assets/schema/fhr-v0.4.0.json` was verified byte-for-byte against release commit
+`84c2f90ab0e97c81d8afbf33eafe80ebade7a009` on 2026-10-17. SHA-256:
+`168a60467e3651dfdfe9855747f38257d5889bfcce6ec8661d9a378762a362dd`.
+The existing validator covers the validation keywords used by this FHR snapshot;
+the family extension also implements the FHGFF3 conditional validation keywords.
+FHT remains deferred. Keep #15 open for its outstanding full delivery gates.
+
+Schema selection sets the read-only schemaVersion to string `"2.0"` for v0.4.0,
+or numeric `1.0` for the legacy contracts. Preserve entries when switching;
+legacy validation follows its permissive nested-property policy rather than
+dropping values or inventing stricter requirements.
+GC is always a percentage: never guess that 0.42 means 42 percent. The frozen
+legacy snapshots and example downloads remain unchanged.
+
+### Released family forms (issue #15)
+
+The header-type selector enables FHR, FHP and FHGFF3 v0.4.0. Type-specific
+drafts are retained only in page memory. Switching clears previews/downloads;
+never leak a previous profile's output into the selected profile. FHP and
+FHGFF3 use string schemaVersion `"1.0"`, not the FHR `"2.0"`. Unknown targets
+and cross-type targets block exports; selecting a URL makes no network request.
+
+FHP/FHGFF3 controls use an explicit section layout, with nested field types,
+requiredness, descriptions and vocabularies taken from the released schemas.
+Optional objects may be omitted entirely; their required subfields apply when
+the object is populated. Array order and numeric zero survive generation.
+These are producer-reported assertions, not sequence/BUSCO/GFF3 verification.
+
+Both schemas were retrieved from shared release v0.4.0 at commit
+`84c2f90ab0e97c81d8afbf33eafe80ebade7a009` on 2026-10-17. SHA-256:
+
+- `fhp-v0.4.0.json`: `e3f8f45260b833f931644e87ff7530cb9b4151e67094023dd96edde9a1d90366`
+- `fhgff3-v0.4.0.json`: `f89635f252f6e204944de99e6c40bad1b0c9b37af5108fce05ee63f6dfd40bbd`
+
+The browser validator covers the keywords in these snapshots, including
+`allOf`, `not`, `contains`/`minContains`, `if`/`then` and `const`. Regression
+fixtures under `scripts/fixtures/family-v0.4.0` are unmodified released examples
+from that same tag; verify them and the validator against a reference JSON
+Schema implementation when updating support. Avoid general JSON Schema claims.
+
+FHR HTML retains its established microdata binding. FHP/FHGFF3 HTML is a readable
+table with stable field paths, without microdata; its separate YAML preserves
+the structured record. Do not emit FHR microdata for another header type. These
+exports are metadata documents and do not embed headers into sequence files.

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   FHR-only table builder
+   FAIR BioHeaders table builder
    Builds one typed FHR metadata record from a form, validates it against the
    selected supported repository schema snapshot, and produces a readable table, a
    standalone HTML document (with FHR microdata), and a YAML metadata file.
@@ -22,11 +22,27 @@
   var CURRENT_URL = 'https://w3id.org/fair-bioheaders/fhr/v0.4.0';
   var CURRENT_RAW_URL = 'https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json';
 
-  function selectSchema(target, development, release, current) {
+  function selectSchema(target, development, release, current, family) {
+    var kind = recordType({ schema: target });
+    if (kind !== 'FHR') {
+      var url = 'https://w3id.org/fair-bioheaders/' + kind.toLowerCase() + '/v0.4.0';
+      var raw = CURRENT_RAW_URL.replace('fhr.json', kind.toLowerCase() + '.json');
+      return [url, url + '/', raw].indexOf(target) !== -1 && family ? family[kind] || null : null;
+    }
     if ([CURRENT_URL, CURRENT_RAW_URL].indexOf(target) !== -1) return current || null;
     if (target === SCHEMA_URL) return development;
     if ([RELEASE_URL, RELEASE_RAW_URL, RELEASE_COMMIT_URL].indexOf(target) !== -1) return release;
     return null;
+  }
+
+  function recordType(record) {
+    var match = String(record.schema || '').match(/(?:\/)(fhp|fhgff3)(?:\/|\.json)/);
+    return match ? match[1].toUpperCase() : 'FHR';
+  }
+
+  function recordTitle(record) {
+    return recordType(record) + ' metadata' + ((record.genome || record.proteome || record.annotation) ?
+      ': ' + (record.genome || record.proteome || record.annotation) : '');
   }
 
   // Canonical output order, matching the schema's property order.
@@ -186,9 +202,9 @@
 
   function resolveRef(schema, root) {
     if (!schema || !schema.$ref) return schema;
-    if (schema.$ref.indexOf('#/') !== 0) return {};
+    if (schema.$ref.indexOf('#/') !== 0) throw new Error('Unsupported external schema reference');
     return schema.$ref.slice(2).split('/').reduce(function (node, part) {
-      return node && node[part] !== undefined ? node[part] : {};
+      return node && node[part.replace(/~1/g, '/').replace(/~0/g, '~')] !== undefined ? node[part.replace(/~1/g, '/').replace(/~0/g, '~')] : {};
     }, root);
   }
 
@@ -211,6 +227,28 @@
 
   function validateSchema(value, schema, root, path, errors) {
     schema = resolveRef(schema, root);
+    function matches(node) {
+      var sink = [];
+      validateSchema(value, node, root, path, sink);
+      return sink.length === 0;
+    }
+    if (schema.allOf) schema.allOf.forEach(function (node) { validateSchema(value, node, root, path, errors); });
+    if (schema.not && matches(schema.not)) errors.push({ path: path, message: 'matches a forbidden combination (check parent relationships; at most one annotates link)' });
+    if (schema.if) {
+      var branch = matches(schema.if) ? schema.then : schema.else;
+      if (branch) validateSchema(value, branch, root, path, errors);
+    }
+    if (Object.prototype.hasOwnProperty.call(schema, 'const') && value !== schema.const) {
+      errors.push({ path: path, message: 'must equal ' + JSON.stringify(schema.const) });
+    }
+    if (Array.isArray(value) && schema.contains) {
+      var count = value.filter(function (item) {
+        var sink = []; validateSchema(item, schema.contains, root, path, sink); return !sink.length;
+      }).length;
+      if (count < (schema.minContains === undefined ? 1 : schema.minContains)) {
+        errors.push({ path: path, message: 'must contain the required matching parent relationship' });
+      }
+    }
     if (schema.type) {
       var types = Array.isArray(schema.type) ? schema.type : [schema.type];
       if (!types.some(function (type) { return typeMatches(value, type); })) {
@@ -225,7 +263,7 @@
         return sink.length === 0;
       });
       if (!anyPassed) {
-        errors.push({ path: path, message: 'value does not match any allowed form' });
+        errors.push({ path: path, message: 'value does not match any allowed form' + (schema === root && root.properties.genomeReference ? ': supply genomeReference (accession and seqcol_id), or an FHR derivedFrom link with relationship annotates' : '') });
         return;
       }
     }
@@ -262,15 +300,16 @@
         validateSchema(item, schema.items, root, path.concat([index]), errors);
       });
     }
-    if (jsonType(value) === 'object' && schema.properties) {
+    if (jsonType(value) === 'object') {
+      var properties = schema.properties || {};
       (schema.required || []).forEach(function (key) {
         if (value[key] === undefined) {
           errors.push({ path: path.concat([key]), message: 'is required' });
         }
       });
       Object.keys(value).forEach(function (key) {
-        if (schema.properties[key]) {
-          validateSchema(value[key], schema.properties[key], root, path.concat([key]), errors);
+        if (properties[key]) {
+          validateSchema(value[key], properties[key], root, path.concat([key]), errors);
         } else if (schema.additionalProperties === false) {
           errors.push({ path: path.concat([key]), message: 'is not an allowed property' });
         }
@@ -300,22 +339,24 @@
     });
   }
 
-  function emitMap(object, indent, order, schema) {
+  function emitMap(object, indent, order, schema, root) {
+    root = root || schema;
+    schema = resolveRef(schema, root);
     var pad = new Array(indent + 1).join(' ');
     var props = (schema && schema.properties) || {};
     var lines = [];
     var keys = order ? order.filter(function (key) { return object[key] !== undefined; }) : Object.keys(object);
     keys.forEach(function (key) {
       var value = object[key];
-      var node = props[key] || {};
+      var node = resolveRef(props[key] || {}, root);
       if (Array.isArray(value)) {
         if (value.length === 0) { lines.push(pad + key + ': []'); return; }
         lines.push(pad + key + ':');
-        emitSeq(value, indent, lines, node.items);
+        emitSeq(value, indent, lines, node.items, root);
       } else if (value && typeof value === 'object') {
         if (Object.keys(value).length === 0) { lines.push(pad + key + ': {}'); return; }
         lines.push(pad + key + ':');
-        emitMap(value, indent + 2, null, node).forEach(function (line) { lines.push(line); });
+        emitMap(value, indent + 2, null, node, root).forEach(function (line) { lines.push(line); });
       } else {
         lines.push(pad + key + ': ' + yamlScalar(value, node.type));
       }
@@ -323,15 +364,15 @@
     return lines;
   }
 
-  function emitSeq(array, indent, lines, itemSchema) {
+  function emitSeq(array, indent, lines, itemSchema, root) {
     var pad = new Array(indent + 1).join(' ');
-    itemSchema = itemSchema || {};
+    itemSchema = resolveRef(itemSchema || {}, root);
     array.forEach(function (item) {
       if (Array.isArray(item)) {
         lines.push(pad + '-');
-        emitSeq(item, indent + 2, lines, itemSchema.items);
+        emitSeq(item, indent + 2, lines, itemSchema.items, root);
       } else if (item && typeof item === 'object') {
-        var inner = emitMap(item, indent + 2, null, itemSchema);
+        var inner = emitMap(item, indent + 2, null, itemSchema, root);
         inner[0] = pad + '- ' + inner[0].slice(indent + 2);
         inner.forEach(function (line) { lines.push(line); });
       } else {
@@ -341,7 +382,7 @@
   }
 
   function toYaml(record, schema) {
-    return emitMap(record, 0, FIELD_ORDER, schema).join('\n') + '\n';
+    return emitMap(record, 0, recordType(record) === 'FHR' ? FIELD_ORDER : Object.keys(record), schema).join('\n') + '\n';
   }
 
   // The declared data-fhr-type follows the schema where known, so a numeric
@@ -384,6 +425,7 @@
   }
 
   function microdataDiv(record, schema) {
+    if (recordType(record) !== 'FHR') throw new Error('HTML microdata is only supported for FHR');
     var props = (schema && schema.properties) || {};
     var order = FIELD_ORDER.filter(function (key) { return record[key] !== undefined; });
     return '<div itemscope itemtype="' + SCHEMA_URL + '">' +
@@ -403,6 +445,16 @@
   }
 
   function tableRows(record) {
+    if (recordType(record) !== 'FHR') {
+      var flattened = [];
+      function visit(value, path) {
+        if (value && typeof value === 'object' && Object.keys(value).length) {
+          Object.keys(value).forEach(function (key) { visit(value[key], path ? path + '.' + key : key); });
+        } else flattened.push({ label: path, value: value && typeof value === 'object' ? JSON.stringify(value) : String(value) });
+      }
+      visit(record, '');
+      return [{ group: recordType(record) + ' metadata', rows: flattened }];
+    }
     var rows = [];
     GROUPS.forEach(function (group) {
       var groupRows = [];
@@ -442,7 +494,7 @@
   }
 
   function tableHtml(record) {
-    var caption = 'FHR metadata' + (record.genome ? ': ' + record.genome : '');
+    var caption = recordTitle(record);
     var body = tableRows(record).map(function (group) {
       var head = '<tr><th scope="colgroup" colspan="2">' + escapeHtml(group.group) + '</th></tr>';
       var rows = group.rows.map(function (row) {
@@ -457,13 +509,13 @@
   }
 
   function standaloneHtml(record, schema) {
-    var title = 'FHR metadata' + (record.genome ? ': ' + record.genome : '');
+    var title = recordTitle(record);
     return '<!doctype html>\n<html lang="en"><head><meta charset="utf-8">' +
       '<title>' + escapeHtml(title) + '</title></head><body>\n' +
       '<h1>' + escapeHtml(title) + '</h1>\n' +
       tableHtml(record) + '\n' +
-      '<h2>Machine-readable FHR microdata</h2>\n' +
-      microdataDiv(record, schema) + '\n' +
+      (recordType(record) === 'FHR' ? '<h2>Machine-readable FHR microdata</h2>\n' + microdataDiv(record, schema) :
+        '<p>Readable table only: ' + recordType(record) + ' HTML microdata is not supported. Preserve the YAML metadata separately.</p>') + '\n' +
       '</body></html>\n';
   }
 
@@ -471,6 +523,7 @@
     SCHEMA_URL: SCHEMA_URL,
     RELEASE_URL: RELEASE_URL,
     CURRENT_URL: CURRENT_URL,
+    recordType: recordType,
     selectSchema: selectSchema,
     FIELD_ORDER: FIELD_ORDER,
     GROUPS: GROUPS,
@@ -500,6 +553,9 @@
   var schema = null;
   var releaseSchema = null;
   var currentSchema = null;
+  var familySchemas = {};
+  var activeType = 'FHR';
+  var drafts = { FHR: state };
 
   function el(tag, attrs, children) {
     var node = document.createElement(tag);
@@ -573,9 +629,9 @@
     if (field.path === 'schema') {
       input.setAttribute('list', 'tb-schema-options');
       input.addEventListener('input', function () {
-        var selected = selectSchema(state.schema, schema, releaseSchema, currentSchema);
+        var selected = selectSchema(state.schema, schema, releaseSchema, currentSchema, familySchemas);
         if (!selected) return;
-        state.schemaVersion = selected.properties.schemaVersion.type === 'string' ? '2.0' : 1;
+        state.schemaVersion = selected.properties.schemaVersion.type === 'string' ? selected.properties.schemaVersion.enum[0] : 1;
         document.getElementById('tb-schemaVersion').value = state.schemaVersion;
       });
     }
@@ -709,6 +765,7 @@
 
   function renderForm(container) {
     controlRegistry = {};
+    if (activeType !== 'FHR') { renderFamilyForm(container); return; }
     var form = el('form', { class: 'tb-form', novalidate: 'novalidate' });
     GROUPS.forEach(function (group) {
       var fieldset = el('fieldset', { class: 'tb-group' });
@@ -745,6 +802,92 @@
     [CURRENT_URL, RELEASE_URL].forEach(function (url) { choices.appendChild(el('option', { value: url })); });
     form.appendChild(choices);
     container.appendChild(form);
+  }
+
+  // The released family contracts define these groups; field types, vocabulary,
+  // descriptions and requiredness are read from the fixed local schema.
+  function renderFamilyForm(container) {
+    var root = familySchemas[activeType];
+    var form = el('form', { class: 'tb-form', novalidate: 'novalidate' });
+    var sections = [
+      ['Resource', ['schema', 'schemaVersion', 'proteome', 'annotation', 'version', 'sourceType', 'taxon', 'metadataAuthor', 'dateCreated']],
+      ['Provenance and methods', ['derivedFrom', 'genomeReference', 'source', 'predictionSoftware', 'annotationSoftware', 'predictionProtocol', 'annotationProtocol', 'geneticCode', 'isoformPolicy', 'soVersion']],
+      ['Reported statistics', ['sequenceStats', 'featureCounts', 'completeness']],
+      ['Identifiers, rights and integrity', ['accessionID', 'identifier', 'relatedLink', 'scholarlyArticle', 'documentation', 'funding', 'reuseConditions', 'voucherSpecimen', 'checksum']]
+    ];
+    function field(node, parent, key, path, required) {
+      node = Object.assign({}, resolveRef(node, root), node);
+      var title = typeof key === 'number' ? 'Entry ' + (key + 1) : String(key).replace(/([a-z])([A-Z])/g, '$1 $2');
+      title = title.charAt(0).toUpperCase() + title.slice(1);
+      var description = node.description;
+      if (path === 'schema') description = 'Use the supported v0.4.0 release URL or its fixed raw-tag alias. Other releases and raw-main are unavailable for this type.';
+      if (path === 'schemaVersion') description = 'Set from the released schema; separate from your resource version.';
+      if (key === 'relationship') description = 'Relationship to the parent file; choose from the released vocabulary.';
+      if (path === 'checksum') description = 'Producer-supplied sha2-512/256 checksum. Checked structurally only; no file is read or verified.';
+      var definition = { path: path, label: title, required: required, help: description,
+        kind: path === 'schemaVersion' ? 'text' : node.enum ? 'select' : node.format === 'date' ? 'date' : node.type, options: node.enum ? [''].concat(node.enum) : undefined };
+      if (node.type === 'object') {
+        if (!parent[key]) parent[key] = {};
+        var group = el('fieldset', { class: 'tb-object', id: fieldId(path), tabindex: '-1' });
+        group.appendChild(el('legend', { text: title + (required ? ' (required)' : ' (optional)') }));
+        if (node.description) group.appendChild(el('p', { class: 'tb-help', text: node.description }));
+        Object.keys(node.properties || {}).forEach(function (name) {
+          group.appendChild(field(node.properties[name], parent[key], name, path + '.' + name, (node.required || []).indexOf(name) !== -1));
+        });
+        return group;
+      }
+      if (node.type === 'array') {
+        if (!parent[key]) parent[key] = [];
+        var list = el('fieldset', { class: 'tb-list', id: fieldId(path), tabindex: '-1' });
+        list.appendChild(el('legend', { text: title + (required ? ' (required)' : ' (optional)') }));
+        if (node.description) list.appendChild(el('p', { class: 'tb-help', text: node.description }));
+        var rows = el('div');
+        function draw() {
+          rerenderList(rows, function () {
+            parent[key].forEach(function (_, index) {
+              var row = el('div', { class: 'tb-list__row' });
+              row.appendChild(field(node.items, parent[key], index, path + '.' + index, false));
+              var remove = el('button', { type: 'button', class: 'tb-remove', text: 'Remove ' + title + ' ' + (index + 1) });
+              remove.addEventListener('click', function () { parent[key].splice(index, 1); draw(); markStale(); });
+              row.appendChild(remove); rows.appendChild(row);
+            });
+          });
+        }
+        draw(); list.appendChild(rows);
+        var add = el('button', { type: 'button', id: 'tb-add-' + slug(path), class: 'tb-add', text: 'Add ' + title });
+        add.addEventListener('click', function () {
+          var item = resolveRef(node.items, root);
+          parent[key].push(item.type === 'object' ? {} : ''); draw(); markStale();
+          var controls = rows.querySelectorAll('input, select');
+          if (controls.length) controls[controls.length - 1].focus();
+        });
+        list.appendChild(add); return list;
+      }
+      return scalarField(definition, function () { return parent[key] === undefined ? '' : parent[key]; }, function (value) {
+        parent[key] = value !== '' && (node.type === 'integer' || node.type === 'number') ? Number(value) : value;
+      });
+    }
+    sections.forEach(function (section) {
+      var group = el('fieldset', { class: 'tb-group' });
+      group.appendChild(el('legend', { text: section[0] }));
+      section[1].forEach(function (key) {
+        if (root.properties[key]) group.appendChild(field(root.properties[key], state, key, key, root.required.indexOf(key) !== -1));
+      });
+      form.appendChild(group);
+    });
+    container.textContent = ''; container.appendChild(form);
+  }
+
+  function changeProfile() {
+    drafts[activeType] = state;
+    activeType = document.getElementById('tb-profile').value;
+    state = drafts[activeType] || { schema: 'https://w3id.org/fair-bioheaders/' + activeType.toLowerCase() + '/v0.4.0', schemaVersion: '1.0' };
+    drafts[activeType] = state;
+    outputs = null; stale = false; toggleDownloads(false);
+    ['tb-table', 'tb-html-source', 'tb-yaml-source', 'tb-errors'].forEach(function (id) { document.getElementById(id).textContent = ''; });
+    document.getElementById('tb-errors').hidden = true;
+    renderForm(document.getElementById('tb-form'));
+    setStatus(activeType + ' selected. Entries are kept separately for each type during this visit. Generate to validate.', 'stale');
   }
 
   function markStale() {
@@ -792,9 +935,9 @@
 
   function renderOutputs() {
     var record = buildRecord();
-    var selected = selectSchema(record.schema, schema, releaseSchema, currentSchema);
+    var selected = recordType(record) === activeType ? selectSchema(record.schema, schema, releaseSchema, currentSchema, familySchemas) : null;
     var errors = selected ? validateRecord(record, selected) : [{ path: ['schema'],
-      message: 'Unsupported schema target. This builder supports the v0.4.0 and v0.3.1 aliases and their supported fixed raw URLs, or the documented raw-main development snapshot.' }];
+      message: 'Unsupported schema target. Select a supported released schema for this header type. Unknown releases never fall back.' }];
     renderErrorSummary(errors);
     renderTable(record);
     outputs = { record: record, html: standaloneHtml(record, selected), yaml: toYaml(record, selected) };
@@ -804,7 +947,7 @@
     var ready = errors.length === 0;
     toggleDownloads(ready);
     if (ready) {
-      setStatus('Structural validation passed against ' + (record.schema === SCHEMA_URL ? 'the cached raw-main development snapshot' : (record.schemaVersion === '2.0' ? 'FHR v0.4.0 (schema 2.0)' : 'FHR v0.3.1')) + '. The checksum is not verified against any file.', 'ok');
+      setStatus('Structural validation passed against ' + (record.schema === SCHEMA_URL ? 'the cached raw-main development snapshot' : (recordType(record) !== 'FHR' ? recordType(record) + ' v0.4.0 (schema 1.0)' : (record.schemaVersion === '2.0' ? 'FHR v0.4.0 (schema 2.0)' : 'FHR v0.3.1'))) + '. The checksum is not verified against any file.', 'ok');
     } else {
       setStatus('Incomplete or invalid: ' + errors.length + ' issue' + (errors.length === 1 ? '' : 's') +
         '. A draft preview is shown; downloads are disabled until it validates.', 'error');
@@ -887,7 +1030,7 @@
       return;
     }
     var table = el('table');
-    var caption = el('caption', { text: 'FHR metadata' + (record.genome ? ': ' + record.genome : '') });
+    var caption = el('caption', { text: recordTitle(record) });
     table.appendChild(caption);
     var thead = el('thead');
     var headRow = el('tr');
@@ -915,7 +1058,7 @@
     if (!outputs || stale) return;
     var isHtml = kind === 'html';
     var text = isHtml ? outputs.html : outputs.yaml;
-    var filename = 'fhr-metadata.' + (isHtml ? 'html' : 'yaml');
+    var filename = activeType.toLowerCase() + '-metadata.' + (isHtml ? 'html' : 'yaml');
     var type = isHtml ? 'text/html' : 'text/yaml';
     try {
       var blob = new Blob([text], { type: type + ';charset=utf-8' });
@@ -949,11 +1092,15 @@
     Promise.all([
       load(container.getAttribute('data-schema') || '/assets/schema/fhr.json'),
       load(container.getAttribute('data-release-schema') || '/assets/schema/fhr-v0.3.1.json'),
-      load(container.getAttribute('data-current-schema') || '/assets/schema/fhr-v0.4.0.json')
+      load(container.getAttribute('data-current-schema') || '/assets/schema/fhr-v0.4.0.json'),
+      load('/assets/schema/fhp-v0.4.0.json'),
+      load('/assets/schema/fhgff3-v0.4.0.json')
     ]).then(function (loaded) {
         schema = loaded[0];
         releaseSchema = loaded[1];
         currentSchema = loaded[2];
+        familySchemas = { FHP: loaded[3], FHGFF3: loaded[4] };
+        document.getElementById('tb-profile').addEventListener('change', changeProfile);
         renderForm(document.getElementById('tb-form'));
         document.getElementById('tb-generate').addEventListener('click', renderOutputs);
         document.getElementById('tb-download-html').addEventListener('click', function () { download('html'); });

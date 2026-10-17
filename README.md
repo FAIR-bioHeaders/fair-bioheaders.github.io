@@ -27,5 +27,5 @@ links live in `_data/development.yml`. Keep their roles distinct. The registered
 specification/toolkit DOI titles remain FHR Specification / FHR File Converter;
 repository display names do not change those citation identities. See the
 [resource audit](docs/resource-audit.md) for primary-source evidence and retained
-historical URLs. The FHR-only builder defaults to v0.4.0 (schema 2.0), with explicit legacy
-v0.3.1 support. Other type forms remain follow-up work under issue #15.
+historical URLs. The table builder supports released FHR, FHP and FHGFF3 v0.4.0 metadata,
+with explicit legacy FHR v0.3.1 support. FHT remains deferred under issue #15.

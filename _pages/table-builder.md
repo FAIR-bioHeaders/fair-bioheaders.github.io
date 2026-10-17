@@ -1,17 +1,22 @@
 ---
-title: "FHR table builder"
+title: "FAIR BioHeaders table builder"
 permalink: /table-builder/
-excerpt: "A browser-only prototype that builds a readable genome metadata table and FHR metadata from a form."
+excerpt: "A browser-only prototype that builds a readable metadata table and FAIR BioHeaders metadata from a form."
 ---
 
-This is an **FHR-only prototype**. It builds one reference-genome metadata
-record at a time from a form, validates it against a supported FHR schema
-snapshot, and produces a readable table plus a metadata file you can download.
-Everything runs in your browser; nothing is uploaded and nothing is saved to
-this site. This tool is for FHR reference genomes only; transcriptome, protein,
-and annotation headers are not included.
+Build a **genome (FHR), protein set (FHP), or annotation (FHGFF3)** metadata
+record using the released v0.4.0 schemas. Choose a header type below. Each type
+keeps its own entries while this page is open; reloading discards them.
+Everything runs in your browser; nothing is uploaded or saved to this site.
+FHT transcriptome support will follow its released contract.
 
-**Schema:** requiredness and types follow the selected supported snapshot.
+FHR exports include HTML microdata. FHP and FHGFF3 HTML exports are readable
+tables only: download their YAML metadata separately to preserve the structured
+record. This form produces metadata, not a FASTA/GFF3 file with an embedded
+header. Reported counts, completeness and provenance are supplied by you and
+are not verified against sequence or annotation files.
+
+**Schema:** requiredness and types follow the selected header type and supported snapshot. FHR uses schema version 2.0; FHP and FHGFF3 use schema version 1.0.
 Current released contracts are published in
 [FAIR BioHeaders Specification](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification).
 The default is [FHR v0.4.0](https://w3id.org/fair-bioheaders/fhr/v0.4.0),
@@ -41,6 +46,10 @@ checksum against any file, and it is not a journal or repository acceptance.
   called verified without the sequence bytes and the approved coverage
   algorithm. SeqCol IDs are kept separate and are not computed here.
 
+Required subfields in an optional object apply only when you populate that
+object. For FHGFF3, supply either the genome accession plus SeqCol digest, or
+a parent FHR checksum link with relationship `annotates` (at most one).
+
 After you edit anything, the preview is marked stale and the download buttons
 are disabled until you generate again.
 
@@ -54,12 +63,21 @@ are disabled until you generate again.
 </noscript>
 
 <div id="table-builder" data-schema="{{ '/assets/schema/fhr.json' | relative_url }}" data-current-schema="{{ '/assets/schema/fhr-v0.4.0.json' | relative_url }}" data-release-schema="{{ '/assets/schema/fhr-v0.3.1.json' | relative_url }}">
+  <div class="tb-field">
+  <label for="tb-profile">Header type</label>
+  <select id="tb-profile" class="tb-input">
+    <option value="FHR">FHR — genome assembly</option>
+    <option value="FHP">FHP — protein set</option>
+    <option value="FHGFF3">FHGFF3 — annotation</option>
+    <option disabled>FHT — awaiting a released schema</option>
+  </select>
+  </div>
   <div id="tb-form"></div>
 
   <div class="tb-actions">
     <button type="button" id="tb-generate" class="btn">Validate / Generate</button>
     <button type="button" id="tb-download-html" class="btn" disabled>Download HTML table</button>
-    <button type="button" id="tb-download-yaml" class="btn" disabled>Download FHR metadata (YAML)</button>
+    <button type="button" id="tb-download-yaml" class="btn" disabled>Download metadata (YAML)</button>
   </div>
 
   <p id="tb-status" class="tb-status" role="status" aria-live="polite"></p>
@@ -67,14 +85,14 @@ are disabled until you generate again.
   <div id="tb-errors" class="tb-errors" hidden></div>
 
   <h2>Table preview</h2>
-  <div id="tb-table" class="tb-table"></div>
+  <div id="tb-table" class="tb-table" role="region" aria-label="Metadata table" tabindex="0"></div>
 
   <h2>Standalone HTML source</h2>
-  <p>This is the complete HTML document, including the readable table and FHR
+  <p>This is the complete HTML document, including the readable table and, for FHR only,
   microdata. Its download uses exactly this text.</p>
   <pre id="tb-html-source" class="tb-source" tabindex="0"></pre>
 
-  <h2>FHR metadata source (YAML)</h2>
+  <h2>Metadata source (YAML)</h2>
   <p>This is the metadata file. Its download uses exactly this text.</p>
   <pre id="tb-yaml-source" class="tb-source" tabindex="0"></pre>
 </div>

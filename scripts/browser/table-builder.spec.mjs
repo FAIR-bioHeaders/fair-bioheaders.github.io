@@ -238,3 +238,68 @@ test('current release defaults to a string version and preserves new fields thro
   await page.click('#tb-generate');
   await expect(page.locator('#tb-vitalStats-scaffoldL50')).toHaveAttribute('aria-invalid', 'true');
 });
+
+for (const [kind, fixture] of [['FHP','rich-mixed.fhp.yaml'], ['FHGFF3','rich.fhgff3.yaml']]) {
+  test(`${kind} released form preserves nested values, downloads, draft switching and local requests`, async ({ page }) => {
+    const { readFileSync } = await import('node:fs');
+    const { parse } = await import('yaml');
+    const record = parse(readFileSync(new URL(`../fixtures/family-v0.4.0/${fixture}`, import.meta.url),'utf8'));
+    record.schema = `https://w3id.org/fair-bioheaders/${kind.toLowerCase()}/v0.4.0`;
+    await page.emulateMedia({reducedMotion:'reduce'});
+    const external=[];
+    page.on('request',request=>{if(!request.url().startsWith('http://127.0.0.1:4000/')) external.push(request.url());});
+    await page.goto('/table-builder/');
+    await page.waitForSelector('#tb-schema');
+    await page.fill('#tb-genome','Retained genome draft');
+    await page.selectOption('#tb-profile',kind);
+    const slug=path=>path.replace(/[^A-Za-z0-9]+/g,'-');
+    async function fill(value,path) {
+      if(Array.isArray(value)) {
+        for(let index=0;index<value.length;index++) {
+          await page.click('#tb-add-'+slug(path));
+          await fill(value[index],path+'.'+index);
+        }
+      } else if(value && typeof value==='object') {
+        for(const [key,item] of Object.entries(value)) await fill(item,path ? path+'.'+key : key);
+      } else {
+        const control=page.locator('#tb-'+slug(path));
+        if(path==='schemaVersion') {await expect(control).toHaveValue(String(value));return;}
+        if(await control.evaluate(node=>node.tagName==='SELECT')) await control.selectOption(String(value));
+        else await control.fill(String(value));
+      }
+    }
+    await fill(record,'');
+    await page.click('#tb-generate');
+    await expect(page.locator('#tb-status')).toContainText('Structural validation passed');
+    const { default: AxeBuilder } = await import('@axe-core/playwright');
+    for (const theme of ['light','dark']) {
+      await page.evaluate(value=>document.documentElement.setAttribute('data-theme',value),theme);
+      expect((await new AxeBuilder({page}).analyze()).violations).toEqual([]);
+    }
+    const yaml=await page.textContent('#tb-yaml-source');
+    expect(parse(yaml)).toEqual(record);
+    await expect(page.locator('#tb-html-source')).not.toContainText('itemscope');
+    const [download]=await Promise.all([page.waitForEvent('download'),page.click('#tb-download-yaml')]);
+    expect(download.suggestedFilename()).toBe(kind.toLowerCase()+'-metadata.yaml');
+    expect(readFileSync(await download.path(),'utf8')).toBe(yaml);
+    if(kind==='FHGFF3') {
+      await page.selectOption('#tb-derivedFrom-0-headerType','FHP');
+      await page.click('#tb-generate');
+      await expect(page.locator('#tb-download-yaml')).toBeDisabled();
+      await page.locator('#tb-errors a[href="#tb-derivedFrom-0-headerType"]').click();
+      await expect(page.locator('#tb-derivedFrom-0-headerType')).toBeFocused();
+      await page.selectOption('#tb-derivedFrom-0-headerType','FHR');
+    }
+    await page.selectOption('#tb-profile','FHR');
+    await expect(page.locator('#tb-genome')).toHaveValue('Retained genome draft');
+    await expect(page.locator('#tb-download-yaml')).toBeDisabled();
+    await expect(page.locator('#tb-yaml-source')).toBeEmpty();
+    await page.selectOption('#tb-profile',kind);
+    await page.click('#tb-generate');
+    expect(parse(await page.textContent('#tb-yaml-source'))).toEqual(record);
+    await page.fill('#tb-schema',record.schema.replace('v0.4.0','v999.0.0'));
+    await page.click('#tb-generate');
+    await expect(page.locator('#tb-download-yaml')).toBeDisabled();
+    expect(external).toEqual([]);
+  });
+}

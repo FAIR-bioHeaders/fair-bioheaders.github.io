@@ -17,7 +17,7 @@ and offline caches follow the reviewed JSON contract, rather than becoming
 independent authorities. Keep schemaVersion, software/repository release and
 biological resource version distinct.
 
-The FHR-only builder defaults to released v0.4.0 (string schemaVersion 2.0),
+The family builder defaults to released FHR v0.4.0 (string schemaVersion 2.0),
 with explicit legacy v0.3.1 and historical October 9 cache support.
 Do not refresh a schema cache without updating its form, typed serialization,
 fixtures and provenance in a dedicated schema-support change. Repository-link
@@ -248,12 +248,13 @@ do not label all current contributors as government employees. See LICENSE
 for scope. Do not rewrite historical releases or silently relicense upstream
 material. Keep README badges, package metadata and citation metadata consistent.
 
-## FHR table builder (issue #16)
+## FAIR BioHeaders table builder (issues #16/#15)
 
-`/table-builder/` is an FHR-only browser prototype: one form -> one typed record ->
-validation against the selected supported FHR schema snapshot -> readable table +
+`/table-builder/` is a browser metadata builder: one form -> one typed record ->
+validation against the selected supported schema snapshot -> readable table +
 standalone HTML (with FHR microdata) + YAML metadata, with local downloads.
-Keep it FHR-only; do not add other header types, uploads, or persistence.
+Support released FHR, FHP and FHGFF3 contracts; do not add uploads or persistence.
+FHT requires a released contract before support is enabled.
 
 - The established FHR raw-main compatibility URL is
   `https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json`.
@@ -319,8 +320,8 @@ the shared publication repository's v0.4.0 raw-tag URL is its supported alias.
 `84c2f90ab0e97c81d8afbf33eafe80ebade7a009` on 2026-10-17. SHA-256:
 `168a60467e3651dfdfe9855747f38257d5889bfcce6ec8661d9a378762a362dd`.
 The existing validator covers the validation keywords used by this FHR snapshot;
-this does not imply support for the conditional FHGFF3 contract. FHP, FHT and
-FHGFF3 forms remain follow-ups. Do not close the multi-profile issue with this slice.
+the family extension also implements the FHGFF3 conditional validation keywords.
+FHT remains deferred. Keep #15 open for its outstanding full delivery gates.
 
 Schema selection sets the read-only schemaVersion to string `"2.0"` for v0.4.0,
 or numeric `1.0` for the legacy contracts. Preserve entries when switching;
@@ -328,3 +329,34 @@ legacy validation follows its permissive nested-property policy rather than
 dropping values or inventing stricter requirements.
 GC is always a percentage: never guess that 0.42 means 42 percent. The frozen
 legacy snapshots and example downloads remain unchanged.
+
+### Released family forms (issue #15)
+
+The header-type selector enables FHR, FHP and FHGFF3 v0.4.0. Type-specific
+drafts are retained only in page memory. Switching clears previews/downloads;
+never leak a previous profile's output into the selected profile. FHP and
+FHGFF3 use string schemaVersion `"1.0"`, not the FHR `"2.0"`. Unknown targets
+and cross-type targets block exports; selecting a URL makes no network request.
+
+FHP/FHGFF3 controls use an explicit section layout, with nested field types,
+requiredness, descriptions and vocabularies taken from the released schemas.
+Optional objects may be omitted entirely; their required subfields apply when
+the object is populated. Array order and numeric zero survive generation.
+These are producer-reported assertions, not sequence/BUSCO/GFF3 verification.
+
+Both schemas were retrieved from shared release v0.4.0 at commit
+`84c2f90ab0e97c81d8afbf33eafe80ebade7a009` on 2026-10-17. SHA-256:
+
+- `fhp-v0.4.0.json`: `e3f8f45260b833f931644e87ff7530cb9b4151e67094023dd96edde9a1d90366`
+- `fhgff3-v0.4.0.json`: `f89635f252f6e204944de99e6c40bad1b0c9b37af5108fce05ee63f6dfd40bbd`
+
+The browser validator covers the keywords in these snapshots, including
+`allOf`, `not`, `contains`/`minContains`, `if`/`then` and `const`. Regression
+fixtures under `scripts/fixtures/family-v0.4.0` are unmodified released examples
+from that same tag; verify them and the validator against a reference JSON
+Schema implementation when updating support. Avoid general JSON Schema claims.
+
+FHR HTML retains its established microdata binding. FHP/FHGFF3 HTML is a readable
+table with stable field paths, without microdata; its separate YAML preserves
+the structured record. Do not emit FHR microdata for another header type. These
+exports are metadata documents and do not embed headers into sequence files.

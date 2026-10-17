@@ -5,6 +5,7 @@ async function fillValid(page) {
   const set = (id, value) => page.fill('#' + id, value);
   await page.goto('/table-builder/');
   await page.waitForSelector('#tb-form fieldset');
+  await set('tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v0.3.1');
   await set('tb-genome', 'Synthetic human reference example');
   await set('tb-version', '0.0.1');
   await set('tb-taxon-name', 'Homo sapiens');
@@ -205,4 +206,35 @@ test('field errors become accessible descriptions and clear without losing help'
   await expect(error).toBeHidden();
   await expect(related).not.toHaveAttribute('aria-describedby');
   await expect(page.locator('#tb-download-yaml')).toBeEnabled();
+});
+
+test('current release defaults to a string version and preserves new fields through exports', async ({ page }) => {
+  await page.goto('/table-builder/');
+  await expect(page.locator('#tb-schema')).toHaveValue('https://w3id.org/fair-bioheaders/fhr/v0.4.0');
+  await expect(page.locator('#tb-schemaVersion')).toHaveValue('2.0');
+  await expect(page.locator('#tb-schemaVersion')).toHaveAttribute('readonly', '');
+  await fillValid(page);
+  await page.fill('#tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v0.4.0');
+  await page.selectOption('#tb-metadataAuthor-0-nameType', 'Organizational');
+  await page.fill('#tb-vitalStats-scaffoldN50', '200');
+  await page.fill('#tb-vitalStats-scaffoldL50', '0');
+  await page.fill('#tb-vitalStats-gcContent', '0.42');
+  await expect(page.locator('#tb-download-yaml')).toBeDisabled();
+  await page.click('#tb-generate');
+  await expect(page.locator('#tb-status')).toContainText('FHR v0.4.0 (schema 2.0)');
+  await expect(page.locator('#tb-yaml-source')).toContainText('schemaVersion: "2.0"');
+  await expect(page.locator('#tb-yaml-source')).toContainText('scaffoldL50: 0');
+  await expect(page.locator('#tb-yaml-source')).toContainText('gcContent: 0.42');
+  await expect(page.locator('#tb-table')).toContainText('Organizational');
+  await expect(page.locator('#tb-download-yaml')).toBeEnabled();
+  await page.fill('#tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v0.3.1');
+  await expect(page.locator('#tb-schemaVersion')).toHaveValue('1');
+  await page.click('#tb-generate');
+  await expect(page.locator('#tb-download-yaml')).toBeEnabled();
+  await expect(page.locator('#tb-yaml-source')).toContainText('schemaVersion: 1.0');
+  await expect(page.locator('#tb-vitalStats-scaffoldN50')).toHaveValue('200');
+  await page.fill('#tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v0.4.0');
+  await page.fill('#tb-vitalStats-scaffoldL50', '-1');
+  await page.click('#tb-generate');
+  await expect(page.locator('#tb-vitalStats-scaffoldL50')).toHaveAttribute('aria-invalid', 'true');
 });

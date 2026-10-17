@@ -19,7 +19,11 @@
   var RELEASE_RAW_URL = 'https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.3.1/fhr.json';
   var RELEASE_COMMIT_URL = 'https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/378b534dda9c1d759f25b4b32287172402492233/fhr.json';
 
-  function selectSchema(target, development, release) {
+  var CURRENT_URL = 'https://w3id.org/fair-bioheaders/fhr/v0.4.0';
+  var CURRENT_RAW_URL = 'https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json';
+
+  function selectSchema(target, development, release, current) {
+    if ([CURRENT_URL, CURRENT_RAW_URL].indexOf(target) !== -1) return current || null;
     if (target === SCHEMA_URL) return development;
     if ([RELEASE_URL, RELEASE_RAW_URL, RELEASE_COMMIT_URL].indexOf(target) !== -1) return release;
     return null;
@@ -42,10 +46,10 @@
     {
       id: 'resource', legend: 'Resource',
       fields: [
-        { path: 'schema', label: 'FHR schema URL', kind: 'text', required: true, default: RELEASE_URL,
-          help: 'Use the supported v0.3.1 release alias, or explicitly select raw-main for the documented development snapshot.' },
-        { path: 'schemaVersion', label: 'Schema version', kind: 'number', required: true, default: '1.0',
-          help: 'Value of the schemaVersion field (currently 1.0).' }
+        { path: 'schema', label: 'FHR schema URL', kind: 'text', required: true, default: CURRENT_URL,
+          help: 'Use FHR v0.4.0 (schema 2.0), v0.3.1 (schema 1.0), or its supported fixed raw-tag alias. Raw-main only checks the historical October 9 cache.' },
+        { path: 'schemaVersion', label: 'Schema version', kind: 'text', required: true, default: '2.0',
+          help: 'Set from the selected supported release; distinct from the genome version. Schema 2.0 is a string; legacy 1.0 is numeric.' }
       ]
     },
     {
@@ -72,12 +76,14 @@
       fields: [
         { path: 'metadataAuthor', label: 'Metadata authors', kind: 'objectList', required: true,
           help: 'People or organizations who created this metadata record. Order is preserved.', fields: [
-            { name: 'name', label: 'Name', kind: 'text', required: true },
+            { name: 'name', label: 'Name', kind: 'text' },
+            { name: 'nameType', label: 'Author type (defined in schema 2.0)', kind: 'select', options: ['', 'Personal', 'Organizational'] },
             { name: 'uri', label: 'ORCID URI', kind: 'text', format: 'uri' }
           ] },
         { path: 'assemblyAuthor', label: 'Assembly authors', kind: 'objectList', required: true,
           help: 'People or organizations who assembled the genome. Distinct from metadata authors.', fields: [
-            { name: 'name', label: 'Name', kind: 'text', required: true },
+            { name: 'name', label: 'Name', kind: 'text' },
+            { name: 'nameType', label: 'Author type (defined in schema 2.0)', kind: 'select', options: ['', 'Personal', 'Organizational'] },
             { name: 'uri', label: 'ORCID URI', kind: 'text', format: 'uri' }
           ] }
       ]
@@ -124,14 +130,18 @@
       id: 'stats', legend: 'Assembly statistics',
       fields: [
         { path: 'vitalStats', label: 'Assembly statistics', kind: 'object', fields: [
-          { name: 'N50', label: 'N50 (bp)', kind: 'integer' },
-          { name: 'N90', label: 'N90 (bp)', kind: 'integer' },
+          { name: 'N50', label: 'Contig N50 (bp)', kind: 'integer' },
+          { name: 'N90', label: 'Contig N90 (bp)', kind: 'integer' },
           { name: 'L50', label: 'L50 (contigs)', kind: 'integer' },
           { name: 'L90', label: 'L90 (contigs)', kind: 'integer' },
+          { name: 'scaffoldN50', label: 'Scaffold N50 (bp; defined in schema 2.0)', kind: 'integer' },
+          { name: 'scaffoldN90', label: 'Scaffold N90 (bp; defined in schema 2.0)', kind: 'integer' },
+          { name: 'scaffoldL50', label: 'Scaffold L50 (scaffolds; defined in schema 2.0)', kind: 'integer' },
+          { name: 'scaffoldL90', label: 'Scaffold L90 (scaffolds; defined in schema 2.0)', kind: 'integer' },
           { name: 'totalBasePairs', label: 'Total base pairs (bp)', kind: 'integer' },
           { name: 'numberContigs', label: 'Number of contigs', kind: 'integer' },
           { name: 'numberScaffolds', label: 'Number of scaffolds', kind: 'integer' },
-          { name: 'gcContent', label: 'GC content (%)', kind: 'number' },
+          { name: 'gcContent', label: 'GC content (%)', kind: 'number', help: '0–100 percent: 42 means 42%; 0.42 means 0.42%. No fraction conversion is performed.' },
           { name: 'readTechnology', label: 'Read technology', kind: 'text' }
         ] }
       ]
@@ -460,6 +470,7 @@
   var api = {
     SCHEMA_URL: SCHEMA_URL,
     RELEASE_URL: RELEASE_URL,
+    CURRENT_URL: CURRENT_URL,
     selectSchema: selectSchema,
     FIELD_ORDER: FIELD_ORDER,
     GROUPS: GROUPS,
@@ -488,6 +499,7 @@
   var objectUrls = [];
   var schema = null;
   var releaseSchema = null;
+  var currentSchema = null;
 
   function el(tag, attrs, children) {
     var node = document.createElement(tag);
@@ -557,6 +569,16 @@
     if (field.kind === 'integer') input.setAttribute('step', '1');
     if (field.kind === 'date') input.setAttribute('placeholder', 'YYYY-MM-DD');
     input.value = get();
+    if (field.path === 'schemaVersion') input.readOnly = true;
+    if (field.path === 'schema') {
+      input.setAttribute('list', 'tb-schema-options');
+      input.addEventListener('input', function () {
+        var selected = selectSchema(state.schema, schema, releaseSchema, currentSchema);
+        if (!selected) return;
+        state.schemaVersion = selected.properties.schemaVersion.type === 'string' ? '2.0' : 1;
+        document.getElementById('tb-schemaVersion').value = state.schemaVersion;
+      });
+    }
     if (field.help) input.setAttribute('aria-describedby', id + '-help');
     wrap.appendChild(input);
     var help = helpText(id, field);
@@ -624,7 +646,7 @@
 
   function objectSubfield(sub, path, get, set) {
     return scalarField({ path: path, label: sub.label, kind: sub.kind || 'text',
-      required: sub.required, format: sub.format, help: sub.help }, get, set);
+      required: sub.required, format: sub.format, help: sub.help, options: sub.options }, get, set);
   }
 
   function objectListField(field, array) {
@@ -719,6 +741,9 @@
       form.appendChild(fieldset);
     });
     container.textContent = '';
+    var choices = el('datalist', { id: 'tb-schema-options' });
+    [CURRENT_URL, RELEASE_URL].forEach(function (url) { choices.appendChild(el('option', { value: url })); });
+    form.appendChild(choices);
     container.appendChild(form);
   }
 
@@ -767,9 +792,9 @@
 
   function renderOutputs() {
     var record = buildRecord();
-    var selected = selectSchema(record.schema, schema, releaseSchema);
+    var selected = selectSchema(record.schema, schema, releaseSchema, currentSchema);
     var errors = selected ? validateRecord(record, selected) : [{ path: ['schema'],
-      message: 'Unsupported schema target. This builder supports the v0.3.1 alias and its release/commit URLs, or the documented raw-main development snapshot.' }];
+      message: 'Unsupported schema target. This builder supports the v0.4.0 and v0.3.1 aliases and their supported fixed raw URLs, or the documented raw-main development snapshot.' }];
     renderErrorSummary(errors);
     renderTable(record);
     outputs = { record: record, html: standaloneHtml(record, selected), yaml: toYaml(record, selected) };
@@ -779,7 +804,7 @@
     var ready = errors.length === 0;
     toggleDownloads(ready);
     if (ready) {
-      setStatus('Structural validation passed against ' + (record.schema === SCHEMA_URL ? 'the cached raw-main development snapshot' : 'FHR v0.3.1') + '. The checksum is not verified against any file.', 'ok');
+      setStatus('Structural validation passed against ' + (record.schema === SCHEMA_URL ? 'the cached raw-main development snapshot' : (record.schemaVersion === '2.0' ? 'FHR v0.4.0 (schema 2.0)' : 'FHR v0.3.1')) + '. The checksum is not verified against any file.', 'ok');
     } else {
       setStatus('Incomplete or invalid: ' + errors.length + ' issue' + (errors.length === 1 ? '' : 's') +
         '. A draft preview is shown; downloads are disabled until it validates.', 'error');
@@ -923,10 +948,12 @@
     }
     Promise.all([
       load(container.getAttribute('data-schema') || '/assets/schema/fhr.json'),
-      load(container.getAttribute('data-release-schema') || '/assets/schema/fhr-v0.3.1.json')
+      load(container.getAttribute('data-release-schema') || '/assets/schema/fhr-v0.3.1.json'),
+      load(container.getAttribute('data-current-schema') || '/assets/schema/fhr-v0.4.0.json')
     ]).then(function (loaded) {
         schema = loaded[0];
         releaseSchema = loaded[1];
+        currentSchema = loaded[2];
         renderForm(document.getElementById('tb-form'));
         document.getElementById('tb-generate').addEventListener('click', renderOutputs);
         document.getElementById('tb-download-html').addEventListener('click', function () { download('html'); });

@@ -36,7 +36,7 @@ function exampleRecord() {
   };
 }
 
-test('the bundled schema is the authoritative raw-main schema', () => {
+test('the legacy development cache retains its documented identity', () => {
   assert.equal(schema.$id, tb.SCHEMA_URL);
   assert.equal(schema.type, 'object');
   assert.ok(schema.required.includes('checksum'));
@@ -153,7 +153,7 @@ test('the table groups fields and keeps author order', () => {
   assert.deepEqual(authors.rows.filter((row) => row.label.endsWith('— Name')).map((row) => row.value),
     ['Adam Wright', 'David Molik']);
   const statistics = rows.find((g) => g.group === 'Assembly statistics');
-  assert.ok(statistics.rows.some((row) => row.label === 'N50 (bp)' && row.value === '16'));
+  assert.ok(statistics.rows.some((row) => row.label === 'Contig N50 (bp)' && row.value === '16'));
   assert.ok(statistics.rows.some((row) => row.label === 'L50 (contigs)' && row.value === '1'));
   assert.ok(statistics.rows.some((row) => row.label === 'GC content (%)' && row.value === '37.5'));
 });
@@ -169,4 +169,39 @@ test('zero and false values are preserved, absence is not invented', () => {
 test('absent optional fields are omitted from YAML output', () => {
   const minimal = { schema: tb.SCHEMA_URL, genome: 'G' };
   assert.doesNotMatch(tb.toYaml(minimal, schema), /funding/);
+});
+
+const currentSchema = JSON.parse(readFileSync(new URL('../assets/schema/fhr-v0.4.0.json', import.meta.url)));
+function currentRecord() {
+  const record = exampleRecord();
+  record.schema = tb.CURRENT_URL;
+  record.schemaVersion = '2.0';
+  record.metadataAuthor[0].nameType = 'Personal';
+  record.vitalStats.scaffoldN50 = 200;
+  record.vitalStats.scaffoldL50 = 0;
+  return record;
+}
+test('v0.4.0 snapshot is pinned and only explicit release aliases select it', () => {
+  const bytes = readFileSync(new URL('../assets/schema/fhr-v0.4.0.json', import.meta.url));
+  assert.equal(createHash('sha256').update(bytes).digest('hex'), '168a60467e3651dfdfe9855747f38257d5889bfcce6ec8661d9a378762a362dd');
+  assert.equal(tb.selectSchema(tb.CURRENT_URL, schema, schema, currentSchema), currentSchema);
+  assert.equal(tb.selectSchema('https://w3id.org/fair-bioheaders/fhr/v999', schema, schema, currentSchema), null);
+});
+test('schema 2 preserves typed authors, scaffold statistics and percentage values', () => {
+  const record = currentRecord();
+  record.vitalStats.gcContent = 0.42;
+  assert.deepEqual(tb.validateRecord(record, currentSchema), []);
+  assert.deepEqual(parse(tb.toYaml(record, currentSchema)), record);
+  assert.match(tb.microdataDiv(record, currentSchema), /itemprop="schemaVersion" data-fhr-type="string">2.0<\/span>/);
+  assert.match(tb.tableHtml(record), /Scaffold N50/);
+  record.schemaVersion = 2;
+  assert.ok(tb.validateRecord(record, currentSchema).some(e => e.path.join('.') === 'schemaVersion'));
+});
+test('v0.4 checks scaffold bounds, author vocabulary and referenced checksum', () => {
+  const record = currentRecord();
+  record.vitalStats.scaffoldL50 = -1;
+  record.metadataAuthor[0].nameType = 'Person';
+  record.checksum = '!'.repeat(44);
+  const paths = tb.validateRecord(record, currentSchema).map(e => e.path.join('.'));
+  for (const path of ['vitalStats.scaffoldL50', 'metadataAuthor.0.nameType', 'checksum']) assert.ok(paths.includes(path));
 });

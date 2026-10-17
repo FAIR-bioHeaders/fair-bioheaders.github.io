@@ -17,8 +17,8 @@ and offline caches follow the reviewed JSON contract, rather than becoming
 independent authorities. Keep schemaVersion, software/repository release and
 biological resource version distinct.
 
-The FHR-only builder still supports v0.3.1 and its separately documented
-October 9 development cache. It does not implement the newly released v0.4 form.
+The FHR-only builder defaults to released v0.4.0 (string schemaVersion 2.0),
+with explicit legacy v0.3.1 and historical October 9 cache support.
 Do not refresh a schema cache without updating its form, typed serialization,
 fixtures and provenance in a dedicated schema-support change. Repository-link
 cleanup must not rewrite existing embedded schema URLs/checksums or frozen
@@ -127,7 +127,7 @@ honor a record's cited schema version; versioned w3id aliases resolve to fixed
 repository releases/revisions. A latest-schema check is explicit, never a silent
 replacement for a cited version (FAIR-bioHeaders-Specification #44, #35, #54).
 
-The builder defaults to `https://w3id.org/fair-bioheaders/fhr/v0.3.1` and uses
+The legacy v0.3.1 selection uses
 `assets/schema/fhr-v0.3.1.json`, verified byte-for-byte against the v0.3.1 tag at
 commit `378b534dda9c1d759f25b4b32287172402492233` on 2026-10-09. SHA-256:
 `e3d3843e1a1646e12495ccc9a615df94b7abe71b833c5f336c59444e0a49620a`.
@@ -138,7 +138,7 @@ new releases; do not route new version aliases to whichever schema is current.
 
 Explicit raw-main selection validates the separately documented development
 cache, not a live fetch or a promise that the cache is current main. The UI names
-that snapshot in its result. Unsupported targets block downloads. Both schema
+that snapshot in its result. Unsupported targets block downloads. All schema
 files load locally; selecting a URL never causes arbitrary network requests.
 The numeric `schemaVersion` field (1.0) is distinct from the release tag (v0.3.1).
 HTML microdata retains the canonical itemtype for converter compatibility; its
@@ -176,3 +176,21 @@ or use a copied per-type CITATION DOI as that type's independent identity.
 See [resource-audit.md](resource-audit.md) for exact primary sources and the
 intentional historical guide/builder URLs. New ownership/citation requirements
 are checked in rendered resources and browser regression tests.
+
+### FHR v0.4.0 builder support (issue #15, first slice)
+
+The default schema URL is `https://w3id.org/fair-bioheaders/fhr/v0.4.0`;
+the shared publication repository's v0.4.0 raw-tag URL is its supported alias.
+`assets/schema/fhr-v0.4.0.json` was verified byte-for-byte against release commit
+`84c2f90ab0e97c81d8afbf33eafe80ebade7a009` on 2026-10-17. SHA-256:
+`168a60467e3651dfdfe9855747f38257d5889bfcce6ec8661d9a378762a362dd`.
+The existing validator covers the validation keywords used by this FHR snapshot;
+this does not imply support for the conditional FHGFF3 contract. FHP, FHT and
+FHGFF3 forms remain follow-ups. Do not close the multi-profile issue with this slice.
+
+Schema selection sets the read-only schemaVersion to string `"2.0"` for v0.4.0,
+or numeric `1.0` for the legacy contracts. Preserve entries when switching;
+legacy validation follows its permissive nested-property policy rather than
+dropping values or inventing stricter requirements.
+GC is always a percentage: never guess that 0.42 means 42 percent. The frozen
+legacy snapshots and example downloads remain unchanged.

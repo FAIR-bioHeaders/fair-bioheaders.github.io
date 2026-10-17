@@ -14,8 +14,17 @@ and annotation headers are not included.
 **Schema:** requiredness and types follow the selected supported snapshot.
 Current released contracts are published in
 [FAIR BioHeaders Specification](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification).
-The latest shared specification is v0.4.0, but this prototype does not yet
-support its form or the other header types. By default, records target [FHR v0.3.1](https://w3id.org/fair-bioheaders/fhr/v0.3.1), validated against its fixed local snapshot (`assets/schema/fhr-v0.3.1.json`). You can explicitly target raw-main to check against the documented development snapshot (`assets/schema/fhr.json`). Unsupported targets block downloads; they never fall back to another version. See
+The default is [FHR v0.4.0](https://w3id.org/fair-bioheaders/fhr/v0.4.0),
+using schema version **2.0** and a fixed local release snapshot. The form includes
+personal/organizational author types and separate contig/scaffold statistics.
+FHR v0.3.1 remains available through the schema URL field's suggestions. Fields
+marked “defined in schema 2.0” have normative definitions in that contract.
+Switching releases preserves your entries and applies the selected contract,
+including its policy on extra fields.
+The read-only schema version follows the selected release; the genome version
+is yours to enter. Raw-main explicitly checks only the historical October 9
+cache, not today's development schema. Unsupported targets block downloads.
+See
 [maintenance](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/blob/main/docs/maintenance.md)
 for retrieval provenance and refresh behavior. Validation here is structural
 only: passing it is not a claim about biological quality, it does not verify a
@@ -44,7 +53,7 @@ are disabled until you generate again.
   guide</a> to build a header or metadata file by hand.</p>
 </noscript>
 
-<div id="table-builder" data-schema="{{ '/assets/schema/fhr.json' | relative_url }}" data-release-schema="{{ '/assets/schema/fhr-v0.3.1.json' | relative_url }}">
+<div id="table-builder" data-schema="{{ '/assets/schema/fhr.json' | relative_url }}" data-current-schema="{{ '/assets/schema/fhr-v0.4.0.json' | relative_url }}" data-release-schema="{{ '/assets/schema/fhr-v0.3.1.json' | relative_url }}">
   <div id="tb-form"></div>
 
   <div class="tb-actions">

@@ -30,6 +30,7 @@ repository display names do not change those citation identities. See the
 historical URLs. The FHR-only builder still supports its documented v0.3.1
 snapshot; adding v0.4 and other type forms is separate work.
 
-The draft [metadata viewer](docs/metadata-viewer.md) inspects bounded local JSON
-metadata without claiming schema, checksum or parent verification. It is separate
-from the metadata-generation table builder and does not upload selected files.
+The [FHR JavaScript guide](docs/metadata-viewer.md) teaches reading/querying JSON,
+changing a metadata copy, extracting an authored typed HTML microdata example,
+and displaying records on another website. Local examples do not upload data or
+claim schema, checksum or parent verification.

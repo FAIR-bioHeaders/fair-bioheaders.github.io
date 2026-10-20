@@ -1,29 +1,115 @@
 ---
-title: "FAIR BioHeaders JavaScript: demo and implementation guide"
+title: "JavaScript with FHR headers: JSON and microdata"
 permalink: /metadata-viewer/
-excerpt: "Try a local metadata viewer, then embed the FAIR BioHeaders display component on your own website."
+excerpt: "Read, query and change FHR JSON metadata, extract an HTML microdata example, and display it on your own website."
 ---
 
-Try the live example below, then [embed the same component on your own website](#embed-on-your-own-website).
-This draft JavaScript display accepts a JSON metadata record; it is not yet a
-released reader or validator library.
+Use JavaScript to read an FHR header's **JSON metadata**, select fields, change a
+copy, and extract the same record from **HTML microdata**. The examples below run
+in your browser. Copy the code into your own webpage and adapt the display.
 
-Inspect a **JSON metadata record** for a genome (FHR), protein set (FHP), or
-annotation (FHGFF3). Choose an example or a local file up to **256 KiB**. Your
-local file stays in your browser; it is not uploaded or saved to this site.
-Clear the display or reload to discard it.
+The sample is synthetic FHR v0.4.0 metadata (`schemaVersion: "2.0"`), with a
+placeholder checksum. Parsing metadata does not validate its schema or verify a
+sequence file. These examples do not change a header embedded in a sequence file.
 
-This first version displays metadata only. **Schema validation, sequence-file
-checksums and parent verification are not performed.** A recognized schema URL
-is not proof of a valid header or a verified file. Values, identifiers, URLs and
-reported statistics are shown as supplied, without resolving them.
+## 1. Read and query JSON
 
-FASTA, GFA, GFF3, YAML and HTML files are not supported inputs. Export JSON
-metadata with [FAIR BioHeaders Tools](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools)
-first. FHT awaits its reviewed contract. The [table builder]({{ '/table-builder/' | relative_url }})
-is the separate tool for entering metadata and generating exports.
+`JSON.parse` turns JSON text into a JavaScript object. Access nested fields with
+property access, and use `map` to read ordered author arrays. Keep the quoted
+schema version as a string and numeric statistics as numbers, including zero.
+The playground applies the display adapter's size and numeric limits first.
 
-## Try the live example
+```javascript
+const record = JSON.parse(jsonText);
+const genome = record.genome;
+const taxon = record.taxon?.name;
+const authors = (record.metadataAuthor || []).map(author => author.name);
+const N50 = record.vitalStats?.N50; // 0 is a value; do not replace it with ||.
+```
+
+<div class="mv-field">
+<label for="fhr-json-input">FHR JSON to experiment with (256 KiB maximum)</label>
+<textarea class="tb-input" id="fhr-json-input" rows="12" spellcheck="false" aria-describedby="fhr-playground-help" data-fhr-example-control disabled></textarea>
+<p id="fhr-playground-help">Edit the JSON, then run it. Reload or read the microdata example to restore the synthetic record. Nothing is uploaded or saved.</p>
+</div>
+<button id="fhr-run-json" type="button" class="btn" data-fhr-example-control disabled>Run JSON example</button>
+<button id="fhr-edit-json" type="button" class="btn" data-fhr-example-control disabled>Change genome in a copy</button>
+<p id="fhr-playground-status" role="status" aria-live="polite">Enable JavaScript to run the examples.</p>
+<pre id="fhr-query-output" role="region" tabindex="0" aria-label="JavaScript query results"></pre>
+<fair-bioheaders-metadata id="fhr-playground-display"></fair-bioheaders-metadata>
+
+## 2. Change a copy and serialize it
+
+Copy the parsed record, change a field, and turn it back into JSON. The button
+above runs this operation and puts the result in the editor. The microdata
+example stays unchanged so you can compare or restore it.
+
+```javascript
+const copy = structuredClone(record);
+copy.genome = 'My JavaScript example';
+const jsonText = JSON.stringify(copy, null, 2);
+// Display as text, never as HTML supplied by the record.
+document.querySelector('#output').textContent = jsonText;
+```
+
+`#output` is a `<pre id="output"></pre>` on your own page. This serializes an
+in-memory metadata copy only. It does not recompute a sequence checksum or update
+any sequence-file header. Validate edited metadata against its cited contract
+before using it in a file workflow.
+
+## 3. Read an HTML microdata example
+
+HTML microdata carries properties in `itemprop` attributes inside an `itemscope`.
+The root `itemtype` below is the established FHR binding identity; the `schema`
+property selects the record's fixed release. A nested object's own properties
+must stay in its scope. Arrays use ordered `item` children. The existing FHR
+writer's `data-fhr-type` markers preserve strings, numbers and container types.
+
+{% capture fhr_microdata %}{% include fhr-microdata-example.html %}{% endcapture %}
+<pre id="fhr-microdata-code" role="region" tabindex="0" aria-label="FHR HTML microdata example"><code>{{ fhr_microdata | escape }}</code></pre>
+<template id="fhr-microdata-template">{{ fhr_microdata }}</template>
+
+<button id="fhr-read-microdata" type="button" class="btn" data-fhr-example-control disabled>Read microdata into JSON</button>
+
+This button extracts the authored example above into the JSON editor and runs
+the same query/display. Its record matches the initial JSON, including the
+ordered author objects and numeric zero. Nothing from the HTML is inserted into
+the live page. The template holds the example without rendering it.
+
+```html
+<script src="/assets/js/fhr-javascript-example.js"></script>
+```
+
+Copy the [teaching helper]({{ '/assets/js/fhr-javascript-example.js' | relative_url }})
+into your project, place the sample markup in your document, then read it:
+
+```javascript
+const root = document.querySelector('#fhr-example');
+const record = FhrExamples.readMicrodata(root);
+console.log(record.taxon.name);
+console.log(record.metadataAuthor.map(author => author.name));
+console.log(JSON.stringify(record, null, 2));
+```
+
+The helper's source shows the DOM traversal: `node.children` preserves container
+scope; `getAttribute('itemprop')` names each property; `textContent` reads leaf
+spans; and the explicit type marker determines conversion. It rejects repeated
+object properties instead of losing values. It reads **this explicit typed
+span/container layout only**. General HTML microdata (including `itemref`, URL or
+`meta` value rules, omitted type markers and unrelated scopes) requires the
+reviewed toolkit reader; this small example is not a replacement parser.
+Do not load arbitrary HTML into your webpage to inspect it.
+
+## Inspect another JSON record
+
+The existing display below also accepts bounded JSON examples for FHP/FHGFF3.
+The JavaScript lesson above focuses on FHR; those additional examples do not
+establish HTML microdata support for other header types. FASTA, GFA, GFF3, YAML
+and HTML uploads are not accepted. Export JSON metadata with
+[FAIR BioHeaders Tools](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools)
+for this display. The [table builder]({{ '/table-builder/' | relative_url }}) is
+for entering metadata and generating exports.
+
 
 <noscript><p><strong>JavaScript is required for the viewer.</strong> You can read
 <a href="https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.4.0/examples">released metadata examples</a>
@@ -38,11 +124,11 @@ and use FAIR BioHeaders Tools locally instead.</p></noscript>
   <div class="mv-field">
     <label for="mv-example">Bundled example</label>
     <select id="mv-example" data-viewer-control disabled>
+      <option value="{{ '/assets/examples/viewer/minimal-fhr.json' | relative_url }}">Synthetic genome metadata (FHR)</option>
       <option value="{{ '/assets/examples/viewer/minimal-fhp.json' | relative_url }}">Minimal protein-set metadata (FHP)</option>
       <option value="{{ '/assets/examples/viewer/rich-fhp.json' | relative_url }}">Rich protein-set metadata (FHP)</option>
       <option value="{{ '/assets/examples/viewer/minimal-fhgff3.json' | relative_url }}">Minimal annotation metadata (FHGFF3)</option>
       <option value="{{ '/assets/examples/viewer/rich-fhgff3.json' | relative_url }}">Rich annotation metadata (FHGFF3)</option>
-      <option value="{{ '/assets/examples/viewer/minimal-fhr.json' | relative_url }}">Synthetic genome metadata (FHR)</option>
       <option value="{{ '/assets/examples/viewer/no-header.json' | relative_url }}">JSON without a header identity</option>
       <option value="{{ '/assets/examples/viewer/unsupported.json' | relative_url }}">Unsupported schema version</option>
       <option value="{{ '/assets/examples/viewer/invalid.txt' | relative_url }}">Malformed JSON</option>
@@ -52,7 +138,7 @@ and use FAIR BioHeaders Tools locally instead.</p></noscript>
     <button id="mv-example-load" type="button" class="btn" data-viewer-control disabled>Load example</button>
     <button id="mv-clear" type="button" class="btn" data-viewer-control disabled>Clear metadata</button>
   </div>
-  <p id="mv-status" role="status" aria-live="polite">The viewer is loading. If it cannot start, use the toolkit locally.</p>
+  <p id="mv-status" role="status" aria-live="polite">The JSON display is loading. If it cannot start, use the toolkit locally.</p>
   <h2>Metadata display</h2>
   <fair-bioheaders-metadata></fair-bioheaders-metadata>
 </div>
@@ -132,8 +218,9 @@ source: assign it through the property from JavaScript instead.
 
 Only a reviewed reader/validator can provide schema checks or sequence/header
 parsing. Actual checksum and parent verification require the corresponding
-files and supported coverage rules. Those capabilities and a JBrowse integration
-remain [follow-up work in issue #23](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/23).
+files and supported coverage rules. The JavaScript examples and their supported boundaries are tracked in [issue #23](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/23).
 FHP/FHGFF3/FHT HTML microdata bindings are separate from displaying JSON.
 
 <script src="{{ '/assets/js/metadata-viewer.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/fhr-javascript-example.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/fhr-javascript-playground.js' | relative_url }}"></script>

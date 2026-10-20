@@ -4,7 +4,7 @@ permalink: /resources/
 excerpt: "FAIR BioHeaders specifications, converters, workflows, and citation guidance."
 ---
 
-Released specifications, tools, development repositories, and citation guidance for the FAIR BioHeaders project.
+Released specifications, tools, development repositories and citation guidance for the FAIR BioHeaders (FH*) family. FHR, FHT, FHP and FHGFF3 describe different biological resources; their release and tooling support are listed separately.
 
 {% include nature-panel.html key="pineapple" %}
 

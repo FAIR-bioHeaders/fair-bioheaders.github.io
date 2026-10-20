@@ -1,15 +1,33 @@
 ---
-title: "Using FHR"
+title: "Using FH*"
 permalink: /guide/
-excerpt: "A worked example, scope, and compatibility guidance for adopting the FAIR BioHeaders standard."
+excerpt: "Choose a FAIR BioHeaders header for genomes, transcriptomes, protein sets or annotations, with scope and compatibility guidance."
 ---
 
-This guide shows one verified end-to-end example of adding FHR metadata to a
-FASTA file, explains how FHR and FHT differ, and answers common questions. All
-historical worked-example commands were verified against `fhr` 0.3.3 and the
-[synthetic example](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/tree/v0.3.3/examples)
-shipped with the converter; the sample is redistributable and its identifiers
-are placeholders.
+FAIR BioHeaders (FH*) is a family of headers for different biological resources.
+Start with the type that matches your data, then use a workflow supported by
+that type's released contract and tooling.
+
+## Choose a header
+
+| Type | Resource | Contract and workflow status |
+| --- | --- | --- |
+| FHR | Reference genome assembly | FHR 2.0 in shared specification v0.4.0; current toolkit workflows and an FHR-only browser builder. |
+| FHT | Transcriptome | Draft under curator consultation; no released family contract or current builder support. |
+| FHP | Protein/proteome FASTA | FHP 1.0 in shared specification v0.4.0; toolkit JSON/YAML and file processing. JSON-LD/HTML microdata are follow-up work. |
+| FHGFF3 | GFF3 annotation metadata | FHGFF3 1.0 in shared specification v0.4.0; toolkit JSON/YAML and file processing. JSON-LD/HTML microdata are follow-up work; feature/biology validation is separate. |
+
+Read the [released examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.4.0/examples)
+and [current toolkit documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools)
+for the chosen type and supported representation. The [resources page](/resources/)
+links each development repository and distinguishes development from shared final
+publication. A format supported for FHR is not automatically supported for every type.
+
+The worked example below is a **historical FHR-only workflow**, verified against
+`fhr` 0.3.3 and its
+[synthetic example](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/tree/v0.3.3/examples).
+It is retained as recorded; use the released examples above for current work.
+Its sample identifiers are placeholders.
 
 {% include nature-panel.html key="turtle-shell" %}
 
@@ -111,8 +129,8 @@ fhr-validate genome.fhr.json
 - The released FHR contract is now `schemaVersion: "2.0"` (a string), in shared
   specification v0.4.0. `schemaVersion`, repository release tags and the
   assembly's `version` describe different things.
-- The current family package is **fair-bioheaders 0.7.0**, installed with
-  `python -m pip install fair-bioheaders==0.7.0`. Its `bioheaders` CLI performs
+- The family package **fair-bioheaders 0.8.0**, installed with
+  `python -m pip install fair-bioheaders==0.8.0`. Its `bioheaders` CLI performs
   conversion, validation and checksums; the legacy `fhr-*` commands remain
   supported. See the [toolkit usage](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools).
 - The worked example above is preserved as the recorded **fhr 0.3.3** workflow.
@@ -129,6 +147,16 @@ fhr-validate genome.fhr.json
   group all releases of a resource. For a reproducible citation, use the
   **version DOI** for the specific release you used; see
   [Resources & citation](/resources/).
+
+## What the checks establish
+
+Schema validation checks metadata structure against its cited supported contract.
+File checksum verification checks the specified file bytes. Parent verification
+checks supplied links against supplied parent files. These are separate results;
+parsing a header or viewing its metadata does not perform all three. GFF3 feature,
+ontology and optional biology checks belong to the
+[GFF3 validator](https://github.com/FAIR-bioHeaders/gff3-validator), independently
+of whether the file carries an FHGFF3 header.
 
 ## FAQ
 

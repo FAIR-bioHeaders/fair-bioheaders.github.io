@@ -3,7 +3,7 @@ locale: en-US
 title: FAIR BioHeaders
 title_separator: "-"
 name: FAIR BioHeaders
-description: "FAIR BioHeaders keeps reference genome metadata and provenance close to sequence data, supporting discovery, interoperability, and reuse."
+description: "FAIR BioHeaders keeps metadata and provenance close to genomes, transcriptomes, protein sets and annotations, supporting discovery, interoperability and reuse."
 url: https://fhref.org
 baseurl: ""
 repository: FAIR-bioHeaders/fair-bioheaders.github.io
@@ -12,7 +12,7 @@ timezone: Etc/UTC
 author:
   avatar: logo.png
   name: FAIR BioHeaders
-  bio: "Metadata and provenance for reference genomes."
+  bio: "Metadata and provenance for genomes, transcriptomes, proteins and annotations."
   github: FAIR-bioHeaders
 
 social:
@@ -21,11 +21,14 @@ social:
   links:
     - https://github.com/FAIR-bioHeaders
     - https://zenodo.org/communities/fh-/
-keywords: "FAIR, TRUST, reference genome, metadata, provenance, bioinformatics, FASTA, GFA, YAML, JSON"
+keywords: "FAIR, TRUST, reference genome, transcriptome, protein, annotation, metadata, provenance, bioinformatics, FASTA, GFA, YAML, JSON"
 knowsAbout:
   - FAIR data principles
   - TRUST principles
   - reference genome metadata
+  - transcriptome metadata
+  - protein set provenance
+  - annotation metadata
   - data provenance
   - genomics interoperability
 og_image: logo.png

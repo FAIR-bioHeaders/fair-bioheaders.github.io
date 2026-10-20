@@ -42,3 +42,14 @@ test('non-finite and unsafe integer values are rejected rather than silently cha
  assert.throws(()=>viewer.inspect('{"schema":"x","count":9007199254740993}'),/safely/);
  assert.throws(()=>viewer.inspect('{"schema":"x","count":1e400}'),/safely/);
 });
+
+test('positive and negative underflow tokens are rejected while zero and strings survive',()=>{
+ for(const token of ['1e-400','-1e-400','1e-324','-1e-324','0.'+'0'.repeat(330)+'1']) {
+  assert.throws(()=>viewer.inspect('{"schema":"x","gcContent":'+token+'}'),/safely/,token);
+ }
+ for(const token of ['0','-0','0e-400','-0e-400','5e-324','-5e-324','0.42']) {
+  assert.equal(viewer.inspect('{"schema":"x","gcContent":'+token+'}').record.gcContent,JSON.parse(token));
+ }
+ const text='{"schema":"x","1e-400":"-1e-400","quoted":"escaped \\"1e-400\\""}';
+ assert.deepEqual(viewer.inspect(text).record,JSON.parse(text));
+});

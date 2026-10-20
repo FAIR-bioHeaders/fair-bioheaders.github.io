@@ -66,3 +66,12 @@ test('navigation links clear the overflow button after local fonts load',async({
   return [...document.querySelectorAll('#site-nav .visible-links li')].every(node=>node.getBoundingClientRect().right<=edge);
  })).toBe(true);
 });
+
+test('numeric underflow errors clear the previous display instead of showing zero',async({page})=>{
+ for(const token of ['1e-400','-1e-400']) {
+  await upload(page,record);
+  await upload(page,'{"schema":"https://w3id.org/fair-bioheaders/fhr/v0.4.0","gcContent":'+token+'}');
+  await expect(page.locator('#mv-status')).toContainText('cannot be represented safely');
+  await expect(page.locator('fair-bioheaders-metadata')).toBeEmpty();
+ }
+});

@@ -14,6 +14,15 @@
     var record;
     try { record = JSON.parse(text); }
     catch (_) { throw new Error('This is not valid JSON metadata. Export a JSON metadata record with FAIR-bioHeaders-Tools; FASTA, GFA, GFF3, YAML and HTML input are not supported here.'); }
+    // JSON.parse has already rounded underflow to zero. Inspect original number
+    // tokens after syntax validation, skipping complete quoted strings/keys.
+    var tokens = /"(?:[^"\\]|\\[\s\S])*"|-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?/g;
+    var token;
+    while ((token = tokens.exec(text)) !== null) {
+      if (token[0][0] !== '"' && Number(token[0]) === 0 && /[1-9]/.test(token[0].split(/[eE]/)[0])) {
+        throw new Error('A numeric value cannot be represented safely in this browser. Use the toolkit to inspect the original metadata.');
+      }
+    }
     if (!record || typeof record !== 'object' || Array.isArray(record)) throw new Error('Choose one JSON metadata object, not a list or scalar.');
     var stack = [{ value: record, depth: 0 }];
     var count = 0;

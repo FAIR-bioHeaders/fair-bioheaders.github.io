@@ -17,6 +17,7 @@ unsupported, without schema fetching or fallback. FHT is not enabled.
 
 The input is one JSON metadata object, at most 256 KiB, 3,000 values and 12 levels
 of nesting. The size is checked before reading a file. Reject non-finite values
+nonzero numeric tokens that underflow to zero,
 and integers outside JavaScript's safe range rather than displaying a changed
 number. Standard JSON.parse semantics apply, including last-key-wins for duplicate
 names; duplicate-key/conformance checks await the reviewed reader. This page

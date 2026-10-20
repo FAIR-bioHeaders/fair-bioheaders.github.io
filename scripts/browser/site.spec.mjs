@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 
 // Representative pages: home (h-cards, theme), publications (cite controls),
 // resources (repo references + citations).
-const PAGES = ['/', '/publications/', '/guide/', '/resources/', '/table-builder/'];
+const PAGES = ['/', '/publications/', '/guide/', '/resources/', '/table-builder/', '/metadata-viewer/'];
 
 // Inspect settled layouts, not the intro animation or a fallback-font frame.
 test.beforeEach(async ({ page }) => {

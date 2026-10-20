@@ -1,0 +1,12 @@
+{
+  "schema": "https://w3id.org/fair-bioheaders/fhr/v0.4.0",
+  "schemaVersion": "2.0",
+  "genome": "Synthetic genome viewer example",
+  "taxon": {"name": "Homo sapiens", "uri": "https://identifiers.org/taxonomy:9606"},
+  "version": "example-1",
+  "metadataAuthor": [{"name": "Synthetic metadata author"}],
+  "assemblyAuthor": [{"name": "Synthetic assembly author"}],
+  "dateCreated": "2026-10-20",
+  "masking": "unknown",
+  "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+}

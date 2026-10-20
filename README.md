@@ -29,3 +29,7 @@ repository display names do not change those citation identities. See the
 [resource audit](docs/resource-audit.md) for primary-source evidence and retained
 historical URLs. The FHR-only builder still supports its documented v0.3.1
 snapshot; adding v0.4 and other type forms is separate work.
+
+The draft [metadata viewer](docs/metadata-viewer.md) inspects bounded local JSON
+metadata without claiming schema, checksum or parent verification. It is separate
+from the metadata-generation table builder and does not upload selected files.

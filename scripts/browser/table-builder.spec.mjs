@@ -303,3 +303,77 @@ for (const [kind, fixture] of [['FHP','rich-mixed.fhp.yaml'], ['FHGFF3','rich.fh
     expect(external).toEqual([]);
   });
 }
+
+for (const kind of ['FHP', 'FHGFF3']) {
+  test(`selecting ${kind} while schemas load initializes the selected profile`, async ({ page }) => {
+    let release;
+    const pending = new Promise(resolve => { release = resolve; });
+    await page.route('**/assets/schema/*.json', async route => { await pending; await route.continue(); });
+    await page.goto('/table-builder/');
+    await page.selectOption('#tb-profile', kind);
+    await expect(page.locator('#tb-form')).toBeEmpty();
+    release();
+    await expect(page.locator('#tb-schema')).toHaveValue(`https://w3id.org/fair-bioheaders/${kind.toLowerCase()}/v0.4.0`);
+    await expect(page.locator(kind === 'FHP' ? '#tb-proteome' : '#tb-annotation')).toBeVisible();
+    await expect(page.locator('#tb-genome')).toHaveCount(0);
+    await page.click('#tb-generate');
+    await expect(page.locator('#tb-yaml-source')).toContainText(`schema: "https://w3id.org/fair-bioheaders/${kind.toLowerCase()}/v0.4.0"`);
+    await expect(page.locator('#tb-html-source')).not.toContainText('itemscope');
+  });
+}
+
+test('pruned blank parents keep errors, accessible descriptions and focus on the populated draft row', async ({ page }) => {
+  await page.goto('/table-builder/');
+  await page.waitForSelector('#tb-schema');
+  await page.selectOption('#tb-profile', 'FHGFF3');
+  await page.click('#tb-add-derivedFrom');
+  await page.click('#tb-add-derivedFrom');
+  await page.selectOption('#tb-derivedFrom-1-headerType', 'FHP');
+  await page.selectOption('#tb-derivedFrom-1-relationship', 'annotates');
+  await page.click('#tb-generate');
+  const wrong = page.locator('#tb-derivedFrom-1-headerType');
+  const blank = page.locator('#tb-derivedFrom-0-headerType');
+  await expect(wrong).toHaveAttribute('aria-invalid', 'true');
+  await expect(blank).not.toHaveAttribute('aria-invalid');
+  await expect(wrong).toHaveAccessibleDescription(/must equal "FHR"/);
+  await page.locator('#tb-errors a[href="#tb-derivedFrom-1-headerType"]').click();
+  await expect(wrong).toBeFocused();
+  await expect(page.locator('#tb-errors')).toContainText('derivedFrom.1.headerType');
+  const { parse } = await import('yaml');
+  const record = parse(await page.textContent('#tb-yaml-source'));
+  expect(record.derivedFrom).toHaveLength(1);
+  expect(record.derivedFrom[0].headerType).toBe('FHP');
+  await page.selectOption('#tb-derivedFrom-1-headerType', 'FHR');
+  await page.click('#tb-generate');
+  await expect(wrong).not.toHaveAttribute('aria-invalid');
+});
+
+test('error paths map through blank entries in both outer and nested arrays', async ({ page }) => {
+  // Exercise nested index translation with a supported URI constraint on this
+  // test-only schema copy; the released command-line strings have no constraint.
+  await page.route('**/assets/schema/fhp-v0.4.0.json', async route => {
+    const response = await route.fetch();
+    const schema = await response.json();
+    schema.$defs.Software.properties.commandLineOption.items.format = 'uri';
+    await route.fulfill({ response, json: schema });
+  });
+  await page.goto('/table-builder/');
+  await page.waitForSelector('#tb-schema');
+  await page.selectOption('#tb-profile', 'FHP');
+  await page.click('#tb-add-predictionSoftware');
+  await page.click('#tb-add-predictionSoftware');
+  await page.click('#tb-add-predictionSoftware-1-commandLineOption');
+  await page.click('#tb-add-predictionSoftware-1-commandLineOption');
+  await page.fill('#tb-predictionSoftware-1-commandLineOption-1', 'bad uri');
+  await page.click('#tb-generate');
+  const invalid = page.locator('#tb-predictionSoftware-1-commandLineOption-1');
+  await expect(invalid).toHaveAttribute('aria-invalid', 'true');
+  await expect(invalid).toHaveAccessibleDescription(/must be a URI/);
+  await expect(page.locator('#tb-predictionSoftware-1-commandLineOption-0')).not.toHaveAttribute('aria-invalid');
+  await page.locator('#tb-errors a[href="#tb-predictionSoftware-1-commandLineOption-1"]').click();
+  await expect(invalid).toBeFocused();
+  // A missing property has no exact record path: use its enclosing object's
+  // mapping, then let errorTarget fall back to the visible object fieldset.
+  await page.locator('#tb-errors a[href="#tb-predictionSoftware-1-name"]').click();
+  await expect(page.locator('#tb-predictionSoftware-1-name')).toBeFocused();
+});

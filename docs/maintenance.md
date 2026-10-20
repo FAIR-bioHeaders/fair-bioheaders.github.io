@@ -225,3 +225,15 @@ FHR HTML retains its established microdata binding. FHP/FHGFF3 HTML is a readabl
 table with stable field paths, without microdata; its separate YAML preserves
 the structured record. Do not emit FHR microdata for another header type. These
 exports are metadata documents and do not embed headers into sequence files.
+
+### Builder draft paths and schema loading
+
+Validation uses the compact exported record, omitting blank rows. Error summaries,
+focus links and field descriptions map record paths back to visible draft indexes,
+including nested arrays and missing properties of populated objects. Do not remove
+blank draft rows merely to align validation indexes. Rebuild this mapping for each
+generation so corrected or removed rows cannot keep stale errors.
+
+After local schemas finish loading, initialize through the selected header type,
+including a selection made while requests were pending. The selected type, form,
+validation contract and export identity must agree from the first render.

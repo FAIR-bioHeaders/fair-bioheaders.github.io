@@ -911,25 +911,43 @@
     });
   }
 
-  function prune(value) {
+  // Map compact record paths back to visible draft rows without dropping blanks
+  // from the form. Required-property errors can inherit their object's mapping.
+  var recordPaths = {};
+  function prune(value, draftPath, recordPath) {
+    var cleaned;
     if (Array.isArray(value)) {
-      var items = value.map(prune).filter(function (item) { return item !== undefined; });
-      return items.length ? items : undefined;
-    }
-    if (value && typeof value === 'object') {
+      var items = [];
+      value.forEach(function (item, index) {
+        var kept = prune(item, draftPath.concat([index]), recordPath.concat([items.length]));
+        if (kept !== undefined) items.push(kept);
+      });
+      cleaned = items.length ? items : undefined;
+    } else if (value && typeof value === 'object') {
       var object = {};
       Object.keys(value).forEach(function (key) {
-        var cleaned = prune(value[key]);
-        if (cleaned !== undefined) object[key] = cleaned;
+        var kept = prune(value[key], draftPath.concat([key]), recordPath.concat([key]));
+        if (kept !== undefined) object[key] = kept;
       });
-      return Object.keys(object).length ? object : undefined;
+      cleaned = Object.keys(object).length ? object : undefined;
+    } else if (value !== '' && value !== undefined && value !== null) {
+      cleaned = value;
     }
-    if (value === '' || value === undefined || value === null) return undefined;
-    return value;
+    if (cleaned !== undefined) recordPaths[JSON.stringify(recordPath)] = draftPath;
+    return cleaned;
+  }
+
+  function draftErrorPath(path) {
+    for (var length = path.length; length >= 0; length--) {
+      var prefix = recordPaths[JSON.stringify(path.slice(0, length))];
+      if (prefix) return prefix.concat(path.slice(length));
+    }
+    return path;
   }
 
   function buildRecord() {
-    var record = prune(state);
+    recordPaths = {};
+    var record = prune(state, [], []);
     return record && typeof record === 'object' ? record : {};
   }
 
@@ -938,7 +956,9 @@
     var selected = recordType(record) === activeType ? selectSchema(record.schema, schema, releaseSchema, currentSchema, familySchemas) : null;
     var errors = selected ? validateRecord(record, selected) : [{ path: ['schema'],
       message: 'Unsupported schema target. Select a supported released schema for this header type. Unknown releases never fall back.' }];
-    renderErrorSummary(errors);
+    renderErrorSummary(errors.map(function (error) {
+      return { path: draftErrorPath(error.path), message: error.message };
+    }));
     renderTable(record);
     outputs = { record: record, html: standaloneHtml(record, selected), yaml: toYaml(record, selected) };
     document.getElementById('tb-html-source').textContent = outputs.html;
@@ -1101,7 +1121,7 @@
         currentSchema = loaded[2];
         familySchemas = { FHP: loaded[3], FHGFF3: loaded[4] };
         document.getElementById('tb-profile').addEventListener('change', changeProfile);
-        renderForm(document.getElementById('tb-form'));
+        changeProfile();
         document.getElementById('tb-generate').addEventListener('click', renderOutputs);
         document.getElementById('tb-download-html').addEventListener('click', function () { download('html'); });
         document.getElementById('tb-download-yaml').addEventListener('click', function () { download('yaml'); });

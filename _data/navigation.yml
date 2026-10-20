@@ -5,6 +5,8 @@ main:
     url: /publications/
   - title: "Using FHR"
     url: /guide/
+  - title: "Metadata viewer"
+    url: /metadata-viewer/
   - title: "Table builder"
     url: /table-builder/
   - title: "Resources & citation"

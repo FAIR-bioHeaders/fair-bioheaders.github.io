@@ -1,0 +1,32 @@
+<link rel="stylesheet" href="/assets/css/metadata-display.css">
+<script src="/assets/js/metadata-viewer.js" defer></script>
+
+<section aria-labelledby="example-title">
+  <h2 id="example-title">Genome metadata</h2>
+  <fair-bioheaders-metadata id="example-metadata"></fair-bioheaders-metadata>
+  <p id="example-status" role="status">The example needs JavaScript to display metadata.</p>
+</section>
+
+<script type="module">
+  await customElements.whenDefined('fair-bioheaders-metadata');
+  const display = document.getElementById('example-metadata');
+  const status = document.getElementById('example-status');
+  const record = {
+    schema: 'https://w3id.org/fair-bioheaders/fhr/v0.4.0',
+    schemaVersion: '2.0',
+    genome: 'Synthetic embedding example',
+    taxon: { name: 'Homo sapiens' },
+    version: 'example-1',
+    metadataAuthor: [{ name: 'Synthetic metadata author' }],
+    assemblyAuthor: [{ name: 'Synthetic assembly author' }],
+    dateCreated: '2026-10-20',
+    masking: 'unknown',
+    checksum: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA='
+  };
+  try {
+    display.json = JSON.stringify(record);
+    status.textContent = 'JSON displayed; schema, checksum and parents are not verified.';
+  } catch (error) {
+    status.textContent = error.message;
+  }
+</script>

@@ -35,6 +35,8 @@ jobs:
         run: node --test scripts/test_cite.mjs
       - name: Test table builder
         run: node --test scripts/test_table_builder.mjs
+      - name: Test metadata viewer
+        run: node --test scripts/test_metadata_viewer.mjs
       - name: Check links, metadata and sitemap
         run: python3 scripts/check_site.py _site
       - name: Install Playwright browsers

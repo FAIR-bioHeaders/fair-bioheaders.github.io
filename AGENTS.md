@@ -387,3 +387,27 @@ such as `theme.js` and `table-builder.js` are not bundle inputs. Test their own
 behavior and page-loading scope rather than adding them to the bundle. Keep the
 schema-authority/version-selection section as the governing rule; repeated
 builder details describe its supported snapshots, not another schema policy.
+
+## Metadata viewer (issue #23)
+
+`/metadata-viewer/` is independent of the table builder. The initial draft reads
+bounded JSON metadata only; no shared JavaScript reader or container parser is
+claimed shipped. See `docs/metadata-viewer.md` for adapter semantics, example
+provenance and the draft custom-element API. Never equate a recognized schema
+identity or parsed JSON with schema validity or file/parent verification.
+
+Keep all values as text, enforce file/complexity/numeric limits, clear stale
+records on error/replacement, and preserve the pending-read cancellation token.
+No upload, persistence, automatic URL resolution or arbitrary schema fetching.
+Examples are local and fetched on deliberate button action. Keep the page in
+both sitemap allow-lists and deploy fixtures; controls stay disabled without JS.
+Add the viewer's Node test to CI and test populated/error/clear/no-JS views,
+keyboard scrolling, local-only requests, both themes and narrow screens. #23
+remains open for the reviewed reader, validation and JBrowse integration.
+
+The viewer page doubles as the public JavaScript integration guide. Keep
+`_includes/metadata-embed.html` as the single source for its escaped snippet and
+standalone noindex example. Test the snippet outside the site theme using only
+the component script/CSS and public `json` property. Underflow checks must use
+original numeric tokens; expanded JSON Pointer budgets must be checked before
+allocating paths, not merely after JSON input size/depth checks.

@@ -71,6 +71,10 @@ $btn.on('click', function() {
 });
 
 updateNav();
+// Local font metrics can change the space available after the first layout.
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(updateNav);
+}
 $nav.on('keydown', function(event) {
   if (event.key === 'Escape' && !$hlinks.hasClass('hidden')) {
     $hlinks.addClass('hidden');

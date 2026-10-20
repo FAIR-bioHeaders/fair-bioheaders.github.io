@@ -8,6 +8,9 @@ test('family overview and guide keep type scope and historical workflow clear', 
     await expect(main).toContainText(type);
   }
   await expect(main).toContainText('FHT has no released family contract yet');
+  await page.goto('/#use-the-standard');
+  await expect(page.locator('#use-the-standard')).toHaveText('Use the headers');
+  await expect(page.locator('#use-the-standard')).toBeInViewport();
   await page.goto('/guide/');
   await expect(page.locator('h1')).toHaveText('Using FH*');
   await expect(page.locator('#choose-a-header')).toBeVisible();

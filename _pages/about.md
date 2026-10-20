@@ -108,6 +108,7 @@ and the publications that describe the work.
 </div>
 
 ## Use the headers
+{: #use-the-standard}
 
 - Read the [shared specifications](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification) for metadata fields and schemas.
 - Use [FAIR BioHeaders Tools](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools) to work with supported representations.

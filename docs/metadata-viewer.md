@@ -1,4 +1,4 @@
-# Metadata viewer: first slice of website #23
+# JavaScript with FHR JSON and microdata (website #23)
 
 `/metadata-viewer/` is a standalone, indexable page linked in navigation. It is
 independent of PR #27: no blocked builder changes or schema validator are copied
@@ -58,7 +58,7 @@ Prefer the public `json` setter to the internal inspection-result property.
 The display itself preflights expanded output even for direct internal use. A future
 reviewed reader should own format parsing, schema selection/validation and
 explicit verification evidence; do not accept caller-provided verified badges.
-No JBrowse installation or integration is shipped in this first slice.
+The page is a JavaScript teaching guide for ordinary websites.
 
 ## Example provenance
 
@@ -78,16 +78,31 @@ wording; do not present their synthetic sources as real biological assertions.
 
 ## Review and follow-up gates
 
-Keep #23 open. This initial draft needs review of the JSON adapter and display
-interface, followed by a tested shared JavaScript reader or reviewed adapter
-(shared specification #52), container parsing with bounded workers/cancellation,
-actual supported-version schema checks, richer reader conformance fixtures, and
-a concrete JBrowse embedding example. Verification can only be shown after
-actual file/parent checks; it is not implicit in the future reader integration.
-The FHP/FHGFF3/FHT microdata contracts are separate from reading ordinary JSON.
+The October 20 maintainer correction defines #23 as a page teaching JavaScript
+with FHR JSON and HTML microdata examples. JBrowse integration, sequence-container
+parsing and release of a general JavaScript library are outside this ticket's
+acceptance criteria. PR #30 supplied useful bounded JSON/display/embedding work,
+but omitted the microdata lesson and overemphasized a viewer/library roadmap.
+
+The correction retains /metadata-viewer/ and the existing JSON display API. It
+adds runnable JSON query/edit/serialize exercises and a paired authored FHR v0.4.0
+microdata template in `_includes/fhr-microdata-example.html`. The initial editor
+record is extracted from that template, preventing drift between representations.
+`fhr-javascript-example.js` demonstrates direct-child traversal of the existing
+FHR typed span/object/array layout; `fhr-javascript-playground.js` runs the page
+controls. It is an educational DOM example, not a second production converter:
+no arbitrary HTML input, itemref, machine-value attributes or general microdata
+support. The schema URL/version and placeholder checksum remain unchanged when
+the example changes a genome name. Rendering is text-only and local.
+
+Review the lessons, copied code and paired JSON/microdata behavior for #23.
+Actual schema/file/parent checks stay explicitly unchecked. Upstream reader,
+conformance and library work remains separately owned and is not a prerequisite
+for teaching the adopted FHR representation on this page.
 
 Tests: `node --test scripts/test_metadata_viewer.mjs` and
-`scripts/browser/metadata-viewer.spec.mjs`, plus the existing production, Python,
+`scripts/browser/metadata-viewer.spec.mjs` and
+`scripts/browser/fhr-javascript.spec.mjs`, plus the existing production, Python,
 site, layout and axe checks. The initial browser checks cover Chromium desktop
 and 320px; other engines remain unverified.
 

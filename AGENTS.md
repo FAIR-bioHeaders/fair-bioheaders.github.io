@@ -1,5 +1,54 @@
 # AGENTS.md
 
+## Current repository context
+
+This is the public Jekyll website and browser-tool implementation. Normative
+contracts and reviewed mappings live in FAIR-bioHeaders-Specification; type
+repositories own type development. Website issues #15/#21 track builder expansion,
+#23 the metadata viewer, and #29 a mapping explainer blocked on specification #56.
+The FHR-only prototype does not establish support for all types or current
+schemas. Add profile support through its linked contract/toolkit work, preserving
+local-file privacy, typed metadata and separate parsed/valid/verified states.
+
+## Schema additions and their own development cycle
+
+A new optional field, structured alternative, enum value, constraint, required
+field or changed meaning is a schema-contract change, even when motivated by a
+UI, exporter, parser fix or documentation task. Identify it explicitly as a
+**schema addition** or other contract change in its issue and PR. Supporting an
+already adopted field in a consumer is implementation work, not a new field.
+
+Schema additions have their own proposal, review, compatibility, versioning and
+release cycle. Keep them separately reviewable from routine fixes, website work,
+packaging and dependency updates; link dependent implementation PRs rather than
+silently adopting a field downstream. Shared fields/objects and cross-type rules
+belong in FAIR-bioHeaders-Specification; type-specific design starts in the owning
+development repository and is coordinated into shared publication. Name affected
+types, requiredness, semantics, mappings, serializers and conformance fixtures.
+
+During active construction of FHP, FHT and FHGFF3, maintainers may iterate on draft
+fields with lighter process and include coordinated schema/implementation work in
+one clearly scoped PR. Record the proposal and compatibility impact in that PR;
+this flexibility does not make every field adopted or supported. Preserve already
+published contracts and cited versions, label draft behavior, and obtain joint
+maintainer review before publication. FHR additions retain the separate cycle.
+Do not apply draft flexibility to released FHP/FHGFF3 schemas retroactively.
+
+Use the shared specification's `docs/SCHEMA-VERSIONS.md` and
+`schemas/versions.json`: contract versions are per type, distinct from repository
+release tags and biological resource versions. Additive changes that preserve all
+valid values and meanings qualify for a minor increment; invalidating records or
+changing meanings requires a major increment. Do not assign a new version merely
+for implementing an existing contract. Never rewrite immutable releases, fixed
+schema aliases or existing file-bound headers as incidental cleanup. Header edits
+require checksum recomputation and may affect downstream parent links.
+
+Proposals are not adopted contracts: FAIR-bioHeaders-Specification#139 / draft
+PR #140 (structured vouchers) and profiles still under review in that repository
+(#56) remain proposals until adopted. Implemented subsets do not establish full
+profile or header-family support. The mapping page in fair-bioheaders.github.io#29
+depends on approved profiles.
+
 ## Schema authority and repository roles
 
 The October 14, 2026 maintainer decision separates per-type development from
@@ -34,7 +83,9 @@ records the non-obvious things that are easy to get wrong.
 
 ## Build and validate
 
-Run the full check sequence before proposing a change. It mirrors CI.
+For site, asset or browser behavior changes, run the relevant checks below; the
+full sequence mirrors CI. For AGENTS.md-only edits, review guidance and links and
+run `git diff --check`; rebuilding the site is unnecessary.
 
 ```sh
 bundle install                  # install the committed Ruby lockfile
@@ -109,9 +160,9 @@ sitemap, robots policy, and feeds. Toolchain is pinned in `.ruby-version`
   Pages publishing, and keep `_config.yml` and production checks on that origin.
 - **Preserve published URLs.** Publication `permalink`s are stable and indexed.
   Do not rename or restructure them without an explicit request.
-- **The sitemap is allow-listed.** Only `/`, `/publications/`, `/resources/`, and
-  `/publication/*` belong in `sitemap.xml`. Utility pages set `sitemap: false` and
-  should be `noindex`.
+- **The sitemap is allow-listed.** Use the current checker allow-list, including `/table-builder/`,
+  and update sitemap/deployment checks together when adopting new public pages.
+  Nonpublic utility pages use `sitemap: false` and `noindex`.
 - **External links.** Lychee checks them weekly/on demand. DOI resolvers and
   iso.org return 403 to automated clients; these are excluded via `.lycheeignore`
   with a comment. Add exclusions there rather than removing real links.
@@ -253,7 +304,8 @@ material. Keep README badges, package metadata and citation metadata consistent.
 `/table-builder/` is an FHR-only browser prototype: one form -> one typed record ->
 validation against the selected supported FHR schema snapshot -> readable table +
 standalone HTML (with FHR microdata) + YAML metadata, with local downloads.
-Keep it FHR-only; do not add other header types, uploads, or persistence.
+Its delivered scope is FHR-only. Other header types require the linked family
+builder issues and adopted contracts; uploads and persistence need explicit scope.
 
 - The established FHR raw-main compatibility URL is
   `https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json`.
@@ -272,7 +324,6 @@ Keep it FHR-only; do not add other header types, uploads, or persistence.
   stale on edit, and never claim a checksum is verified or a file was saved.
 - The page is indexable; keep `/table-builder/` in the sitemap allow-lists in
   `scripts/check_site.py` and `scripts/check_deployed.py`.
-
 
 ### Version-aware validation decision (2026-10-09)
 
@@ -294,7 +345,8 @@ Explicit raw-main selection validates the separately documented development
 cache, not a live fetch or a promise that the cache is current main. The UI names
 that snapshot in its result. Unsupported targets block downloads. Both schema
 files load locally; selecting a URL never causes arbitrary network requests.
-The numeric `schemaVersion` field (1.0) is distinct from the release tag (v0.3.1).
+The legacy v0.3.1 `schemaVersion` is numeric `1`; newer contracts use quoted
+`MAJOR.MINOR` strings. Neither is the repository release tag.
 HTML microdata retains the canonical itemtype for converter compatibility; its
 `schema` property carries the selected record schema URL.
 

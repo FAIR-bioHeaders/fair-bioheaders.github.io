@@ -5,7 +5,7 @@
 This is the public Jekyll website and browser-tool implementation. Normative
 contracts and reviewed mappings live in FAIR-bioHeaders-Specification; type
 repositories own type development. Website issues #15/#21 track builder expansion,
-#23 the metadata viewer, and #29 a mapping explainer blocked on specification #56.
+issue #23 the FHR JavaScript guide, and #29 a mapping explainer blocked on specification #56.
 The builder's implemented profiles do not establish support for all types or current
 schemas. Add profile support through its linked contract/toolkit work, preserving
 local-file privacy, typed metadata and separate parsed/valid/verified states.
@@ -43,11 +43,13 @@ for implementing an existing contract. Never rewrite immutable releases, fixed
 schema aliases or existing file-bound headers as incidental cleanup. Header edits
 require checksum recomputation and may affect downstream parent links.
 
-Proposals are not adopted contracts: FAIR-bioHeaders-Specification#139 / draft
-PR #140 (structured vouchers) and profiles still under review in that repository
-(#56) remain proposals until adopted. Implemented subsets do not establish full
-profile or header-family support. The mapping page in fair-bioheaders.github.io#29
-depends on approved profiles.
+Check the adoption decision and released support before implementing a proposal;
+an issue or PR's existence does not establish adoption. Structured vouchers
+(FAIR-bioHeaders-Specification#139/#140) and mapping profiles (#56 in that same
+repository) have their own review history. Implemented subsets do not establish
+full profile or header-family support. The mapping page tracked in
+fair-bioheaders.github.io#29 depends on approved profiles. Recheck these records
+rather than relying on a copied description of their temporary status.
 
 ## Schema authority and repository roles
 
@@ -122,7 +124,7 @@ sitemap, robots policy, and feeds. Toolchain is pinned in `.ruby-version`
 ## Things that will bite you
 
 - **The JavaScript bundle is committed and CI verifies it is reproducible.** After
-  editing anything under `assets/js/` (including `_main.js` and `cite.js`), run
+  editing a bundle input listed in `package.json` (including `_main.js` and `cite.js`), run
   `npm run build:js`. CI runs `git diff --exit-code -- assets/js/main.min.js`; a
   stale bundle fails the build. Dependency bumps (including Dependabot PRs)
   also require regenerating this bundle. jQuery 4 removes `$.isArray` and
@@ -412,3 +414,55 @@ FHR HTML retains its established microdata binding. FHP/FHGFF3 HTML is a readabl
 table with stable field paths, without microdata; its separate YAML preserves
 the structured record. Do not emit FHR microdata for another header type. These
 exports are metadata documents and do not embed headers into sequence files.
+
+## Family terminology and browser-only boundaries
+
+Use FAIR BioHeaders as the project name and explain FH* as the collective
+shorthand; FHR specifically names the reference-genome header. The family-language
+audit is tracked in #32. Preserve historical paper/registered DOI titles,
+executable names, citation keys, schema URLs and vocabulary identifiers. Describe
+each type's verified release and implementation status separately. The current
+builder's supported released profiles do not establish support for every family type.
+
+For metadata viewers/builders, local selection keeps data in the browser. Do not
+upload files, persist their contents or automatically fetch schema, parent or
+metadata URLs. Any future remote loading needs explicitly scoped, user-initiated
+behavior. Render untrusted values as text and distinguish parsed, schema-valid,
+file-verified and parent-verified results. Reuse reviewed readers instead of
+implementing a second independent family parser.
+
+`package.json`'s `uglify` script lists the actual bundle inputs. Changes to those
+inputs require `npm run build:js` and the reproducibility check; standalone scripts
+such as `theme.js` and `table-builder.js` are not bundle inputs. Test their own
+behavior and page-loading scope rather than adding them to the bundle. Keep the
+schema-authority/version-selection section as the governing rule; repeated
+builder details describe its supported snapshots, not another schema policy.
+
+## Metadata viewer (issue #23)
+
+`/metadata-viewer/` is independent of the table builder. The initial draft reads
+bounded JSON metadata only; no shared JavaScript reader or container parser is
+claimed shipped. See `docs/metadata-viewer.md` for adapter semantics, example
+provenance and the draft custom-element API. Never equate a recognized schema
+identity or parsed JSON with schema validity or file/parent verification.
+
+Keep all values as text, enforce file/complexity/numeric limits, clear stale
+records on error/replacement, and preserve the pending-read cancellation token.
+No upload, persistence, automatic URL resolution or arbitrary schema fetching.
+Examples are local and fetched on deliberate button action. Keep the page in
+both sitemap allow-lists and deploy fixtures; controls stay disabled without JS.
+Add the viewer's Node test to CI and test populated/error/clear/no-JS views,
+keyboard scrolling, local-only requests, both themes and narrow screens. #23
+tracks a JavaScript teaching page for FHR JSON and HTML microdata examples.
+The October 20 maintainer correction removes JBrowse integration, sequence-file
+parsing and a released library as acceptance gates for #23. Preserve the stable
+/metadata-viewer/ URL. The typed-span teaching helper is deliberately limited to
+the authored layout, not a general HTML parser; keep runnable JSON/microdata
+examples, extraction/query/edit/serialization code and scope/type tests together.
+
+The viewer page doubles as the public JavaScript integration guide. Keep
+`_includes/metadata-embed.html` as the single source for its escaped snippet and
+standalone noindex example. Test the snippet outside the site theme using only
+the component script/CSS and public `json` property. Underflow checks must use
+original numeric tokens; expanded JSON Pointer budgets must be checked before
+allocating paths, not merely after JSON input size/depth checks.

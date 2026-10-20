@@ -655,3 +655,23 @@ html[data-theme="dark"] {
   font-size: $type-size-7;
   white-space: pre;
 }
+
+/* Metadata viewer: local JSON inspection, independent of the table builder. */
+.mv-viewer { min-width: 0; }
+.mv-field { margin: 1em 0; }
+.mv-field label { display: block; color: inherit; font-weight: $font-weight-medium; }
+.mv-field select,
+.mv-field input { width: 100%; max-width: 38em; color: inherit; background: var(--paper); border: 1px solid var(--surface-border); border-radius: .3em; padding: .5em; }
+.mv-field p { font-size: $type-size-7; color: var(--text-muted); }
+.mv-actions { display: flex; flex-wrap: wrap; gap: .5em; }
+fair-bioheaders-metadata { display: block; min-width: 0; }
+.mv-checks { padding: .75em 1.75em; background: var(--surface-soft); border: 1px solid var(--surface-border); border-radius: .3em; }
+.mv-table { overflow-x: auto; max-width: 100%; }
+.mv-table table { width: 100%; border-collapse: collapse; font-size: $type-size-6; }
+.mv-table caption { text-align: left; font-weight: $font-weight-bold; }
+.mv-table th,
+.mv-table td { padding: .5em; text-align: left; vertical-align: top; border-bottom: 1px solid var(--surface-border); overflow-wrap: anywhere; min-width: 8em; }
+fair-bioheaders-metadata h3 { overflow-wrap: anywhere; }
+.mv-table:focus-visible,
+.mv-field input:focus-visible,
+.mv-field select:focus-visible { outline: 3px solid var(--brand-orange); outline-offset: 2px; }

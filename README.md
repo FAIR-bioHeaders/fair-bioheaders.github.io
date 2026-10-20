@@ -29,3 +29,8 @@ repository display names do not change those citation identities. See the
 [resource audit](docs/resource-audit.md) for primary-source evidence and retained
 historical URLs. The table builder supports released FHR, FHP and FHGFF3 v0.4.0 metadata,
 with explicit legacy FHR v0.3.1 support. FHT remains deferred under issue #15.
+
+The [FHR JavaScript guide](docs/metadata-viewer.md) teaches reading/querying JSON,
+changing a metadata copy, extracting an authored typed HTML microdata example,
+and displaying records on another website. Local examples do not upload data or
+claim schema, checksum or parent verification.

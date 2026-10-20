@@ -13,6 +13,7 @@ SITEMAP = (
     f'<url><loc>{ORIGIN}/resources/</loc></url>'
     f'<url><loc>{ORIGIN}/guide/</loc></url>'
     f'<url><loc>{ORIGIN}/table-builder/</loc></url>'
+    f'<url><loc>{ORIGIN}/metadata-viewer/</loc></url>'
     f'<url><loc>{ORIGIN}/publication/x</loc></url>'
     '</urlset>'
 )
@@ -30,6 +31,7 @@ def fake_fetch(overrides=None):
         '/resources/': (200, 'text/html', b'<html></html>'),
         '/guide/': (200, 'text/html', b'<html></html>'),
         '/table-builder/': (200, 'text/html', b'<html></html>'),
+        '/metadata-viewer/': (200, 'text/html', b'<html></html>'),
         '/publication/x': (200, 'text/html', b'<html></html>'),
     }
     if overrides:

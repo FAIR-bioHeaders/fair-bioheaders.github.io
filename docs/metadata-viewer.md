@@ -40,7 +40,11 @@ site-local files after user action.
 ## Reusable display component
 
 `assets/js/metadata-viewer.js` defines `<fair-bioheaders-metadata>` as a light-DOM
-custom element. The page adapter sets its `metadata` property to the bounded
+custom element. External hosts should wait for registration, then assign JSON
+text to its `json` property inside try/catch; an empty string clears it. This
+public entry point runs the same inspection bounds and numeric checks as the
+page, clears before rejected replacements, and never accepts caller-provided
+verification badges. The page adapter internally sets its `metadata` property to the bounded
 inspection result `{record, type, release, known}`; setting null clears it.
 `known` is only identity recognition. The display always labels schema and file
 verification as not checked, regardless of that flag. Values are inserted using
@@ -50,7 +54,8 @@ preserved. Empty arrays/objects display explicitly. Scroll regions and source
 text remain keyboard accessible. The light DOM inherits the site's themes.
 
 This is a display API draft for review, not a published JavaScript library.
-External adapters must apply the same bounds before supplying results. A future
+Prefer the public `json` setter to the internal inspection-result property.
+The display itself preflights expanded output even for direct internal use. A future
 reviewed reader should own format parsing, schema selection/validation and
 explicit verification evidence; do not accept caller-provided verified badges.
 No JBrowse installation or integration is shipped in this first slice.
@@ -85,3 +90,15 @@ Tests: `node --test scripts/test_metadata_viewer.mjs` and
 `scripts/browser/metadata-viewer.spec.mjs`, plus the existing production, Python,
 site, layout and axe checks. The initial browser checks cover Chromium desktop
 and 320px; other engines remain unverified.
+
+## Implementation-guide example
+
+The public page is both a live demo and an integration guide.
+`_includes/metadata-embed.html` is the single source for the escaped copyable
+snippet and `/metadata-viewer/embed/`, a noindex standalone page outside the
+site theme. The sample uses only the component JavaScript and optional scoped
+`assets/css/metadata-display.css`; no site bundle, framework or service is needed.
+Browser tests run both the standalone page and the copied guide snippet on a
+separate host document, including the public property, error and clear flows.
+Pin copied draft assets in downstream projects; do not claim a versioned
+JavaScript package or reader has been released.

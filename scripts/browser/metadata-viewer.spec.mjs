@@ -70,6 +70,7 @@ test('navigation links clear the overflow button after local fonts load',async({
 test('numeric underflow errors clear the previous display instead of showing zero',async({page})=>{
  for(const token of ['1e-400','-1e-400']) {
   await upload(page,record);
+  await expect(page.locator('fair-bioheaders-metadata')).not.toBeEmpty();
   await upload(page,'{"schema":"https://w3id.org/fair-bioheaders/fhr/v0.4.0","gcContent":'+token+'}');
   await expect(page.locator('#mv-status')).toContainText('cannot be represented safely');
   await expect(page.locator('fair-bioheaders-metadata')).toBeEmpty();
@@ -83,4 +84,41 @@ test('expanded pointer limits reject a small input without freezing or keeping s
  await expect(page.locator('fair-bioheaders-metadata')).toBeEmpty();
  await page.click('#mv-clear');await expect(page.locator('#mv-status')).toContainText('Metadata cleared');
  await upload(page,record);await expect(page.locator('fair-bioheaders-metadata')).toContainText('Synthetic local record');
+});
+
+test('the published guide snippet runs on another page with only the two component assets',async({page,baseURL})=>{
+ const snippet=await page.locator('#mv-embed-code code').textContent();
+ expect(snippet).toContain('display.json = JSON.stringify(record)');
+ const requests=[];page.on('request',r=>requests.push(r.url()));
+ await page.route('**/embedding-host.html',route=>route.fulfill({contentType:'text/html',body:'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="color-scheme" content="light dark"><title>Embedding host</title></head><body><main><h1>Another website</h1>'+snippet+'</main></body></html>'}));
+ await page.goto(baseURL+'/embedding-host.html');
+ await expect(page.locator('#example-status')).toContainText('JSON displayed');
+ await expect(page.locator('#example-metadata')).toContainText('Synthetic embedding example');
+ await expect(page.locator('#example-metadata')).toContainText('File checksum: not verified');
+ await expect(page.locator('#site-nav')).toHaveCount(0);
+ expect(requests.every(url=>url.startsWith(baseURL+'/'))).toBe(true);
+ expect(requests.some(url=>url.includes('main.min.js'))).toBe(false);
+ await page.evaluate(()=>{const node=document.getElementById('example-metadata');node.json='';});
+ await expect(page.locator('#example-metadata')).toBeEmpty();
+ await page.evaluate(()=>{document.getElementById('example-metadata').json=JSON.stringify({schema:'x',count:0});});
+ await expect(page.locator('#example-metadata')).toContainText('/count');
+ const message=await page.evaluate(()=>{try{document.getElementById('example-metadata').json='{"schema":"x","count":1e-400}';}catch(error){return error.message;}});
+ expect(message).toContain('cannot be represented safely');
+ await expect(page.locator('#example-metadata')).toBeEmpty();
+});
+for(const theme of ['light','dark']) test(`standalone embedding example works without the site theme in ${theme}`,async({page})=>{
+ await page.emulateMedia({colorScheme:theme,reducedMotion:'reduce'});
+ await page.goto('/metadata-viewer/embed/');
+ await expect(page.locator('#example-status')).toContainText('JSON displayed');
+ await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content','noindex, follow');
+ await expect(page.locator('#site-nav')).toHaveCount(0);
+ await page.locator('fair-bioheaders-metadata summary').click();
+ expect((await new AxeBuilder({page}).analyze()).violations).toEqual([]);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+ const error=await page.evaluate(()=>{
+  const display=document.getElementById('example-metadata');
+  try{display.json=JSON.stringify({schema:'x',['a'.repeat(240000)]:Array(2995).fill(0)});}catch(error){return error.message;}
+ });
+ expect(error).toContain('Expanded metadata');
+ await expect(page.locator('#example-metadata')).toBeEmpty();
 });

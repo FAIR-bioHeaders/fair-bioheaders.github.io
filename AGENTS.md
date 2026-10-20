@@ -327,3 +327,10 @@ both sitemap allow-lists and deploy fixtures; controls stay disabled without JS.
 Add the viewer's Node test to CI and test populated/error/clear/no-JS views,
 keyboard scrolling, local-only requests, both themes and narrow screens. #23
 remains open for the reviewed reader, validation and JBrowse integration.
+
+The viewer page doubles as the public JavaScript integration guide. Keep
+`_includes/metadata-embed.html` as the single source for its escaped snippet and
+standalone noindex example. Test the snippet outside the site theme using only
+the component script/CSS and public `json` property. Underflow checks must use
+original numeric tokens; expanded JSON Pointer budgets must be checked before
+allocating paths, not merely after JSON input size/depth checks.

@@ -1,0 +1,28 @@
+---
+layout: null
+permalink: /metadata-viewer/embed/
+sitemap: false
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, follow">
+  <title>FAIR BioHeaders standalone embedding example</title>
+  <style>
+    :root { color-scheme: light dark; background: Canvas; color: CanvasText; }
+    body { max-width: 60rem; margin: 0 auto; padding: 1rem; font: 1rem/1.5 system-ui, sans-serif; }
+    a:focus-visible { outline: 2px solid currentColor; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Standalone embedding example</h1>
+  <p>This page runs the same HTML snippet shown in the
+    <a href="/metadata-viewer/#embed-on-your-own-website">implementation guide</a>,
+    without the website theme or JavaScript bundle. All record values are synthetic.</p>
+  {% include metadata-embed.html %}
+</main>
+</body>
+</html>

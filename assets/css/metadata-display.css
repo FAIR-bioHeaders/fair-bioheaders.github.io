@@ -1,0 +1,13 @@
+/* FAIR BioHeaders display component; MPL-2.0. Scoped for embedding on other sites. */
+fair-bioheaders-metadata { display: block; min-width: 0; }
+fair-bioheaders-metadata h3 { overflow-wrap: anywhere; }
+fair-bioheaders-metadata .mv-checks { padding: .75em 1.75em; border: 1px solid currentColor; border-radius: .3em; }
+fair-bioheaders-metadata .mv-table { overflow-x: auto; max-width: 100%; }
+fair-bioheaders-metadata table { width: 100%; border-collapse: collapse; font: inherit; }
+fair-bioheaders-metadata caption { text-align: left; font-weight: bold; }
+fair-bioheaders-metadata th,
+fair-bioheaders-metadata td { padding: .5em; text-align: left; vertical-align: top; border: 1px solid currentColor; overflow-wrap: anywhere; min-width: 8em; }
+fair-bioheaders-metadata pre { max-width: 100%; overflow: auto; padding: .5em; }
+fair-bioheaders-metadata .mv-table:focus-visible,
+fair-bioheaders-metadata pre:focus-visible,
+fair-bioheaders-metadata summary:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }

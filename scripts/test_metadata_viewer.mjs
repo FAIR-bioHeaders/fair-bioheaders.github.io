@@ -64,3 +64,7 @@ test('long shared ancestor keys cannot multiply into unbounded JSON Pointer outp
  assert.deepEqual(viewer.rows({a:'x'.repeat(viewer.MAX_OUTPUT_CHARS-2)}).map(r=>r.path),['/a']);
  assert.throws(()=>viewer.rows({a:'x'.repeat(viewer.MAX_OUTPUT_CHARS-1)}),/Expanded metadata/);
 });
+
+test('embedding input requires JSON text rather than coerced objects',()=>{
+ assert.throws(()=>viewer.inspect({schema:'x'}),/Supply JSON text/);
+});

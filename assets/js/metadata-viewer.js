@@ -10,6 +10,7 @@
   var MAX_OUTPUT_CHARS = 524288;
 
   function inspect(text) {
+    if (typeof text !== 'string') throw new Error('Supply JSON text; use JSON.stringify(record) for a metadata object.');
     if (new TextEncoder().encode(text).length > MAX_BYTES) throw new Error('Choose a JSON metadata file no larger than 256 KiB. Sequence files are not supported here.');
     if (!text.trim()) return { record: null, type: null, known: false };
     var record;
@@ -97,6 +98,13 @@
   }
 
   class MetadataDisplay extends HTMLElement {
+    // Public embedding API: run the same bounded adapter as the page demo.
+    // Clear first so a rejected replacement never leaves stale metadata visible.
+    set json(text) {
+      this.replaceChildren();
+      this.metadata = inspect(text);
+    }
+
     set metadata(value) {
       this.replaceChildren();
       if (!value || !value.record) return;

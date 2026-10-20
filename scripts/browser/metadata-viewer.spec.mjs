@@ -75,3 +75,12 @@ test('numeric underflow errors clear the previous display instead of showing zer
   await expect(page.locator('fair-bioheaders-metadata')).toBeEmpty();
  }
 });
+
+test('expanded pointer limits reject a small input without freezing or keeping stale values',async({page})=>{
+ await upload(page,record);
+ await upload(page,{schema:'x',['a'.repeat(240000)]:Array(2995).fill(0)});
+ await expect(page.locator('#mv-status')).toContainText('Expanded metadata is too large');
+ await expect(page.locator('fair-bioheaders-metadata')).toBeEmpty();
+ await page.click('#mv-clear');await expect(page.locator('#mv-status')).toContainText('Metadata cleared');
+ await upload(page,record);await expect(page.locator('fair-bioheaders-metadata')).toContainText('Synthetic local record');
+});

@@ -53,3 +53,14 @@ test('positive and negative underflow tokens are rejected while zero and strings
  const text='{"schema":"x","1e-400":"-1e-400","quoted":"escaped \\"1e-400\\""}';
  assert.deepEqual(viewer.inspect(text).record,JSON.parse(text));
 });
+
+test('long shared ancestor keys cannot multiply into unbounded JSON Pointer output',()=>{
+ const record={schema:'x', ['a'.repeat(240000)]:Array(2995).fill(0)};
+ const text=JSON.stringify(record);assert.ok(Buffer.byteLength(text)<viewer.MAX_BYTES);
+ assert.throws(()=>viewer.inspect(text),/Expanded metadata/);
+ assert.throws(()=>viewer.rows(record),/Expanded metadata/);
+ const escaped={schema:'x',['/~'.repeat(60000)]:[0,1,2]};
+ assert.throws(()=>viewer.inspect(JSON.stringify(escaped)),/Expanded metadata/);
+ assert.deepEqual(viewer.rows({a:'x'.repeat(viewer.MAX_OUTPUT_CHARS-2)}).map(r=>r.path),['/a']);
+ assert.throws(()=>viewer.rows({a:'x'.repeat(viewer.MAX_OUTPUT_CHARS-1)}),/Expanded metadata/);
+});

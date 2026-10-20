@@ -16,7 +16,11 @@ only identity recognition, never validation. Unknown versions display as
 unsupported, without schema fetching or fallback. FHT is not enabled.
 
 The input is one JSON metadata object, at most 256 KiB, 3,000 values and 12 levels
-of nesting. The size is checked before reading a file. Reject non-finite values
+of nesting. The size is checked before reading a file. A preflight also caps
+the cumulative escaped JSON Pointer paths plus displayed values at 512 Ki
+characters, before any expanded paths are allocated. This includes repeated
+ancestor names and JSON Pointer escape expansion. Both inspection and the
+display enforce the output/complexity budget, including direct component use. Reject non-finite values
 nonzero numeric tokens that underflow to zero,
 and integers outside JavaScript's safe range rather than displaying a changed
 number. Standard JSON.parse semantics apply, including last-key-wins for duplicate

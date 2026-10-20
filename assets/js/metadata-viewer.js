@@ -7,6 +7,7 @@
   var MAX_BYTES = 262144;
   var MAX_NODES = 3000;
   var MAX_DEPTH = 12;
+  var MAX_OUTPUT_CHARS = 524288;
 
   function inspect(text) {
     if (new TextEncoder().encode(text).length > MAX_BYTES) throw new Error('Choose a JSON metadata file no larger than 256 KiB. Sequence files are not supported here.');
@@ -24,16 +25,7 @@
       }
     }
     if (!record || typeof record !== 'object' || Array.isArray(record)) throw new Error('Choose one JSON metadata object, not a list or scalar.');
-    var stack = [{ value: record, depth: 0 }];
-    var count = 0;
-    while (stack.length) {
-      var item = stack.pop();
-      if (++count > MAX_NODES || item.depth > MAX_DEPTH) throw new Error('This record is too complex to display (maximum 3,000 values and 12 nesting levels).');
-      if (typeof item.value === 'number' && (!Number.isFinite(item.value) || Number.isInteger(item.value) && !Number.isSafeInteger(item.value))) throw new Error('A numeric value cannot be represented safely in this browser. Use the toolkit to inspect the original metadata.');
-      if (item.value && typeof item.value === 'object') {
-        Object.keys(item.value).forEach(function (key) { stack.push({ value: item.value[key], depth: item.depth + 1 }); });
-      }
-    }
+    checkDisplayBudget(record);
     if (!Object.prototype.hasOwnProperty.call(record, 'schema')) return { record: null, type: null, known: false };
     var identity = typeof record.schema === 'string' ? record.schema : '';
     var match = identity.match(/^https:\/\/w3id\.org\/fair-bioheaders\/(fhr|fhp|fhgff3)\/(v[0-9]+\.[0-9]+\.[0-9]+)\/?$/) ||
@@ -50,7 +42,33 @@
     return { record: record, type: type, release: release, known: Boolean(known) };
   }
 
+  function checkDisplayBudget(record) {
+    // Count expanded paths using lengths only, before constructing any of them.
+    // An ancestor key can be short in the input but repeated for every leaf.
+    var stack = [{ value: record, depth: 0, pathLength: 0 }];
+    var count = 0;
+    var output = 0;
+    while (stack.length) {
+      var item = stack.pop();
+      if (++count > MAX_NODES || item.depth > MAX_DEPTH) throw new Error('This record is too complex to display (maximum 3,000 values and 12 nesting levels).');
+      if (typeof item.value === 'number' && (!Number.isFinite(item.value) || Number.isInteger(item.value) && !Number.isSafeInteger(item.value))) throw new Error('A numeric value cannot be represented safely in this browser. Use the toolkit to inspect the original metadata.');
+      var keys = item.value && typeof item.value === 'object' ? Object.keys(item.value) : [];
+      if (keys.length) {
+        keys.forEach(function (key) {
+          var escapedLength = key.length;
+          for (var i = 0; i < key.length; i++) if (key[i] === '/' || key[i] === '~') escapedLength++;
+          stack.push({ value: item.value[key], depth: item.depth + 1, pathLength: item.pathLength + 1 + escapedLength });
+        });
+      } else {
+        var valueLength = typeof item.value === 'string' ? item.value.length : JSON.stringify(item.value).length;
+        output += Math.max(1, item.pathLength) + valueLength;
+        if (output > MAX_OUTPUT_CHARS) throw new Error('Expanded metadata is too large to display (maximum 512 Ki characters of field paths and values). Use shorter field names or inspect the record with the toolkit.');
+      }
+    }
+  }
+
   function rows(record) {
+    checkDisplayBudget(record);
     var result = [];
     function visit(value, path) {
       if (value && typeof value === 'object' && Object.keys(value).length) {
@@ -66,7 +84,7 @@
   }
 
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { inspect: inspect, rows: rows, MAX_BYTES: MAX_BYTES };
+    module.exports = { inspect: inspect, rows: rows, MAX_BYTES: MAX_BYTES, MAX_OUTPUT_CHARS: MAX_OUTPUT_CHARS };
     return;
   }
   if (typeof document === 'undefined') return;
@@ -83,6 +101,7 @@
       this.replaceChildren();
       if (!value || !value.record) return;
       var record = value.record;
+      var boundedRows = rows(record);
       this.appendChild(element('h3', value.type + ' metadata' + (typeof (record.genome || record.proteome || record.annotation) === 'string' ? ': ' + (record.genome || record.proteome || record.annotation) : '')));
       var status = element('ul', undefined, { class: 'mv-checks' });
       ['JSON metadata parsed', 'Schema validation: not checked', 'File checksum: not verified', 'Parent files: not verified'].forEach(function (text) { status.appendChild(element('li', text)); });
@@ -97,7 +116,7 @@
       tr.appendChild(element('th', 'Value', { scope: 'col' }));
       head.appendChild(tr); table.appendChild(head);
       var body = element('tbody');
-      rows(record).forEach(function (row) {
+      boundedRows.forEach(function (row) {
         var tr = element('tr');
         tr.appendChild(element('th', row.path, { scope: 'row' }));
         tr.appendChild(element('td', row.value)); body.appendChild(tr);

@@ -5,7 +5,7 @@
 This is the public Jekyll website and browser-tool implementation. Normative
 contracts and reviewed mappings live in FAIR-bioHeaders-Specification; type
 repositories own type development. Website issues #15/#21 track builder expansion,
-#23 the metadata viewer, and #29 a mapping explainer blocked on specification #56.
+issue #23 the metadata viewer, and #29 a mapping explainer blocked on specification #56.
 The FHR-only prototype does not establish support for all types or current
 schemas. Add profile support through its linked contract/toolkit work, preserving
 local-file privacy, typed metadata and separate parsed/valid/verified states.
@@ -43,11 +43,13 @@ for implementing an existing contract. Never rewrite immutable releases, fixed
 schema aliases or existing file-bound headers as incidental cleanup. Header edits
 require checksum recomputation and may affect downstream parent links.
 
-Proposals are not adopted contracts: FAIR-bioHeaders-Specification#139 / draft
-PR #140 (structured vouchers) and profiles still under review in that repository
-(#56) remain proposals until adopted. Implemented subsets do not establish full
-profile or header-family support. The mapping page in fair-bioheaders.github.io#29
-depends on approved profiles.
+Check the adoption decision and released support before implementing a proposal;
+an issue or PR's existence does not establish adoption. Structured vouchers
+(FAIR-bioHeaders-Specification#139/#140) and mapping profiles (#56 in that same
+repository) have their own review history. Implemented subsets do not establish
+full profile or header-family support. The mapping page tracked in
+fair-bioheaders.github.io#29 depends on approved profiles. Recheck these records
+rather than relying on a copied description of their temporary status.
 
 ## Schema authority and repository roles
 
@@ -122,7 +124,7 @@ sitemap, robots policy, and feeds. Toolchain is pinned in `.ruby-version`
 ## Things that will bite you
 
 - **The JavaScript bundle is committed and CI verifies it is reproducible.** After
-  editing anything under `assets/js/` (including `_main.js` and `cite.js`), run
+  editing a bundle input listed in `package.json` (including `_main.js` and `cite.js`), run
   `npm run build:js`. CI runs `git diff --exit-code -- assets/js/main.min.js`; a
   stale bundle fails the build. Dependency bumps (including Dependabot PRs)
   also require regenerating this bundle. jQuery 4 removes `$.isArray` and
@@ -362,6 +364,29 @@ this to repeatable scalar controls as well as ordinary/nested inputs. Browser
 regressions check computed accessible descriptions and corrected-input cleanup.
 The converter round-trip in the PR validation notes is a local verification;
 CI currently checks microdata markup, not an installed-converter round-trip.
+
+## Family terminology and browser-only boundaries
+
+Use FAIR BioHeaders as the project name and explain FH* as the collective
+shorthand; FHR specifically names the reference-genome header. The family-language
+audit is tracked in #32. Preserve historical paper/registered DOI titles,
+executable names, citation keys, schema URLs and vocabulary identifiers. Describe
+each type's verified release and implementation status separately. The current
+builder's FHR-only support does not become family support through renamed copy.
+
+For metadata viewers/builders, local selection keeps data in the browser. Do not
+upload files, persist their contents or automatically fetch schema, parent or
+metadata URLs. Any future remote loading needs explicitly scoped, user-initiated
+behavior. Render untrusted values as text and distinguish parsed, schema-valid,
+file-verified and parent-verified results. Reuse reviewed readers instead of
+implementing a second independent family parser.
+
+`package.json`'s `uglify` script lists the actual bundle inputs. Changes to those
+inputs require `npm run build:js` and the reproducibility check; standalone scripts
+such as `theme.js` and `table-builder.js` are not bundle inputs. Test their own
+behavior and page-loading scope rather than adding them to the bundle. Keep the
+schema-authority/version-selection section as the governing rule; repeated
+builder details describe its supported snapshots, not another schema policy.
 
 ## Metadata viewer (issue #23)
 

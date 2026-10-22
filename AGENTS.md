@@ -5,7 +5,9 @@
 This is the public Jekyll website and browser-tool implementation. Normative
 contracts and reviewed mappings live in FAIR-bioHeaders-Specification; type
 repositories own type development. Website issues #15/#21 track builder expansion,
-issue #23 the FHR JavaScript guide, and #29 a mapping explainer blocked on specification #56.
+grouped with #29 (a mapping explainer blocked on specification #56) under tracker
+#39; #23 delivered the JavaScript guide (closed 2026-10-20) and the
+/metadata-viewer/ page doubles as it.
 The FHR-only prototype does not establish support for all types or current
 schemas. Add profile support through its linked contract/toolkit work, preserving
 local-file privacy, typed metadata and separate parsed/valid/verified states.
@@ -402,8 +404,9 @@ No upload, persistence, automatic URL resolution or arbitrary schema fetching.
 Examples are local and fetched on deliberate button action. Keep the page in
 both sitemap allow-lists and deploy fixtures; controls stay disabled without JS.
 Add the viewer's Node test to CI and test populated/error/clear/no-JS views,
-keyboard scrolling, local-only requests, both themes and narrow screens. #23
-tracks a JavaScript teaching page for FHR JSON and HTML microdata examples.
+keyboard scrolling, local-only requests, both themes and narrow screens. #23 delivered
+the JavaScript teaching page for FHR JSON and HTML microdata examples (closed
+2026-10-20; the guide ships on the site).
 The October 20 maintainer correction removes JBrowse integration, sequence-file
 parsing and a released library as acceptance gates for #23. Preserve the stable
 /metadata-viewer/ URL. The typed-span teaching helper is deliberately limited to

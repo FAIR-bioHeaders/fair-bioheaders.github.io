@@ -5,7 +5,9 @@
 This is the public Jekyll website and browser-tool implementation. Normative
 contracts and reviewed mappings live in FAIR-bioHeaders-Specification; type
 repositories own type development. Website issues #15/#21 track builder expansion,
-issue #23 the FHR JavaScript guide, and #29 a mapping explainer blocked on specification #56.
+grouped with #29 (a mapping explainer blocked on specification #56) under tracker
+#39; #23 delivered the JavaScript guide (closed 2026-10-20) and the
+/metadata-viewer/ page doubles as it.
 The FHR-only prototype does not establish support for all types or current
 schemas. Add profile support through its linked contract/toolkit work, preserving
 local-file privacy, typed metadata and separate parsed/valid/verified states.
@@ -402,8 +404,9 @@ No upload, persistence, automatic URL resolution or arbitrary schema fetching.
 Examples are local and fetched on deliberate button action. Keep the page in
 both sitemap allow-lists and deploy fixtures; controls stay disabled without JS.
 Add the viewer's Node test to CI and test populated/error/clear/no-JS views,
-keyboard scrolling, local-only requests, both themes and narrow screens. #23
-tracks a JavaScript teaching page for FHR JSON and HTML microdata examples.
+keyboard scrolling, local-only requests, both themes and narrow screens. #23 delivered
+the JavaScript teaching page for FHR JSON and HTML microdata examples (closed
+2026-10-20; the guide ships on the site).
 The October 20 maintainer correction removes JBrowse integration, sequence-file
 parsing and a released library as acceptance gates for #23. Preserve the stable
 /metadata-viewer/ URL. The typed-span teaching helper is deliberately limited to
@@ -416,3 +419,33 @@ standalone noindex example. Test the snippet outside the site theme using only
 the component script/CSS and public `json` property. Underflow checks must use
 original numeric tokens; expanded JSON Pointer budgets must be checked before
 allocating paths, not merely after JSON input size/depth checks.
+
+## Issue, project and code-review behavior
+
+### Issues and the connected project
+
+- Add every issue you work on to the connected project (project #9, "FAIR
+  BioHeaders — 2026 refresh") and set `Status` to `In Progress` when work starts.
+- Keep `Status` current as the work moves (`Todo`, `In Progress`, `Blocked`,
+  `Blocked - In Progress`, `Done`), and set `Outcome` when it closes.
+- Link every PR to its issue (`Closes #N` or `Refs #N`). Do not do unreported work.
+- After each work run (implementation, tests, review pass), post a status comment
+  on the issue or PR: what changed, checks run and results, commit/PR links,
+  blockers, and the next action. Do not rely on chat history.
+
+### Code review on a PR
+
+When a PR receives code review (human or Copilot):
+
+1. Read the overall review and every inline comment before changing anything.
+2. Make each fix in a **new commit**. Do not amend or force-push over reviewed
+   commits; if a rebase is required, cite the new head in the replies.
+3. Reply to each inline finding with the fix and the relevant commit hash.
+4. Resolve that inline comment/thread.
+5. After all findings are handled, post an overall reply to the review
+   summarizing each finding's disposition and the commits.
+6. Treat optional suggestions as required unless they are genuinely out of
+   scope; state why and link a follow-up issue.
+
+Do not push to a repository's main branch or merge a PR without maintainer
+approval.

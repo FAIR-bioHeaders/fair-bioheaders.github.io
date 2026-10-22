@@ -307,7 +307,7 @@ material. Keep README badges, package metadata and citation metadata consistent.
 
 `/table-builder/` is a browser metadata builder: one form -> one typed record ->
 validation against the selected supported schema snapshot -> readable table +
-standalone HTML (with FHR microdata) + YAML metadata, with local downloads.
+standalone HTML (with FHR and FHP microdata) + YAML metadata, with local downloads.
 Support released FHR, FHP and FHGFF3 contracts through the linked family builder
 issues and adopted contracts. FHT requires a released contract before support is
 enabled. Do not add uploads or persistence without explicit scope.
@@ -318,10 +318,13 @@ enabled. Do not add uploads or persistence without explicit scope.
   its retrieved commit/digest). Refresh schema support in a dedicated change; never present a stale copy as
   current-main validation. Released aliases use their separate fixed snapshot
   as described in the version-aware decision below.
-- The standalone HTML microdata must keep round-tripping through the converter
-  (`_html_value`/`_input_microdata` in FAIR-bioHeaders-Tools). `table-builder.js`
-  owns the record->table/microdata/YAML mapping; unit tests are in
-  `scripts/test_table_builder.mjs` and browser tests in
+- The standalone HTML microdata must keep round-tripping through the toolkit:
+  FHR through the converter (`_html_value`/`_input_microdata` in
+  FAIR-bioHeaders-Tools) and FHP through `bioheaders/fhp_microdata.py`,
+  following the FHP binding in FHP-Specification `docs/FHP-MICRODATA.md`
+  (the raw-main FHP schema itemtype, never the FHR itemtype).
+  `table-builder.js` owns the record->table/microdata/YAML mapping; unit tests
+  are in `scripts/test_table_builder.mjs` and browser tests in
   `scripts/browser/table-builder.spec.mjs`.
 - `table-builder.js` loads only on that page (not bundled into `main.min.js`,
   like `theme.js`). It uses native Blob/object-URL downloads and revokes URLs on
@@ -412,10 +415,14 @@ fixtures under `scripts/fixtures/family-v0.4.0` are unmodified released examples
 from that same tag; verify them and the validator against a reference JSON
 Schema implementation when updating support. Avoid general JSON Schema claims.
 
-FHR HTML retains its established microdata binding. FHP/FHGFF3 HTML is a readable
-table with stable field paths, without microdata; its separate YAML preserves
-the structured record. Do not emit FHR microdata for another header type. These
-exports are metadata documents and do not embed headers into sequence files.
+FHR HTML retains its established microdata binding. FHP HTML carries the typed
+FHP binding (FHP-Specification `docs/FHP-MICRODATA.md`): the raw-main FHP schema
+itemtype, never the FHR itemtype, with reader round trips checked against
+`bioheaders/fhp_microdata.py` in FAIR-bioHeaders-Tools. FHGFF3 HTML is a
+readable table with stable field paths, without microdata until its own binding
+slice lands; its separate YAML preserves the structured record. Do not emit one
+type's microdata for another header type. These exports are metadata documents
+and do not embed headers into sequence files.
 
 ## Family terminology and browser-only boundaries
 

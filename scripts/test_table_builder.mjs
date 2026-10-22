@@ -211,14 +211,20 @@ const familyFixture = name => parse(readFileSync(new URL(`./fixtures/family-v0.4
 for (const name of ['rich-database.fhp.json', 'rich-mixed.fhp.yaml', 'minimal-reference.fhgff3.json', 'rich.fhgff3.yaml']) {
   test(`released example ${name} validates and survives YAML/table export`, () => {
     const record = familyFixture(name);
-    const schema = familySchemas[tb.recordType(record)];
+    const kind = tb.recordType(record);
+    const schema = familySchemas[kind];
     assert.deepEqual(tb.validateRecord(record, schema), []);
     assert.deepEqual(parse(tb.toYaml(record, schema)), record);
     const html = tb.standaloneHtml(record, schema);
-    assert.ok(!html.includes('itemscope'));
-    assert.match(html, /HTML microdata is not supported/);
+    if (kind === 'FHP') {
+      assert.match(html, /<h2>Machine-readable FHP microdata<\/h2>/);
+      assert.ok(html.includes('<div itemscope itemtype="' + tb.FHP_ITEMTYPE_URL + '">'));
+    } else {
+      assert.ok(!html.includes('itemscope'));
+      assert.match(html, /HTML microdata is not supported/);
+      assert.throws(() => tb.microdataDiv(record, schema), /only supported for FHR and FHP/);
+    }
     for (const key of Object.keys(record)) assert.ok(tb.tableRows(record)[0].rows.some(row => row.label === key || row.label.startsWith(key + '.')), key);
-    assert.throws(() => tb.microdataDiv(record, schema), /only supported for FHR/);
   });
 }
 test('FHGFF3 enforces both reference alternatives and annotates cardinality/header type', () => {
@@ -248,6 +254,60 @@ test('FHP preserves numeric boundaries, enums and nested required fields', () =>
   record.sourceType='unknown-value';
   const paths=tb.validateRecord(record,schema).map(e=>e.path.join('.'));
   for(const path of ['completeness.total','completeness.lineageDataset','sequenceStats.sequenceCount','sourceType']) assert.ok(paths.includes(path),path);
+});
+
+test('FHP microdata carries the FHP itemtype and never the FHR identity', () => {
+  const record = familyFixture('rich-database.fhp.json');
+  assert.equal(tb.FHP_ITEMTYPE_URL,
+    'https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json');
+  const div = tb.microdataDiv(record, familySchemas.FHP);
+  assert.ok(div.startsWith('<div itemscope itemtype="' + tb.FHP_ITEMTYPE_URL + '">'));
+  assert.ok(!div.includes('fhr.json'));
+  assert.ok(!div.includes('/fhr/'));
+  assert.ok(!div.includes(tb.SCHEMA_URL));
+});
+
+test('FHP microdata keeps record order, typed scalars, nesting and ordered arrays', () => {
+  const record = familyFixture('rich-database.fhp.json');
+  const div = tb.microdataDiv(record, familySchemas.FHP);
+  let last = -1;
+  for (const key of Object.keys(record)) {
+    const at = div.indexOf('itemprop="' + key + '"');
+    assert.ok(at > last, `${key} keeps its record position`);
+    last = at;
+  }
+  assert.match(div, /itemprop="schema" data-fhr-type="string">https:\/\/w3id\.org\/fair-bioheaders\/fhp\/v0\.4\.0<\/span>/);
+  assert.match(div, /itemprop="schemaVersion" data-fhr-type="string">1\.0<\/span>/);
+  assert.match(div, /itemprop="taxon" itemscope data-fhr-type="object"><span itemprop="name" data-fhr-type="string">Homo sapiens<\/span>/);
+  assert.match(div, /itemprop="metadataAuthor" data-fhr-type="array"><span itemprop="item" itemscope data-fhr-type="object">/);
+  assert.match(div, /itemprop="source" data-fhr-type="array"><span itemprop="item" itemscope data-fhr-type="object"><span itemprop="name" data-fhr-type="string">UniProtKB<\/span>/);
+  assert.match(div, /itemprop="sequenceCount" data-fhr-type="integer">147520<\/span>/);
+  assert.match(div, /itemprop="total" data-fhr-type="integer">13780<\/span>/);
+  assert.match(div, /itemprop="relatedLink" data-fhr-type="array"><span itemprop="item" data-fhr-type="string">https:\/\/www\.uniprot\.org\/help\/proteome_id<\/span>/);
+});
+
+test('FHP numeric-like strings stay strings, zero counts stay values, markup escapes once', () => {
+  const record = familyFixture('rich-mixed.fhp.yaml');
+  record.sequenceStats.geneCount = 0;
+  record.documentation = '<script>alert("x")</script> & <b>café — naïve</b>';
+  const div = tb.microdataDiv(record, familySchemas.FHP);
+  assert.match(div, /itemprop="version" data-fhr-type="string">2\.0<\/span>/);
+  assert.match(div, /itemprop="geneCount" data-fhr-type="integer">0<\/span>/);
+  assert.match(div, /itemprop="isoformPolicy" data-fhr-type="string">all<\/span>/);
+  assert.match(div, /itemprop="derivedFrom" data-fhr-type="array"><span itemprop="item" itemscope data-fhr-type="object"><span itemprop="headerType" data-fhr-type="string">FHP<\/span>/);
+  assert.ok(!/<script/i.test(div));
+  assert.ok(div.includes('&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt; &amp; &lt;b&gt;café — naïve&lt;/b&gt;'));
+});
+
+test('FHP standalone HTML pairs the readable table with typed microdata', () => {
+  const record = familyFixture('rich-database.fhp.json');
+  const html = tb.standaloneHtml(record, familySchemas.FHP);
+  assert.match(html, /^<!doctype html>/);
+  assert.match(html, /<h1>FHP metadata: UniProt human reference proteome UP000005640<\/h1>/);
+  assert.match(html, /<h2>Machine-readable FHP microdata<\/h2>/);
+  assert.ok(html.includes('<div itemscope itemtype="' + tb.FHP_ITEMTYPE_URL + '">'));
+  assert.doesNotMatch(html, /<script/i);
+  assert.ok(html.indexOf('<table>') < html.indexOf('<div itemscope'), 'the readable table precedes the microdata');
 });
 test('each family type only accepts its supported fixed release', () => {
   for(const kind of ['FHP','FHGFF3']) {

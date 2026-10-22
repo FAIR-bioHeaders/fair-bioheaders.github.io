@@ -278,10 +278,22 @@ for (const [kind, fixture] of [['FHP','rich-mixed.fhp.yaml'], ['FHGFF3','rich.fh
     }
     const yaml=await page.textContent('#tb-yaml-source');
     expect(parse(yaml)).toEqual(record);
-    await expect(page.locator('#tb-html-source')).not.toContainText('itemscope');
+    const htmlSource=await page.textContent('#tb-html-source');
+    if(kind==='FHP'){
+      expect(htmlSource).toContain('<h2>Machine-readable FHP microdata</h2>');
+      expect(htmlSource).toContain('itemscope itemtype="https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json"');
+      expect(htmlSource).not.toContain('fhr.json');
+      expect(htmlSource).toContain('itemprop="schemaVersion" data-fhr-type="string"');
+      if(record.isoformPolicy) expect(htmlSource).toContain('itemprop="isoformPolicy" data-fhr-type="string">'+record.isoformPolicy+'</span>');
+    } else {
+      expect(htmlSource).not.toContain('itemscope');
+    }
     const [download]=await Promise.all([page.waitForEvent('download'),page.click('#tb-download-yaml')]);
     expect(download.suggestedFilename()).toBe(kind.toLowerCase()+'-metadata.yaml');
     expect(readFileSync(await download.path(),'utf8')).toBe(yaml);
+    const [htmlDownload]=await Promise.all([page.waitForEvent('download'),page.click('#tb-download-html')]);
+    expect(htmlDownload.suggestedFilename()).toBe(kind.toLowerCase()+'-metadata.html');
+    expect(readFileSync(await htmlDownload.path(),'utf8')).toBe(htmlSource);
     if(kind==='FHGFF3') {
       await page.selectOption('#tb-derivedFrom-0-headerType','FHP');
       await page.click('#tb-generate');
@@ -318,7 +330,11 @@ for (const kind of ['FHP', 'FHGFF3']) {
     await expect(page.locator('#tb-genome')).toHaveCount(0);
     await page.click('#tb-generate');
     await expect(page.locator('#tb-yaml-source')).toContainText(`schema: "https://w3id.org/fair-bioheaders/${kind.toLowerCase()}/v0.4.0"`);
-    await expect(page.locator('#tb-html-source')).not.toContainText('itemscope');
+    if (kind === 'FHP') {
+      await expect(page.locator('#tb-html-source')).toContainText('itemtype="https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json"');
+    } else {
+      await expect(page.locator('#tb-html-source')).not.toContainText('itemscope');
+    }
   });
 }
 

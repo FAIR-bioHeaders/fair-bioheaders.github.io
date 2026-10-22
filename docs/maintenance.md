@@ -89,8 +89,8 @@ publication/citation metadata and navigation remain part of the acceptance check
 `/table-builder/` supports released FHR, FHP and FHGFF3 metadata (issues #16/#15).
 Each form drives one typed record, validated against its selected schema,
 previewed as a readable table, and serialized as standalone HTML and YAML.
-Only FHR HTML includes microdata. All processing is local; there is no
-backend, upload, login, or persistence.
+FHR and FHP HTML include typed microdata; FHGFF3 HTML does not. All processing
+is local; there is no backend, upload, login, or persistence.
 
 - **Schema copy:** `assets/schema/fhr.json` is a cache of
   `https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json`.
@@ -102,10 +102,14 @@ backend, upload, login, or persistence.
 - **Validation is structural only.** It follows the schema's required fields,
   types, patterns, formats, and `additionalProperties`. Passing it is not a
   claim about biological quality and does not verify a checksum against any file.
-- **Microdata:** the standalone HTML emits the same FHR item scope that
+- **Microdata:** the standalone FHR HTML emits the same item scope that
   the FHR converter writes and reads (`_html_value`/`_input_microdata`). It
-  round-trips through `fhr-convert` in FAIR-bioHeaders-Tools. Keep
-  `assets/js/table-builder.js` in step with that convention.
+  round-trips through `fhr-convert` in FAIR-bioHeaders-Tools. The FHP export
+  follows the FHP microdata binding developed in FHP-Specification
+  (`docs/FHP-MICRODATA.md`): the raw-main FHP schema itemtype (never the FHR
+  itemtype), record-order properties and `data-fhr-type` typing. It
+  round-trips through `bioheaders/fhp_microdata.py` in FAIR-bioHeaders-Tools.
+  Keep `assets/js/table-builder.js` in step with those conventions.
 - **Assets and JS:** `table-builder.js` loads only on `/table-builder/` (like
   `theme.js`, it is not part of the bundled `main.min.js`). Node unit tests live
   in `scripts/test_table_builder.mjs`; browser checks in

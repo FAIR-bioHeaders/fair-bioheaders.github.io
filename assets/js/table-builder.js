@@ -1,8 +1,9 @@
 /* ==========================================================================
    FAIR BioHeaders table builder
-   Builds one typed FHR metadata record from a form, validates it against the
-   selected supported repository schema snapshot, and produces a readable table, a
-   standalone HTML document (with FHR microdata), and a YAML metadata file.
+   Builds one typed FHR, FHP or FHGFF3 metadata record from a form, validates it
+   against the selected supported schema snapshot, and produces a readable table,
+   a standalone HTML document (with FHR and FHP microdata), and a YAML metadata
+   file.
 
    The pure functions are exported for Node tests; the DOM wiring runs only in
    the browser when the builder container is present.
@@ -21,6 +22,12 @@
 
   var CURRENT_URL = 'https://w3id.org/fair-bioheaders/fhr/v0.4.0';
   var CURRENT_RAW_URL = 'https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json';
+
+  // The FHP itemtype identity is the raw-main FHP schema URL, fixed by the FHP
+  // microdata binding (FHP-Specification docs/FHP-MICRODATA.md F1); the record's
+  // own `schema` property selects the contract version. FHP is never labeled
+  // with the FHR itemtype. FHGFF3 has no website microdata binding yet.
+  var FHP_ITEMTYPE_URL = 'https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json';
 
   function selectSchema(target, development, release, current, family) {
     var kind = recordType({ schema: target });
@@ -425,10 +432,16 @@
   }
 
   function microdataDiv(record, schema) {
-    if (recordType(record) !== 'FHR') throw new Error('HTML microdata is only supported for FHR');
+    var kind = recordType(record);
+    if (kind !== 'FHR' && kind !== 'FHP') {
+      throw new Error('HTML microdata is only supported for FHR and FHP');
+    }
     var props = (schema && schema.properties) || {};
-    var order = FIELD_ORDER.filter(function (key) { return record[key] !== undefined; });
-    return '<div itemscope itemtype="' + SCHEMA_URL + '">' +
+    // FHR keeps its canonical FIELD_ORDER; FHP follows the record's own key
+    // order, matching its YAML export and the toolkit writer's property order.
+    var order = (kind === 'FHR' ? FIELD_ORDER : Object.keys(record))
+      .filter(function (key) { return record[key] !== undefined; });
+    return '<div itemscope itemtype="' + (kind === 'FHR' ? SCHEMA_URL : FHP_ITEMTYPE_URL) + '">' +
       order.map(function (key) { return htmlValue(key, record[key], props[key]); }).join('') + '</div>';
   }
 
@@ -510,12 +523,14 @@
 
   function standaloneHtml(record, schema) {
     var title = recordTitle(record);
+    var kind = recordType(record);
     return '<!doctype html>\n<html lang="en"><head><meta charset="utf-8">' +
       '<title>' + escapeHtml(title) + '</title></head><body>\n' +
       '<h1>' + escapeHtml(title) + '</h1>\n' +
       tableHtml(record) + '\n' +
-      (recordType(record) === 'FHR' ? '<h2>Machine-readable FHR microdata</h2>\n' + microdataDiv(record, schema) :
-        '<p>Readable table only: ' + recordType(record) + ' HTML microdata is not supported. Preserve the YAML metadata separately.</p>') + '\n' +
+      (kind === 'FHR' || kind === 'FHP' ?
+        '<h2>Machine-readable ' + kind + ' microdata</h2>\n' + microdataDiv(record, schema) :
+        '<p>Readable table only: ' + kind + ' HTML microdata is not supported. Preserve the YAML metadata separately.</p>') + '\n' +
       '</body></html>\n';
   }
 
@@ -523,6 +538,7 @@
     SCHEMA_URL: SCHEMA_URL,
     RELEASE_URL: RELEASE_URL,
     CURRENT_URL: CURRENT_URL,
+    FHP_ITEMTYPE_URL: FHP_ITEMTYPE_URL,
     recordType: recordType,
     selectSchema: selectSchema,
     FIELD_ORDER: FIELD_ORDER,

@@ -102,7 +102,7 @@ are the single source of truth for the generated citation.
     {% endif %}
     {% if reference.note %}<span class="reference__note">{{ reference.note | escape }}</span>{% endif %}
     {% if reference.version_doi %}<a class="reference__version" href="https://doi.org/{{ reference.version_doi | escape }}">{{ reference.release | escape }} version DOI</a>{% endif %}
-    <button type="button" class="cite-button" data-cite-key="{{ key | escape }}" aria-label="Show BibTeX citation for {{ reference.title | escape }}" aria-expanded="false" aria-controls="cite-panel-{{ key | escape }}">Cite</button>
+    <button type="button" class="cite-button" data-cite-key="{{ key | escape }}" aria-label="Cite: Show BibTeX citation for {{ reference.title | escape }}" aria-expanded="false" aria-controls="cite-panel-{{ key | escape }}">Cite</button>
   </p>
   <div class="cite-panel" id="cite-panel-{{ key | escape }}" data-cite-panel="{{ key | escape }}" hidden>
     <pre class="cite-output" data-cite-output="{{ key | escape }}"></pre>

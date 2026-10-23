@@ -9,11 +9,11 @@ redirect_from:
 
 <div class="project-intro">
   <div class="project-intro__copy">
-    <p class="project-eyebrow">Reference genomes · Metadata · Provenance</p>
-    <p class="project-intro__lead">Keep the context.<br>Carry it with the genome.</p>
-    <p>FAIR BioHeaders builds an open standard, the FAIR Header Reference genome (FHR), that keeps reference genome metadata and provenance close to sequence data — helping researchers identify the reference used in an analysis and retain the information needed to reproduce it.</p>
+    <p class="project-eyebrow">Genomes · Transcripts · Proteins · Annotations</p>
+    <p class="project-intro__lead">Keep the context.<br>Carry it with the data.</p>
+    <p>FAIR BioHeaders develops a family of metadata headers, collectively called FH*, for reference genomes, transcriptomes, protein sets and annotations. They keep the identity, methods and provenance of biological resources close to the files researchers share and use.</p>
     <div class="project-actions">
-      <a class="project-action project-action--primary" href="{{ '/guide/' | relative_url }}">Get started with FHR <span aria-hidden="true">↗</span></a>
+      <a class="project-action project-action--primary" href="{{ '/guide/#choose-a-header' | relative_url }}">Choose a header <span aria-hidden="true">↗</span></a>
       <a class="project-action" href="{{ '/publications/' | relative_url }}">Explore the research <span aria-hidden="true">→</span></a>
     </div>
   </div>
@@ -39,10 +39,48 @@ FAIR BioHeaders grew out of a problem described in the [FHR standard paper](http
 ### What we value
 
 - **Provenance travels with the data.** Metadata lives alongside the sequence, not in a separate document that can drift away from it.
-- **Minimal disruption.** FHR fits into existing workflows — metadata in FASTA comments and companion representations — so adopting it does not require rebuilding a pipeline.
-- **FAIR and TRUST.** The standard is guided by Findability, Accessibility, Interoperability, and Reuse (FAIR) together with Transparency, Responsibility, User focus, Sustainability, and Technology (TRUST).
+- **Practical interoperability.** FH* uses file-carried metadata and companion representations. Tools handle comments differently; our guide explains supported formats and when a stripped copy is needed.
+- **FAIR and TRUST.** The family is guided by Findability, Accessibility, Interoperability, and Reuse (FAIR) together with Transparency, Responsibility, User focus, Sustainability, and Technology (TRUST).
 - **Extensible and expressive.** A small set of required fields keeps implementation easy while allowing projects to record more when they need it.
-- **Low barrier to adoption.** Few dependencies and a small codebase make the standard and its tooling straightforward to use and maintain.
+- **Low barrier to adoption.** Few dependencies and a small codebase make the headers and their tooling straightforward to use and maintain.
+
+## One family, four header types
+
+Each header describes a different kind of biological resource. Choose the type
+that matches your file; a shared core does not make the types interchangeable.
+
+- **FHR — reference genomes.** Describe an assembly, its creators, methods and
+  statistics. The released contract is FHR 2.0 in specification v0.4.0.
+  [FHR development](https://github.com/FAIR-bioHeaders/FHR-Specification).
+- **FHT — transcriptomes.** Develop metadata for transcript sequences and their
+  biological and computational origins. The field set is under consultation;
+  FHT has no released family contract yet.
+  [FHT development](https://github.com/FAIR-bioHeaders/FHT-Specification).
+- **FHP — protein sets.** Describe predicted, database and mixed protein FASTA
+  sets without inventing source material or quality-control results. FHP 1.0
+  is released in specification v0.4.0; JSON-LD and HTML microdata support remain
+  separate work. [FHP development](https://github.com/FAIR-bioHeaders/FHP-Specification).
+- **FHGFF3 — annotations.** Record how an annotation was made and which genome
+  its coordinates refer to. FHGFF3 1.0 is released in specification v0.4.0.
+  Its header does not validate GFF3 features or their biology; JSON-LD and HTML
+  microdata support remain separate work.
+  [FHGFF3 development](https://github.com/FAIR-bioHeaders/FHGFF3).
+
+### Shared context, resource-specific detail
+
+The shared core covers identity, taxon, version, metadata authors, creation date
+and a file checksum. Each type adds fields appropriate to its resource. A small
+required set keeps adoption practical; optional detail can preserve methods and
+source information without forcing every resource into a genome-assembly model.
+
+Where supported and supplied, parent-file links can connect a genome, annotation
+and protein set. A matching parent checksum establishes file identity; it does
+not prove biological derivation or completeness of the provenance chain. Missing
+information stays missing. File-carried metadata complements repository records
+and the publications that describe the work.
+
+[Choose a header and a supported workflow](/guide/#choose-a-header), or read the
+[shared released specifications](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification).
 
 ### How our work fits together with others
 
@@ -69,7 +107,8 @@ FAIR BioHeaders grew out of a problem described in the [FHR standard paper](http
   </div>
 </div>
 
-## Use the standard
+## Use the headers
+{: #use-the-standard}
 
 - Read the [shared specifications](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification) for metadata fields and schemas.
 - Use [FAIR BioHeaders Tools](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools) to work with supported representations.

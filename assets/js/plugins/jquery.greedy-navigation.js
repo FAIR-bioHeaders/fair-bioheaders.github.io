@@ -10,6 +10,8 @@ var $btn = $('#site-nav .nav-toggle');
 var $vlinks = $('#site-nav .visible-links');
 var $hlinks = $('#site-nav .hidden-links');
 
+// Explicit secondary links always live in More; without JS they remain visible.
+$vlinks.children('[data-overflow-only]').appendTo($hlinks);
 var breaks = [];
 
 function updateNav() {
@@ -37,12 +39,12 @@ function updateNav() {
     if(availableSpace > breaks[breaks.length-1]) {
 
       // Move the item to the visible list
-      $hlinks.children().first().appendTo($vlinks);
+      $hlinks.children(':not([data-overflow-only])').first().appendTo($vlinks);
       breaks.pop();
     }
 
     // Hide the dropdown btn if hidden list is empty
-    if(breaks.length < 1) {
+    if($hlinks.children().length < 1) {
       $btn.addClass('hidden');
       $hlinks.addClass('hidden');
       $btn.removeClass('close').attr('aria-expanded', 'false');
@@ -50,7 +52,7 @@ function updateNav() {
   }
 
   // Keep counter updated
-  $btn.attr("count", breaks.length);
+  $btn.attr("count", $hlinks.children().length);
 
   // Recur if the visible list is still overflowing the nav
   if($vlinks.width() > availableSpace && $vlinks.children().length > 1) {

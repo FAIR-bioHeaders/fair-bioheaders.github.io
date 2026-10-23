@@ -237,3 +237,20 @@ generation so corrected or removed rows cannot keep stale errors.
 After local schemas finish loading, initialize through the selected header type,
 including a selection made while requests were pending. The selected type, form,
 validation contract and export identity must agree from the first render.
+
+## Family terminology and navigation
+
+Use FAIR BioHeaders as the project name and explain FH* as collective shorthand
+on entry pages. FHR names the reference-genome header; FHT, FHP and FHGFF3 have
+their own resource scope and independently stated release/tooling support.
+Retain historical paper/registered citation titles, command/package names,
+schema URLs, vocabulary IRIs and checksum-bearing examples. An FHR example or
+browser form must not imply support for every family type. The historical guide
+workflow remains unchanged; link versioned current examples separately.
+
+`_data/navigation.yml` can mark secondary links with `overflow: true`. JavaScript
+examples uses this flag to stay in the existing More navigation dropdown at all
+widths. Greedy navigation may add responsive overflow links ahead of it, but must
+never promote a flagged link into the primary row on resize. Without JavaScript,
+all links remain in the visible wrapping list. Test keyboard/Enter/Escape access,
+resize behavior and no-JavaScript navigation when changing this mechanism.

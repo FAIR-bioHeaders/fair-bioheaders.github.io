@@ -1,6 +1,6 @@
 # FAIR BioHeaders website
 
-Project website for reference genome metadata, provenance, publications, and citation guidance: [fhref.org](https://fhref.org).
+Project website for the FAIR BioHeaders (FH*) family: genome, transcriptome, protein-set and annotation metadata, provenance, publications and citation guidance: [fhref.org](https://fhref.org).
 
 [![Site checks](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/actions/workflows/build.yml/badge.svg)](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/actions/workflows/build.yml)
 

@@ -5,6 +5,7 @@ async function fillValid(page) {
   const set = (id, value) => page.fill('#' + id, value);
   await page.goto('/table-builder/');
   await page.waitForSelector('#tb-form fieldset');
+  await set('tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v0.3.1');
   await set('tb-genome', 'Synthetic human reference example');
   await set('tb-version', '0.0.1');
   await set('tb-taxon-name', 'Homo sapiens');
@@ -205,4 +206,174 @@ test('field errors become accessible descriptions and clear without losing help'
   await expect(error).toBeHidden();
   await expect(related).not.toHaveAttribute('aria-describedby');
   await expect(page.locator('#tb-download-yaml')).toBeEnabled();
+});
+
+test('current release defaults to a string version and preserves new fields through exports', async ({ page }) => {
+  await page.goto('/table-builder/');
+  await expect(page.locator('#tb-schema')).toHaveValue('https://w3id.org/fair-bioheaders/fhr/v0.4.0');
+  await expect(page.locator('#tb-schemaVersion')).toHaveValue('2.0');
+  await expect(page.locator('#tb-schemaVersion')).toHaveAttribute('readonly', '');
+  await fillValid(page);
+  await page.fill('#tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v0.4.0');
+  await page.selectOption('#tb-metadataAuthor-0-nameType', 'Organizational');
+  await page.fill('#tb-vitalStats-scaffoldN50', '200');
+  await page.fill('#tb-vitalStats-scaffoldL50', '0');
+  await page.fill('#tb-vitalStats-gcContent', '0.42');
+  await expect(page.locator('#tb-download-yaml')).toBeDisabled();
+  await page.click('#tb-generate');
+  await expect(page.locator('#tb-status')).toContainText('FHR v0.4.0 (schema 2.0)');
+  await expect(page.locator('#tb-yaml-source')).toContainText('schemaVersion: "2.0"');
+  await expect(page.locator('#tb-yaml-source')).toContainText('scaffoldL50: 0');
+  await expect(page.locator('#tb-yaml-source')).toContainText('gcContent: 0.42');
+  await expect(page.locator('#tb-table')).toContainText('Organizational');
+  await expect(page.locator('#tb-download-yaml')).toBeEnabled();
+  await page.fill('#tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v0.3.1');
+  await expect(page.locator('#tb-schemaVersion')).toHaveValue('1');
+  await page.click('#tb-generate');
+  await expect(page.locator('#tb-download-yaml')).toBeEnabled();
+  await expect(page.locator('#tb-yaml-source')).toContainText('schemaVersion: 1.0');
+  await expect(page.locator('#tb-vitalStats-scaffoldN50')).toHaveValue('200');
+  await page.fill('#tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v0.4.0');
+  await page.fill('#tb-vitalStats-scaffoldL50', '-1');
+  await page.click('#tb-generate');
+  await expect(page.locator('#tb-vitalStats-scaffoldL50')).toHaveAttribute('aria-invalid', 'true');
+});
+
+for (const [kind, fixture] of [['FHP','rich-mixed.fhp.yaml'], ['FHGFF3','rich.fhgff3.yaml']]) {
+  test(`${kind} released form preserves nested values, downloads, draft switching and local requests`, async ({ page }) => {
+    const { readFileSync } = await import('node:fs');
+    const { parse } = await import('yaml');
+    const record = parse(readFileSync(new URL(`../fixtures/family-v0.4.0/${fixture}`, import.meta.url),'utf8'));
+    record.schema = `https://w3id.org/fair-bioheaders/${kind.toLowerCase()}/v0.4.0`;
+    await page.emulateMedia({reducedMotion:'reduce'});
+    const external=[];
+    page.on('request',request=>{if(!request.url().startsWith('http://127.0.0.1:4000/')) external.push(request.url());});
+    await page.goto('/table-builder/');
+    await page.waitForSelector('#tb-schema');
+    await page.fill('#tb-genome','Retained genome draft');
+    await page.selectOption('#tb-profile',kind);
+    const slug=path=>path.replace(/[^A-Za-z0-9]+/g,'-');
+    async function fill(value,path) {
+      if(Array.isArray(value)) {
+        for(let index=0;index<value.length;index++) {
+          await page.click('#tb-add-'+slug(path));
+          await fill(value[index],path+'.'+index);
+        }
+      } else if(value && typeof value==='object') {
+        for(const [key,item] of Object.entries(value)) await fill(item,path ? path+'.'+key : key);
+      } else {
+        const control=page.locator('#tb-'+slug(path));
+        if(path==='schemaVersion') {await expect(control).toHaveValue(String(value));return;}
+        if(await control.evaluate(node=>node.tagName==='SELECT')) await control.selectOption(String(value));
+        else await control.fill(String(value));
+      }
+    }
+    await fill(record,'');
+    await page.click('#tb-generate');
+    await expect(page.locator('#tb-status')).toContainText('Structural validation passed');
+    const { default: AxeBuilder } = await import('@axe-core/playwright');
+    for (const theme of ['light','dark']) {
+      await page.evaluate(value=>document.documentElement.setAttribute('data-theme',value),theme);
+      expect((await new AxeBuilder({page}).analyze()).violations).toEqual([]);
+    }
+    const yaml=await page.textContent('#tb-yaml-source');
+    expect(parse(yaml)).toEqual(record);
+    await expect(page.locator('#tb-html-source')).not.toContainText('itemscope');
+    const [download]=await Promise.all([page.waitForEvent('download'),page.click('#tb-download-yaml')]);
+    expect(download.suggestedFilename()).toBe(kind.toLowerCase()+'-metadata.yaml');
+    expect(readFileSync(await download.path(),'utf8')).toBe(yaml);
+    if(kind==='FHGFF3') {
+      await page.selectOption('#tb-derivedFrom-0-headerType','FHP');
+      await page.click('#tb-generate');
+      await expect(page.locator('#tb-download-yaml')).toBeDisabled();
+      await page.locator('#tb-errors a[href="#tb-derivedFrom-0-headerType"]').click();
+      await expect(page.locator('#tb-derivedFrom-0-headerType')).toBeFocused();
+      await page.selectOption('#tb-derivedFrom-0-headerType','FHR');
+    }
+    await page.selectOption('#tb-profile','FHR');
+    await expect(page.locator('#tb-genome')).toHaveValue('Retained genome draft');
+    await expect(page.locator('#tb-download-yaml')).toBeDisabled();
+    await expect(page.locator('#tb-yaml-source')).toBeEmpty();
+    await page.selectOption('#tb-profile',kind);
+    await page.click('#tb-generate');
+    expect(parse(await page.textContent('#tb-yaml-source'))).toEqual(record);
+    await page.fill('#tb-schema',record.schema.replace('v0.4.0','v999.0.0'));
+    await page.click('#tb-generate');
+    await expect(page.locator('#tb-download-yaml')).toBeDisabled();
+    expect(external).toEqual([]);
+  });
+}
+
+for (const kind of ['FHP', 'FHGFF3']) {
+  test(`selecting ${kind} while schemas load initializes the selected profile`, async ({ page }) => {
+    let release;
+    const pending = new Promise(resolve => { release = resolve; });
+    await page.route('**/assets/schema/*.json', async route => { await pending; await route.continue(); });
+    await page.goto('/table-builder/');
+    await page.selectOption('#tb-profile', kind);
+    await expect(page.locator('#tb-form')).toBeEmpty();
+    release();
+    await expect(page.locator('#tb-schema')).toHaveValue(`https://w3id.org/fair-bioheaders/${kind.toLowerCase()}/v0.4.0`);
+    await expect(page.locator(kind === 'FHP' ? '#tb-proteome' : '#tb-annotation')).toBeVisible();
+    await expect(page.locator('#tb-genome')).toHaveCount(0);
+    await page.click('#tb-generate');
+    await expect(page.locator('#tb-yaml-source')).toContainText(`schema: "https://w3id.org/fair-bioheaders/${kind.toLowerCase()}/v0.4.0"`);
+    await expect(page.locator('#tb-html-source')).not.toContainText('itemscope');
+  });
+}
+
+test('pruned blank parents keep errors, accessible descriptions and focus on the populated draft row', async ({ page }) => {
+  await page.goto('/table-builder/');
+  await page.waitForSelector('#tb-schema');
+  await page.selectOption('#tb-profile', 'FHGFF3');
+  await page.click('#tb-add-derivedFrom');
+  await page.click('#tb-add-derivedFrom');
+  await page.selectOption('#tb-derivedFrom-1-headerType', 'FHP');
+  await page.selectOption('#tb-derivedFrom-1-relationship', 'annotates');
+  await page.click('#tb-generate');
+  const wrong = page.locator('#tb-derivedFrom-1-headerType');
+  const blank = page.locator('#tb-derivedFrom-0-headerType');
+  await expect(wrong).toHaveAttribute('aria-invalid', 'true');
+  await expect(blank).not.toHaveAttribute('aria-invalid');
+  await expect(wrong).toHaveAccessibleDescription(/must equal "FHR"/);
+  await page.locator('#tb-errors a[href="#tb-derivedFrom-1-headerType"]').click();
+  await expect(wrong).toBeFocused();
+  await expect(page.locator('#tb-errors')).toContainText('derivedFrom.1.headerType');
+  const { parse } = await import('yaml');
+  const record = parse(await page.textContent('#tb-yaml-source'));
+  expect(record.derivedFrom).toHaveLength(1);
+  expect(record.derivedFrom[0].headerType).toBe('FHP');
+  await page.selectOption('#tb-derivedFrom-1-headerType', 'FHR');
+  await page.click('#tb-generate');
+  await expect(wrong).not.toHaveAttribute('aria-invalid');
+});
+
+test('error paths map through blank entries in both outer and nested arrays', async ({ page }) => {
+  // Exercise nested index translation with a supported URI constraint on this
+  // test-only schema copy; the released command-line strings have no constraint.
+  await page.route('**/assets/schema/fhp-v0.4.0.json', async route => {
+    const response = await route.fetch();
+    const schema = await response.json();
+    schema.$defs.Software.properties.commandLineOption.items.format = 'uri';
+    await route.fulfill({ response, json: schema });
+  });
+  await page.goto('/table-builder/');
+  await page.waitForSelector('#tb-schema');
+  await page.selectOption('#tb-profile', 'FHP');
+  await page.click('#tb-add-predictionSoftware');
+  await page.click('#tb-add-predictionSoftware');
+  await page.click('#tb-add-predictionSoftware-1-commandLineOption');
+  await page.click('#tb-add-predictionSoftware-1-commandLineOption');
+  await page.fill('#tb-predictionSoftware-1-commandLineOption-1', 'bad uri');
+  await page.click('#tb-generate');
+  const invalid = page.locator('#tb-predictionSoftware-1-commandLineOption-1');
+  await expect(invalid).toHaveAttribute('aria-invalid', 'true');
+  await expect(invalid).toHaveAccessibleDescription(/must be a URI/);
+  await expect(page.locator('#tb-predictionSoftware-1-commandLineOption-0')).not.toHaveAttribute('aria-invalid');
+  await page.locator('#tb-errors a[href="#tb-predictionSoftware-1-commandLineOption-1"]').click();
+  await expect(invalid).toBeFocused();
+  // A missing property has no exact record path: use its enclosing object's
+  // mapping, then let errorTarget fall back to the visible object fieldset.
+  await page.locator('#tb-errors a[href="#tb-predictionSoftware-1-name"]').click();
+  await expect(page.locator('#tb-predictionSoftware-1-name')).toBeFocused();
 });

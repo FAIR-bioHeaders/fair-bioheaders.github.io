@@ -587,6 +587,7 @@ html[data-theme="dark"] {
   border: 1px solid var(--surface-border);
   border-radius: .3em;
 }
+.tb-input[readonly] { color: inherit; opacity: 1; }
 .tb-input:focus-visible { outline: 3px solid var(--brand-orange); outline-offset: 2px; }
 .tb-help { margin: .25em 0 0; color: var(--text-muted); font-size: $type-size-7; }
 .tb-help,

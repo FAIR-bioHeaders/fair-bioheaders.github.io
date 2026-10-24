@@ -12,7 +12,7 @@
 - key: FHP_Development
   name: FHP development
   purpose: Protein FASTA metadata
-  status: Development
+  status: Draft
   repository: https://github.com/FAIR-bioHeaders/FHP-Specification
 - key: FHGFF3_Development
   name: FHGFF3 development

@@ -9,10 +9,13 @@ test('resources distinguish publication, development and retired tooling', async
   const toolkit = page.getByRole('link', { name: 'FAIR BioHeaders Tools', exact: true });
   await expect(toolkit).toHaveAttribute('href', 'https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools');
   await expect(toolkit.locator('xpath=ancestor::tr')).toContainText('Published (v0.7.0)');
-  for (const name of ['FHR', 'FHP', 'FHGFF3']) {
+  // FHP is Draft (not yet a verified release); the rest remain Development.
+  for (const name of ['FHR', 'FHGFF3']) {
     const link = page.getByRole('link', { name: `${name} development`, exact: true });
     await expect(link.locator('xpath=ancestor::tr')).toContainText('Development');
   }
+  await expect(page.getByRole('link', { name: 'FHP development', exact: true })
+    .locator('xpath=ancestor::tr')).toContainText('Draft');
   await expect(page.getByRole('link', { name: 'FHT development', exact: true })
     .locator('xpath=ancestor::tr')).toContainText('Draft');
   await expect(page.locator('a[href*="/FHT-File-Converter"], a[href*="/FHR-File-Converter"]')).toHaveCount(0);

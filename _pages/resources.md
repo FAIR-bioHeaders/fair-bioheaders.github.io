@@ -35,6 +35,9 @@ shared repository above; these development homes do not have separate final-rele
 {% for resource in site.data.development %}| <span id="{{ resource.key | escape }}">[{{ resource.name }}]({{ resource.repository }})</span> | {{ resource.purpose }} | {{ resource.status }} |
 {% endfor %}
 
+The protein header (FHP) development tracker is [issue #1](https://github.com/FAIR-bioHeaders/FHP-Specification/issues/1),
+which tracks completion of the release after `schemaVersion` "1.0" landed in shared v0.4.0.
+
 <span id="FHT_File_Converter"></span>The standalone FHT File Converter is retired.
 Use FAIR BioHeaders Tools for active tooling; FHT support awaits the reviewed
 transcriptome contract. The former converter is not an active download or support destination.

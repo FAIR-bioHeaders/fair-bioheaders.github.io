@@ -42,7 +42,14 @@
   {% if ref.publisher %}<meta name="citation_publisher" content="{{ ref.publisher | escape }}">{% endif %}
 {% endif %}
 
-<script type="application/ld+json">
+{% comment %}
+JSON-LD blocks are captured and then written with '<', '>' and '&' as \u003c, \u003e
+and \u0026, because jsonify leaves them as is and a value containing "</script>" or
+"<!--" could otherwise end the script element early. Structural JSON never contains
+these characters, so only string contents change, and JSON readers decode them back
+(FAIR-bioHeaders-Specification docs/JSONLD.md J8).
+{% endcomment %}
+{% capture ld_json %}
 {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -70,10 +77,10 @@
     {% endfor %}
   ]{% endif %}
 }
-</script>
+{% endcapture %}<script type="application/ld+json">{{ ld_json | replace: '&', '\u0026' | replace: '<', '\u003c' | replace: '>', '\u003e' }}</script>
 {% if page.cite_key and site.data.references[page.cite_key] %}
   {% assign ref = site.data.references[page.cite_key] %}
-<script type="application/ld+json">
+{% capture ld_json %}
 {
   "@context": "https://schema.org",
   "@type": "ScholarlyArticle",
@@ -95,10 +102,10 @@
   {% if ref.doi %}"identifier": { "@type": "PropertyValue", "propertyID": "DOI", "value": {{ ref.doi | jsonify }} }, "sameAs": {{ ref.doi | prepend: 'https://doi.org/' | jsonify }},{% endif %}
   "description": {{ seo_description | jsonify }}
 }
-</script>
+{% endcapture %}<script type="application/ld+json">{{ ld_json | replace: '&', '\u0026' | replace: '<', '\u003c' | replace: '>', '\u003e' }}</script>
 {% endif %}
 {% if page.url == '/publications/' and site.publications.size > 0 %}
-<script type="application/ld+json">
+{% capture ld_json %}
 {
   "@context": "https://schema.org",
   "@type": "ItemList",
@@ -119,10 +126,10 @@
     }{% unless forloop.last %},{% endunless %}{% endfor %}
   ]
 }
-</script>
+{% endcapture %}<script type="application/ld+json">{{ ld_json | replace: '&', '\u0026' | replace: '<', '\u003c' | replace: '>', '\u003e' }}</script>
 {% endif %}
 {% if page.url == '/' %}
-<script type="application/ld+json">
+{% capture ld_json %}
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
@@ -132,9 +139,9 @@
   "description": {{ site.description | jsonify }},
   "publisher": { "@id": {{ seo_url | append: '/#organization' | jsonify }} }
 }
-</script>
+{% endcapture %}<script type="application/ld+json">{{ ld_json | replace: '&', '\u0026' | replace: '<', '\u003c' | replace: '>', '\u003e' }}</script>
 {% elsif page.title and page.sitemap != false %}
-<script type="application/ld+json">
+{% capture ld_json %}
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
@@ -143,7 +150,7 @@
     { "@type": "ListItem", "position": 2, "name": {{ seo_title | jsonify }}, "item": {{ canonical_url | jsonify }} }
   ]
 }
-</script>
+{% endcapture %}<script type="application/ld+json">{{ ld_json | replace: '&', '\u0026' | replace: '<', '\u003c' | replace: '>', '\u003e' }}</script>
 {% endif %}
 {% if site.google_site_verification %}<meta name="google-site-verification" content="{{ site.google_site_verification }}">{% endif %}
 {% if site.bing_site_verification %}<meta name="msvalidate.01" content="{{ site.bing_site_verification }}">{% endif %}

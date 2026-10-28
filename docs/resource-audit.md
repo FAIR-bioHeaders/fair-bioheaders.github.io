@@ -6,7 +6,7 @@ Checked 2026-10-14 against primary repository/release and DataCite records.
 
 - [Shared specification v0.4.0](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/releases/tag/v0.4.0): FHR schemaVersion `"2.0"`, FHP/FHGFF3 `"1.0"`. Per-type development belongs in FHR-Specification, FHT-Specification, FHP-Specification and FHGFF3; final artifacts publish together.
 - [Toolkit v0.7.0](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/releases/tag/v0.7.0): active family converter/validator, with FHP/FHGFF3 JSON-LD and microdata still unsupported. FHT awaits its reviewed contract. The old FHT converter is retired and no longer recommended.
-- [Nextflow](https://github.com/FAIR-bioHeaders/FHR-Nextflow) is a development prototype, not a released family workflow suite. Its pinned dependencies differ from the newest toolkit release; the site retains Demo status.
+- [FAIR-bioHeaders-Nextflow v0.1.0](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Nextflow/releases/tag/v0.1.0) (formerly FHR-Nextflow) is the first release of the Nextflow modules and Dockstore workflow, consolidated from the toolkit (FAIR-bioHeaders-Nextflow#21). It pins fair-bioheaders 0.8.2, not the newest toolkit release.
 - [FHGFF3 licensing review](https://github.com/FAIR-bioHeaders/FHGFF3/issues/3) concerns inherited gff-schema material. The released, independently authored annotation header is a separate artifact; linking its development home does not grant reuse permission for the whole inherited tree.
 
 ## Citation identity and provenance

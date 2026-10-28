@@ -182,7 +182,7 @@ sitemap, robots policy, and feeds. Toolchain is pinned in `.ruby-version`
 - A reference record needs either a `doi` or a `repository`; software/dataset
   records also carry `repository` and `license`; software records may carry
   `programming_language`. Repository entries need `purpose` and `status`
-  (`Published`, `Draft`, or `Demo`). Keep FHR Nextflow Demo. Development
+  (`Published`, `Draft`, or `Demo`). FAIR-bioHeaders-Nextflow is Published from v0.1.0 (FAIR-bioHeaders-Nextflow#21). Development
   entries in `_data/development.yml` use Development, with FHT Draft until its
   contract is released. Do not advertise the retired FHT converter as active.
   Keep registered citation titles separate from `resource_name` display labels;

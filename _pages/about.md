@@ -112,7 +112,7 @@ and the publications that describe the work.
 
 - Read the [shared specifications](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification) for metadata fields and schemas.
 - Use [FAIR BioHeaders Tools](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools) to work with supported representations.
-- Explore the [Nextflow workflows](https://github.com/FAIR-bioHeaders/FHR-Nextflow) for pipeline integration.
+- Explore the [Nextflow workflows](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Nextflow) for pipeline integration.
 
 [Resources and citation guidance](/resources/) collect the maintained repositories and archive links.
 

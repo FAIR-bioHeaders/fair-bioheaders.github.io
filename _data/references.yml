@@ -177,18 +177,19 @@ FHR_File_Converter:
   note: "The registered citation title remains FHR File Converter; the active package is fair-bioheaders."
 
 FHR_Nextflow:
-  status: Demo
+  status: Published
   purpose: Workflow integration
   type: software
-  title: "FHR Nextflow"
+  title: "FAIR-bioHeaders-Nextflow"
   authors:
     - { family: Molik, given: David }
     - { family: Wright, given: Adam }
   year: 2025
-  repository: https://github.com/FAIR-bioHeaders/FHR-Nextflow
+  repository: https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Nextflow
+  release: v0.1.0
   programming_language: Nextflow
   license: MPL-2.0
-  note: "Development prototype; no published release or DOI."
+  note: "Formerly FHR-Nextflow. First release v0.1.0 (2026-10-28); no DOI yet."
 
 FHR_Citation:
   status: Published

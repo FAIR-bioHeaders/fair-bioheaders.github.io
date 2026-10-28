@@ -170,7 +170,7 @@ provide explicit release links without replacing the concept DOI in Cite output.
 `_data/development.yml` holds the four per-type development homes without
 inventing independent release citations. Published artifacts link to the shared
 publication repository; active converter links use FAIR-bioHeaders-Tools.
-FHT remains Draft, and Nextflow remains Demo. The standalone FHT converter is
+FHT remains Draft; Nextflow (FAIR-bioHeaders-Nextflow) is Published from v0.1.0. The standalone FHT converter is
 retired and has no active download link.
 
 The current specification/toolkit records use MPL-2.0, verified against the

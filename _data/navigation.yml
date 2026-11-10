@@ -5,6 +5,17 @@ main:
     url: /publications/
   - title: "Using FH*"
     url: /guide/
+  - title: "Specifications"
+    url: /specifications/
+    children:
+      - title: "FHR — reference genome"
+        url: /specifications/fhr/
+      - title: "FHT — transcriptome (draft)"
+        url: /specifications/fht/
+      - title: "FHP — protein FASTA"
+        url: /specifications/fhp/
+      - title: "FHGFF3 — GFF3 annotation"
+        url: /specifications/fhgff3/
   - title: "JavaScript examples"
     url: /metadata-viewer/
     overflow: true

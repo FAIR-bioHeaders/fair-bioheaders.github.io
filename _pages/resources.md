@@ -11,9 +11,13 @@ Released specifications, tools, development repositories and citation guidance f
 ## Project repositories
 
 The shared specification repository publishes the reviewed family contracts:
-FHR for reference genomes, FHP for protein FASTA, and FHGFF3 for annotations
-are included in **v0.4.0**. FHT transcriptome metadata is still a draft.
-FAIR BioHeaders Tools is the single active conversion and validation package.
+The shared repository publishes the reviewed family contracts. The current release
+is **v0.5.0**: FHR `schemaVersion` "2.1", FHP "1.1" and FHGFF3 "1.1" (extension fields,
+FORMAT rule R15). FHT transcriptome metadata is still a draft with no shared release.
+FAIR BioHeaders Tools is the single active conversion and validation package, and each
+type's complete field list lives on its schema reference page:
+[FHR](/specifications/fhr/), [FHT (draft)](/specifications/fht/),
+[FHP](/specifications/fhp/) and [FHGFF3](/specifications/fhgff3/).
 
 | Resource | Purpose | Status |
 | --- | --- | --- |

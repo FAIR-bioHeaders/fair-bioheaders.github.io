@@ -1,0 +1,316 @@
+{
+  "fields": {
+    "schema": {
+      "units": "URL",
+      "notes": [
+        "New files should cite the fixed URL of the release they target, preferably `https://w3id.org/fair-bioheaders/fhr/v0.5.0`. The raw-main URL selects the reader's current schema and has no fallback to an older release.",
+        "FHR's own `schema` value has never been pattern-constrained, so an unusual value is read as FHR and checked against the current FHR contract (rule V5 in docs/SCHEMA-VERSIONS.md)."
+      ]
+    },
+    "schemaVersion": {
+      "notes": [
+        "FHR `2.1` came with shared release v0.5.0; `2.0` came with v0.4.0. In YAML write it quoted: `schemaVersion: '2.1'`.",
+        "A schema of version M.N also accepts records that state M.0 up to M.N, and holds each record to the minor it states: extension fields are invalid in a `2.0` record.",
+        "v0.3.0 and v0.3.1 published the numeric FHR `1` contract. A record citing the raw-main `fhr.json` URL with the number 1 is read as FHR 1 against v0.3.1 and reported as deprecated, not invalid (rule V6)."
+      ]
+    },
+    "genome": {
+      "notes": [
+        "`required` only makes the key present: a non-empty name is normative for a conforming record even though the released schema accepts `\"\"` (docs/SCHEMA-VERSIONS.md, \"Required values are non-empty\")."
+      ]
+    },
+    "genomeSynonym": {
+      "notes": [
+        "An empty array is schema-valid but conveys nothing; omit the field when there is no other name."
+      ]
+    },
+    "taxon": {
+      "notes": [
+        "Must carry a non-empty `name` or `uri` to describe the data, even though `taxon: {}` passes the released schema. `taxon.uri` becoming required with a recognised taxon identifier is decided for the next major version (FAIR-bioHeaders-Specification#189)."
+      ]
+    },
+    "taxon.name": {
+      "description": "Name of the species.",
+      "inherited": "shared core (schemas/core.yaml)"
+    },
+    "taxon.uri": {
+      "description": "Identifier of the species in the identifiers.org Taxonomy namespace.",
+      "units": "URI",
+      "inherited": "shared core (schemas/core.yaml)",
+      "notes": [
+        "Optional today; `format: uri` is asserted by a conforming validator and rule R14 recommends `http` or `https`."
+      ]
+    },
+    "version": {
+      "notes": [
+        "The assembly's own version. It is neither `schemaVersion` nor the repository release tag."
+      ]
+    },
+    "metadataAuthor": {
+      "description": "People or organizations that assert the metadata in this header.",
+      "notes": [
+        "Required and must be a non-empty list; every author needs a non-empty `name`, though `[{\"name\": \"\"}]` passes the released schema."
+      ]
+    },
+    "metadataAuthor[].name": {
+      "description": "Name of the person or organization.",
+      "inherited": "shared core (schemas/core.yaml)"
+    },
+    "metadataAuthor[].uri": {
+      "description": "ORCID URI of the person, when supplied.",
+      "units": "URI",
+      "inherited": "shared core (schemas/core.yaml)",
+      "notes": [
+        "The released pattern accepts only `https://orcid.org/<16-digit iD>`; other identifiers belong in `documentation`."
+      ]
+    },
+    "assemblyAuthor": {
+      "description": "People or organizations that produced the genome assembly.",
+      "inherited": "shared core (schemas/core.yaml) Author shape, FHR-specific role",
+      "notes": [
+        "A distinct role from `metadataAuthor`: never merge the two lists."
+      ]
+    },
+    "assemblyAuthor[].name": {
+      "description": "Name of the person or organization.",
+      "inherited": "shared core (schemas/core.yaml)"
+    },
+    "assemblyAuthor[].uri": {
+      "description": "ORCID URI of the person, when supplied.",
+      "units": "URI",
+      "inherited": "shared core (schemas/core.yaml)"
+    },
+    "assemblyAuthor[].nameType": {
+      "example": "Organizational"
+    },
+    "dateCreated": {
+      "units": "ISO 8601 calendar date",
+      "notes": [
+        "Creation of the assembly, not the sample collection date."
+      ]
+    },
+    "accessionID.name": {
+      "description": "Name of the accession or the submitting resource.",
+      "inherited": "shared core (schemas/core.yaml)"
+    },
+    "accessionID.url": {
+      "description": "URL of the accession record.",
+      "units": "URI",
+      "inherited": "shared core (schemas/core.yaml)"
+    },
+    "scholarlyArticle": {
+      "units": "DOI suffix (bare DOI, no resolver prefix)",
+      "notes": [
+        "Write `10.1093/bib/bbae122`, not `https://doi.org/10.1093/bib/bbae122`."
+      ]
+    },
+    "relatedLink": {
+      "units": "URI per item",
+      "notes": [
+        "Rule R14: validators warn about schemes other than `http`, `https`, `ftp`, `urn:`, `doi:` and `info:`; such a value stays schema-valid until the next major version."
+      ]
+    },
+    "identifier": {
+      "units": "CURIE-like `prefix:accession` per item"
+    },
+    "masking": {
+      "notes": [
+        "Describes the assembly file, not the metadata: repeat what the producer states."
+      ]
+    },
+    "vitalStats": {
+      "notes": [
+        "Producer-reported statistics; the toolkit does not recompute them from the sequence bytes."
+      ]
+    },
+    "vitalStats.N50": {
+      "units": "base pairs"
+    },
+    "vitalStats.N90": {
+      "units": "base pairs"
+    },
+    "vitalStats.L50": {
+      "units": "contigs"
+    },
+    "vitalStats.L90": {
+      "units": "contigs"
+    },
+    "vitalStats.scaffoldN50": {
+      "units": "base pairs",
+      "exampleOmitted": "Scaffold statistics were added in FHR 2.0; the pinned example record states contig statistics only."
+    },
+    "vitalStats.scaffoldN90": {
+      "units": "base pairs",
+      "exampleOmitted": "Scaffold statistics were added in FHR 2.0; the pinned example record states contig statistics only."
+    },
+    "vitalStats.scaffoldL50": {
+      "units": "scaffolds",
+      "exampleOmitted": "Scaffold statistics were added in FHR 2.0; the pinned example record states contig statistics only."
+    },
+    "vitalStats.scaffoldL90": {
+      "units": "scaffolds",
+      "exampleOmitted": "Scaffold statistics were added in FHR 2.0; the pinned example record states contig statistics only."
+    },
+    "vitalStats.totalBasePairs": {
+      "units": "base pairs"
+    },
+    "vitalStats.numberContigs": {
+      "units": "contigs"
+    },
+    "vitalStats.numberScaffolds": {
+      "units": "scaffolds"
+    },
+    "vitalStats.gcContent": {
+      "units": "percent (0 to 100), not a fraction",
+      "notes": [
+        "`42.0` means 42 percent; `0.42` means 0.42 percent. NaN and infinities are invalid (rule R13) even though `minimum`/`maximum` alone cannot express that."
+      ]
+    },
+    "vitalStats.readTechnology": {
+      "notes": [
+        "Free text, as the producer names the technology."
+      ]
+    },
+    "checksum": {
+      "units": "standard padded base64 of the SHA-512/256 digest",
+      "notes": [
+        "Written by `bioheaders combine`, never by hand. It covers every byte of the file except the root checksum line (rules R1 to R4), so any header edit invalidates it.",
+        "The encoding is canonical: the character before `=` is one of `AEIMQUYcgkosw048`. A syntactically valid checksum is not authentication of an author."
+      ]
+    },
+    "assemblySoftware": {
+      "notes": [
+        "Legacy single-name strings are still accepted; new files should use the object form, which carries the version and options."
+      ]
+    },
+    "assemblySoftware[].name": {
+      "description": "Name of the software.",
+      "example": "hifiasm"
+    },
+    "assemblySoftware[].uri": {
+      "description": "URI of the software.",
+      "units": "URI"
+    },
+    "assemblySoftware[].version": {
+      "description": "Version of the software, as the producer states it."
+    },
+    "assemblySoftware[].commandLineOption": {
+      "description": "Command-line options given to the software, in order.",
+      "example": "-t, 2"
+    },
+    "assemblyProtocol": {
+      "units": "URI",
+      "notes": [
+        "New in FHR 2.0 (v0.4.0); it is a pointer to external documentation, not a checksummed artefact."
+      ]
+    },
+    "seqcol_id": {
+      "units": "32 base64url characters (sha512t24u, level 0)",
+      "notes": [
+        "Supplied by the user. FHR never computes, resolves or verifies it against the file, and a SeqCol digest is not the file checksum.",
+        "Different refget attribute profiles can give different digests for the same sequences; keep that context in `documentation`."
+      ]
+    },
+    "voucherSpecimen": {
+      "notes": [
+        "Free text describing the physical sample. Structured vouchers are separate proposal work (FAIR-bioHeaders-Specification#139)."
+      ]
+    },
+    "funding": {
+      "exampleOmitted": "Free-text grant line item; the pinned example record does not state one."
+    },
+    "reuseConditions": {
+      "example": "public domain"
+    },
+    "documentation": {
+      "example": "Synthetic metadata and sequence; identifiers are placeholders."
+    },
+    "instrument": {
+      "example": "Example sequencer"
+    },
+    "x-<name>": {
+      "description": "Extension field (rule R15): a top-level key the standard does not define, holding any value the producer needs.",
+      "example": "x-refget-commonName: human",
+      "notes": [
+        "Valid from FHR 2.1. Every other unknown key stays invalid, so a misspelt field (`genom`, `X-genome`) is still caught, and an `x-` key inside a nested object is still invalid.",
+        "Use a namespace, `x-<project>-<field>`, so independent groups do not reuse one name for different things; validators do not check the namespace. An extension never overrides a standard field.",
+        "The checksum covers extension keys and values, and rules R8, R11, R12 and R13 apply to them. JSON-LD, the schema.org export and HTML microdata carry no extension fields (J9, M5, X9): writers omit them and say which.",
+        "A widely used extension is proposed as a standard field under its own unprefixed name in a later minor; the `x-` key is not reinterpreted by that."
+      ]
+    }
+  },
+  "groups": {
+    "": {
+      "description": "Every field of an FHR record. The record is a closed object: an unknown top-level key is invalid, with the single exception of the `x-` extension fields listed last."
+    },
+    "taxon": {
+      "title": "taxon — the shared core Taxon object",
+      "description": "Species name and its identifiers.org taxonomy URI."
+    },
+    "metadataAuthor": {
+      "title": "metadataAuthor[] — the shared core Author object",
+      "description": "One entry per person or organization asserting the metadata, in the order the producer states."
+    },
+    "assemblyAuthor": {
+      "title": "assemblyAuthor[] — the shared core Author object",
+      "description": "One entry per person or organization that produced the assembly. Required in FHR, unlike the other types."
+    },
+    "accessionID": {
+      "title": "accessionID — the shared core AccessionID object",
+      "description": "A name and URL pair identifying the accession the assembly was created from."
+    },
+    "vitalStats": {
+      "title": "vitalStats — assembly statistics",
+      "description": "Statistics asserted by the producer. `L50`, `L90`, `N50` and `N90` are contig statistics; the `scaffold*` members are scaffold statistics.",
+      "notes": [
+        "`numberContigs` and `numberScaffolds` were added in FHR 2.0; the scaffold statistics and `gcContent` came with the same release."
+      ]
+    },
+    "assemblySoftware": {
+      "title": "assemblySoftware[] — software provenance",
+      "description": "The object form of `assemblySoftware`. Only `name` is required inside an entry.",
+      "notes": [
+        "This shape is the model for FHP's `predictionSoftware` and FHGFF3's `annotationSoftware`; it became the shared `Software` object in schemas/shared.yaml."
+      ]
+    }
+  },
+  "rules": {
+    "extension-fields-need-the-new-minor": {
+      "title": "Extension fields need the newer minor",
+      "text": "The schema also rejects extension fields in a record that states `schemaVersion: '2.0'`, so a 2.0 record keeps exactly its 2.0 outcome. A record that uses an extension must state `2.1` or a later minor."
+    },
+    "extension-fields-allowed": {
+      "title": "Extension fields (rule R15)",
+      "text": "Top-level keys matching `^x-[A-Za-z0-9][A-Za-z0-9_.-]*$` are accepted (rule R15, docs/FORMAT.md) from FHR 2.1, released in shared specification v0.5.0."
+    },
+    "closed-top-level": {
+      "title": "The record is a closed object",
+      "text": "`additionalProperties: false` — any other unknown top-level key is invalid, and every nested object is closed in the same way."
+    },
+    "no-line-feed-in-a-key": {
+      "title": "No key may contain a line feed",
+      "text": "`propertyNames` rejects any key containing a line feed, so a YAML line-continuation artefact cannot pass as part of a field name."
+    }
+  },
+  "contract": {
+    "summary": "FHR is the FAIR-bioHeaders header for a reference genome assembly. It travels as a `;~` YAML block at the top of the assembly FASTA file, as a `#~` block at the top of a GFA file, or standalone as JSON or YAML, and one SHA-512/256 checksum ties the metadata to the exact bytes of that file.",
+    "scope": "FHR describes the assembly as a resource: what it is called, which species it is, who assembled it, who wrote the header, when, how it was made and under what conditions it may be reused. It does not describe individual sequences, does not carry annotation, and does not certify biological quality.",
+    "serializations": [
+      "FASTA (`;~` header block) and GFA (`#~` header block): the shared rules R1 to R14 in docs/FORMAT.md, implemented by the toolkit.",
+      "Standalone JSON and YAML metadata files, read and written by the toolkit.",
+      "JSON-LD: a canonical FHR form with an embedded context, plus a provisional one-way schema.org export profile (docs/JSONLD.md, docs/SCHEMAORG-EXPORT.md). An export cannot be read back.",
+      "HTML microdata with the raw-main FHR itemtype (docs/MICRODATA.md).",
+      "None of the linked forms carries `x-` extension fields: writers omit them and say which (J9, M5, X9)."
+    ],
+    "tooling": [
+      "`fair-bioheaders` 0.9.0 (PyPI) bundles the v0.5.0 schemas and implements FHR 2.1, including extension fields, for `combine`, `verify`, `validate`, `convert`, `strip`, `verify-links` and `assess`.",
+      "The browser table builder on this site validates against its documented **v0.4.0** snapshot (`schemaVersion` 2.0), not v0.5.0: extension fields cannot be produced there yet. Tracked in fair-bioheaders.github.io#15.",
+      "`bioheaders verify-links` checks a genome's own header bytes; parent linking is an FHP/FHT/FHGFF3 feature, not an FHR one."
+    ],
+    "caveats": [
+      "`required` only makes a key present. `genome: \"\"`, `taxon: {}`, `metadataAuthor: []` or `assemblyAuthor: [{}]` pass `fhr.json` 2.0 and 2.1 yet describe nothing: conforming values are non-empty, and validators warn rather than reject until the next major (docs/SCHEMA-VERSIONS.md).",
+      "JSON Schema draft 2020-12 treats `format` as an annotation. A conforming validator must assert `date` and `uri`; `bioheaders validate` does, a bare `Draft202012Validator` does not.",
+      "Rule R13 rejects NaN and infinities and rule R14 recommends http/https for URI values; neither is expressible in the released patterns, so both are validator obligations rather than schema failures."
+    ]
+  }
+}

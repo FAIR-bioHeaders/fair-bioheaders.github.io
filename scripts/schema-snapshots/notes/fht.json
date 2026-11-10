@@ -1,0 +1,371 @@
+{
+  "fields": {
+    "schema": {
+      "units": "URL",
+      "notes": [
+        "The pattern admits the FHT-Specification raw-main URL, a future raw-tag URL and a future persistent alias on the project's w3id prefix — but only the raw-main form exists today. No alias has been minted and no release tag has been cut, so a draft record cites the development URL.",
+        "The released toolkit recognises the FHT URL and reports it as `not assessed` (`unsupported-header-type`): the pattern is not support."
+      ]
+    },
+    "schemaVersion": {
+      "notes": [
+        "Proposed `1.0`, the only accepted value in the development contract. It is a string `MAJOR.MINOR`, quoted in YAML, and separate from the transcriptome's own `version`.",
+        "The legacy draft `fht-v0.1.json` used the number `1`; migration to the string `\"1.0\"` is explicit, never silent."
+      ]
+    },
+    "transcriptome": {
+      "notes": [
+        "Name of the transcriptome resource the file describes. `^\\S+$`: it must contain a non-space character."
+      ]
+    },
+    "assemblyType": {
+      "notes": [
+        "`de novo`: reads reconstructed with no reference genome constructing or grouping the assembly; `genome-guided`: read evidence plus a reference constructed models or grouped reads; `annotation-derived`: sequences extracted from existing annotation coordinates and the matching genome.",
+        "It describes construction, not quality or deposit class. There is deliberately no `mixed` or `unknown` value: a composite or uncertain history leaves the record incomplete until it is reviewed.",
+        "Genome guidance alone never justifies a `transcribedFrom` parent link."
+      ]
+    },
+    "moleculeType": {
+      "notes": [
+        "One biological class true of the whole set: `mRNA`, `rRNA`, `tRNA` or `transcribed RNA`. Omit it when the set is heterogeneous or unknown.",
+        "`total RNA` and `cDNA` are preparation contexts, not molecule classes, and the original draft's requirement of this field was removed. Do not infer `mRNA` from RNA-Seq or `transcribed RNA` from `ncRNA`."
+      ]
+    },
+    "taxon": {
+      "notes": [
+        "Biological scope supplied by the producer; both members remain optional to the schema, but an empty object describes nothing."
+      ]
+    },
+    "version": {
+      "notes": [
+        "Version of the transcriptome resource, distinct from `schemaVersion` and from any release tag."
+      ]
+    },
+    "metadataAuthor": {
+      "notes": [
+        "People or organizations responsible for the header assertions. Required and non-empty for a conforming record."
+      ]
+    },
+    "metadataAuthor[].uri": {
+      "example": "https://orcid.org/0000-0002-1825-0097",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "ORCID URI used by the released family examples"
+    },
+    "assemblyAuthor": {
+      "notes": [
+        "Legacy-compatible attribution of the assembly or extraction, kept separate from the header authors and from a deposit submitter. Never merge the roles; omit when nothing was supplied."
+      ]
+    },
+    "assemblyAuthor[].uri": {
+      "example": "https://orcid.org/0000-0002-1825-0097",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "ORCID URI used by the released family examples"
+    },
+    "assemblySoftware": {
+      "notes": [
+        "Software that constructed **or extracted** the set — extraction is a process too. `name` is required per entry; add a version or options only when actually supplied."
+      ]
+    },
+    "dateCreated": {
+      "units": "ISO 8601 calendar date",
+      "notes": [
+        "Creation of the transcriptome resource, never the sample collection date."
+      ]
+    },
+    "checksum": {
+      "units": "standard padded base64 of the SHA-512/256 digest",
+      "notes": [
+        "Computed by the shared family rules (R1 to R4) over the exact FASTA bytes, excluding the root `;~checksum:` line. The development repository recomputes it in its own tests; no released toolkit command writes it.",
+        "Legacy `md5:` values are not FHT checksums: T/U conversion and MD5-to-SHA recalculation are not header fixes."
+      ]
+    },
+    "libraryStrategy": {
+      "notes": [
+        "One supplied strategy term for the whole set, using the producer's ENA term where applicable. This slot is **not** a controlled enum: nothing validates the string. Omit it when experiments differ or the value is unknown."
+      ]
+    },
+    "strandedness": {
+      "notes": [
+        "FHT's own normalization — `unstranded`, `forward` or `reverse` — where forward means the single read or read 1 is sense relative to the originating transcript.",
+        "It is not an ENA enum, not genomic plus/minus orientation, and not the orientation of exported transcript sequences. Unknown or mixed protocols are omitted, never defaulted to `unstranded`."
+      ]
+    },
+    "sequencingRuns": {
+      "units": "SRA/ENA/DDBJ run accessions",
+      "example": "SRR1234567, ERR1234567",
+      "exampleLabel": "illustrative shape only — not real runs",
+      "notes": [
+        "Actual run accessions supporting the set, at least one when the array is present. An `SRS` sample accession is not a run and must not be substituted.",
+        "Never guess an instrument from a run accession, and never guess an accession to fill this field."
+      ]
+    },
+    "instrument": {
+      "example": "Illumina NovaSeq 6000 (as supplied)",
+      "exampleLabel": "illustrative value",
+      "notes": [
+        "Legacy-compatible free text. Prefer `sequencingRuns` when run accessions exist."
+      ]
+    },
+    "transcriptomeSynonym": {
+      "example": "Bi worker brain Trinity 2.15.2 set (placeholder)",
+      "exampleLabel": "illustrative value",
+      "notes": [
+        "Legacy-compatible list of other supplied names, retained from the pre-contract draft. Every item must contain a non-space character."
+      ]
+    },
+    "voucherSpecimen": {
+      "example": "Synthetic example; no physical specimen",
+      "exampleLabel": "illustrative value"
+    },
+    "accessionID.name": {
+      "example": "FBtc000001 (placeholder)",
+      "exampleLabel": "illustrative value",
+      "notes": [
+        "The transcriptome's own accession, not its project, sample or run identifier."
+      ]
+    },
+    "accessionID.url": {
+      "example": "https://example.org/synthetic-transcriptome-accession",
+      "exampleLabel": "illustrative value"
+    },
+    "identifier": {
+      "example": "synthetic:TRANSCRIPT-0001",
+      "exampleLabel": "illustrative value"
+    },
+    "scholarlyArticle": {
+      "units": "DOI suffix (bare DOI, no resolver prefix)",
+      "example": "10.1093/bib/bbae122",
+      "exampleLabel": "illustrative value (the FHR paper DOI, shown for its shape)",
+      "notes": [
+        "An article about the transcriptome; the FHT draft has no DOI of its own."
+      ]
+    },
+    "relatedLink": {
+      "units": "URI per item",
+      "example": "https://example.org/synthetic-transcriptome-project",
+      "exampleLabel": "illustrative value",
+      "notes": [
+        "Project, sample, experiment, protocol and annotation context belongs here or in `documentation` — not in `derivedFrom`."
+      ]
+    },
+    "funding": {
+      "example": "Grant line item (placeholder)",
+      "exampleLabel": "illustrative value"
+    },
+    "sample": {
+      "notes": [
+        "Supplied biological sample context; repeat the object for pooled material, each entry carrying only its own known values.",
+        "It is not a complete BioSample record, and one fabricated \"uniform\" entry for a pool is worse than repeated partial entries.",
+        "The schema requires at least one member per entry (`tissue`, `tissueIdentifier`, `developmentalStage`, `condition` or `strain`); text members must contain a non-space character."
+      ]
+    },
+    "sample[].tissueIdentifier": {
+      "units": "CURIE, preferably UBERON, PO or CL",
+      "notes": [
+        "The pattern checks CURIE form only; it does not prove the identifier resolves or that the term is right."
+      ]
+    },
+    "sample[].condition": {
+      "example": "7 days water withheld",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FHT-Specification/blob/main/examples/genome-guided.fht.fasta",
+      "exampleLabel": "value from the development repository's synthetic example"
+    },
+    "sample[].strain": {
+      "example": "B73",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FHT-Specification/blob/main/examples/genome-guided.fht.fasta",
+      "exampleLabel": "value from the development repository's synthetic example"
+    },
+    "completeness": {
+      "notes": [
+        "Counts from an actual BUSCO run only; a legacy free-text completeness string is never converted into counts. Counts describe ortholog groups, not transcripts or genes.",
+        "The shared lineage pattern allows `_odb` plus digits, so a dotted dataset version such as `hymenoptera_odb12.2` cannot be represented. Keep the measured lineage and counts in `documentation` rather than renaming it (FAIR-bioHeaders-Specification#170)."
+      ]
+    },
+    "completeness.buscoVersion": {
+      "example": "6.1.0",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FHT-Specification/blob/main/examples/de-novo.fht.json",
+      "exampleLabel": "value from the development repository's synthetic example"
+    },
+    "completeness.completeSingle": {
+      "units": "BUSCO groups (S)"
+    },
+    "completeness.completeDuplicated": {
+      "units": "BUSCO groups (D)"
+    },
+    "completeness.fragmented": {
+      "units": "BUSCO groups (F)"
+    },
+    "completeness.missing": {
+      "units": "BUSCO groups (M)"
+    },
+    "completeness.total": {
+      "units": "BUSCO groups searched (n)"
+    },
+    "completeness.mode": {
+      "notes": [
+        "`transcriptome` is the usual mode for FHT files; the vocabulary is shared with the other header types."
+      ]
+    },
+    "derivedFrom": {
+      "notes": [
+        "Reviewed family parents only, and only two pairs are permitted by both the draft schema and model: `FHT` + `filteredFrom` (a subset or filtered copy of another FHT file) and `FHR` + `transcribedFrom` (transcript bases actually extracted from that genome).",
+        "`FHP` parents and every other headerType/relationship pairing are rejected by the schema's `anyOf` constraint. Structural validity cannot establish that the asserted derivation is factually true; review its evidence before publishing.",
+        "At least one item is required when the array is present, and each item must carry the parent's FHR-family checksum — an accession alone is not a verified family link."
+      ]
+    },
+    "derivedFrom[].headerType": {
+      "example": "FHR",
+      "exampleLabel": "illustrative value",
+      "notes": [
+        "Only `FHT` and `FHR` are permitted by the contract, paired as described above."
+      ]
+    },
+    "derivedFrom[].relationship": {
+      "example": "transcribedFrom",
+      "exampleLabel": "illustrative value",
+      "notes": [
+        "`annotates`, `translatedFrom` and `assembledFrom` are part of the shared vocabulary but are not FHT parent relationships."
+      ]
+    },
+    "derivedFrom[].checksum": {
+      "units": "standard padded base64 of the parent file's SHA-512/256",
+      "example": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "placeholder checksum style from the released family examples",
+      "notes": [
+        "A placeholder stands for a real parent file in the examples only. `bioheaders verify-links` does not support FHT yet (FHT-Specification#9), so no released command checks this link."
+      ]
+    },
+    "derivedFrom[].seqcol_id": {
+      "exampleOmitted": "Optional, and no example states one. It is the parent's supplied SeqCol digest (32 base64url characters), never a substitute for the parent checksum."
+    },
+    "derivedFrom[].accessionID": {
+      "exampleOmitted": "Optional, and no example states one. It is additional identification of the parent, never a substitute for a checksum link."
+    },
+    "derivedFrom[].accessionID.name": {
+      "exampleOmitted": "Only meaningful inside a `derivedFrom` parent link, which the examples state by checksum. Shape: the parent accession's name, as in `accessionID.name` above."
+    },
+    "derivedFrom[].accessionID.url": {
+      "exampleOmitted": "Only meaningful inside a `derivedFrom` parent link, which the examples state by checksum. Shape: a URL resolving to that parent accession."
+    },
+    "vitalStats": {
+      "notes": [
+        "Producer-reported measurements for the whole file. Counts describe FASTA records, including isoforms — not genes. Omit anything not measured; a measured zero stays zero."
+      ]
+    },
+    "vitalStats.totalTranscripts": {
+      "units": "FASTA records, including isoforms"
+    },
+    "vitalStats.N50": {
+      "units": "nucleotides",
+      "notes": [
+        "Computed from all sequence symbols by descending record length; at least 1."
+      ]
+    },
+    "vitalStats.averageTranscriptLength": {
+      "units": "nucleotides per record",
+      "notes": [
+        "Excludes deflines and line endings."
+      ]
+    },
+    "accessionID": {
+      "notes": [
+        "The transcriptome's own accession. Project, sample and run identifiers go in `relatedLink`."
+      ]
+    },
+    "x-<name>": {
+      "description": "Extension field (rule R15): a top-level key the standard does not define, holding any value the producer needs.",
+      "example": "x-synthetic-normalization: Trinity, trimmed",
+      "exampleLabel": "illustrative value",
+      "notes": [
+        "Accepted by the draft contract, mirroring FHR 2.1 and FHP/FHGFF3 1.1. Every other unknown key is still rejected, nested objects stay closed, and an extension never replaces a standard field.",
+        "JSON-LD and HTML forms would omit extension fields; FHT has neither form.",
+        "Because FHT is unreleased, an extension key in a draft record is a compatibility risk with no fixed contract to return to — prefer `documentation` until the contract is released."
+      ]
+    }
+  },
+  "groups": {
+    "": {
+      "description": "Every field of the proposed FHT 1.0 record. The record is a closed object: an unknown top-level key is invalid, apart from the `x-` extension fields listed last. Nine fields are required: `schema`, `schemaVersion`, `transcriptome`, `assemblyType`, `taxon`, `version`, `metadataAuthor`, `dateCreated` and `checksum`."
+    },
+    "taxon": {
+      "title": "taxon — the shared core Taxon object",
+      "description": "Species name and its identifiers.org taxonomy URI, imported unchanged from the shared core."
+    },
+    "metadataAuthor": {
+      "title": "metadataAuthor[] — the shared core Author object",
+      "description": "People or organizations responsible for the header assertions, in the order supplied."
+    },
+    "assemblyAuthor": {
+      "title": "assemblyAuthor[] — the shared core Author object",
+      "description": "Attributions for the assembly or extraction, when supplied. Optional here, required in FHR."
+    },
+    "accessionID": {
+      "title": "accessionID — the shared core AccessionID object",
+      "description": "The transcriptome's own accession."
+    },
+    "sample": {
+      "title": "sample[] — supplied biological sample context",
+      "description": "One entry per biological source. Pooled material is repeated entries, each with only the values actually known for that source.",
+      "notes": [
+        "At least one member must be present in every entry; `sample: [{}]` is invalid."
+      ]
+    },
+    "assemblySoftware": {
+      "title": "assemblySoftware[] — the shared Software object",
+      "description": "Constructors or extractors of the transcript set, with real versions and ordered options (schemas/shared.yaml)."
+    },
+    "completeness": {
+      "title": "completeness — the shared BUSCO Completeness object",
+      "description": "Counts from the actual run against one named lineage dataset (schemas/shared.yaml).",
+      "notes": [
+        "Six members are required whenever the object is present: `lineageDataset`, `completeSingle`, `completeDuplicated`, `fragmented`, `missing` and `total`."
+      ]
+    },
+    "derivedFrom": {
+      "title": "derivedFrom[] — the shared core DerivedFrom object",
+      "description": "Reviewed FAIR-bioHeaders parents by checksum. Only `FHT` + `filteredFrom` and `FHR` + `transcribedFrom` are permitted by this contract."
+    },
+    "vitalStats": {
+      "title": "vitalStats — producer-reported file statistics",
+      "description": "Three optional measurements of the whole file.",
+      "notes": [
+        "FHT's `vitalStats` is its own object, not FHR's assembly statistics: `GCContent`, `isoformDiversity`, `expressionLevels` and `novelTranscripts` from the legacy draft are deliberately absent."
+      ]
+    }
+  },
+  "rules": {
+    "extension-fields-allowed": {
+      "title": "Extension fields (rule R15)",
+      "text": "Top-level keys matching `^x-[A-Za-z0-9][A-Za-z0-9_.-]*$` are accepted by the draft contract, following rule R15 of the shared FORMAT.md. There is no version gate: FHT 1.0 is the only proposed minor, so the draft has no earlier contract to protect."
+    },
+    "closed-top-level": {
+      "title": "The record is a closed object",
+      "text": "`additionalProperties: false` — any other unknown top-level key is invalid, and every nested object is closed in the same way. Legacy draft keys that were dropped (`masking`, `license`, the free-text completeness string) are therefore rejected, not tolerated."
+    },
+    "no-line-feed-in-a-key": {
+      "title": "No key may contain a line feed",
+      "text": "`propertyNames` rejects any key containing a line feed, so a YAML continuation artefact cannot pass as part of a field name."
+    }
+  },
+  "contract": {
+    "summary": "FHT is the proposed FAIR-bioHeaders header for a reference transcriptome FASTA file. In the draft it uses the same `;~` header block and the same SHA-512/256 checksum rules as the rest of the family, and records how the transcript set was constructed, which sample and library context was supplied, and which reviewed family parent it derives from.",
+    "scope": "FHT describes the transcript set as a resource. It does not describe per-record expression, does not accept an unknown construction history, and does not certify that any transcript is complete or experimentally expressed.",
+    "serializations": [
+      "The development repository ships synthetic FASTA examples with a `;~` header block, one per construction type, plus JSON and YAML forms of one header. Their names, statistics and sequence bytes are invented; the taxon and ontology identifiers are real.",
+      "No JSON-LD or HTML microdata form exists for FHT in the draft.",
+      "The draft accepts `x-` extension keys at the top level, following rule R15."
+    ],
+    "tooling": [
+      "**No released tool supports FHT.** `fair-bioheaders` 0.9.0 bundles schemas for FHR, FHP and FHGFF3 only; `bioheaders assess` recognises the FHT development URL and reports the header as `not assessed` with reason `unsupported-header-type`, and no command validates, writes or checksums an FHT file. Toolkit support is FHT-Specification#9.",
+      "The browser table builder on this site has no FHT form: it enables the released FHR, FHP and FHGFF3 contracts only, and FHT stays disabled until a contract is released (fair-bioheaders.github.io#15).",
+      "Field decisions, the model and the generated development schema live in [FHT-Specification](https://github.com/FAIR-bioHeaders/FHT-Specification); shared publication is coordinated through FAIR-bioHeaders-Specification#107."
+    ],
+    "caveats": [
+      "This page documents a **draft**. Nothing here is adopted guidance, and the field set can still change before release.",
+      "The JSON Schema enforces the permitted `derivedFrom` pairs (`FHT` + `filteredFrom`, `FHR` + `transcribedFrom`), but cannot establish whether the asserted parent relationship is factually true.",
+      "The shared BUSCO lineage pattern cannot express a dotted dataset version such as `hymenoptera_odb12.2` (FAIR-bioHeaders-Specification#170).",
+      "The legacy `fht-v0.1.json` draft schema, its examples and the retired FHT-File-Converter are historical review inputs, not FHT 1.0 and not current support. `masking` and `license` are gone; MD5 checksums are invalid."
+    ]
+  }
+}

@@ -7,7 +7,12 @@ sitemap: false
 
 - [Home and team](/)
 - [Publications](/publications/)
-- [Using FHR](/guide/)
+- [Using FH*](/guide/)
+- [Header type specifications](/specifications/)
+  - [FHR schema reference](/specifications/fhr/)
+  - [FHT schema reference (draft)](/specifications/fht/)
+  - [FHP schema reference](/specifications/fhp/)
+  - [FHGFF3 schema reference](/specifications/fhgff3/)
 - [FHR table builder](/table-builder/)
 - [Resources and citation](/resources/)
 - [Privacy](/terms/)

@@ -12,12 +12,17 @@ that type's released contract and tooling.
 
 | Type | Resource | Contract and workflow status |
 | --- | --- | --- |
-| FHR | Reference genome assembly | FHR 2.0 in shared specification v0.4.0; current toolkit workflows and an FHR-only browser builder. |
-| FHT | Transcriptome | Draft under curator consultation; no released family contract or current builder support. |
-| FHP | Protein/proteome FASTA | FHP 1.0 in shared specification v0.4.0; toolkit JSON/YAML and file processing. JSON-LD/HTML microdata are follow-up work. |
-| FHGFF3 | GFF3 annotation metadata | FHGFF3 1.0 in shared specification v0.4.0; toolkit JSON/YAML and file processing. JSON-LD/HTML microdata are follow-up work; feature/biology validation is separate. |
+| [FHR](/specifications/fhr/) | Reference genome assembly | FHR `2.1` in shared specification v0.5.0; toolkit FASTA/GFA, JSON-LD and microdata. The browser builder still validates its v0.4.0 snapshot. |
+| [FHT](/specifications/fht/) | Transcriptome | **Draft** contract, `schemaVersion` "1.0" proposed; no shared release, no fixed alias, no toolkit or builder support. |
+| [FHP](/specifications/fhp/) | Protein/proteome FASTA | FHP `1.1` in shared v0.5.0; toolkit JSON/YAML, files, canonical JSON-LD and microdata. The builder validates its v0.4.0 snapshot. |
+| [FHGFF3](/specifications/fhgff3/) | GFF3 annotation metadata | FHGFF3 `1.1` in shared v0.5.0; toolkit JSON/YAML and files, no JSON-LD or microdata form yet. Feature and biology validation is a separate tool. |
 
-Read the [released examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.4.0/examples)
+Every field, type, constraint and unit is documented on that type's schema reference
+page, generated from the published schema bytes; the
+[specification overview](/specifications/) lists all four. This guide stays the
+narrative introduction, so it does not restate the contracts.
+
+Read the [released examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.5.0/examples)
 and [current toolkit documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools)
 for the chosen type and supported representation. The [resources page](/resources/)
 links each development repository and distinguishes development from shared final

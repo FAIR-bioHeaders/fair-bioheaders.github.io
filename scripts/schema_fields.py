@@ -1004,14 +1004,21 @@ def render_provenance(data: dict) -> str:
              ' The published file also defines '
              + ', '.join(f'<code>{name}</code>' for name in data['unreferenced'])
              + ', which no field of the record reaches.')
+    if data['status'] == 'released':
+        identity = 'byte-identical to the copy pinned at'
+        moving = ''
+    else:
+        identity = 'pinned for this rendering at'
+        moving = (' Because this development URL moves, the table documents exactly that commit: refresh the '
+                  'pin and regenerate before citing it.')
     return (f'<p class="reference-provenance" data-schema-type="{data["type"]}" '
             f'data-schema-sha256="{pinned["sha256"]}">Generated from '
             f'<a href="{pinned["url"]}"><code>{pinned["path"]}</code></a> of '
             f'{pinned["repository"]} at <code>{pinned["ref"]}</code> (commit '
-            f'<code>{pinned["commit"][:10]}</code>), byte-identical to the copy pinned at '
+            f'<code>{pinned["commit"][:10]}</code>), {identity} '
             f'<code>{pinned["file"]}</code> — SHA-256 <code>{pinned["sha256"]}</code>. It documents '
             f'{stats["documented"]} fields: {stats["topLevel"]} at the top level and {stats["nested"]} inside '
-            f'{stats["objectTables"]} nested or reused objects.{extra} '
+            f'{stats["objectTables"]} nested or reused objects.{extra}{moving} '
             'Regenerate and compare with <code>python3 scripts/schema_fields.py --check</code>, which the site '
             'checks run on every pull request. The specification repository stays the authority: this page is '
             'a rendering of it, not a second definition.</p>')

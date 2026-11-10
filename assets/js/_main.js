@@ -64,6 +64,50 @@ $(document).ready(function(){
     $(".author__urls-wrapper button").toggleClass("open");
   });
 
+  // Navigation disclosure for entries with children (issue #46). The sub-list is
+  // visible in the markup, so readers without JavaScript still reach every page;
+  // here it becomes a keyboard-operable disclosure with an honest aria-expanded.
+  var $navGroups = $(".masthead__menu-item--group");
+
+  function closeNavGroup(group) {
+    group.children(".nav-dropdown").removeClass("is-open");
+    group.children(".nav-dropdown-toggle").attr("aria-expanded", "false");
+  }
+
+  function closeNavGroups(except) {
+    $navGroups.each(function() {
+      var group = $(this);
+      if (group.not(except).length) closeNavGroup(group);
+    });
+  }
+
+  $navGroups.each(function() {
+    var group = $(this);
+    var toggle = group.children(".nav-dropdown-toggle");
+    var menu = group.children(".nav-dropdown");
+    toggle.on("click", function() {
+      var open = toggle.attr("aria-expanded") !== "true";
+      closeNavGroups(null);
+      if (open) {
+        menu.addClass("is-open");
+        toggle.attr("aria-expanded", "true");
+      }
+    });
+  });
+
+  $navGroups.on("keydown", function(event) {
+    if (event.key !== "Escape") return;
+    var group = $(event.target).closest(".masthead__menu-item--group");
+    if (!group.length) return;
+    closeNavGroup(group);
+    group.children(".nav-dropdown-toggle").trigger("focus");
+  });
+
+  $(document).on("click focusin", function(event) {
+    if ($(event.target).closest(".masthead__menu-item--group").length) return;
+    closeNavGroups(null);
+  });
+
 
   // add lightbox class to all image links
   $("a[href$='.jpg'],a[href$='.jpeg'],a[href$='.JPG'],a[href$='.png'],a[href$='.gif']").addClass("image-popup");

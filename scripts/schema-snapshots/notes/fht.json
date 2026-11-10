@@ -208,8 +208,8 @@
     },
     "derivedFrom": {
       "notes": [
-        "Reviewed family parents only, and only two pairs are permitted by this contract: `FHT` + `filteredFrom` (a subset or filtered copy of another FHT file) and `FHR` + `transcribedFrom` (transcript bases actually extracted from that genome).",
-        "`FHP` parents and every other relationship value are not accepted. This restriction is documented in the model and its prose, **not** expressed by the JSON Schema: the shared `DerivedFrom` object still accepts the full vocabulary, so a schema-valid record can break the contract. Review it before publishing.",
+        "Reviewed family parents only, and only two pairs are permitted by both the draft schema and model: `FHT` + `filteredFrom` (a subset or filtered copy of another FHT file) and `FHR` + `transcribedFrom` (transcript bases actually extracted from that genome).",
+        "`FHP` parents and every other headerType/relationship pairing are rejected by the schema's `anyOf` constraint. Structural validity cannot establish that the asserted derivation is factually true; review its evidence before publishing.",
         "At least one item is required when the array is present, and each item must carry the parent's FHR-family checksum — an accession alone is not a verified family link."
       ]
     },
@@ -363,7 +363,7 @@
     ],
     "caveats": [
       "This page documents a **draft**. Nothing here is adopted guidance, and the field set can still change before release.",
-      "The permitted `derivedFrom` pairs (`FHT` + `filteredFrom`, `FHR` + `transcribedFrom`) are a documented contract rule that the JSON Schema does **not** enforce: a schema-valid draft record can still break the contract.",
+      "The JSON Schema enforces the permitted `derivedFrom` pairs (`FHT` + `filteredFrom`, `FHR` + `transcribedFrom`), but cannot establish whether the asserted parent relationship is factually true.",
       "The shared BUSCO lineage pattern cannot express a dotted dataset version such as `hymenoptera_odb12.2` (FAIR-bioHeaders-Specification#170).",
       "The legacy `fht-v0.1.json` draft schema, its examples and the retired FHT-File-Converter are historical review inputs, not FHT 1.0 and not current support. `masking` and `license` are gone; MD5 checksums are invalid."
     ]

@@ -70,9 +70,11 @@ Four questions, four tools, four separate answers.
 3. **Parent-link verification.** `bioheaders verify-links annotation.fhgff3.gff3 genome.fhr.fasta`
    checks each recorded parent against candidate files and reports `matched`,
    `not matched` or `not checked`; `stale-parent.fhgff3.gff3` is the case where the
-   annotation names a genome file whose bytes have since changed. A `genomeReference`
-   is never verified this way: accession plus SeqCol digest is an identity the
-   producer asserts (requirement FR-006).
+   annotation names a genome file whose bytes have since changed. For a
+   `genomeReference`, `verify-links` can compare its recorded SeqCol digest with the
+   digest recorded in a supplied FHR genome header. It does not compute SeqCol or
+   resolve the accession; the producer's identity assertion is still not biological
+   verification (requirement FR-006).
 4. **Feature, ontology and biological validation.** Columns, types, parent/child
    coherence, Sequence Ontology terms and biological plausibility belong to the
    [gff3-validator](https://github.com/FAIR-bioHeaders/gff3-validator). Its header

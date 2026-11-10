@@ -63,6 +63,29 @@ test.describe('specifications dropdown', () => {
     await expect(group.locator('a[href="/specifications/"]')).not.toHaveAttribute('aria-current', 'page');
   });
 
+  test('marks active non-group navigation pages', async ({ page }) => {
+    for (const url of ['/publications/', '/guide/', '/resources/']) {
+      await openPage(page, url);
+      const current = page.locator(`.masthead__menu-item.is-current > a[href="${url}"]`);
+      await expect(current).toHaveAttribute('aria-current', 'page');
+    }
+  });
+
+  test('stacks dropdown items and preserves dark-theme contrast', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await openPage(page, '/');
+    const group = page.locator('.masthead__menu-item--group');
+    await group.locator('.nav-dropdown-toggle').click();
+    await page.evaluate(() => { document.documentElement.dataset.theme = 'dark'; });
+    const menu = group.locator('.nav-dropdown');
+    await expect(menu).toHaveCSS('background-color', 'rgb(20, 22, 26)');
+    for (const item of await menu.locator('li').all()) {
+      await expect(item).toHaveCSS('display', 'block');
+    }
+    const results = await new AxeBuilder({ page }).include('.nav-dropdown').analyze();
+    expect(results.violations).toEqual([]);
+  });
+
   test('stays reachable in the overflow menu at 320px', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 });
     await openPage(page, '/');

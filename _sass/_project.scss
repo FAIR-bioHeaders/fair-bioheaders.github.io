@@ -143,14 +143,14 @@ $space-text: 1.3em;     /* paragraph and list rhythm */
   margin: 0;
   padding: .35em 0;
   list-style-type: none;
-  background: #fff;
+  background: var(--paper);
   border: 1px solid $border-color;
   border-radius: $border-radius;
   box-shadow: 0 4px 12px rgba(#000, 0.18);
 
-  li { display: block; }
   a { margin: 0; padding: .65em 1em; font-size: $type-size-6; white-space: normal; }
 }
+.greedy-nav .visible-links .nav-dropdown li { display: block; }
 /* The bundle marks the panel open; without JavaScript the children stay in the
    flow of the bar, exactly like the overflow links. */
 html.js .nav-dropdown:not(.is-open) { display: none; }

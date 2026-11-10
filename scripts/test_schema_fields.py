@@ -145,6 +145,32 @@ class GeneratedReferences(unittest.TestCase):
                 self.assertEqual(stats['withExample'] + stats['withExampleOmittedReason'],
                                  stats['documented'], 'some fields have neither an example nor a reason')
 
+    def test_array_item_constraints_are_rendered_per_item(self):
+        expected = {
+            'fhr': {
+                'identifier': 'per item: pattern: ^[A-Za-z0-9._-]+:.+$',
+                'relatedLink': 'per item: format: uri',
+            },
+            'fht': {
+                'sequencingRuns': 'per item: pattern: ^(SRR|ERR|DRR)[0-9]+$',
+                'identifier': 'per item: pattern: ^[A-Za-z0-9._-]+:.+$',
+                'relatedLink': 'per item: format: uri',
+            },
+            'fhp': {
+                'identifier': 'per item: pattern: ^[A-Za-z0-9._-]+:.+$',
+                'relatedLink': 'per item: format: uri',
+            },
+            'fhgff3': {
+                'identifier': 'per item: pattern: ^[A-Za-z0-9._-]+:.+$',
+                'relatedLink': 'per item: format: uri',
+            },
+        }
+        for page, constraints in expected.items():
+            rows = {row['path']: row for group in self.built[page]['groups'] for row in group['rows']}
+            for path, constraint in constraints.items():
+                with self.subTest(page=page, path=path):
+                    self.assertIn(constraint, rows[path]['constraints'])
+
     def test_shared_slots_stay_marked_as_shared(self):
         """A shared-core field must never silently become type-specific prose."""
         shared = schema_tools.load_shared(schema_tools.load_provenance())
@@ -199,6 +225,13 @@ class GeneratedReferences(unittest.TestCase):
                 self.assertEqual(data['releases']['alias'], alias.rsplit('/', 1)[0])
                 self.assertEqual(data['pinned']['schemaVersion'], version)
                 self.assertIn(alias, (INCLUDES / f'{page}-reference.html').read_text())
+
+    def test_numeric_fhr_versions_keep_their_recorded_release_aliases(self):
+        html = (INCLUDES / 'fhr-reference.html').read_text()
+        for release in ('v0.3.0', 'v0.3.1'):
+            alias = f'https://w3id.org/fair-bioheaders/fhr/{release}'
+            with self.subTest(release=release):
+                self.assertIn(f'href="{alias}"', html)
 
 
 if __name__ == '__main__':

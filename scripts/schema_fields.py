@@ -286,7 +286,7 @@ def array_label(node: dict, defs: dict) -> str:
     return f'array of {kind} values'
 
 
-def constraint_texts(node: dict) -> list:
+def constraint_texts(node: dict, defs: dict | None = None) -> list:
     """Constraint text reproduced from the schema bytes."""
     texts = []
     if 'enum' in node:
@@ -312,10 +312,21 @@ def constraint_texts(node: dict) -> list:
         if 'maxLength' in node:
             texts.append(f'length: at most {node["maxLength"]}')
     for branch in node.get('anyOf', []):
-        sub = constraint_texts(branch)
+        sub = constraint_texts(deref(branch, defs) if defs is not None else branch, defs)
         if sub:
             texts.append('alternative: ' + '; '.join(sub))
     return texts
+
+
+def item_constraint_texts(node: dict, defs: dict) -> list:
+    """Constraints on each immediate array item, including array-valued alternatives."""
+    candidates = [node] + [deref(branch, defs) for branch in node.get('anyOf', [])]
+    texts = []
+    for candidate in candidates:
+        if candidate.get('type') == 'array':
+            items = deref(candidate.get('items', {}), defs)
+            texts.extend(constraint_texts(items, defs))
+    return list(dict.fromkeys(texts))
 
 
 def container_of(node: dict, defs: dict):
@@ -401,6 +412,8 @@ class Builder:
     def make_row(self, path: str, name: str, node: dict, required: bool,
                  container: bool) -> dict:
         note = self.notes.get('fields', {}).get(path, {})
+        constraints = constraint_texts(node, self.defs)
+        constraints.extend(f'per item: {text}' for text in item_constraint_texts(node, self.defs))
         row = {
             'path': path,
             'id': f'{self.type_name.lower()}-field-{field_id(path)}',
@@ -408,7 +421,7 @@ class Builder:
             'required': 'Required' if required else 'Optional',
             'type': type_label(node),
             'cardinality': self.cardinality(node),
-            'constraints': constraint_texts(node),
+            'constraints': constraints,
             'description': note.get('description') or node.get('description') or '',
             'units': note.get('units'),
             'notes': list(note.get('notes', [])),
@@ -958,7 +971,7 @@ def render_history(data: dict) -> str:
         unchanged = (f'<span class="field-none">unchanged from {line["unchangedFrom"]}</span>'
                      if line['unchangedFrom'] else '')
         alias = (f'<a href="{line["alias"]}">{line["alias"].split("fair-bioheaders/", 1)[1]}</a>'
-                 if line['alias'] and not line['legacy']
+                 if line['alias']
                  else '<span class="field-none">none published</span>')
         rows.append(f'<tr><th scope="row">{release}</th><td>{version}</td>'
                     f'<td>{line["date"]}{unchanged}</td><td>{alias}</td></tr>')

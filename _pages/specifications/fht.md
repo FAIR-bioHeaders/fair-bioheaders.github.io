@@ -62,9 +62,10 @@ the repository's own tests, never written by hand.
 ## Validation boundaries — for the draft
 
 1. **Schema validity.** The draft JSON Schema checks required keys, types, patterns,
-   enums, ranges and closed nested objects. It does **not** enforce the two reviewed
-   `derivedFrom` pairs or the "do not guess" rules: those are contract prose, and a
-   schema-valid draft record can still break them.
+   enums, ranges, closed nested objects and the two allowed `derivedFrom` pairs:
+   `FHT` + `filteredFrom` or `FHR` + `transcribedFrom`. It cannot establish that an
+   asserted relationship is factually true—for example, that transcript bases were
+   actually extracted from the named FHR genome.
 2. **Checksum.** The shared family rules (R1–R4) define what an FHT checksum would
    cover, and the development repository recomputes its examples' checksums in tests.
    No released command writes or verifies one yet.

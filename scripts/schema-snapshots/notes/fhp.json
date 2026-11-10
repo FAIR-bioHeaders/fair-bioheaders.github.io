@@ -1,0 +1,332 @@
+{
+  "fields": {
+    "schema": {
+      "units": "URL",
+      "notes": [
+        "The pattern accepts the shared repository's raw-main or raw-tag `fhp.json` URL (under either the current or the former repository name) and a `https://w3id.org/fair-bioheaders/fhp/vX.Y.Z` alias — nothing else. Cite the release a file targets.",
+        "`schema` also identifies the header type (requirement FR-011): a reader selects the FHP contract from this value, never from a guess."
+      ]
+    },
+    "schemaVersion": {
+      "notes": [
+        "`1.1` came with shared release v0.5.0; `1.0` was first released in v0.4.0. Quote it in YAML.",
+        "FHP has no earlier numeric contract: unlike FHR, rule V6 does not apply, so `1` is simply invalid."
+      ]
+    },
+    "proteome": {
+      "notes": [
+        "Required and non-empty for a conforming record, even though `\"\"` passes the released schema."
+      ]
+    },
+    "sourceType": {
+      "notes": [
+        "`predicted`: a gene-prediction or annotation run; `database`: a published database release, set or annotation run; `mixed`: more than one origin.",
+        "It is not a review status and not a quality claim. `source[]` carries what the set draws on that is not a FAIR-bioHeaders file."
+      ]
+    },
+    "taxon": {
+      "notes": [
+        "Must carry a non-empty `name` or `uri` to describe the data; making `taxon.uri` required is decided for the next major (FAIR-bioHeaders-Specification#189)."
+      ]
+    },
+    "metadataAuthor": {
+      "notes": [
+        "Required and non-empty for a conforming record; every author needs a non-empty `name`."
+      ]
+    },
+    "metadataAuthor[].uri": {
+      "example": "https://orcid.org/0000-0002-1825-0097",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "value from the released FHP example"
+    },
+    "metadataAuthor[].nameType": {
+      "example": "Personal",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "value from the released FHP example",
+      "notes": [
+        "Preserved as supplied from FHP 1.0 onwards; the pattern accepts only the two DataCite spellings."
+      ]
+    },
+    "dateCreated": {
+      "units": "ISO 8601 calendar date"
+    },
+    "checksum": {
+      "units": "standard padded base64 of the SHA-512/256 digest",
+      "notes": [
+        "`bioheaders combine` computes it over the exact protein FASTA bytes under the shared rules R1 to R4; the site and the schema only check the shape. A placeholder value in an example never means \"verified\".",
+        "Header-type identity: an FHP checksum covers the same file whose `;~` header carries it, not the genome behind the proteins."
+      ]
+    },
+    "accessionID.name": {
+      "example": "UP000005640",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-database.fhp.json",
+      "exampleLabel": "UniProt proteome identifier used by the released example"
+    },
+    "accessionID.url": {
+      "example": "https://www.uniprot.org/proteomes/UP000005640",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-database.fhp.json",
+      "exampleLabel": "URL from the released FHP example"
+    },
+    "scholarlyArticle": {
+      "units": "DOI suffix (bare DOI, no resolver prefix)",
+      "example": "10.1093/bib/bbae122",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/example.fhr.json",
+      "exampleLabel": "illustrative value (the FHR paper DOI)"
+    },
+    "funding": {
+      "example": "Grant line item (placeholder)"
+    },
+    "voucherSpecimen": {
+      "example": "Synthetic example; no physical specimen"
+    },
+    "reuseConditions": {
+      "example": "public domain",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "value from the released FHP example"
+    },
+    "identifier": {
+      "example": "synthetic:PROT-0001"
+    },
+    "geneticCode": {
+      "units": "NCBI translation table ID",
+      "example": "1",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "value from the released FHP example",
+      "notes": [
+        "Only tables 1-6, 9-16 and 21-33 are expressible; 7, 8, 17-20 and 34+ have no slot. Omit the field when the file mixes tables or the table is unknown — never guess."
+      ]
+    },
+    "isoformPolicy": {
+      "example": "longestPerGene",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "value from the released FHP example",
+      "notes": [
+        "`canonicalPerGene` means the source's canonical choice, which is not necessarily the longest isoform."
+      ]
+    },
+    "predictionProtocol": {
+      "units": "URI",
+      "example": "https://example.org/annotation-protocol",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "value from the released FHP example"
+    },
+    "predictionSoftware[].name": {
+      "example": "ExamplePredictor (placeholder)",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "value from the released FHP example"
+    },
+    "predictionSoftware[].version": {
+      "example": "1.0.0",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "value from the released FHP example"
+    },
+    "predictionSoftware[].uri": {
+      "example": "https://example.org/example-predictor",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "value from the released FHP example"
+    },
+    "predictionSoftware[].commandLineOption": {
+      "example": "--species, human",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "value from the released FHP example"
+    },
+    "sequenceStats.totalResidues": {
+      "units": "residues",
+      "example": "11000000",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "value from the released FHP example"
+    },
+    "sequenceStats.sequenceCount": {
+      "units": "protein sequences"
+    },
+    "sequenceStats.geneCount": {
+      "units": "genes"
+    },
+    "completeness": {
+      "notes": [
+        "Counts describe BUSCO ortholog groups, not sequences or genes. BUSCO is not a quality cutoff, and nothing here is recomputed by a validator."
+      ]
+    },
+    "completeness.buscoVersion": {
+      "example": "5.8.3",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "value from the released FHP example"
+    },
+    "completeness.lineageDataset": {
+      "units": "BUSCO lineage dataset name including its `odb` version suffix",
+      "notes": [
+        "The pattern accepts `_odb` plus digits only. A dotted dataset version such as `odb12.2` cannot be represented; keep it in `documentation` rather than renaming the lineage (FAIR-bioHeaders-Specification#170)."
+      ]
+    },
+    "completeness.completeSingle": {
+      "units": "BUSCO groups (S)"
+    },
+    "completeness.completeDuplicated": {
+      "units": "BUSCO groups (D)"
+    },
+    "completeness.fragmented": {
+      "units": "BUSCO groups (F)"
+    },
+    "completeness.missing": {
+      "units": "BUSCO groups (M)"
+    },
+    "completeness.total": {
+      "units": "BUSCO groups searched (n)",
+      "notes": [
+        "`total` is at least 1; the four counts are disjoint, not percentages."
+      ]
+    },
+    "derivedFrom": {
+      "notes": [
+        "A checksum-backed link, not a mention: each item requires the parent's FHR-family `checksum`. `bioheaders verify-links FILE PARENT...` is what checks the link against files on disk."
+      ]
+    },
+    "derivedFrom[].headerType": {
+      "example": "FHR",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "value from the released FHP example",
+      "notes": [
+        "Any released header type may be named; the vocabulary is provisional until FAIR-bioHeaders-Specification#54 decides the relationship mapping."
+      ]
+    },
+    "derivedFrom[].relationship": {
+      "example": "translatedFrom",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "value from the released FHP example"
+    },
+    "derivedFrom[].checksum": {
+      "units": "standard padded base64 of the parent file's SHA-512/256",
+      "example": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "placeholder checksum from the released FHP example",
+      "notes": [
+        "The released example uses a placeholder to stand for a real parent file. A placeholder never verifies: run `bioheaders verify-links` against the actual parent."
+      ]
+    },
+    "derivedFrom[].seqcol_id": {
+      "exampleOmitted": "Optional, and no released FHP example states one. It is the parent's supplied SeqCol digest (32 base64url characters), never a substitute for the parent checksum."
+    },
+    "derivedFrom[].accessionID": {
+      "exampleOmitted": "Optional, and no released FHP example states one. It is additional identification of the parent, never a substitute for a checksum link."
+    },
+    "source": {
+      "notes": [
+        "Producer assertions about non-FAIR-bioHeaders origins. They are never verified by checksum — that is what `derivedFrom` is for."
+      ]
+    },
+    "source[].sequenceCount": {
+      "units": "sequences taken from this source",
+      "example": "120",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-mixed.fhp.yaml",
+      "exampleLabel": "placeholder count from the released FHP example"
+    },
+    "source[].assemblyAccession": {
+      "notes": [
+        "What the source states as the assembly behind the set. It is not a link to an FHR file and is not verified."
+      ]
+    },
+    "x-<name>": {
+      "description": "Extension field (rule R15): a top-level key the standard does not define, holding any value the producer needs.",
+      "example": "x-synthetic-reviewStatus: curated",
+      "notes": [
+        "Valid from FHP 1.1. Every other unknown key stays invalid, nested objects stay closed, and an `x-` key in a record that states `1.0` is rejected.",
+        "Use a namespace, `x-<project>-<field>`. Extension fields never override a standard field, are covered by the checksum, and are omitted from JSON-LD and microdata (J9, M5).",
+        "Records that cite a v0.4.x schema URL are checked against the v0.4.x schema, where an `x-` key is an unknown key, so files with extension fields cite v0.5.0 or later."
+      ]
+    },
+    "derivedFrom[].accessionID.name": {
+      "exampleOmitted": "Only meaningful inside a `derivedFrom` parent link, which the examples state by checksum. Shape: the parent accession's name, as in `accessionID.name` above."
+    },
+    "derivedFrom[].accessionID.url": {
+      "exampleOmitted": "Only meaningful inside a `derivedFrom` parent link, which the examples state by checksum. Shape: a URL resolving to that parent accession."
+    }
+  },
+  "groups": {
+    "": {
+      "description": "Every field of an FHP record. The record is a closed object: an unknown top-level key is invalid, with the single exception of the `x-` extension fields listed last."
+    },
+    "taxon": {
+      "title": "taxon — the shared core Taxon object",
+      "description": "Species name and its identifiers.org taxonomy URI, exactly as in FHR."
+    },
+    "metadataAuthor": {
+      "title": "metadataAuthor[] — the shared core Author object",
+      "description": "People or organizations that assert the metadata in this header."
+    },
+    "accessionID": {
+      "title": "accessionID — the shared core AccessionID object",
+      "description": "The protein set's own accession, name and URL."
+    },
+    "completeness": {
+      "title": "completeness — the shared BUSCO Completeness object",
+      "description": "Counts from one BUSCO run against one named lineage dataset (schemas/shared.yaml).",
+      "notes": [
+        "Six members are required whenever the object is present: `lineageDataset`, `completeSingle`, `completeDuplicated`, `fragmented`, `missing` and `total`."
+      ]
+    },
+    "derivedFrom": {
+      "title": "derivedFrom[] — the shared core DerivedFrom object",
+      "description": "Parent FAIR-bioHeaders files this set was derived from, by their own checksum.",
+      "notes": [
+        "FHP may name any header type and any vocabulary value; the vocabulary itself is provisional (FAIR-bioHeaders-Specification#54)."
+      ]
+    },
+    "predictionSoftware": {
+      "title": "predictionSoftware[] — the shared Software object",
+      "description": "Software that produced the gene models or translations (schemas/shared.yaml).",
+      "notes": [
+        "Same shape as FHR's `assemblySoftware` object form; `name` is the only required member."
+      ]
+    },
+    "sequenceStats": {
+      "title": "sequenceStats — counts describing the set",
+      "description": "Producer-reported counts of the file's contents.",
+      "notes": [
+        "Not verified against the FASTA: the toolkit never recounts sequences."
+      ]
+    },
+    "source": {
+      "title": "source[] — the shared Source object",
+      "description": "Origins that are not FAIR-bioHeaders files: a database release, a set, an annotation run or a manual contribution (schemas/shared.yaml)."
+    }
+  },
+  "rules": {
+    "extension-fields-need-the-new-minor": {
+      "title": "Extension fields need the newer minor",
+      "text": "The schema rejects extension fields in a record that states `schemaVersion: '1.0'`, so a 1.0 record keeps exactly its 1.0 outcome. A record using an extension states `1.1` or a later minor."
+    },
+    "extension-fields-allowed": {
+      "title": "Extension fields (rule R15)",
+      "text": "Top-level keys matching `^x-[A-Za-z0-9][A-Za-z0-9_.-]*$` are accepted (rule R15, docs/FORMAT.md) from FHP 1.1, released in shared specification v0.5.0."
+    },
+    "closed-top-level": {
+      "title": "The record is a closed object",
+      "text": "`additionalProperties: false` — any other unknown top-level key is invalid, and every nested object is closed in the same way."
+    },
+    "no-line-feed-in-a-key": {
+      "title": "No key may contain a line feed",
+      "text": "`propertyNames` rejects any key containing a line feed, so a YAML continuation artefact cannot pass as part of a field name."
+    }
+  },
+  "contract": {
+    "summary": "FHP is the FAIR-bioHeaders header for a protein FASTA file: a predicted proteome, a set taken from a protein database, or a curated set that combines both. It works exactly like FHR — `;~` YAML lines at the top of the file, one SHA-512/256 checksum over the exact bytes, a small required set and everything else optional — plus standalone JSON or YAML.",
+    "scope": "FHP records asserted provenance: what the set is, which species it belongs to, where the sequences came from, which software and protocol produced them, what it derives from by checksum, and what the producer measured about it. It is not a quality-control report, and no tool recomputes anything from the sequences.",
+    "serializations": [
+      "Protein FASTA with a `;~` header block, under the shared FORMAT.md rules. Header handling is alphabet-independent: stops, U, O, B, Z, J, X and lower case are ordinary bytes.",
+      "Standalone JSON and YAML metadata files.",
+      "Canonical JSON-LD with the reviewed FHP context (loss-preserving, no schema.org export profile) and standalone HTML microdata with the FHP itemtype — never the FHR itemtype.",
+      "No `x-` extension field survives a JSON-LD or microdata round trip: writers omit them (J9, M5)."
+    ],
+    "tooling": [
+      "`fair-bioheaders` 0.9.0 (PyPI) bundles the v0.5.0 FHP schema and reads and writes FHP 1.1, including extension fields, across `combine`, `verify`, `validate`, `convert`, `strip`, `verify-links` and `assess`.",
+      "The browser table builder on this site validates against its documented **v0.4.0** snapshot (`schemaVersion` 1.0), not v0.5.0. Tracked in fair-bioheaders.github.io#15.",
+      "`bioheaders verify-links FILE PARENT...` checks each `derivedFrom` item against candidate parent files by recomputing their checksums."
+    ],
+    "caveats": [
+      "`proteome: \"\"`, `taxon: {}` and `metadataAuthor: []` pass the released schema yet describe nothing: conforming required values are non-empty (docs/SCHEMA-VERSIONS.md).",
+      "`format: date` and `format: uri` must be asserted by a conforming validator; a bare draft 2020-12 validator ignores them.",
+      "`source[]`, `sequenceStats`, `completeness` and `source[].assemblyAccession` are producer assertions. Nothing here is verified against the sequences, and a checksum never authenticates an author.",
+      "FHP was first released in shared specification v0.4.0, so it has no legacy numeric `schemaVersion` compatibility path like FHR's rule V6."
+    ]
+  }
+}

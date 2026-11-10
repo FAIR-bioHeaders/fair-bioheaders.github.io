@@ -1,0 +1,405 @@
+{
+  "fields": {
+    "schema": {
+      "units": "URL",
+      "notes": [
+        "The pattern accepts the shared repository's raw-main or raw-tag `fhgff3.json` URL (under either the current or the former repository name) and a `https://w3id.org/fair-bioheaders/fhgff3/vX.Y.Z` alias. Cite the release a file targets.",
+        "`schema` also identifies the header type (requirement FR-010)."
+      ]
+    },
+    "schemaVersion": {
+      "notes": [
+        "`1.1` came with shared release v0.5.0; `1.0` was first released in v0.4.0. Quote it in YAML.",
+        "A schema of version M.N also accepts records that state an earlier minor, and holds each of them to that minor: an `x-` extension field is valid only in a record that states `1.1`, exactly as it would be invalid under the 1.0 schema (docs/SCHEMA-VERSIONS.md)."
+      ]
+    },
+    "annotation": {
+      "notes": [
+        "Required and non-empty for a conforming record, even though `\"\"` passes the released schema."
+      ]
+    },
+    "taxon": {
+      "notes": [
+        "Must carry a non-empty `name` or `uri`; a required `taxon.uri` is decided for the next major (FAIR-bioHeaders-Specification#189). `##species` directives in the same file are compared by the gff3-validator, not by the schema."
+      ]
+    },
+    "version": {
+      "notes": [
+        "Version of the annotation, not of the genome it annotates and not `schemaVersion`."
+      ]
+    },
+    "metadataAuthor": {
+      "notes": [
+        "Required and non-empty for a conforming record; every author needs a non-empty `name`."
+      ]
+    },
+    "metadataAuthor[].uri": {
+      "example": "https://orcid.org/0000-0002-1825-0097",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleLabel": "ORCID URI used by the released family examples"
+    },
+    "metadataAuthor[].nameType": {
+      "example": "Personal"
+    },
+    "dateCreated": {
+      "units": "ISO 8601 calendar date"
+    },
+    "checksum": {
+      "units": "standard padded base64 of the SHA-512/256 digest",
+      "notes": [
+        "Covers every byte of the GFF3 file — native directives, features and any `##FASTA` section — except the root `#~checksum:` line (rules R1 to R4).",
+        "Sorting or tidying the GFF3 (for example `gt gff3 -sort -tidy`) changes bytes, so the copied header no longer verifies. Nothing repairs it."
+      ]
+    },
+    "accessionID.name": {
+      "example": "SyntheticAnnotationAccession",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "placeholder value; no released FHGFF3 example states an accessionID"
+    },
+    "accessionID.url": {
+      "example": "https://example.org/synthetic-accession",
+      "exampleLabel": "illustrative value"
+    },
+    "scholarlyArticle": {
+      "units": "DOI suffix (bare DOI, no resolver prefix)",
+      "example": "10.1093/bib/bbae122",
+      "exampleLabel": "illustrative value (the FHR paper DOI)"
+    },
+    "funding": {
+      "example": "Grant line item (placeholder)"
+    },
+    "voucherSpecimen": {
+      "example": "Synthetic example; no physical specimen"
+    },
+    "reuseConditions": {
+      "example": "public domain"
+    },
+    "identifier": {
+      "example": "synthetic:ANN-0001"
+    },
+    "relatedLink": {
+      "units": "URI per item",
+      "example": "https://example.org/synthetic-annotation-project",
+      "notes": [
+        "Rule R14: validators warn about unusual URI schemes but such a value stays valid; JSON-LD and schema.org writers refuse to emit it as a link."
+      ]
+    },
+    "annotationProtocol": {
+      "units": "URI",
+      "example": "https://example.org/synthetic-annotation-protocol",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example"
+    },
+    "annotationSoftware[].name": {
+      "example": "Synthetic gene predictor (placeholder)",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example"
+    },
+    "annotationSoftware[].version": {
+      "example": "1.0.0",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example"
+    },
+    "annotationSoftware[].uri": {
+      "example": "https://example.org/synthetic-gene-predictor",
+      "exampleLabel": "illustrative value"
+    },
+    "annotationSoftware[].commandLineOption": {
+      "example": "--species, human",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example"
+    },
+    "soVersion": {
+      "units": "Sequence Ontology release, as its data-version",
+      "example": "2026-08-07",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example",
+      "notes": [
+        "A free-text version string in the schema: it states which SO release the feature types follow, and the gff3-validator does terms against its own SO data."
+      ]
+    },
+    "featureCounts": {
+      "notes": [
+        "Counts asserted by the producer, per feature type as written in column 3. They are not recounted by the schema."
+      ]
+    },
+    "featureCounts[].featureType": {
+      "example": "gene",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example",
+      "units": "SO term name or accession, as written in column 3"
+    },
+    "featureCounts[].count": {
+      "example": "1",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example",
+      "units": "features of that type"
+    },
+    "genomeReference": {
+      "notes": [
+        "The weaker of the two genome links: an identity asserted by the producer, never checksum-verified (requirement FR-006). Prefer `derivedFrom` with `annotates` when the genome file itself carries an FHR header."
+      ]
+    },
+    "genomeReference.accession": {
+      "units": "assembly accession with its version",
+      "notes": [
+        "`^\\S+$` only: any non-space token is accepted, so a nonsense accession still validates."
+      ]
+    },
+    "genomeReference.seqcol_id": {
+      "units": "32 base64url characters (sha512t24u, level 0)",
+      "notes": [
+        "Supplied, not computed. `bioheaders verify-links` can compare it against the SeqCol digest an FHR header records for the genome."
+      ]
+    },
+    "genomeReference.assemblyName": {
+      "example": "SyntheticAssembly1",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example",
+      "notes": [
+        "Compare with the file's own `##genome-build` directive: a disagreement is reported as a warning by the gff3-validator (HDR-010), not as a schema error."
+      ]
+    },
+    "completeness.buscoVersion": {
+      "example": "5.8.3"
+    },
+    "completeness.lineageDataset": {
+      "example": "primates_odb10",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "lineage named by the released FHGFF3 example",
+      "units": "BUSCO lineage dataset name including its `odb` version suffix",
+      "notes": [
+        "The pattern allows `_odb` plus digits only, so a dotted dataset version such as `odb12.2` has no typed slot (FAIR-bioHeaders-Specification#170)."
+      ]
+    },
+    "completeness.mode": {
+      "example": "proteins"
+    },
+    "completeness.completeSingle": {
+      "example": "1",
+      "units": "BUSCO groups (S)",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example"
+    },
+    "completeness.completeDuplicated": {
+      "example": "0",
+      "units": "BUSCO groups (D)",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example"
+    },
+    "completeness.fragmented": {
+      "example": "0",
+      "units": "BUSCO groups (F)",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example"
+    },
+    "completeness.missing": {
+      "example": "1",
+      "units": "BUSCO groups (M)",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example"
+    },
+    "completeness.total": {
+      "example": "2",
+      "units": "BUSCO groups searched (n)",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example"
+    },
+    "derivedFrom": {
+      "notes": [
+        "The strong genome link. `bioheaders verify-links annotation.fhgff3.gff3 genome.fhr.fasta` recomputes the parent's checksum and reports `matched`, `not matched` or `not checked`."
+      ]
+    },
+    "derivedFrom[].headerType": {
+      "example": "FHR",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example",
+      "notes": [
+        "An `annotates` item must name `FHR`: the schema forces it."
+      ]
+    },
+    "derivedFrom[].relationship": {
+      "example": "annotates",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example",
+      "notes": [
+        "The vocabulary is shared and provisional (FAIR-bioHeaders-Specification#54); `annotates` is the relationship that carries the genome link here."
+      ]
+    },
+    "derivedFrom[].checksum": {
+      "units": "standard padded base64 of the parent file's SHA-512/256",
+      "example": "6iEfbweXbENZ/x7c66kT6wUAMaXStwVhZFJbMMyr98A=",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example",
+      "notes": [
+        "This is the checksum of the genome file, not of this GFF3. If it disagrees with the bytes on disk, `verify-links` reports `not matched`."
+      ]
+    },
+    "derivedFrom[].seqcol_id": {
+      "exampleOmitted": "Optional, and no released FHGFF3 example states one for a parent. It is the parent's supplied SeqCol digest, never a substitute for the parent checksum."
+    },
+    "derivedFrom[].accessionID": {
+      "exampleOmitted": "Optional, and no released FHGFF3 example states one for a parent. A parent accession alone is not a verified family link."
+    },
+    "source": {
+      "notes": [
+        "Non-FAIR-bioHeaders origins of the annotation — an annotation release, evidence set or manual contribution — as asserted by the producer."
+      ]
+    },
+    "source[].name": {
+      "example": "Synthetic RNA-seq evidence set (placeholder)",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example"
+    },
+    "source[].release": {
+      "example": "2026_03",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-mixed.fhp.yaml",
+      "exampleLabel": "release naming style from the released family examples"
+    },
+    "source[].setIdentifier": {
+      "example": "SYNTHETIC-RUNS-1",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example"
+    },
+    "source[].url": {
+      "example": "https://example.org/synthetic-evidence-set",
+      "exampleLabel": "illustrative value"
+    },
+    "source[].assemblyAccession": {
+      "example": "GCF_000002985.6",
+      "exampleLabel": "illustrative value (a real assembly accession shown for its shape)",
+      "notes": [
+        "What the source states for itself; not a link to an FHR file."
+      ]
+    },
+    "source[].sequenceCount": {
+      "units": "sequences or features taken from this source",
+      "example": "120",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-mixed.fhp.yaml",
+      "exampleLabel": "placeholder count from the released family examples"
+    },
+    "source[].description": {
+      "example": "Short reads used as transcript evidence",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/rich.fhgff3.yaml",
+      "exampleLabel": "value from the released FHGFF3 example"
+    },
+    "x-<name>": {
+      "description": "Extension field (rule R15): a top-level key the standard does not define, holding any value the producer needs.",
+      "example": "x-synthetic-evidenceBatch: 2026-09",
+      "notes": [
+        "Valid from FHGFF3 1.1. Every other unknown key stays invalid, nested objects stay closed, and an `x-` key in a record that states `1.0` is rejected.",
+        "Extension fields are covered by the checksum and are omitted from JSON-LD and microdata writers (J9, M5, X9). FHGFF3 has no JSON-LD or microdata form at all today.",
+        "The gff3-validator reports header findings and feature findings separately; an extension key is a header finding, never a feature error."
+      ]
+    },
+    "derivedFrom[].accessionID.name": {
+      "exampleOmitted": "Only meaningful inside a `derivedFrom` parent link, which the examples state by checksum. Shape: the parent accession's name, as in `accessionID.name` above."
+    },
+    "derivedFrom[].accessionID.url": {
+      "exampleOmitted": "Only meaningful inside a `derivedFrom` parent link, which the examples state by checksum. Shape: a URL resolving to that parent accession."
+    }
+  },
+  "groups": {
+    "": {
+      "description": "Every field of an FHGFF3 record. The record is a closed object: an unknown top-level key is invalid, with the single exception of the `x-` extension fields listed last."
+    },
+    "taxon": {
+      "title": "taxon — the shared core Taxon object",
+      "description": "Species name and its identifiers.org taxonomy URI, as in FHR."
+    },
+    "metadataAuthor": {
+      "title": "metadataAuthor[] — the shared core Author object",
+      "description": "People or organizations that assert the metadata in this header."
+    },
+    "accessionID": {
+      "title": "accessionID — the shared core AccessionID object",
+      "description": "The annotation's own accession, name and URL."
+    },
+    "annotationSoftware": {
+      "title": "annotationSoftware[] — the shared Software object",
+      "description": "Software that produced or processed the annotation (schemas/shared.yaml); only `name` is required per entry."
+    },
+    "completeness": {
+      "title": "completeness — the shared BUSCO Completeness object",
+      "description": "Counts from one BUSCO run against one named lineage dataset (schemas/shared.yaml).",
+      "notes": [
+        "Six members are required whenever the object is present: `lineageDataset`, `completeSingle`, `completeDuplicated`, `fragmented`, `missing` and `total`."
+      ]
+    },
+    "derivedFrom": {
+      "title": "derivedFrom[] — the shared core DerivedFrom object",
+      "description": "Parent FAIR-bioHeaders files by checksum. One item, with `headerType: FHR` and `relationship: annotates`, is the annotated genome.",
+      "notes": [
+        "FHGFF3 is the type where the genome link is normative: see the conditional rules below."
+      ]
+    },
+    "featureCounts": {
+      "title": "featureCounts[] — features per type",
+      "description": "Producer-asserted counts, one entry per feature type.",
+      "notes": [
+        "Only `^\\S+$` is checked on `featureType`: the schema does not know the Sequence Ontology, and no count is verified against the file."
+      ]
+    },
+    "genomeReference": {
+      "title": "genomeReference — the declared genome",
+      "description": "The annotated genome named by assembly accession plus SeqCol digest, when it is not linked by FHR checksum (requirement FR-006).",
+      "notes": [
+        "`accession` and `seqcol_id` are required together whenever the object is present; `assemblyName` is optional."
+      ]
+    },
+    "source": {
+      "title": "source[] — the shared Source object",
+      "description": "Origins of the annotation that are not FAIR-bioHeaders files (schemas/shared.yaml)."
+    }
+  },
+  "rules": {
+    "at-least-one-genome-link": {
+      "title": "A genome link is required",
+      "text": "At least one genome link is required: a `genomeReference` object, or a `derivedFrom` array holding an item with `headerType: FHR` and `relationship: annotates`. A record with neither is invalid — this is FHGFF3's central conditional rule."
+    },
+    "at-most-one-annotates-parent": {
+      "title": "At most one annotated genome",
+      "text": "At most one `derivedFrom` item may carry `relationship: annotates`, so a file cannot claim two annotated genomes."
+    },
+    "annotates-parent-must-be-FHR": {
+      "title": "`annotates` must name an FHR genome",
+      "text": "Any `derivedFrom` item with `relationship: annotates` must state `headerType: FHR`: annotation of a transcriptome or protein set is not the genome link this contract requires."
+    },
+    "extension-fields-need-the-new-minor": {
+      "title": "Extension fields need the newer minor",
+      "text": "The schema rejects extension fields in a record that states `schemaVersion: '1.0'`, so a 1.0 record keeps exactly its 1.0 outcome. A record using an extension states `1.1` or a later minor."
+    },
+    "extension-fields-allowed": {
+      "title": "Extension fields (rule R15)",
+      "text": "Top-level keys matching `^x-[A-Za-z0-9][A-Za-z0-9_.-]*$` are accepted (rule R15, docs/FORMAT.md) from FHGFF3 1.1, released in shared specification v0.5.0."
+    },
+    "closed-top-level": {
+      "title": "The record is a closed object",
+      "text": "`additionalProperties: false` — any other unknown top-level key is invalid, and every nested object is closed in the same way."
+    },
+    "no-line-feed-in-a-key": {
+      "title": "No key may contain a line feed",
+      "text": "`propertyNames` rejects any key containing a line feed, so a YAML continuation artefact cannot pass as part of a field name."
+    }
+  },
+  "contract": {
+    "summary": "FHGFF3 is the FAIR-bioHeaders header for a GFF3 annotation file. It adds `#~` YAML lines after the `##gff-version 3` line and one SHA-512/256 checksum over the file's exact bytes, and records which genome the coordinates refer to and how the annotation was made. Standalone JSON and YAML carry the same record.",
+    "scope": "FHGFF3 describes the annotation as a resource. It never makes the features valid: a header says nothing about whether a CDS is in frame or whether the terms are correct, and a GFF3 file without a header is still plain, valid GFF3. Feature and Sequence Ontology validation belongs to the gff3-validator, which reports header findings and feature findings separately.",
+    "serializations": [
+      "GFF3 with a `#~` header block after `##gff-version 3` (optionally `##gff-version 3.x.y`), before the first feature or `##FASTA` line. Native directives such as `##sequence-region` may sit among the header lines.",
+      "Standalone JSON and YAML metadata files.",
+      "No JSON-LD form and no HTML microdata form exists for FHGFF3 yet: keep the structured record as YAML when exporting a readable HTML table."
+    ],
+    "tooling": [
+      "`fair-bioheaders` 0.9.0 (PyPI) bundles the v0.5.0 FHGFF3 schema and reads and writes FHGFF3 1.1, including extension fields, across `combine`, `verify`, `validate`, `convert`, `strip`, `verify-links` and `assess`.",
+      "[gff3-validator](https://github.com/FAIR-bioHeaders/gff3-validator) validates GFF3 syntax, Sequence Ontology terms and biology, and reports FHGFF3 header checks (its HDR rules) alongside — never merged with — the feature results. Its header checks run through the toolkit it depends on, and its published 0.1.0 release pins an older `fair-bioheaders`, so a header citing v0.5.0 is reported as an unsupported schema version (HDR-007) rather than checked against FHGFF3 1.1 until that pin is widened. Feature validation does not depend on it.",
+      "The browser table builder on this site validates against its documented **v0.4.0** snapshot (`schemaVersion` 1.0), not v0.5.0. Tracked in fair-bioheaders.github.io#15."
+    ],
+    "caveats": [
+      "The checksum covers every byte, including native directives, features and any `##FASTA` section, except the root `#~checksum:` line. Sorting or tidying the file (`gt gff3 -sort -tidy`) invalidates a copied header.",
+      "`annotation: \"\"`, `taxon: {}` and `metadataAuthor: []` pass the released schema yet describe nothing; conforming values are non-empty.",
+      "`featureCounts`, `soVersion`, `completeness` and `source[]` are producer assertions. The schema checks shapes only: it does not know the Sequence Ontology and does not count features.",
+      "A header is not a genome match: `verify-links` compares recorded parent checksums or SeqCol digests against files on disk and reports `matched`, `not matched` or `not checked`."
+    ]
+  }
+}

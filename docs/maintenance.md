@@ -63,6 +63,15 @@ The inherited template tag dates from February 2024, older than the upstream `v0
 
 The scheduled/manual Lychee step resolves relative links against the production URL and excludes this site, since `check_site.py` validates local paths and fragments on every build. `.lycheeignore` documents DOI and ISO exclusions for automated-client blocking. Run the workflow manually when changing this configuration to exercise the external-link step.
 
+## Schema reference pages
+
+`/specifications/` publishes a complete field reference per header type, generated
+from byte-pinned copies of the authoritative schemas. Regenerate it with
+`python3 scripts/schema_fields.py`; the drift gate and the refresh procedure are in
+[Schema reference pages](schema-reference.md). Never hand-edit the generated
+`_includes/schema/*-reference.html` files, and never treat this site as a schema
+authority.
+
 ## Browser, accessibility, and deployment checks
 
 `npm run test:browser` runs a Playwright suite over the built `_site` at desktop and 320px widths in both themes. It checks horizontal overflow, masthead clearance, the skip link, the overflow menu (including Escape), theme persistence, console errors, and the Cite/Copy interaction, and runs axe accessibility scans that fail on any violation, including color contrast. New colors must pass axe against the code and footer backgrounds in both themes; the Rouge syntax palette has light values in `_sass/_syntax.scss` and dark overrides in `_project.scss`.
@@ -258,3 +267,14 @@ widths. Greedy navigation may add responsive overflow links ahead of it, but mus
 never promote a flagged link into the primary row on resize. Without JavaScript,
 all links remain in the visible wrapping list. Test keyboard/Enter/Escape access,
 resize behavior and no-JavaScript navigation when changing this mechanism.
+
+An entry with `children:` renders as one masthead group: a link to the section page,
+a disclosure button (`aria-expanded` + `aria-controls`, caret drawn with borders, no
+icon font) and the child list. The bundle hides the list and operates the disclosure;
+without JavaScript the list stays visible, and once greedy navigation moves the group
+into More the children are listed inline and the button is hidden — the fixed
+masthead's height and the article clearance must not change. The current page is
+marked with `aria-current="page"` (bold text plus the existing gradient rule, never
+colour alone) and its group with `is-current`. `scripts/browser/specifications.spec.mjs`
+covers open/close, Escape-and-return-focus, the 320px overflow case and the no-JavaScript
+case; keep those assertions when changing this mechanism.

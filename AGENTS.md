@@ -447,6 +447,29 @@ behavior and page-loading scope rather than adding them to the bundle. Keep the
 schema-authority/version-selection section as the governing rule; repeated
 builder details describe its supported snapshots, not another schema policy.
 
+## Schema reference pages (issue #46)
+
+`/specifications/` holds one overview plus four stable type pages (FHR, FHT, FHP,
+FHGFF3). Their field tables are **generated**: `_includes/schema/<type>-reference.html`
+comes from the byte-pinned schemas in `scripts/schema-snapshots/` and is produced by
+`scripts/schema_fields.py`. Never hand-edit a generated fragment and never edit a
+pinned schema copy to make a check pass — refresh from the authority, update
+`provenance.json`, then regenerate. `python3 scripts/schema_fields.py --check` is the
+drift gate (CI runs it through the existing `test_*.py` discovery step, and
+`scripts/check_site.py` re-verifies the rendered pages); see
+[docs/schema-reference.md](docs/schema-reference.md) for the refresh procedure.
+
+These pages document contracts, they do not change them: any field, requiredness,
+version or release claim comes from the authority, and a page must not imply support
+the site does not ship. Keep the distinction intact: released types cite their fixed
+`w3id` alias (v0.5.0: FHR `"2.1"`, FHP `"1.1"`, FHGFF3 `"1.1"`, all with `x-` extension
+fields under rule R15); FHT is **draft** — no release, no alias, no DOI, no toolkit or
+builder support — and stays visibly marked as such in the nav, the page notice and the
+generated block. `/table-builder/` still validates its v0.4.0 snapshots, so the
+reference pages must say the builder does not yet cover v0.5.0 rather than implying it.
+Adding a new indexable route here means updating the sitemap allow-lists in
+`scripts/check_site.py` and `scripts/check_deployed.py` and their tests in the same change.
+
 ## Metadata viewer (issue #23)
 
 `/metadata-viewer/` is independent of the table builder. The initial draft reads

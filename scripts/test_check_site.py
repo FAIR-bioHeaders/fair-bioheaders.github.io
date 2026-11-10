@@ -4,6 +4,8 @@ import unittest
 from check_site import (
     Page,
     feed_errors,
+    schema_reference_errors,
+    sitemap_path_allowed,
     jsonld_container_errors,
     mathjax_errors,
     parse_srcset,
@@ -346,3 +348,94 @@ class IconFontChecks(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class SitemapAllowListChecks(unittest.TestCase):
+    def test_existing_and_new_routes_are_allowed(self):
+        for path in ('/', '/publications/', '/resources/', '/guide/', '/table-builder/',
+                     '/metadata-viewer/', '/specifications/', '/specifications/fhr/',
+                     '/specifications/fht/', '/specifications/fhp/', '/specifications/fhgff3/'):
+            with self.subTest(path=path):
+                self.assertTrue(sitemap_path_allowed(path))
+
+    def test_publication_pages_stay_allowed_by_prefix(self):
+        self.assertTrue(sitemap_path_allowed('/publication/some-paper/'))
+
+    def test_unlisted_route_is_rejected(self):
+        for path in ('/terms/', '/sitemap/', '/specifications/fhgm/', '/specifications'):
+            with self.subTest(path=path):
+                self.assertFalse(sitemap_path_allowed(path))
+
+
+def reference_fixture(page='fhr', schema_type='FHR', draft=False, alias=True,
+                      caption=True, scopes=True, focusable=True):
+    caption_html = '<caption>Fields</caption>' if caption else ''
+    scope = ' scope="col"' if scopes else ''
+    row_scope = ' scope="row"' if scopes else ''
+    region = ('<div class="field-table" role="region" tabindex="0" aria-label="FHR top-level fields">'
+              if focusable else '<div class="field-table">')
+    notice = '<div class="spec-notice spec-notice--draft" role="note">Draft</div>' if draft else ''
+    alias_link = (f'<a href="https://w3id.org/fair-bioheaders/{page}/v0.5.0">schema</a>' if alias else '')
+    return (
+        f'{notice}{alias_link}'
+        '<ul class="schema-links"><li><a href="https://github.com/FAIR-bioHeaders/'
+        'FAIR-bioHeaders-Specification/blob/main/schemas/versions.json">registry</a></li></ul>'
+        f'{region}<table>{caption_html}<thead><tr><th{scope}>Field</th></tr></thead>'
+        f'<tbody><tr><th{row_scope}>genome</th><td>string</td></tr></tbody></table></div>'
+        '<p class="reference-provenance" data-schema-type="{}" data-schema-sha256="{}">'
+        'generated</p>'.format(schema_type, PINNED_DIGESTS[schema_type.lower()])
+    )
+
+
+def pinned_digest(page):
+    """The digest the generated reference is expected to carry."""
+    import hashlib
+    from pathlib import Path
+    from check_site import SCHEMA_PAGES, SCHEMA_SNAPSHOTS
+    return hashlib.sha256((SCHEMA_SNAPSHOTS / SCHEMA_PAGES[page][1]).read_bytes()).hexdigest()
+
+
+PINNED_DIGESTS = {page: pinned_digest(page) for page in ('fhr', 'fht', 'fhp', 'fhgff3')}
+
+
+class SchemaReferenceChecks(unittest.TestCase):
+    def test_generated_reference_renders_cleanly(self):
+        self.assertEqual(
+            schema_reference_errors('specifications/fhr/index.html', reference_fixture()), [])
+
+    def test_other_pages_are_not_checked(self):
+        self.assertEqual(schema_reference_errors('guide/index.html', '<p>Anything</p>'), [])
+
+    def test_missing_digest_is_reported(self):
+        broken = reference_fixture().replace(PINNED_DIGESTS['fhr'], '0' * 64)
+        self.assertTrue(any('pinned schema bytes' in error
+                            for error in schema_reference_errors('specifications/fhr/index.html', broken)))
+
+    def test_uncaptioned_table_is_reported(self):
+        errors = schema_reference_errors('specifications/fhp/index.html', reference_fixture(page='fhp', schema_type='FHP', caption=False))
+        self.assertTrue(any('<caption>' in error for error in errors))
+
+    def test_unscoped_header_is_reported(self):
+        errors = schema_reference_errors('specifications/fhp/index.html', reference_fixture(page='fhp', schema_type='FHP', scopes=False))
+        self.assertTrue(any('scope=' in error for error in errors))
+
+    def test_unreachable_scroll_region_is_reported(self):
+        errors = schema_reference_errors('specifications/fhgff3/index.html',
+                                         reference_fixture(page='fhgff3', schema_type='FHGFF3', focusable=False))
+        self.assertTrue(any('keyboard reachable' in error for error in errors))
+
+    def test_draft_page_without_notice_is_reported(self):
+        errors = schema_reference_errors('specifications/fht/index.html',
+                                         reference_fixture(page='fht', schema_type='FHT', draft=False))
+        self.assertTrue(any('draft notice' in error for error in errors))
+
+    def test_draft_page_may_not_claim_a_released_alias(self):
+        forged = reference_fixture(page='fht', schema_type='FHT', draft=True) + \
+            '<a href="https://w3id.org/fair-bioheaders/fht/v0.5.0">released</a>'
+        errors = schema_reference_errors('specifications/fht/index.html', forged)
+        self.assertTrue(any('alias that does not exist' in error for error in errors))
+
+    def test_released_page_must_link_its_fixed_url(self):
+        errors = schema_reference_errors('specifications/fhr/index.html',
+                                         reference_fixture(alias=False))
+        self.assertTrue(any('fixed release schema URL' in error for error in errors))

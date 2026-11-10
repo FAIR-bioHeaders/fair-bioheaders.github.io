@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Check rendered site links, identity metadata, and issue #6 regressions offline."""
+import hashlib
 import json
 import re
 import sys
@@ -10,6 +11,21 @@ from urllib.parse import unquote, urljoin, urlsplit
 import xml.etree.ElementTree as ET
 
 ORIGIN = 'https://fhref.org'
+# Indexable routes, allow-listed: a new public page must be added here and to
+# scripts/check_deployed.py in the same change that publishes it.
+INDEXABLE_PAGES = ('/', '/publications/', '/resources/', '/guide/', '/table-builder/',
+                   '/metadata-viewer/', '/specifications/', '/specifications/fhr/',
+                   '/specifications/fht/', '/specifications/fhp/', '/specifications/fhgff3/')
+INDEXABLE_PREFIXES = ('/publication/',)
+# The four header-type reference pages, each pinned to one schema snapshot.
+SCHEMA_PAGES = {
+    'fhr': ('FHR', 'fhr-v0.5.0.json'),
+    'fht': ('FHT', 'fht-draft.json'),
+    'fhp': ('FHP', 'fhp-v0.5.0.json'),
+    'fhgff3': ('FHGFF3', 'fhgff3-v0.5.0.json'),
+}
+SCHEMA_SNAPSHOTS = Path(__file__).resolve().parent / 'schema-snapshots'
+RELEASED_TYPES = ('FHR', 'FHP', 'FHGFF3')
 MATHJAX_INTEGRITY = 'sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei'
 MATHJAX_URL = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js'
 
@@ -457,6 +473,57 @@ def mathjax_errors(page):
     return []
 
 
+def sitemap_path_allowed(path):
+    """True when a sitemap URL is one of the indexable routes."""
+    return path in INDEXABLE_PAGES or path.startswith(INDEXABLE_PREFIXES)
+
+
+def schema_reference_errors(relative, text):
+    """Keep the generated field reference honest in the rendered page.
+
+    The generated `schema_fields.py` output is diffed against the pinned schema bytes
+    by `scripts/test_schema_fields.py`; this is the matching *rendered* check: the
+    right table markup, the pinned digest still present, a visible draft marker where
+    the contract is unreleased, and no invented release alias for a draft type.
+    """
+    match = re.match(r'specifications/(fhr|fht|fhp|fhgff3)/index\.html$', relative)
+    if not match:
+        return []
+    page_type, snapshot = SCHEMA_PAGES[match.group(1)]
+    errors = []
+    provenance = {}
+    snapshot_path = SCHEMA_SNAPSHOTS / snapshot
+    if snapshot_path.is_file():
+        expected = hashlib.sha256(snapshot_path.read_bytes()).hexdigest()
+        if f'data-schema-sha256="{expected}"' not in text:
+            errors.append('the rendered field reference is not the one generated from the pinned '
+                          f'schema bytes of {snapshot}')
+    elif page_type != 'FHT':
+        errors.append(f'pinned schema snapshot {snapshot} is missing')
+    for table in re.findall(r'<table\b.*?</table>', text, re.DOTALL):
+        if '<caption' not in table:
+            errors.append('a field reference table has no <caption>')
+        heads = re.findall(r'<th\b([^>]*)>', table)
+        if not heads or not all('scope=' in head for head in heads):
+            errors.append('a field reference table has a header cell without scope=')
+    for region in re.findall(r'<div class="field-table"[^>]*>', text):
+        if 'tabindex="0"' not in region or 'role="region"' not in region or 'aria-label=' not in region:
+            errors.append('a scrollable field reference table is not keyboard reachable and named')
+    if 'schema-links' not in text:
+        errors.append('no schema location block')
+    if page_type == 'FHT':
+        if 'spec-notice--draft' not in text:
+            errors.append('the FHT reference page lacks its draft notice')
+        if 'w3id.org/fair-bioheaders/fht' in text:
+            errors.append('the FHT draft page links a released alias that does not exist')
+    else:
+        if f'w3id.org/fair-bioheaders/{match.group(1)}/v' not in text:
+            errors.append(f'{page_type} page does not link its fixed release schema URL')
+        if page_type in RELEASED_TYPES and 'versions.json' not in text:
+            errors.append(f'{page_type} page does not link the schema-version registry')
+    return errors
+
+
 def check(root):
     errors = []
     html = {p: Page(p.read_text()) for p in root.rglob('*.html')}
@@ -503,6 +570,7 @@ def check(root):
         if relative == 'resources/index.html':
             errors.extend(resource_errors(file.read_text()))
         errors.extend(f'{relative}: {error}' for error in mathjax_errors(page))
+        errors.extend(f'{relative}: {error}' for error in schema_reference_errors(relative, file.read_text()))
     # Also check font and image references in CSS, including missing vendored assets.
     for file in root.rglob('*.css'):
         css = file.read_text()
@@ -522,7 +590,7 @@ def check(root):
     for url in urls:
         path = urlsplit(url).path
         require(resolve(path).is_file(), f'Sitemap has missing page: {url}')
-        require(path == '/' or path in ('/publications/', '/resources/', '/guide/', '/table-builder/', '/metadata-viewer/') or path.startswith('/publication/'), f'Unexpected sitemap page: {url}')
+        require(sitemap_path_allowed(path), f'Unexpected sitemap page: {url}')
     org = html[root / 'index.html'].json_ld[0]
     require(org.get('@type') == 'Organization', 'Home identity must be an organization')
     members = {p['@id'] for p in org.get('member', [])}

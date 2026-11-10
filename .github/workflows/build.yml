@@ -29,6 +29,8 @@ jobs:
           JEKYLL_ENV: production
           BUNDLE_FROZEN: 'true'
         run: bundle exec jekyll build --strict_front_matter
+      - name: Verify generated schema field references
+        run: python3 scripts/schema_fields.py --check
       - name: Test site regression checks
         run: python3 -m unittest discover -s scripts -p 'test_*.py'
       - name: Test citation generator

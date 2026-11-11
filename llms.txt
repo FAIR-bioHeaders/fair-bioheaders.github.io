@@ -16,6 +16,7 @@ Key facts (FAIR-bioHeaders-Specification v0.5.0, fair-bioheaders 0.9.0):
 - [Schema versions and selection](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/SCHEMA-VERSIONS.md): versioning policy and how a `schema` URL selects a schema
 - [FHP, protein FASTA](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHP.md): fields, `sourceType`, sources
 - [FHGFF3, GFF3 annotation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHGFF3.md): header placement after `##gff-version 3`, genome link by checksum or accession plus SeqCol
+- [FHGM draft overview](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHGM.md): FAIR Header Gene Model — draft, not a contract. FHGM describes individual gene-model records; FHGFF3 describes the enclosing annotation file. The pilot embeds repeatable model records in FHGFF3 as `x-` extension fields; contract ownership, required fields, serialization and model-level validation are under review in issue #204, pilot datasets in #206. Development repository: https://github.com/FAIR-bioHeaders/FHGM-Specification (makes no FHGM contract or support claim); site draft page: https://fhref.org/specifications/fhgm/
 - [JSON-LD form](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/JSONLD.md) and [schema.org export](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/SCHEMAORG-EXPORT.md)
 - [Tool compatibility](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/TOOL_COMPATIBILITY.md): which tools accept headers, workarounds, upstream support status
 - [FAIR header guideline](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FAIR_HEADER_GUIDELINE.md): metadata to put in any file's native header
@@ -35,6 +36,7 @@ schemas: [FHR](https://fhref.org/specifications/fhr/),
 - [FHGFF3 v0.5.0](https://w3id.org/fair-bioheaders/fhgff3/v0.5.0): GFF3 header schema (`fhgff3.json`)
 - FHT: **draft only**, no released contract and no fixed alias; development schema
   [fht.json](https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json)
+- FHGM: **draft proposal, no schema at all** — no `schemaVersion`, no w3id URL, no entry in `schemas/versions.json` (released contracts only), and no toolkit, validator or builder support; do not cite an FHGM schema. Draft overview: [docs/FHGM.md](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHGM.md), site page [https://fhref.org/specifications/fhgm/](https://fhref.org/specifications/fhgm/)
 - [Current FHR schema](https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhr.json): raw-main canonical URL (also `fhp.json`, `fhgff3.json`)
 - [Vocabulary](https://w3id.org/fair-bioheaders/terms): FAIR-bioHeaders terms (HTML, Turtle or JSON-LD by content negotiation)
 - [JSON-LD context v0.5.0](https://w3id.org/fair-bioheaders/fhr/v0.5.0/jsonld/fhr.context.jsonld)

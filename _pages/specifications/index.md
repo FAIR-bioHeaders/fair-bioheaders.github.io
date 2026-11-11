@@ -1,7 +1,7 @@
 ---
 title: "Header type specifications"
 permalink: /specifications/
-excerpt: "Field-by-field reference for the FAIR-bioHeaders header types: FHR for reference genomes, FHT for transcriptomes (draft), FHP for protein FASTA and FHGFF3 for GFF3 annotations."
+excerpt: "Field-by-field reference for the FAIR-bioHeaders header types: FHR for reference genomes, FHT for transcriptomes (draft), FHP for protein FASTA and FHGFF3 for GFF3 annotations, plus a draft overview of FHGM gene model records."
 ---
 
 One page per FAIR-bioHeaders header type, each with the complete field reference
@@ -10,10 +10,12 @@ type, its format, pattern, enum or range, its cardinality, its units, an example
 the compatibility notes that matter. The normative schemas stay in
 [FAIR-bioHeaders-Specification](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification);
 these pages are generated from the published schema bytes and link back to them.
+The draft FHGM proposal, which has no contract to reference yet, is the exception:
+it gets a [draft overview](/specifications/fhgm/) instead of a generated inventory.
 
 {% include nature-panel.html key="turtle-shell" %}
 
-## The four pages
+## The four field references
 
 | Type | Resource | Contract and status |
 | --- | --- | --- |
@@ -21,6 +23,14 @@ these pages are generated from the published schema bytes and link back to them.
 | [FHT](/specifications/fht/) | Transcriptome (FASTA) | `schemaVersion` "1.0" proposed — **draft, not released** |
 | [FHP](/specifications/fhp/) | Protein set (FASTA) | `schemaVersion` "1.1", released in shared v0.5.0 |
 | [FHGFF3](/specifications/fhgff3/) | GFF3 annotation | `schemaVersion` "1.1", released in shared v0.5.0 |
+
+The table lists the four types that have a documented header contract, released or
+concrete enough to review. A fifth draft,
+[FHGM — gene model records](/specifications/fhgm/), is deliberately outside the
+table: it describes model records *inside* FHGFF3 annotations rather than a file
+header a file chooses instead of these four, and it has **no contract at all** —
+no `schemaVersion`, no fixed alias, no registry entry and no field inventory.
+Its draft page links the authoritative overview in the shared specification.
 
 A header type is chosen by the data the file holds, not by taste. Schema versions
 are per type: `schemaVersion`, the shared release tag and the version of the

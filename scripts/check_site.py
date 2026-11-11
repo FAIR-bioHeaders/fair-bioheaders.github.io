@@ -15,7 +15,8 @@ ORIGIN = 'https://fhref.org'
 # scripts/check_deployed.py in the same change that publishes it.
 INDEXABLE_PAGES = ('/', '/publications/', '/resources/', '/guide/', '/table-builder/',
                    '/metadata-viewer/', '/specifications/', '/specifications/fhr/',
-                   '/specifications/fht/', '/specifications/fhp/', '/specifications/fhgff3/')
+                   '/specifications/fht/', '/specifications/fhp/', '/specifications/fhgff3/',
+                   '/specifications/fhgm/')
 INDEXABLE_PREFIXES = ('/publication/',)
 # The four header-type reference pages, each pinned to one schema snapshot.
 SCHEMA_PAGES = {
@@ -524,6 +525,33 @@ def schema_reference_errors(relative, text):
     return errors
 
 
+FHGM_PAGE = 'specifications/fhgm/index.html'
+FHGM_AUTHORITY = 'FAIR-bioHeaders-Specification/blob/main/docs/FHGM.md'
+
+
+def fhgm_draft_errors(relative, text):
+    """Keep the FHGM page a draft overview of a proposal with no contract.
+
+    The four generated references above are backed by pinned schema bytes; FHGM
+    has no contract to inventory, so its page must look like a draft and say so:
+    a visible draft notice, a link to the authoritative shared docs/FHGM.md, no
+    generated field reference dressed up as a contract, and no invented release
+    alias. This mirrors the FHT draft rules for a type one step earlier.
+    """
+    if relative != FHGM_PAGE:
+        return []
+    errors = []
+    if 'spec-notice--draft' not in text:
+        errors.append('the FHGM draft page lacks its draft notice')
+    if FHGM_AUTHORITY not in text:
+        errors.append('the FHGM draft page does not link the authoritative docs/FHGM.md')
+    if 'w3id.org/fair-bioheaders/fhgm' in text:
+        errors.append('the FHGM draft page links a released alias that does not exist')
+    if 'field-table' in text or 'reference-provenance' in text:
+        errors.append('the FHGM draft page carries a generated field reference; FHGM has no contract to inventory')
+    return errors
+
+
 def check(root):
     errors = []
     html = {p: Page(p.read_text()) for p in root.rglob('*.html')}
@@ -571,6 +599,7 @@ def check(root):
             errors.extend(resource_errors(file.read_text()))
         errors.extend(f'{relative}: {error}' for error in mathjax_errors(page))
         errors.extend(f'{relative}: {error}' for error in schema_reference_errors(relative, file.read_text()))
+        errors.extend(f'{relative}: {error}' for error in fhgm_draft_errors(relative, file.read_text()))
     # Also check font and image references in CSS, including missing vendored assets.
     for file in root.rglob('*.css'):
         css = file.read_text()

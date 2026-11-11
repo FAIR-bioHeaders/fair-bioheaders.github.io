@@ -450,7 +450,7 @@ builder details describe its supported snapshots, not another schema policy.
 ## Schema reference pages (issue #46)
 
 `/specifications/` holds one overview plus four stable type pages (FHR, FHT, FHP,
-FHGFF3). Their field tables are **generated**: `_includes/schema/<type>-reference.html`
+FHGFF3) and the FHGM draft overview. Their field tables are **generated**: `_includes/schema/<type>-reference.html`
 comes from the byte-pinned schemas in `scripts/schema-snapshots/` and is produced by
 `scripts/schema_fields.py`. Never hand-edit a generated fragment and never edit a
 pinned schema copy to make a check pass — refresh from the authority, update
@@ -465,7 +465,14 @@ the site does not ship. Keep the distinction intact: released types cite their f
 `w3id` alias (v0.5.0: FHR `"2.1"`, FHP `"1.1"`, FHGFF3 `"1.1"`, all with `x-` extension
 fields under rule R15); FHT is **draft** — no release, no alias, no DOI, no toolkit or
 builder support — and stays visibly marked as such in the nav, the page notice and the
-generated block. `/table-builder/` still validates its v0.4.0 snapshots, so the
+generated block. FHGM goes one step further: it is a *proposal* for model records inside
+FHGFF3 files with no contract at all, so `/specifications/fhgm/` carries **no generated
+field inventory** — nothing is pinned for FHGM, the page links the shared `docs/FHGM.md`
+as the authority, and `check_site.py`'s `fhgm_draft_errors` keeps it that way (draft
+notice and authority link present; no generated field tables, no provenance block and no
+`w3id` alias ever appear there). Do not place FHGM in any released-schema table or
+version selector, and never claim toolkit, validator or builder support for it.
+`/table-builder/` still validates its v0.4.0 snapshots, so the
 reference pages must say the builder does not yet cover v0.5.0 rather than implying it.
 Adding a new indexable route here means updating the sitemap allow-lists in
 `scripts/check_site.py` and `scripts/check_deployed.py` and their tests in the same change.

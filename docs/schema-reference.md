@@ -101,9 +101,17 @@ The pages distinguish four things that are easy to conflate:
 
 FHGM (gene model) is a separate draft under review
 ([shared #204](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/204),
-[#207](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/207)) and
-deliberately has no page here: the menu stays the four types of issue #46 until that work
-reaches an overview of its own.
+[#207](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/207)).
+Since the #52 follow-up it has its own page, `/specifications/fhgm/`, but **not** a
+generated field reference: FHGM has no contract to inventory, so nothing is pinned
+for it in `scripts/schema-snapshots/`, `schema_fields.py` never learns an `fhgm`
+type, and the page links the shared `docs/FHGM.md` as the authority instead of
+mirroring the development repository's draft overlay. `check_site.py` enforces that
+boundary on the rendered page (`fhgm_draft_errors`): the draft notice and the
+`docs/FHGM.md` link must be present, and no generated field tables, `reference-provenance`
+block or `w3id.org/fair-bioheaders/fhgm` alias may ever appear there. When — and only
+when — #204 resolves into a reviewable model, the page gains a generated reference the
+same way FHT's draft one did.
 
 ## Checks after changing this section
 

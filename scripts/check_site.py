@@ -540,10 +540,20 @@ def fhgm_draft_errors(relative, text):
     """
     if relative != FHGM_PAGE:
         return []
+    class AuthorityLinkParser(HTMLParser):
+        found = False
+
+        def handle_starttag(self, tag, attributes):
+            if tag == 'a' and dict(attributes).get('href') == (
+                    f'https://github.com/FAIR-bioHeaders/{FHGM_AUTHORITY}'):
+                self.found = True
+
+    authority = AuthorityLinkParser()
+    authority.feed(text)
     errors = []
     if 'spec-notice--draft' not in text:
         errors.append('the FHGM draft page lacks its draft notice')
-    if FHGM_AUTHORITY not in text:
+    if not authority.found:
         errors.append('the FHGM draft page does not link the authoritative docs/FHGM.md')
     if 'w3id.org/fair-bioheaders/fhgm' in text:
         errors.append('the FHGM draft page links a released alias that does not exist')

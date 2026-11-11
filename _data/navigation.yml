@@ -16,6 +16,8 @@ main:
         url: /specifications/fhp/
       - title: "FHGFF3 — GFF3 annotation"
         url: /specifications/fhgff3/
+      - title: "FHGM — gene model (draft)"
+        url: /specifications/fhgm/
   - title: "JavaScript examples"
     url: /metadata-viewer/
     overflow: true

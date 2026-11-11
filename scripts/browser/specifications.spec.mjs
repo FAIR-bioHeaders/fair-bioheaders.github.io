@@ -5,8 +5,11 @@ import path from 'node:path';
 
 import AxeBuilder from '@axe-core/playwright';
 
-// The /specifications/ section: one dropdown, four generated field references.
+// The /specifications/ section: one dropdown, four generated field references,
+// and the FHGM draft overview, which has no field inventory because FHGM has
+// no contract (shared #204/#207).
 const TYPES = ['fhr', 'fht', 'fhp', 'fhgff3'];
+const NAV_ITEMS = [...TYPES, 'fhgm'];
 const SNAPSHOTS = {
   fhr: 'fhr-v0.5.0.json',
   fht: 'fht-draft.json',
@@ -43,8 +46,8 @@ test.describe('specifications dropdown', () => {
     await page.keyboard.press('Enter');
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
     await expect(menu).toBeVisible();
-    // The four reference pages are reachable from the one menu entry.
-    for (const type of TYPES) {
+    // The reference pages plus the FHGM draft entry are reachable from the one menu.
+    for (const type of NAV_ITEMS) {
       await expect(menu.locator(`a[href="/specifications/${type}/"]`)).toBeVisible();
     }
     await page.keyboard.press('Tab');
@@ -61,6 +64,10 @@ test.describe('specifications dropdown', () => {
     await expect(group).toHaveClass(/is-current/);
     await expect(group.locator('a[href="/specifications/fhp/"]')).toHaveAttribute('aria-current', 'page');
     await expect(group.locator('a[href="/specifications/"]')).not.toHaveAttribute('aria-current', 'page');
+    // The draft entry is a child like any other: the same aria-current handling applies.
+    await openPage(page, '/specifications/fhgm/');
+    await expect(group).toHaveClass(/is-current/);
+    await expect(group.locator('a[href="/specifications/fhgm/"]')).toHaveAttribute('aria-current', 'page');
   });
 
   test('marks active non-group navigation pages', async ({ page }) => {
@@ -105,7 +112,7 @@ test.describe('specifications dropdown', () => {
     const page = await context.newPage();
     await page.goto(baseURL + '/specifications/');
     const links = page.locator('#site-nav .nav-dropdown a');
-    await expect(links).toHaveCount(TYPES.length);
+    await expect(links).toHaveCount(NAV_ITEMS.length);
     await expect(links.first()).toBeVisible();
     await context.close();
   });
@@ -163,6 +170,29 @@ test.describe('generated field references', () => {
     await expect(page.locator('h1')).toContainText('Draft');
   });
 
+  test('fhgm: draft overview, marked draft, and no field inventory', async ({ page }) => {
+    await openPage(page, '/specifications/fhgm/');
+    await expect(page.locator('h1')).toContainText('Draft');
+    await expect(page.locator('.spec-notice--draft')).toBeVisible();
+    const body = page.locator('#main');
+    await expect(body).toContainText(/FHGM is a draft proposal, not a contract/i);
+    await expect(body).toContainText(/no field inventory/i);
+    await expect(body).toContainText(/not a contract/i);
+    // The page states the deferrals instead of inventing artifacts.
+    await expect(body).toContainText(/schemas\/versions\.json/);
+    // No generated reference exists for a type with no contract to inventory.
+    await expect(page.locator('.field-table')).toHaveCount(0);
+    await expect(page.locator('.reference-provenance')).toHaveCount(0);
+    // No released alias, and the authority plus the open questions are linked.
+    await expect(page.locator('a[href^="https://w3id.org/fair-bioheaders/fhgm"]')).toHaveCount(0);
+    await expect(page.locator('a[href="https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHGM.md"]').first()).toBeVisible();
+    await expect(page.locator('a[href*="FHGM-Specification"]').first()).toBeVisible();
+    await expect(page.locator('a[href*="issues/204"]').first()).toBeVisible();
+    await expect(page.locator('a[href*="issues/206"]').first()).toBeVisible();
+    // FHGM is described as model records inside an FHGFF3 file, not a rival type.
+    await expect(body).toContainText(/not alternatives to each/);
+  });
+
   test('references distinguish schema validity from checksum, parent and biology checks', async ({ page }) => {
     for (const type of TYPES) {
       await openPage(page, `/specifications/${type}/`);
@@ -177,7 +207,7 @@ test.describe('generated field references', () => {
     }
   });
 
-  for (const url of ['/specifications/', ...TYPES.map(type => `/specifications/${type}/`)]) {
+  for (const url of ['/specifications/', ...NAV_ITEMS.map(type => `/specifications/${type}/`)]) {
     for (const scheme of ['light', 'dark']) {
       test(`axe passes on ${url} (${scheme})`, async ({ page }) => {
         await page.emulateMedia({ colorScheme: scheme, reducedMotion: 'reduce' });

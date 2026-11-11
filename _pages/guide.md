@@ -22,6 +22,13 @@ page, generated from the published schema bytes; the
 [specification overview](/specifications/) lists all four. This guide stays the
 narrative introduction, so it does not restate the contracts.
 
+**FHGM** (gene model records) is not in the table and is not a header to choose:
+it is a *draft proposal*, with no contract, no `schemaVersion` and no tooling
+support, for model-level records that would live inside an FHGFF3 annotation file.
+See the [FHGM draft page](/specifications/fhgm/) and the authoritative
+[draft overview](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHGM.md)
+in the shared specification.
+
 Read the [released examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.5.0/examples)
 and [current toolkit documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools)
 for the chosen type and supported representation. The [resources page](/resources/)

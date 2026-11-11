@@ -19,3 +19,8 @@
   purpose: GFF3 annotation headers and related model work
   status: Development
   repository: https://github.com/FAIR-bioHeaders/FHGFF3
+- key: FHGM_Specification
+  name: FHGM development
+  purpose: Gene model record metadata; draft proposal under review, no contract
+  status: Draft
+  repository: https://github.com/FAIR-bioHeaders/FHGM-Specification

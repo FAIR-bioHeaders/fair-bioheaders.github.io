@@ -4,6 +4,7 @@ import unittest
 from check_site import (
     Page,
     feed_errors,
+    fhgm_draft_errors,
     schema_reference_errors,
     sitemap_path_allowed,
     jsonld_container_errors,
@@ -354,7 +355,8 @@ class SitemapAllowListChecks(unittest.TestCase):
     def test_existing_and_new_routes_are_allowed(self):
         for path in ('/', '/publications/', '/resources/', '/guide/', '/table-builder/',
                      '/metadata-viewer/', '/specifications/', '/specifications/fhr/',
-                     '/specifications/fht/', '/specifications/fhp/', '/specifications/fhgff3/'):
+                     '/specifications/fht/', '/specifications/fhp/', '/specifications/fhgff3/',
+                     '/specifications/fhgm/'):
             with self.subTest(path=path):
                 self.assertTrue(sitemap_path_allowed(path))
 
@@ -362,7 +364,7 @@ class SitemapAllowListChecks(unittest.TestCase):
         self.assertTrue(sitemap_path_allowed('/publication/some-paper/'))
 
     def test_unlisted_route_is_rejected(self):
-        for path in ('/terms/', '/sitemap/', '/specifications/fhgm/', '/specifications'):
+        for path in ('/terms/', '/sitemap/', '/specifications/fhgmx/', '/specifications'):
             with self.subTest(path=path):
                 self.assertFalse(sitemap_path_allowed(path))
 
@@ -439,3 +441,46 @@ class SchemaReferenceChecks(unittest.TestCase):
         errors = schema_reference_errors('specifications/fhr/index.html',
                                          reference_fixture(alias=False))
         self.assertTrue(any('fixed release schema URL' in error for error in errors))
+
+
+def fhgm_fixture(notice=True, authority=True, alias=False, table=False):
+    parts = []
+    if notice:
+        parts.append('<div class="spec-notice spec-notice--draft" role="note">'
+                     'FHGM is a draft proposal, not a contract.</div>')
+    if authority:
+        parts.append('<a href="https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/'
+                     'blob/main/docs/FHGM.md">docs/FHGM.md</a>')
+    if alias:
+        parts.append('<a href="https://w3id.org/fair-bioheaders/fhgm/v0.6.0">released alias</a>')
+    if table:
+        parts.append('<div class="field-table" role="region" tabindex="0" aria-label="Fields">'
+                     '<table><caption>Fields</caption></table></div>')
+    return ''.join(parts)
+
+
+class FhgmDraftPageChecks(unittest.TestCase):
+    """FHGM has no contract, so its page stays a draft overview and never a reference."""
+
+    def test_draft_overview_renders_cleanly(self):
+        self.assertEqual(fhgm_draft_errors('specifications/fhgm/index.html', fhgm_fixture()), [])
+
+    def test_other_pages_are_not_checked(self):
+        self.assertEqual(fhgm_draft_errors('specifications/fht/index.html', '<p>Anything</p>'), [])
+        self.assertEqual(fhgm_draft_errors('guide/index.html', fhgm_fixture(alias=True, table=True)), [])
+
+    def test_missing_draft_notice_is_reported(self):
+        errors = fhgm_draft_errors('specifications/fhgm/index.html', fhgm_fixture(notice=False))
+        self.assertTrue(any('draft notice' in error for error in errors))
+
+    def test_missing_authority_link_is_reported(self):
+        errors = fhgm_draft_errors('specifications/fhgm/index.html', fhgm_fixture(authority=False))
+        self.assertTrue(any('docs/FHGM.md' in error for error in errors))
+
+    def test_forged_release_alias_is_reported(self):
+        errors = fhgm_draft_errors('specifications/fhgm/index.html', fhgm_fixture(alias=True))
+        self.assertTrue(any('alias that does not exist' in error for error in errors))
+
+    def test_generated_field_reference_is_rejected(self):
+        errors = fhgm_draft_errors('specifications/fhgm/index.html', fhgm_fixture(table=True))
+        self.assertTrue(any('no contract to inventory' in error for error in errors))

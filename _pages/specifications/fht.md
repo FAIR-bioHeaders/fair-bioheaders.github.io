@@ -76,9 +76,11 @@ the repository's own tests, never written by hand.
    (`BIOHEADERS_EXPERIMENTAL_FHT=1`), which reads the unreleased contract and reports
    `ExperimentalDraftWarning` (checked 2026-11-14).
 3. **Parent links.** `derivedFrom` requires the parent's FHR-family checksum, so the
-   intent is verifiable — but `bioheaders verify-links` has no FHT support: with the
-   default settings it reads an FHT file as FHR (rule V5) and refuses it, so no released
-   tool checks an FHT parent link today.
+   intent is verifiable, and the lane described above does check it: with
+   `BIOHEADERS_EXPERIMENTAL_FHT=1`, 0.11.0 reported `derivedFrom[0] FHR transcribedFrom:
+   matched` against a supplied FHR parent file (checked 2026-11-14). With the default
+   settings the same command reads the FHT file as FHR (rule V5) and refuses it, so no
+   supported command performs that check on FHT today.
 4. **Biology.** Transcript completeness, expression, isoform correctness and
    orthology are outside the header entirely.
 

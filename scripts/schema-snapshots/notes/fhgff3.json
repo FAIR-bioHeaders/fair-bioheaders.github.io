@@ -288,7 +288,7 @@
       "example": "x-synthetic-evidenceBatch: 2026-09",
       "notes": [
         "Valid from FHGFF3 1.1. Every other unknown key stays invalid, nested objects stay closed, and an `x-` key in a record that states `1.0` is rejected.",
-        "Extension fields are covered by the checksum and are omitted from JSON-LD and microdata writers (J9, M5, X9). FHGFF3 has no JSON-LD or microdata form at all today.",
+        "Extension fields are covered by the checksum and are omitted from JSON-LD and microdata writers (J9, M5, X9). FHGFF3 has no JSON-LD form; its experimental toolkit microdata writer omits `x-` keys and says which (checked with fair-bioheaders 0.11.0 on 2026-11-14).",
         "The gff3-validator reports header findings and feature findings separately; an extension key is a header finding, never a feature error."
       ]
     },
@@ -388,11 +388,11 @@
     "serializations": [
       "GFF3 with a `#~` header block after `##gff-version 3` (optionally `##gff-version 3.x.y`), before the first feature or `##FASTA` line. Native directives such as `##sequence-region` may sit among the header lines.",
       "Standalone JSON and YAML metadata files.",
-      "No JSON-LD form and no HTML microdata form exists for FHGFF3 yet: keep the structured record as YAML when exporting a readable HTML table."
+      "Standalone HTML microdata has no released form. The toolkit (fair-bioheaders 0.10.0 onward, verified in 0.11.0) reads and writes an FHGFF3 microdata page against the draft FHGFF3 binding and emits `ExperimentalMicrodataWarning` on both paths; the shared docs/MICRODATA.md naming that binding canonical is documentation, not adoption. There is no JSON-LD form. This site's table builder emits no FHGFF3 microdata at all: its HTML export is a readable table, so download the YAML to keep the structured record."
     ],
     "tooling": [
-      "`fair-bioheaders` 0.10.0 (PyPI) bundles the v0.5.0 schema set and reads and writes FHGFF3 1.1, including extension fields, across `combine`, `verify`, `validate`, `convert`, `strip`, `verify-links` and `assess`. No toolkit release yet bundles the 1.2 schema, so a record that states `1.2` or uses a dotted lineage version is not validated by any released toolkit version while toolkit support for v0.6.0 is prepared.",
-      "[gff3-validator](https://github.com/FAIR-bioHeaders/gff3-validator) validates GFF3 syntax, Sequence Ontology terms and biology, and reports FHGFF3 header checks (its HDR rules) alongside — never merged with — the feature results. Its header checks run through the toolkit it depends on, and its published 0.1.0 release pins an older `fair-bioheaders`, so a header citing v0.6.0 is reported as an unsupported schema version (HDR-007) rather than checked against FHGFF3 1.2 until that pin is widened. Feature validation does not depend on it.",
+      "`fair-bioheaders` 0.11.0 (PyPI, 2026-11-14) bundles the v0.6.0 schema set and reads and writes FHGFF3 1.2, including extension fields and the dotted BUSCO dataset versions, across `combine`, `verify`, `validate`, `convert`, `strip`, `verify-links` and `assess`: a `1.2` record citing `https://w3id.org/fair-bioheaders/fhgff3/v0.6.0` validates, is written into a `#~` GFF3 header, verifies by checksum and converts back to the identical record (checked 2026-11-14). The same citation is an unsupported schema version in 0.10.0, which bundles v0.5.0.",
+      "[gff3-validator](https://github.com/FAIR-bioHeaders/gff3-validator) validates GFF3 syntax, Sequence Ontology terms and biology, and reports FHGFF3 header checks (its HDR rules) alongside — never merged with — the feature results. Its header checks run through the toolkit it depends on: the published 0.1.0 release — PyPI and the `v0.1.0` tag, both 2026-10-09, still the newest release of that package — pins `fair-bioheaders >=0.4,<0.5`, and 0.4.0 has no FHGFF3 support, so 0.1.0 reports an FHGFF3 header as not checked (HDR-002: `header validation is not implemented in this version`) rather than checking it against any FHGFF3 contract. Its `main` branch marks HDR-004 to HDR-010, including the HDR-007 schema check, as implemented, so checking a v0.6.0 header there needs a validator release whose toolkit pin covers 0.11.0. Feature validation does not depend on any of this.",
       "The browser table builder on this site validates against its documented **v0.4.0** snapshot (`schemaVersion` 1.0), not v0.6.0. Tracked in fair-bioheaders.github.io#15."
     ],
     "caveats": [

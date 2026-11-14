@@ -318,7 +318,7 @@
       "No `x-` extension field survives a JSON-LD or microdata round trip: writers omit them (J9, M5)."
     ],
     "tooling": [
-      "`fair-bioheaders` 0.10.0 (PyPI) bundles the v0.5.0 schema set and reads and writes FHP 1.1, including extension fields, across `combine`, `verify`, `validate`, `convert`, `strip`, `verify-links` and `assess`. No toolkit release yet bundles the 1.2 schema, so a record that states `1.2` or uses a dotted lineage version is not validated by any released toolkit version while toolkit support for v0.6.0 is prepared.",
+      "`fair-bioheaders` 0.11.0 (PyPI, 2026-11-14) bundles the v0.6.0 schema set and reads and writes FHP 1.2, including extension fields and the dotted BUSCO dataset versions, across `combine`, `verify`, `validate`, `convert`, `strip`, `verify-links` and `assess`: a `1.2` record citing `https://w3id.org/fair-bioheaders/fhp/v0.6.0` validates, is written into a `;~` FASTA header and verifies by checksum (checked 2026-11-14). The same citation is an unsupported schema version in 0.10.0, which bundles v0.5.0. A dotted `completeness.lineageDataset` stays invalid in a record that states `1.0` or `1.1` or cites v0.4.x/v0.5.0, and a `1.1` record citing v0.5.0 still validates under 0.11.0.",
       "The browser table builder on this site validates against its documented **v0.4.0** snapshot (`schemaVersion` 1.0), not v0.6.0. Tracked in fair-bioheaders.github.io#15.",
       "`bioheaders verify-links FILE PARENT...` checks each `derivedFrom` item against candidate parent files by recomputing their checksums."
     ],

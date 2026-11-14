@@ -303,7 +303,7 @@
       "None of the linked forms carries `x-` extension fields: writers omit them and say which (J9, M5, X9)."
     ],
     "tooling": [
-      "`fair-bioheaders` 0.10.0 (PyPI) bundles the v0.5.0 schemas — byte-identical to the FHR 2.1 bytes shared release v0.6.0 re-publishes — and implements FHR 2.1, including extension fields, for `combine`, `verify`, `validate`, `convert`, `strip`, `verify-links` and `assess`.",
+      "`fair-bioheaders` 0.11.0 (PyPI, 2026-11-14) bundles the shared release v0.6.0 schema set — FHR 2.1, the same bytes v0.5.0 published, plus FHP 1.2 and FHGFF3 1.2 — and implements FHR 2.1, including extension fields, for `combine`, `verify`, `validate`, `convert`, `strip`, `verify-links` and `assess`. It reads `https://w3id.org/fair-bioheaders/fhr/v0.6.0` and the v0.6.0 raw-tag alias as that release; 0.10.0 reports both as an unsupported schema version, so a header bound to v0.6.0 needs 0.11.0. Older citations still select their own frozen copy: a `2.0` record citing v0.4.0 validates unchanged (checked 2026-11-14).",
       "The browser table builder on this site validates against its documented **v0.4.0** snapshot (`schemaVersion` 2.0), not the current release: extension fields cannot be produced there yet. Tracked in fair-bioheaders.github.io#15.",
       "`bioheaders verify-links` checks a genome's own header bytes; parent linking is an FHP/FHT/FHGFF3 feature, not an FHR one."
     ],

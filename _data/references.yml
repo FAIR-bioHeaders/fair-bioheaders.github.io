@@ -143,8 +143,8 @@ FHR_Specification:
   status: Published
   resource_name: FAIR BioHeaders Specification
   purpose: Shared released genome, protein and annotation specifications
-  release: v0.4.0
-  version_doi: 10.5281/zenodo.23376528
+  release: v0.5.0
+  version_doi: 10.5281/zenodo.23948191
   type: dataset
   title: "FHR Specification"
   authors:
@@ -155,14 +155,14 @@ FHR_Specification:
   doi: 10.5281/zenodo.6762549
   repository: https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification
   license: MPL-2.0
-  note: "The registered citation title remains FHR Specification; this repository now publishes the family specifications."
+  note: "The registered citation title remains FHR Specification; this repository now publishes the family specifications. The newest schema release, v0.6.0 (2026-11-13), has no Zenodo version record yet, so the registered version DOI cites v0.5.0."
 
 FHR_File_Converter:
   status: Published
   resource_name: FAIR BioHeaders Tools
   purpose: Family metadata conversion, validation and file checksums
-  release: v0.7.0
-  version_doi: 10.5281/zenodo.23376802
+  release: v0.10.0
+  version_doi: 10.5281/zenodo.24167067
   type: software
   title: "FHR File Converter"
   authors:

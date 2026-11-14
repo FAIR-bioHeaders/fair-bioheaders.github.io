@@ -12,8 +12,9 @@ Released specifications, tools, development repositories and citation guidance f
 
 The shared specification repository publishes the reviewed family contracts:
 The shared repository publishes the reviewed family contracts. The current release
-is **v0.5.0**: FHR `schemaVersion` "2.1", FHP "1.1" and FHGFF3 "1.1" (extension fields,
-FORMAT rule R15). FHT transcriptome metadata is still a draft with no shared release,
+is **v0.6.0**: FHP `schemaVersion` "1.2" and FHGFF3 "1.2" (dotted BUSCO dataset
+versions), with FHR "2.1" re-published byte-identical — extension fields (FORMAT rule
+R15) came with v0.5.0. FHT transcriptome metadata is still a draft with no shared release,
 and FHGM gene model records are a draft proposal with no contract at all — no
 `schemaVersion`, no fixed alias, no registry entry and no tooling support; see the
 [FHGM draft page](/specifications/fhgm/) and the authoritative

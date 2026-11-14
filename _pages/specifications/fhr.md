@@ -1,7 +1,7 @@
 ---
 title: "FHR schema reference"
 permalink: /specifications/fhr/
-excerpt: "Complete field reference for the FHR reference-genome header: schemaVersion 2.1, released in FAIR-bioHeaders-Specification v0.5.0, with types, constraints, units, examples and compatibility notes."
+excerpt: "Complete field reference for the FHR reference-genome header: schemaVersion 2.1, unchanged in FAIR-bioHeaders-Specification v0.6.0, with types, constraints, units, examples and compatibility notes."
 ---
 
 FHR is the FAIR-bioHeaders header for a **reference genome assembly**. It is the
@@ -40,7 +40,8 @@ Both records are **synthetic**: the names, statistics and sequence bytes are inv
 and the identifiers are placeholders, so copy the shape, never the values.
 
 - [examples/minimal.fhr.json](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/examples/minimal.fhr.json) —
-  the ten required fields and nothing else (v0.5.0, `schemaVersion` "2.1").
+  the ten required fields and nothing else (current shared release v0.6.0,
+  `schemaVersion` "2.1" — the FHR contract is byte-identical to v0.5.0's).
 - [examples/example.fhr.json](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/examples/example.fhr.json) —
   a full record with authors, accessions, statistics and software.
 - [examples/extension-fields.fhr.yaml](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/examples/extension-fields.fhr.yaml) —
@@ -87,7 +88,7 @@ something false. The header makes that claim identifiable and durable, not corre
 
 - [Using FH*](/guide/) — choosing a header type and a supported workflow.
 - [Table builder](/table-builder/) — build and structurally validate FHR metadata in
-  the browser (v0.4.0 snapshot; v0.5.0 support is tracked in
+  the browser (v0.4.0 snapshot; support for the current release is tracked in
   [issue #15](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/15)).
 - [Metadata viewer](/metadata-viewer/) — read FHR JSON and microdata, with the
   JavaScript integration guide.

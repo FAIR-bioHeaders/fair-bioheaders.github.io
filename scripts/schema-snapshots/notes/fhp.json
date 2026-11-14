@@ -9,7 +9,7 @@
     },
     "schemaVersion": {
       "notes": [
-        "`1.1` came with shared release v0.5.0; `1.0` was first released in v0.4.0. Quote it in YAML.",
+        "`1.2` came with shared release v0.6.0; `1.1` came with v0.5.0; `1.0` was first released in v0.4.0. Quote it in YAML.",
         "FHP has no earlier numeric contract: unlike FHR, rule V6 does not apply, so `1` is simply invalid."
       ]
     },
@@ -36,12 +36,12 @@
     },
     "metadataAuthor[].uri": {
       "example": "https://orcid.org/0000-0002-1825-0097",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "value from the released FHP example"
     },
     "metadataAuthor[].nameType": {
       "example": "Personal",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "value from the released FHP example",
       "notes": [
         "Preserved as supplied from FHP 1.0 onwards; the pattern accepts only the two DataCite spellings."
@@ -59,18 +59,18 @@
     },
     "accessionID.name": {
       "example": "UP000005640",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-database.fhp.json",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-database.fhp.json",
       "exampleLabel": "UniProt proteome identifier used by the released example"
     },
     "accessionID.url": {
       "example": "https://www.uniprot.org/proteomes/UP000005640",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-database.fhp.json",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-database.fhp.json",
       "exampleLabel": "URL from the released FHP example"
     },
     "scholarlyArticle": {
       "units": "DOI suffix (bare DOI, no resolver prefix)",
       "example": "10.1093/bib/bbae122",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/example.fhr.json",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/example.fhr.json",
       "exampleLabel": "illustrative value (the FHR paper DOI)"
     },
     "funding": {
@@ -81,7 +81,7 @@
     },
     "reuseConditions": {
       "example": "public domain",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "value from the released FHP example"
     },
     "identifier": {
@@ -90,7 +90,7 @@
     "geneticCode": {
       "units": "NCBI translation table ID",
       "example": "1",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "value from the released FHP example",
       "notes": [
         "Only tables 1-6, 9-16 and 21-33 are expressible; 7, 8, 17-20 and 34+ have no slot. Omit the field when the file mixes tables or the table is unknown — never guess."
@@ -98,7 +98,7 @@
     },
     "isoformPolicy": {
       "example": "longestPerGene",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "value from the released FHP example",
       "notes": [
         "`canonicalPerGene` means the source's canonical choice, which is not necessarily the longest isoform."
@@ -107,33 +107,33 @@
     "predictionProtocol": {
       "units": "URI",
       "example": "https://example.org/annotation-protocol",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "value from the released FHP example"
     },
     "predictionSoftware[].name": {
       "example": "ExamplePredictor (placeholder)",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "value from the released FHP example"
     },
     "predictionSoftware[].version": {
       "example": "1.0.0",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "value from the released FHP example"
     },
     "predictionSoftware[].uri": {
       "example": "https://example.org/example-predictor",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "value from the released FHP example"
     },
     "predictionSoftware[].commandLineOption": {
       "example": "--species, human",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "value from the released FHP example"
     },
     "sequenceStats.totalResidues": {
       "units": "residues",
       "example": "11000000",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "value from the released FHP example"
     },
     "sequenceStats.sequenceCount": {
@@ -149,13 +149,13 @@
     },
     "completeness.buscoVersion": {
       "example": "5.8.3",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "value from the released FHP example"
     },
     "completeness.lineageDataset": {
       "units": "BUSCO lineage dataset name including its `odb` version suffix",
       "notes": [
-        "The pattern accepts `_odb` plus digits only. A dotted dataset version such as `odb12.2` cannot be represented; keep it in `documentation` rather than renaming the lineage (FAIR-bioHeaders-Specification#170)."
+        "From FHP 1.2 (shared release v0.6.0) the pattern also accepts dot-separated numeric dataset-version components, so a measured lineage name such as `enterobacterales_odb12.2` fits the typed slot unchanged — never rename a lineage to satisfy an older minor (FAIR-bioHeaders-Specification#170, #222). Records that state `1.0` or `1.1` keep the earlier `_odb` plus digits pattern: the 1.2 schema holds them to the minor they state."
       ]
     },
     "completeness.completeSingle": {
@@ -183,7 +183,7 @@
     },
     "derivedFrom[].headerType": {
       "example": "FHR",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "value from the released FHP example",
       "notes": [
         "Any released header type may be named; the vocabulary is provisional until FAIR-bioHeaders-Specification#54 decides the relationship mapping."
@@ -191,13 +191,13 @@
     },
     "derivedFrom[].relationship": {
       "example": "translatedFrom",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "value from the released FHP example"
     },
     "derivedFrom[].checksum": {
       "units": "standard padded base64 of the parent file's SHA-512/256",
       "example": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "placeholder checksum from the released FHP example",
       "notes": [
         "The released example uses a placeholder to stand for a real parent file. A placeholder never verifies: run `bioheaders verify-links` against the actual parent."
@@ -217,7 +217,7 @@
     "source[].sequenceCount": {
       "units": "sequences taken from this source",
       "example": "120",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-mixed.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-mixed.fhp.yaml",
       "exampleLabel": "placeholder count from the released FHP example"
     },
     "source[].assemblyAccession": {
@@ -231,7 +231,7 @@
       "notes": [
         "Valid from FHP 1.1. Every other unknown key stays invalid, nested objects stay closed, and an `x-` key in a record that states `1.0` is rejected.",
         "Use a namespace, `x-<project>-<field>`. Extension fields never override a standard field, are covered by the checksum, and are omitted from JSON-LD and microdata (J9, M5).",
-        "Records that cite a v0.4.x schema URL are checked against the v0.4.x schema, where an `x-` key is an unknown key, so files with extension fields cite v0.5.0 or later."
+        "Records that cite a v0.4.x schema URL are checked against the v0.4.x schema, where an `x-` key is an unknown key, so files with extension fields cite v0.5.0 or a later release."
       ]
     },
     "derivedFrom[].accessionID.name": {
@@ -318,8 +318,8 @@
       "No `x-` extension field survives a JSON-LD or microdata round trip: writers omit them (J9, M5)."
     ],
     "tooling": [
-      "`fair-bioheaders` 0.9.0 (PyPI) bundles the v0.5.0 FHP schema and reads and writes FHP 1.1, including extension fields, across `combine`, `verify`, `validate`, `convert`, `strip`, `verify-links` and `assess`.",
-      "The browser table builder on this site validates against its documented **v0.4.0** snapshot (`schemaVersion` 1.0), not v0.5.0. Tracked in fair-bioheaders.github.io#15.",
+      "`fair-bioheaders` 0.10.0 (PyPI) bundles the v0.5.0 schema set and reads and writes FHP 1.1, including extension fields, across `combine`, `verify`, `validate`, `convert`, `strip`, `verify-links` and `assess`. No toolkit release yet bundles the 1.2 schema, so a record that states `1.2` or uses a dotted lineage version is not validated by any released toolkit version while toolkit support for v0.6.0 is prepared.",
+      "The browser table builder on this site validates against its documented **v0.4.0** snapshot (`schemaVersion` 1.0), not v0.6.0. Tracked in fair-bioheaders.github.io#15.",
       "`bioheaders verify-links FILE PARENT...` checks each `derivedFrom` item against candidate parent files by recomputing their checksums."
     ],
     "caveats": [

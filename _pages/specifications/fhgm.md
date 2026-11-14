@@ -40,8 +40,8 @@ FHGFF3 and FHGM describe different things and are not alternatives to each
 other:
 
 - **FHGFF3 describes the annotation file.** The FHGFF3 header is the file-level
-  `#~` block defined by the released contract — `schemaVersion` `"1.1"`,
-  `fhgff3.json`, see the [FHGFF3 schema reference](/specifications/fhgff3/) —
+  `#~` block defined by the released contract (currently `schemaVersion` `"1.2"`,
+  `fhgff3.json`; see the [FHGFF3 schema reference](/specifications/fhgff3/)) —
   covering the whole GFF3 file: its identity, taxon, genome link and
   exact-byte checksum.
 - **FHGM would describe individual gene-model records.** A model record

@@ -1,7 +1,7 @@
 {
   "note": "Which documented slots and objects are shared rather than type-specific. Each name is checked against the pinned core model bytes in this directory, so a renamed or removed shared slot cannot silently disappear from the field tables.",
   "core": {
-    "file": "core-v0.5.0.yaml",
+    "file": "core-v0.6.0.yaml",
     "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/schemas/core.yaml",
     "label": "shared core (schemas/core.yaml)",
     "slots": [
@@ -29,7 +29,7 @@
     "enums": ["NameType", "HeaderType", "DerivationRelationship"]
   },
   "shared": {
-    "file": "shared-v0.5.0.yaml",
+    "file": "shared-v0.6.0.yaml",
     "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/schemas/shared.yaml",
     "label": "shared objects (schemas/shared.yaml)",
     "slots": [],

@@ -652,7 +652,7 @@ def build_releases(meta: dict, schema: dict, provenance: dict) -> dict:
     `schemaVersion`; the pinned schema's own enum is cross-checked against it so a
     release line and a contract version cannot disagree with the shipped bytes.
     """
-    registry_name = 'versions-v0.5.0.json'
+    registry_name = 'versions-v0.6.0.json'
     reference = provenance.get('references', {}).get(registry_name)
     if reference is None:
         raise SystemExit(f'{registry_name}: the version registry is not pinned in provenance.json')

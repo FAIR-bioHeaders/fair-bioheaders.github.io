@@ -19,10 +19,10 @@ it gets a [draft overview](/specifications/fhgm/) instead of a generated invento
 
 | Type | Resource | Contract and status |
 | --- | --- | --- |
-| [FHR](/specifications/fhr/) | Reference genome (FASTA, GFA) | `schemaVersion` "2.1", released in shared v0.5.0 |
+| [FHR](/specifications/fhr/) | Reference genome (FASTA, GFA) | `schemaVersion` "2.1"; current shared release v0.6.0 re-publishes the 2.1 bytes unchanged |
 | [FHT](/specifications/fht/) | Transcriptome (FASTA) | `schemaVersion` "1.0" proposed — **draft, not released** |
-| [FHP](/specifications/fhp/) | Protein set (FASTA) | `schemaVersion` "1.1", released in shared v0.5.0 |
-| [FHGFF3](/specifications/fhgff3/) | GFF3 annotation | `schemaVersion` "1.1", released in shared v0.5.0 |
+| [FHP](/specifications/fhp/) | Protein set (FASTA) | `schemaVersion` "1.2", released in shared v0.6.0 |
+| [FHGFF3](/specifications/fhgff3/) | GFF3 annotation | `schemaVersion` "1.2", released in shared v0.6.0 |
 
 The table lists the four types that have a documented header contract, released or
 concrete enough to review. A fifth draft,
@@ -47,9 +47,10 @@ guidance.
 Three points hold for the whole family:
 
 - **The record is a closed object.** An unknown top-level key is invalid — with one
-  exception from shared release v0.5.0: keys that start with `x-` are extension
-  fields (rule R15), accepted in FHR 2.1, FHP 1.1 and FHGFF3 1.1 and in the FHT
-  draft. Nested objects stay closed, and an extension never overrides a standard field.
+  exception, introduced in shared release v0.5.0: keys that start with `x-` are extension
+  fields (rule R15), accepted in FHR 2.1, FHP 1.1 and later, FHGFF3 1.1 and later and in
+  the FHT draft. Nested objects stay closed, and an extension never overrides a standard
+  field.
 - **`required` is presence, not substance.** `genome: ""`, `taxon: {}` or
   `metadataAuthor: []` pass the released schemas while describing nothing; conforming
   values are non-empty, and validators report that rather than rejecting it.

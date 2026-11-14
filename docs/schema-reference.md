@@ -18,7 +18,7 @@ CI and so a schema change cannot leave the documentation quietly stale.
 | --- | --- |
 | `scripts/schema_fields.py` | Generator, drift checker, coverage reporter and refresh command |
 | `scripts/schema-snapshots/provenance.json` | Every pinned file with its repository, ref, commit, path, URLs and SHA-256, plus release dates |
-| `scripts/schema-snapshots/*.json`, `*.yaml` | The pinned schema and shared-model bytes (FHR/FHP/FHGFF3 v0.5.0, the FHT development draft, `schemas/core.yaml`, `schemas/shared.yaml`, `schemas/versions.json`) |
+| `scripts/schema-snapshots/*.json`, `*.yaml` | The pinned schema and shared-model bytes (FHR/FHP/FHGFF3 v0.6.0, the FHT development draft, `schemas/core.yaml`, `schemas/shared.yaml`, `schemas/versions.json`; the superseded v0.5.0 copies stay pinned under `references` as immutable history) |
 | `scripts/schema-snapshots/examples/*.json` | Pinned released example records — the source of the "Example" column |
 | `scripts/schema-snapshots/shared-core.json` | Which slots and objects are shared core/shared-model rather than type-specific |
 | `scripts/schema-snapshots/notes/<type>.json` | Curated editorial layer: status prose, serializations, tooling support, units, examples where no example reaches a field, migration notes, and the explanation of each conditional rule |
@@ -85,15 +85,17 @@ to make a check pass, and never rewrite an immutable release, tag or alias.
 
 The pages distinguish four things that are easy to conflate:
 
-- **Contract** — released types cite their fixed alias (`…/v0.5.0` = FHR "2.1",
-  FHP "1.1", FHGFF3 "1.1"). FHT cites only the FHT-Specification development URL and is
+- **Contract** — released types cite their fixed alias (`…/v0.6.0` = FHR "2.1",
+  FHP "1.2", FHGFF3 "1.2"; the FHR 2.1 bytes are unchanged from v0.5.0).
+  FHT cites only the FHT-Specification development URL and is
   marked draft on the page, in the nav and in the index tables.
-- **Toolkit** — `fair-bioheaders` 0.9.0 bundles the v0.5.0 schemas for the three released
-  types. It recognises the FHT URL and reports `not assessed` /
-  `unsupported-header-type`; that is detection, not support.
+- **Toolkit** — the current PyPI release, `fair-bioheaders` 0.10.0, bundles the v0.5.0
+  schemas for the three released types; no released toolkit bundles the 1.2 schemas yet,
+  and v0.6.0 support is prepared, not released. It recognises the FHT URL and reports
+  `not assessed` / `unsupported-header-type`; that is detection, not support.
 - **This site's builder** — `/table-builder/` still validates its documented **v0.4.0**
   snapshots (FHR "2.0", FHP/FHGFF3 "1.0"). It cannot produce `x-` extension fields, so the
-  reference pages say so instead of implying coverage. v0.5.0 builder support is
+  reference pages say so instead of implying coverage. Current-release builder support is
   [issue #15](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/15).
 - **Verification** — schema validity, file checksum verification, parent-link checking
   and biological/feature validation are separate questions with separate tools, spelled

@@ -12,10 +12,10 @@ that type's released contract and tooling.
 
 | Type | Resource | Contract and workflow status |
 | --- | --- | --- |
-| [FHR](/specifications/fhr/) | Reference genome assembly | FHR `2.1` in shared specification v0.5.0; toolkit FASTA/GFA, JSON-LD and microdata. The browser builder still validates its v0.4.0 snapshot. |
+| [FHR](/specifications/fhr/) | Reference genome assembly | FHR `2.1`; the current shared release v0.6.0 re-publishes the 2.1 bytes unchanged. Toolkit FASTA/GFA, JSON-LD and microdata. The browser builder still validates its v0.4.0 snapshot. |
 | [FHT](/specifications/fht/) | Transcriptome | **Draft** contract, `schemaVersion` "1.0" proposed; no shared release, no fixed alias, no toolkit or builder support. |
-| [FHP](/specifications/fhp/) | Protein/proteome FASTA | FHP `1.1` in shared v0.5.0; toolkit JSON/YAML, files, canonical JSON-LD and microdata. The builder validates its v0.4.0 snapshot. |
-| [FHGFF3](/specifications/fhgff3/) | GFF3 annotation metadata | FHGFF3 `1.1` in shared v0.5.0; toolkit JSON/YAML and files, no JSON-LD or microdata form yet. Feature and biology validation is a separate tool. |
+| [FHP](/specifications/fhp/) | Protein/proteome FASTA | FHP `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit JSON/YAML, files, canonical JSON-LD and microdata. The builder validates its v0.4.0 snapshot. |
+| [FHGFF3](/specifications/fhgff3/) | GFF3 annotation metadata | FHGFF3 `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit JSON/YAML and files, no JSON-LD or microdata form yet. Feature and biology validation is a separate tool. |
 
 Every field, type, constraint and unit is documented on that type's schema reference
 page, generated from the published schema bytes; the
@@ -29,7 +29,7 @@ See the [FHGM draft page](/specifications/fhgm/) and the authoritative
 [draft overview](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHGM.md)
 in the shared specification.
 
-Read the [released examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.5.0/examples)
+Read the [released examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.6.0/examples)
 and [current toolkit documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools)
 for the chosen type and supported representation. The [resources page](/resources/)
 links each development repository and distinguishes development from shared final

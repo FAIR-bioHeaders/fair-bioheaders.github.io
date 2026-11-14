@@ -6,53 +6,53 @@
     "guide": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/SCHEMA-VERSIONS.md"
   },
   "files": {
-    "fhr-v0.5.0.json": {
+    "fhr-v0.6.0.json": {
       "page": "fhr",
       "type": "FHR",
       "status": "released",
       "schemaVersion": "2.1",
-      "release": "v0.5.0",
-      "releaseDate": "2026-11-04",
+      "release": "v0.6.0",
+      "releaseDate": "2026-11-13",
       "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
-      "ref": "v0.5.0",
-      "commit": "170e677fbb6726a3f765373dbe1f214820000be7",
+      "ref": "v0.6.0",
+      "commit": "0ae18b00ee4bd71ab2dc28bae706b0f9d195076b",
       "path": "fhr.json",
-      "fetchUrl": "https://w3id.org/fair-bioheaders/fhr/v0.5.0",
-      "rawUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhr.json",
+      "fetchUrl": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "rawUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhr.json",
       "sha256": "694ab5afaf8c3743eacf9e2aacb5551f7cbe37073b6f4afc3ae4a65b47f9d4df",
-      "retrieved": "2026-11-10"
+      "retrieved": "2026-11-13"
     },
-    "fhp-v0.5.0.json": {
+    "fhp-v0.6.0.json": {
       "page": "fhp",
       "type": "FHP",
       "status": "released",
-      "schemaVersion": "1.1",
-      "release": "v0.5.0",
-      "releaseDate": "2026-11-04",
+      "schemaVersion": "1.2",
+      "release": "v0.6.0",
+      "releaseDate": "2026-11-13",
       "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
-      "ref": "v0.5.0",
-      "commit": "170e677fbb6726a3f765373dbe1f214820000be7",
+      "ref": "v0.6.0",
+      "commit": "0ae18b00ee4bd71ab2dc28bae706b0f9d195076b",
       "path": "fhp.json",
-      "fetchUrl": "https://w3id.org/fair-bioheaders/fhp/v0.5.0",
-      "rawUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhp.json",
-      "sha256": "2409739d4a223164ca368f93afa78c8f1e3809fb04ec46cc9a793cc5aaaba427",
-      "retrieved": "2026-11-10"
+      "fetchUrl": "https://w3id.org/fair-bioheaders/fhp/v0.6.0",
+      "rawUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhp.json",
+      "sha256": "92a0b3cbcfe69939ebfaac69f0c5958ce426c005873efe8d3e3eb0fc0dab6de5",
+      "retrieved": "2026-11-13"
     },
-    "fhgff3-v0.5.0.json": {
+    "fhgff3-v0.6.0.json": {
       "page": "fhgff3",
       "type": "FHGFF3",
       "status": "released",
-      "schemaVersion": "1.1",
-      "release": "v0.5.0",
-      "releaseDate": "2026-11-04",
+      "schemaVersion": "1.2",
+      "release": "v0.6.0",
+      "releaseDate": "2026-11-13",
       "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
-      "ref": "v0.5.0",
-      "commit": "170e677fbb6726a3f765373dbe1f214820000be7",
+      "ref": "v0.6.0",
+      "commit": "0ae18b00ee4bd71ab2dc28bae706b0f9d195076b",
       "path": "fhgff3.json",
-      "fetchUrl": "https://w3id.org/fair-bioheaders/fhgff3/v0.5.0",
-      "rawUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhgff3.json",
-      "sha256": "20ce320f5d706f11ed21cdece4dfb56e3568b50be126e25b4016f46f2e8e416c",
-      "retrieved": "2026-11-10"
+      "fetchUrl": "https://w3id.org/fair-bioheaders/fhgff3/v0.6.0",
+      "rawUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhgff3.json",
+      "sha256": "1942be4cefc8b3a2537942c2252b45fbcef87a5532486e4fd0f5d4c540e0fbf9",
+      "retrieved": "2026-11-13"
     },
     "fht-draft.json": {
       "page": "fht",
@@ -76,67 +76,67 @@
       "type": "FHR",
       "kind": "rich",
       "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
-      "ref": "v0.5.0",
+      "ref": "v0.6.0",
       "path": "examples/example.fhr.json",
-      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/example.fhr.json",
-      "sha256": "bd26248f11a96128f0ae7cb68fdeea3b942f9bb1f833e08b0c9fbe20dab3dd89",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/example.fhr.json",
+      "sha256": "fbbba44a15e12cbb1371beebefc666bb6fb58f4977799d4a2e11af2784a8e6e9",
       "label": "rich FHR example (synthetic)",
-      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/examples/example.fhr.json"
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/examples/example.fhr.json"
     },
     "examples/minimal.fhr.json": {
       "type": "FHR",
       "kind": "minimal",
       "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
-      "ref": "v0.5.0",
+      "ref": "v0.6.0",
       "path": "examples/minimal.fhr.json",
-      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/minimal.fhr.json",
-      "sha256": "9926b7ffd6698b664a196b5087e81d413c270bef21a6b85f3b302e4274490379",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/minimal.fhr.json",
+      "sha256": "97c875c01be3439d54a4323add9bc07e067064c547ec782e22941892f9ba96ea",
       "label": "minimal FHR example (synthetic)",
-      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/examples/minimal.fhr.json"
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/examples/minimal.fhr.json"
     },
     "examples/rich-database.fhp.json": {
       "type": "FHP",
       "kind": "rich",
       "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
-      "ref": "v0.5.0",
+      "ref": "v0.6.0",
       "path": "examples/fhp/rich-database.fhp.json",
-      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-database.fhp.json",
-      "sha256": "cef3cb277ea1385c8c5c16da9f185ac19cca025e54778646c75c09794005f9aa",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-database.fhp.json",
+      "sha256": "71e4d798bf4ffd45519b4a56a86181b161eae95d73a9d6a9ce1e2d6ae943d3d8",
       "label": "rich database FHP example (synthetic)",
-      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/examples/fhp/rich-database.fhp.json"
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/examples/fhp/rich-database.fhp.json"
     },
     "examples/minimal-predicted.fhp.json": {
       "type": "FHP",
       "kind": "minimal",
       "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
-      "ref": "v0.5.0",
+      "ref": "v0.6.0",
       "path": "examples/fhp/minimal-predicted.fhp.json",
-      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/minimal-predicted.fhp.json",
-      "sha256": "dfec7c7055195b80c84e71c1d9ca322fb4b55545f7da7e57390183037ad18acd",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/minimal-predicted.fhp.json",
+      "sha256": "87b95f044d0a2a0664c0ace06308e08c0a0738fc889f34263660cff744dbdcfe",
       "label": "minimal predicted FHP example (synthetic)",
-      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/examples/fhp/minimal-predicted.fhp.json"
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/examples/fhp/minimal-predicted.fhp.json"
     },
     "examples/minimal-mixed.fhp.json": {
       "type": "FHP",
       "kind": "minimal",
       "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
-      "ref": "v0.5.0",
+      "ref": "v0.6.0",
       "path": "examples/fhp/minimal-mixed.fhp.json",
-      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/minimal-mixed.fhp.json",
-      "sha256": "5594c9605864f89edccfab1e19b6fff9d24976ec0f17ce1405ad3b5ee3791864",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/minimal-mixed.fhp.json",
+      "sha256": "7a92350f908802c4686840e7061299397bc05e5e0c7e0e94494bc9cf5c3bcf59",
       "label": "minimal mixed FHP example (synthetic)",
-      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/examples/fhp/minimal-mixed.fhp.json"
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/examples/fhp/minimal-mixed.fhp.json"
     },
     "examples/minimal-reference.fhgff3.json": {
       "type": "FHGFF3",
       "kind": "minimal",
       "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
-      "ref": "v0.5.0",
+      "ref": "v0.6.0",
       "path": "examples/fhgff3/minimal-reference.fhgff3.json",
-      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhgff3/minimal-reference.fhgff3.json",
-      "sha256": "ba128038f5545de509a5096e2dff4edeacad797fb919e96d70409287665f6d2a",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhgff3/minimal-reference.fhgff3.json",
+      "sha256": "01fc3332c3dd070062c36a82d0498fea6dd1ae1283e8e90403086eaf19c7aa9d",
       "label": "minimal reference FHGFF3 example (synthetic)",
-      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/examples/fhgff3/minimal-reference.fhgff3.json"
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/examples/fhgff3/minimal-reference.fhgff3.json"
     },
     "examples/de-novo.fht.json": {
       "type": "FHT",
@@ -183,6 +183,72 @@
       "sha256": "a570c2a5b742e02ecfec5ebc548775092e4ebc51bd272fef164d26b11efc9e61",
       "retrieved": "2026-11-10",
       "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/schemas/versions.json"
+    },
+    "core-v0.6.0.yaml": {
+      "label": "Shared core model (slots and objects the header types reuse)",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "v0.6.0",
+      "commit": "0ae18b00ee4bd71ab2dc28bae706b0f9d195076b",
+      "path": "schemas/core.yaml",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/schemas/core.yaml",
+      "retrieved": "2026-11-13",
+      "sha256": "2bd657ece8c8cbfb4dfbba1f68cb3f708c1ab91baa0fcd50d97ddc58b7e96b5e",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/schemas/core.yaml"
+    },
+    "shared-v0.6.0.yaml": {
+      "label": "Shared object model (software, sources and BUSCO completeness)",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "v0.6.0",
+      "commit": "0ae18b00ee4bd71ab2dc28bae706b0f9d195076b",
+      "path": "schemas/shared.yaml",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/schemas/shared.yaml",
+      "retrieved": "2026-11-13",
+      "sha256": "19afd1d83a6728f5ca9084878adca80a00d61399e2f5854854053eed8cf1d209",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/schemas/shared.yaml"
+    },
+    "versions-v0.6.0.json": {
+      "label": "Schema-version registry: which shared release carries which schemaVersion per type",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "v0.6.0",
+      "commit": "0ae18b00ee4bd71ab2dc28bae706b0f9d195076b",
+      "path": "schemas/versions.json",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/schemas/versions.json",
+      "sha256": "7535e3569ce4157b22f14b9cd89dc98612b4e90cf553ef0a3250f5811529ce62",
+      "retrieved": "2026-11-13",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/schemas/versions.json"
+    },
+    "fhr-v0.5.0.json": {
+      "label": "Historical pin: the FHR 2.1 contract as published in shared release v0.5.0; byte-identical to fhr-v0.6.0.json",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "v0.5.0",
+      "commit": "170e677fbb6726a3f765373dbe1f214820000be7",
+      "path": "fhr.json",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/fhr.json",
+      "sha256": "694ab5afaf8c3743eacf9e2aacb5551f7cbe37073b6f4afc3ae4a65b47f9d4df",
+      "retrieved": "2026-11-10",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhr.json"
+    },
+    "fhp-v0.5.0.json": {
+      "label": "Historical pin: the FHP 1.1 contract as published in shared release v0.5.0",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "v0.5.0",
+      "commit": "170e677fbb6726a3f765373dbe1f214820000be7",
+      "path": "fhp.json",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/fhp.json",
+      "sha256": "2409739d4a223164ca368f93afa78c8f1e3809fb04ec46cc9a793cc5aaaba427",
+      "retrieved": "2026-11-10",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhp.json"
+    },
+    "fhgff3-v0.5.0.json": {
+      "label": "Historical pin: the FHGFF3 1.1 contract as published in shared release v0.5.0",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "v0.5.0",
+      "commit": "170e677fbb6726a3f765373dbe1f214820000be7",
+      "path": "fhgff3.json",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/fhgff3.json",
+      "sha256": "20ce320f5d706f11ed21cdece4dfb56e3568b50be126e25b4016f46f2e8e416c",
+      "retrieved": "2026-11-10",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhgff3.json"
     }
   },
   "releaseDates": {
@@ -191,6 +257,7 @@
     "v0.4.0": "2026-10-14",
     "v0.4.1": "2026-10-21",
     "v0.4.2": "2026-10-28",
-    "v0.5.0": "2026-11-04"
+    "v0.5.0": "2026-11-04",
+    "v0.6.0": "2026-11-13"
   }
 }

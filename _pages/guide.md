@@ -13,7 +13,7 @@ that type's released contract and tooling.
 | Type | Resource | Contract and workflow status |
 | --- | --- | --- |
 | [FHR](/specifications/fhr/) | Reference genome assembly | FHR `2.1`; the current shared release v0.6.0 re-publishes the 2.1 bytes unchanged. Toolkit `fair-bioheaders` 0.11.0 writes and checks FASTA/GFA, JSON-LD and microdata for `2.1` and accepts a `…/v0.6.0` citation. The browser builder still validates its v0.4.0 snapshot. |
-| [FHT](/specifications/fht/) | Transcriptome | **Draft** contract, `schemaVersion` "1.0" proposed; no shared release, no fixed alias, no toolkit or builder support. 0.11.0 has an opt-in experimental draft lane (`BIOHEADERS_EXPERIMENTAL_FHT`), which is a preview of publication, not support. |
+| [FHT](/specifications/fht/) | Transcriptome | **Draft** contract, `schemaVersion` "1.0" proposed; no shared release, no fixed alias, no toolkit or builder support. 0.11.0 has an opt-in experimental preview of draft validation, which is not support. |
 | [FHP](/specifications/fhp/) | Protein/proteome FASTA | FHP `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit 0.11.0 reads and writes `1.2` as JSON/YAML, in files, and as canonical JSON-LD and HTML microdata. The builder validates its v0.4.0 snapshot. |
 | [FHGFF3](/specifications/fhgff3/) | GFF3 annotation metadata | FHGFF3 `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit 0.11.0 reads and writes `1.2` as JSON/YAML and in files, plus experimental HTML microdata, and has no JSON-LD form. Feature and biology validation is a separate tool. |
 

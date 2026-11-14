@@ -178,7 +178,7 @@
     "completeness": {
       "notes": [
         "Counts from an actual BUSCO run only; a legacy free-text completeness string is never converted into counts. Counts describe ortholog groups, not transcripts or genes.",
-        "The shared lineage pattern allows `_odb` plus digits, so a dotted dataset version such as `hymenoptera_odb12.2` cannot be represented. Keep the measured lineage and counts in `documentation` rather than renaming it (FAIR-bioHeaders-Specification#170)."
+        "The lineage pattern accepts `_odb` plus one or more dot-separated numeric version components, so `hymenoptera_odb12.2` is representable: shared FAIR-bioHeaders-Specification#170 widened it for v0.6.0 and FHT-Specification#34 mirrored the widened grammar into the draft. Do not rename or coerce a measured lineage to fit the pattern; if a measured value cannot be represented, omit completeness and keep the lineage and counts in `documentation`."
       ]
     },
     "completeness.buscoVersion": {
@@ -364,7 +364,7 @@
     "caveats": [
       "This page documents a **draft**. Nothing here is adopted guidance, and the field set can still change before release.",
       "The JSON Schema enforces the permitted `derivedFrom` pairs (`FHT` + `filteredFrom`, `FHR` + `transcribedFrom`), but cannot establish whether the asserted parent relationship is factually true.",
-      "The shared BUSCO lineage pattern cannot express a dotted dataset version such as `hymenoptera_odb12.2` (FAIR-bioHeaders-Specification#170).",
+      "The pinned draft's BUSCO lineage pattern accepts dotted dataset versions such as `hymenoptera_odb12.2` (shared FAIR-bioHeaders-Specification#170, mirrored into the draft by FHT-Specification#34); the bytes this page documents move with every merged draft edit until FHT is released.",
       "The legacy `fht-v0.1.json` draft schema, its examples and the retired FHT-File-Converter are historical review inputs, not FHT 1.0 and not current support. `masking` and `license` are gone; MD5 checksums are invalid."
     ]
   }

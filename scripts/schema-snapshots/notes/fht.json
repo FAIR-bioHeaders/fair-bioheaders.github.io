@@ -75,7 +75,7 @@
     "checksum": {
       "units": "standard padded base64 of the SHA-512/256 digest",
       "notes": [
-        "Computed by the shared family rules (R1 to R4) over the exact FASTA bytes, excluding the root `;~checksum:` line. The development repository recomputes it in its own tests; no released toolkit command writes it.",
+        "Computed by the shared family rules (R1 to R4) over the exact FASTA bytes, excluding the root `;~checksum:` line. The development repository recomputes it in its own tests; by default no released toolkit command writes one. `fair-bioheaders` 0.11.0 writes it only inside the opt-in `BIOHEADERS_EXPERIMENTAL_FHT` draft lane, with `ExperimentalDraftWarning` (checked 2026-11-14).",
         "Legacy `md5:` values are not FHT checksums: T/U conversion and MD5-to-SHA recalculation are not header fixes."
       ]
     },
@@ -233,7 +233,7 @@
       "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "placeholder checksum style from the released family examples",
       "notes": [
-        "A placeholder stands for a real parent file in the examples only. `bioheaders verify-links` does not support FHT yet (FHT-Specification#9), so no released command checks this link."
+        "A placeholder stands for a real parent file in the examples only. No supported command checks this link by default: `bioheaders verify-links` reads an FHT citation as FHR (rule V5) and refuses it. In the opt-in `BIOHEADERS_EXPERIMENTAL_FHT` lane of `fair-bioheaders` 0.11.0 a recorded parent reports `matched`, `not matched` or `not checked` against supplied files (checked 2026-11-14); FHT support is FHT-Specification#9."
       ]
     },
     "derivedFrom[].seqcol_id": {

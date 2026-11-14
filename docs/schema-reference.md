@@ -134,3 +134,5 @@ npm run test:browser                            # desktop and 320px, both themes
 ```
 
 See `docs/preview.md` for the pinned Docker Jekyll image when the host Ruby is too old.
+
+Toolkit 0.10.0 selects by release URL and rejects v0.6.0 aliases even for the unchanged FHR 2.1 bytes. New FHR 2.1 records intended for that toolkit must use a supported alias such as `https://w3id.org/fair-bioheaders/fhr/v0.5.0`. FHP/FHGFF3 workflows in 0.10.0 cover 1.1/v0.5.0, and FHGFF3 HTML microdata is experimental.

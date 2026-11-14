@@ -3,7 +3,7 @@
     "schema": {
       "units": "URL",
       "notes": [
-        "New files should cite the fixed URL of the release they target, preferably `https://w3id.org/fair-bioheaders/fhr/v0.6.0` — the same 2.1 bytes v0.5.0 published, re-published unchanged. The raw-main URL selects the reader's current schema and has no fallback to an older release.",
+        "New files should cite the fixed URL of the release they target, preferably `https://w3id.org/fair-bioheaders/fhr/v0.6.0` — the same 2.1 bytes v0.5.0 published, re-published unchanged. The raw-main URL selects the reader's current schema and has no fallback to an older release. Toolkit 0.10.0 rejects the v0.6.0 alias despite those identical bytes. New FHR 2.1 records intended for toolkit 0.10.0 must target a supported alias such as `https://w3id.org/fair-bioheaders/fhr/v0.5.0`.",
         "FHR's own `schema` value has never been pattern-constrained, so an unusual value is read as FHR and checked against the current FHR contract (rule V5 in docs/SCHEMA-VERSIONS.md)."
       ]
     },

@@ -29,6 +29,8 @@ See the [FHGM draft page](/specifications/fhgm/) and the authoritative
 [draft overview](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHGM.md)
 in the shared specification.
 
+Toolkit 0.10.0 rejects v0.6.0 aliases for all three released types. For workflows with that toolkit release, use the [v0.5.0 examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.5.0/examples) and its [tagged documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/tree/v0.10.0). Choose a supported alias when creating new records; changing an existing file-bound header requires checksum recomputation.
+
 Read the [released examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.6.0/examples)
 and [current toolkit documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools)
 for the chosen type and supported representation. The [resources page](/resources/)

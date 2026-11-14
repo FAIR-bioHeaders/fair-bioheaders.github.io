@@ -12,7 +12,7 @@ that type's released contract and tooling.
 
 | Type | Resource | Contract and workflow status |
 | --- | --- | --- |
-| [FHR](/specifications/fhr/) | Reference genome assembly | FHR `2.1`; the current shared release v0.6.0 re-publishes the 2.1 bytes unchanged. Toolkit FASTA/GFA, JSON-LD and microdata. The browser builder still validates its v0.4.0 snapshot. |
+| [FHR](/specifications/fhr/) | Reference genome assembly | FHR `2.1`; the current shared release v0.6.0 re-publishes the 2.1 bytes unchanged. Toolkit 0.10.0 supports FHR `2.1` via v0.5.0 aliases for FASTA/GFA, JSON-LD and microdata, but rejects v0.6.0 aliases. The browser builder still validates its v0.4.0 snapshot. |
 | [FHT](/specifications/fht/) | Transcriptome | **Draft** contract, `schemaVersion` "1.0" proposed; no shared release, no fixed alias, no toolkit or builder support. |
 | [FHP](/specifications/fhp/) | Protein/proteome FASTA | FHP `1.2` is released in shared v0.6.0 (dotted BUSCO dataset versions). Toolkit 0.10.0 supports FHP through `1.1`/v0.5.0 for JSON/YAML, files, canonical JSON-LD and microdata; v0.6.0 support is not released in that toolkit. The builder validates its v0.4.0 snapshot. |
 | [FHGFF3](/specifications/fhgff3/) | GFF3 annotation metadata | FHGFF3 `1.2` is released in shared v0.6.0 (dotted BUSCO dataset versions). Toolkit 0.10.0 supports FHGFF3 through `1.1`/v0.5.0 for JSON/YAML and files, with experimental HTML microdata and no JSON-LD; v0.6.0 support is not released in that toolkit. Feature and biology validation is a separate tool. |
@@ -28,6 +28,8 @@ support, for model-level records that would live inside an FHGFF3 annotation fil
 See the [FHGM draft page](/specifications/fhgm/) and the authoritative
 [draft overview](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHGM.md)
 in the shared specification.
+
+Toolkit 0.10.0 rejects v0.6.0 aliases for all three released types. For workflows with that toolkit release, use the [v0.5.0 examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.5.0/examples) and its [tagged documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/tree/v0.10.0). Choose a supported alias when creating new records; changing an existing file-bound header requires checksum recomputation.
 
 Read the [released examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.6.0/examples)
 and [current toolkit documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools)

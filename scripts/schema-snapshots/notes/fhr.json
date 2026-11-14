@@ -3,7 +3,7 @@
     "schema": {
       "units": "URL",
       "notes": [
-        "New files should cite the fixed URL of the release they target, preferably `https://w3id.org/fair-bioheaders/fhr/v0.6.0` — the same 2.1 bytes v0.5.0 published, re-published unchanged. The raw-main URL selects the reader's current schema and has no fallback to an older release.",
+        "New files should cite the fixed URL of the release they target, preferably `https://w3id.org/fair-bioheaders/fhr/v0.6.0` — the same 2.1 bytes v0.5.0 published, re-published unchanged. The raw-main URL selects the reader's current schema and has no fallback to an older release. Toolkit 0.10.0 rejects the v0.6.0 alias despite those identical bytes. New FHR 2.1 records intended for toolkit 0.10.0 must target a supported alias such as `https://w3id.org/fair-bioheaders/fhr/v0.5.0`.",
         "FHR's own `schema` value has never been pattern-constrained, so an unusual value is read as FHR and checked against the current FHR contract (rule V5 in docs/SCHEMA-VERSIONS.md)."
       ]
     },
@@ -303,7 +303,7 @@
       "None of the linked forms carries `x-` extension fields: writers omit them and say which (J9, M5, X9)."
     ],
     "tooling": [
-      "`fair-bioheaders` 0.10.0 (PyPI) bundles the v0.5.0 schemas — byte-identical to the FHR 2.1 bytes shared release v0.6.0 re-publishes — and implements FHR 2.1, including extension fields, for `combine`, `verify`, `validate`, `convert`, `strip`, `verify-links` and `assess`.",
+      "`fair-bioheaders` 0.10.0 (PyPI) bundles the v0.5.0 schemas — byte-identical to the FHR 2.1 bytes shared release v0.6.0 re-publishes — and implements FHR 2.1, including extension fields, for `combine`, `verify`, `validate`, `convert`, `strip`, `verify-links` and `assess`. Schema selection uses the release URL: 0.10.0 rejects v0.6.0 aliases. For new FHR 2.1 records intended for 0.10.0, cite a supported alias such as `https://w3id.org/fair-bioheaders/fhr/v0.5.0`; v0.6.0 remains the current contract URL.",
       "The browser table builder on this site validates against its documented **v0.4.0** snapshot (`schemaVersion` 2.0), not the current release: extension fields cannot be produced there yet. Tracked in fair-bioheaders.github.io#15.",
       "`bioheaders verify-links` checks a genome's own header bytes; parent linking is an FHP/FHT/FHGFF3 feature, not an FHR one."
     ],

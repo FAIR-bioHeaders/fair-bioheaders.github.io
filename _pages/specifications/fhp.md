@@ -86,8 +86,9 @@ it uses the FHP itemtype, never the FHR one.
 
 - [Using FH*](/guide/) and the [family overview](/specifications/).
 - [Table builder](/table-builder/) — builds and structurally validates FHP records
-  against its documented v0.4.0 snapshot (`schemaVersion` 1.0); support for the
-  current release is tracked in
+  from its pinned v0.6.0 snapshot (`schemaVersion` `1.2`), including dotted BUSCO
+  dataset versions and `x-` extension fields in the YAML export; the pinned v0.4.0
+  (`1.0`) snapshot stays selectable. The remaining builder gates are tracked in
   [issue #15](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/15).
 - [Resources & citation](/resources/) for repositories and citation records.
 - [docs/FHP.md](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHP.md),

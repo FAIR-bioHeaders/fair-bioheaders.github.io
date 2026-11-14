@@ -86,7 +86,9 @@ Four questions, four tools, four separate answers.
 
 - [Using FH*](/guide/) and the [family overview](/specifications/).
 - [Table builder](/table-builder/) — builds and structurally validates FHGFF3 records
-  against its documented v0.4.0 snapshot (`schemaVersion` 1.0). Its HTML export is a
+  from its pinned v0.6.0 snapshot (`schemaVersion` `1.2`), including dotted BUSCO
+  dataset versions and `x-` extension fields in the YAML export; the pinned v0.4.0
+  (`1.0`) snapshot stays selectable. Its HTML export is a
   readable table with no microdata: the toolkit's experimental FHGFF3 microdata form is
   separate, and this site does not emit it, so download the YAML to keep the structured
   record. Support for the current release is tracked in

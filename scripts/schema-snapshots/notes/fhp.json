@@ -319,7 +319,7 @@
     ],
     "tooling": [
       "`fair-bioheaders` 0.11.0 (PyPI, 2026-11-14) bundles the v0.6.0 schema set and reads and writes FHP 1.2, including extension fields and the dotted BUSCO dataset versions, across `combine`, `verify`, `validate`, `convert`, `strip`, `verify-links` and `assess`: a `1.2` record citing `https://w3id.org/fair-bioheaders/fhp/v0.6.0` validates, is written into a `;~` FASTA header and verifies by checksum (checked 2026-11-14). The same citation is an unsupported schema version in 0.10.0, which bundles v0.5.0. A dotted `completeness.lineageDataset` stays invalid in a record that states `1.0` or `1.1` or cites v0.4.x/v0.5.0, and a `1.1` record citing v0.5.0 still validates under 0.11.0.",
-      "The browser table builder on this site validates against its documented **v0.4.0** snapshot (`schemaVersion` 1.0), not v0.6.0. Tracked in fair-bioheaders.github.io#15.",
+      "The browser table builder on this site cites the pinned **v0.6.0** snapshot by default: it writes `schemaVersion` `1.2`, accepts the dotted BUSCO dataset versions that `1.2` allows, and writes `x-` extension fields into the YAML export only (HTML microdata carries none, docs/MICRODATA.md M5). Its v0.4.0 (`1.0`) snapshot stays selectable on its own pinned bytes, and shared release v0.5.0 is not pinned, so citing it is an unsupported target rather than a fallback. Tracked in fair-bioheaders.github.io#15.",
       "`bioheaders verify-links FILE PARENT...` checks each `derivedFrom` item against candidate parent files by recomputing their checksums."
     ],
     "caveats": [

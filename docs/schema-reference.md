@@ -100,10 +100,14 @@ The pages distinguish four things that are easy to conflate:
   `not assessed` / `unsupported-header-type`, and the opt-in `BIOHEADERS_EXPERIMENTAL_FHT`
   draft lane in 0.11.0 previews publication without supporting FHT. That is detection and a
   gated preview, not support.
-- **This site's builder** — `/table-builder/` still validates its documented **v0.4.0**
-  snapshots (FHR "2.0", FHP/FHGFF3 "1.0"). It cannot produce `x-` extension fields, so the
-  reference pages say so instead of implying coverage. Current-release builder support is
-  [issue #15](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/15).
+- **This site's builder** — `/table-builder/` validates its pinned **v0.6.0**
+  snapshots (FHR "2.1", FHP/FHGFF3 "1.2") and can produce `x-` extension fields and
+  dotted BUSCO dataset versions; extension fields go to the YAML export, never to
+  HTML microdata (M5). Its **v0.4.0** snapshots (FHR "2.0", FHP/FHGFF3 "1.0") stay
+  selectable on their own bytes, and shared release **v0.5.0 is not pinned**, so a
+  `…/v0.5.0` citation is reported as unsupported rather than validated against a
+  newer snapshot. The remaining gates — FHGFF3 typed microdata, FHT, cross-browser
+  coverage — are [issue #15](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/15).
 - **Verification** — schema validity, file checksum verification, parent-link checking
   and biological/feature validation are separate questions with separate tools, spelled
   out in each page's "Validation boundaries" section.

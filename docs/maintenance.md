@@ -17,8 +17,9 @@ and offline caches follow the reviewed JSON contract, rather than becoming
 independent authorities. Keep schemaVersion, software/repository release and
 biological resource version distinct.
 
-The family builder defaults to released FHR v0.4.0 (string schemaVersion 2.0),
-with explicit legacy v0.3.1 and historical October 9 cache support.
+The family builder defaults to released FHR v0.6.0 (string schemaVersion 2.1),
+with the v0.4.0 releases and explicit legacy v0.3.1 and historical October 9
+cache support kept on their own pinned snapshots.
 Do not refresh a schema cache without updating its form, typed serialization,
 fixtures and provenance in a dedicated schema-support change. Repository-link
 cleanup must not rewrite existing embedded schema URLs/checksums or frozen
@@ -130,7 +131,10 @@ is local; there is no backend, upload, login, or persistence.
   `Blob`/`URL.createObjectURL`/anchor behavior, and this limitation is noted in
   the PR. A synthetic example pair for review is committed at
   `docs/table-builder-example.html` and `docs/table-builder-example.yaml` (not
-  deployed, since `docs/` is excluded).
+  deployed, since `docs/` is excluded). That pair was generated from the legacy
+  FHR v0.3.1 contract and is kept unchanged as a frozen artifact: it is not
+  current-release builder output, and the current-release outputs are the
+  `scripts/fixtures/family-v0.6.0/` records exercised by the tests.
 
 
 ### Version-aware validation decision (2026-10-09)
@@ -194,8 +198,9 @@ are checked in rendered resources and browser regression tests.
 
 ### FHR v0.4.0 builder support (issue #15, first slice)
 
-The default schema URL is `https://w3id.org/fair-bioheaders/fhr/v0.4.0`;
-the shared publication repository's v0.4.0 raw-tag URL is its supported alias.
+The default schema URL was `https://w3id.org/fair-bioheaders/fhr/v0.4.0` when
+this slice landed; it is now one of several pinned aliases (see "Current-release
+builder support" below).
 `assets/schema/fhr-v0.4.0.json` was verified byte-for-byte against release commit
 `84c2f90ab0e97c81d8afbf33eafe80ebade7a009` on 2026-10-17. SHA-256:
 `168a60467e3651dfdfe9855747f38257d5889bfcce6ec8661d9a378762a362dd`.
@@ -241,13 +246,107 @@ table with stable field paths, without microdata; its separate YAML preserves
 the structured record. Do not emit FHR microdata for another header type. These
 exports are metadata documents and do not embed headers into sequence files.
 
+### Current-release builder support: v0.6.0 snapshots (issue #15)
+
+The builder now cites shared release **v0.6.0** by default for all three released
+types and can produce what that release added. This was one dedicated
+schema-support change: pinned bytes plus form support, typed serialization,
+fixtures, digests and provenance together — never a cache refresh on its own.
+
+New pinned snapshots, retrieved 2026-11-14 from shared release `v0.6.0`
+(tag object `ab7e3ddd53bfccee9a31d59fc10524eadf32c1da` → commit
+`0ae18b00ee4bd71ab2dc28bae706b0f9d195076b`), verified byte-for-byte against
+`https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/<type>.json`
+(HTTP 200) and byte-identical to the copies the `/specifications/` pages already
+pin in `scripts/schema-snapshots/` (a unit test asserts both facts):
+
+| Snapshot | SHA-256 | Declared `schemaVersion` |
+| --- | --- | --- |
+| `assets/schema/fhr-v0.6.0.json` | `694ab5afaf8c3743eacf9e2aacb5551f7cbe37073b6f4afc3ae4a65b47f9d4df` | `"2.1"` |
+| `assets/schema/fhp-v0.6.0.json` | `92a0b3cbcfe69939ebfaac69f0c5958ce426c005873efe8d3e3eb0fc0dab6de5` | `"1.2"` |
+| `assets/schema/fhgff3-v0.6.0.json` | `1942be4cefc8b3a2537942c2252b45fbcef87a5532486e4fd0f5d4c540e0fbf9` | `"1.2"` |
+
+The declared versions come from the shared registry
+(`schemas/versions.json`), pinned at
+`scripts/schema-snapshots/versions-v0.6.0.json` (SHA-256
+`7535e3569ce4157b22f14b9cd89dc98612b4e90cf553ef0a3250f5811529ce62`), and a unit
+test ties the builder's release table to it: `v0.6.0` is FHR `2.1`, FHP `1.2`,
+FHGFF3 `1.2`; `v0.4.0` is FHR `2.0`, FHP `1.0`, FHGFF3 `1.0`. The declared value
+is never read off "whichever enum comes first".
+
+**Frozen snapshots unchanged.** `fhr.json` (the raw-main development cache, the
+October 9 copy), `fhr-v0.3.1.json`, `fhr-v0.4.0.json`, `fhp-v0.4.0.json` and
+`fhgff3-v0.4.0.json` keep their bytes, their digests and their selection
+aliases. `scripts/fixtures/family-v0.4.0/` is unchanged too. The builder added
+`scripts/fixtures/family-v0.6.0/`: six unmodified released examples from the
+`v0.6.0` tag plus one clearly labelled site-authored vector, with digests and
+derivation in that directory's `README.md`.
+
+**Pinned set, stated limitation.** The pinned releases are v0.6.0 (default) and
+v0.4.0 for FHP/FHGFF3, and v0.6.0, v0.4.0 and v0.3.1 plus the raw-main cache for
+FHR. Shared release **v0.5.0 is not pinned**, so a `…/v0.5.0` citation is an
+unsupported target here even though the toolkit reads it; so are v0.4.1 and
+v0.4.2. That is deliberate — no citation is ever validated against a snapshot
+for another release.
+
+**What the form gained.** Extension fields (rule R15) are a name/value section
+whose key pattern is read from the cited snapshot's own `patternProperties`, not
+duplicated in code; the value is recorded as text. Structured (object or list)
+extension values are therefore not editable here, and that limit is stated on
+the page. Dotted BUSCO `completeness.lineageDataset` values need no form change:
+the field's pattern comes from the pinned schema, so `diptera_odb12.2` validates
+at `1.2` and the schema's own conditional still rejects it in a record that
+states `1.0` or `1.1`.
+
+**Validator keywords.** The browser validator now implements `patternProperties`
+and `propertyNames`, and `additionalProperties: false` only rejects a key that
+matches neither `properties` nor `patternProperties` — without that fix every
+extension field would have been wrongly rejected against its own contract. The
+drift test that lists the keywords the validator claims to implement was
+extended in the same commit.
+
+**Microdata boundary (rule M5).** HTML microdata carries no extension fields.
+The builder leaves every top-level `x-` key out of the item and says which ones
+it left out in the standalone document; they survive only in the YAML. This
+mirrors the binding, and it is required rather than stylistic: the released
+toolkit refuses to read a page whose item has an `itemprop` starting with `x-`.
+
+**Round-trip proof (local, dated — not a CI step).** `fair-bioheaders` 0.11.0
+(PyPI, 2026-11-14) was installed in a throwaway venv and used on 2026-11-14
+against output produced by this repository's own `standaloneHtml()`/`toYaml()`:
+
+- builder FHR page citing `…/fhr/v0.6.0` with `x-` fields → `FHR metadata is
+  valid`; `convert` returned the identical record minus the `x-` fields (M5).
+- builder FHR YAML with scalar *and* structured `x-` fields → `FHR metadata is
+  valid`; `convert` → record equal to the source, `x-` keys retained.
+- builder FHP page (FHP 1.2, `x-` field, dotted `diptera_odb12.2`) → `FHP
+  metadata is valid`; the YAML form converted back equal.
+- the same record under a `…/v9.9.9` citation → `unsupported schema version:
+  https://w3id.org/fair-bioheaders/fhp/v9.9.9 (this tool has FHP schemas for main
+  (v0.6.0), v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)` — an explicit refusal, no
+  silent substitution.
+- the seven fixtures in `scripts/fixtures/family-v0.6.0/` (including the
+  site-authored one) → each `bioheaders validate` clean.
+- every fixture and rejection vector was also checked against a reference
+  implementation (`python3 -m jsonschema`, Draft 2020-12): 21 cases, site
+  verdict equal to the reference verdict in all of them.
+
+CI does not install the toolkit, so this is a documented local procedure with a
+dated result, not an automated gate; pinning a toolkit version into website CI
+remains a maintainer decision (see issue #15).
+
 ### Builder draft paths and schema loading
 
 Validation uses the compact exported record, omitting blank rows. Error summaries,
 focus links and field descriptions map record paths back to visible draft indexes,
 including nested arrays and missing properties of populated objects. Do not remove
 blank draft rows merely to align validation indexes. Rebuild this mapping for each
-generation so corrected or removed rows cannot keep stale errors.
+generation so corrected or removed rows cannot keep stale errors. Extension-field
+rows live outside the record draft and merge in at generate time; a blank row is
+omitted, while a duplicate name or a name that is also a standard field is
+reported instead of silently winning over the field it would overwrite. Committing
+a different pinned release rebuilds the form from that snapshot's bytes, because
+vocabularies, patterns and extension-field availability are all read from them.
 
 After local schemas finish loading, initialize through the selected header type,
 including a selection made while requests were pending. The selected type, form,

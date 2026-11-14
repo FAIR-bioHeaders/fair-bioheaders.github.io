@@ -70,8 +70,9 @@ and offline caches follow the reviewed JSON contract, rather than becoming
 independent authorities. Keep schemaVersion, software/repository release and
 biological resource version distinct.
 
-The family builder defaults to released FHR v0.4.0 (string schemaVersion 2.0),
-with explicit legacy v0.3.1 and historical October 9 cache support.
+The family builder defaults to released FHR v0.6.0 (string schemaVersion 2.1),
+with the pinned v0.4.0 releases, explicit legacy v0.3.1 and the historical
+October 9 cache each on their own fixed snapshot.
 Do not refresh a schema cache without updating its form, typed serialization,
 fixtures and provenance in a dedicated schema-support change. Repository-link
 cleanup must not rewrite existing embedded schema URLs/checksums or frozen
@@ -373,8 +374,10 @@ CI currently checks microdata markup, not an installed-converter round-trip.
 
 ### FHR v0.4.0 builder support (issue #15, first slice)
 
-The default schema URL is `https://w3id.org/fair-bioheaders/fhr/v0.4.0`;
-the shared publication repository's v0.4.0 raw-tag URL is its supported alias.
+The default schema URL was `https://w3id.org/fair-bioheaders/fhr/v0.4.0` when this
+slice shipped; the current default is the pinned v0.6.0 alias below, and v0.4.0
+remains supported on its own frozen snapshot. The shared publication repository's
+v0.4.0 raw-tag URL is its supported alias.
 `assets/schema/fhr-v0.4.0.json` was verified byte-for-byte against release commit
 `84c2f90ab0e97c81d8afbf33eafe80ebade7a009` on 2026-10-17. SHA-256:
 `168a60467e3651dfdfe9855747f38257d5889bfcce6ec8661d9a378762a362dd`.
@@ -382,20 +385,73 @@ The existing validator covers the validation keywords used by this FHR snapshot;
 the family extension also implements the FHGFF3 conditional validation keywords.
 FHT remains deferred. Keep #15 open for its outstanding full delivery gates.
 
-Schema selection sets the read-only schemaVersion to string `"2.0"` for v0.4.0,
-or numeric `1.0` for the legacy contracts. Preserve entries when switching;
+Schema selection sets the read-only schemaVersion from the cited release: string
+`"2.0"` for v0.4.0, string `"2.1"` for v0.6.0, or numeric `1` for the legacy
+contracts. Preserve entries when switching;
 legacy validation follows its permissive nested-property policy rather than
 dropping values or inventing stricter requirements.
 GC is always a percentage: never guess that 0.42 means 42 percent. The frozen
 legacy snapshots and example downloads remain unchanged.
 
+### Current-release builder support: v0.6.0 (issue #15)
+
+The builder's releases live in one `RELEASES` table in `assets/js/table-builder.js`:
+each entry names its type, shared release tag, the `schemaVersion` it declares, the
+local snapshot file and the citation aliases that select it. Selection is by exact
+alias only — `selectRelease`/`selectSchema` return null for anything else, and a null
+selection blocks export. Never route an unpinned alias to "the newest" snapshot.
+
+Declared versions come from the shared registry, not from enum order: v0.6.0 is
+FHR `"2.1"`, FHP `"1.2"`, FHGFF3 `"1.2"`; v0.4.0 is FHR `"2.0"`, FHP/FHGFF3 `"1.0"`;
+v0.3.1 and the raw-main cache use numeric `1`. A unit test ties the table to the
+pinned `scripts/schema-snapshots/versions-v0.6.0.json`.
+
+Snapshots retrieved from tag `v0.6.0` (commit `0ae18b00ee4bd71ab2dc28bae706b0f9d195076b`)
+on 2026-11-14, byte-identical to the `/specifications/` pins, and asserted so in tests:
+
+- `fhr-v0.6.0.json`: `694ab5afaf8c3743eacf9e2aacb5551f7cbe37073b6f4afc3ae4a65b47f9d4df`
+- `fhp-v0.6.0.json`: `92a0b3cbcfe69939ebfaac69f0c5958ce426c005873efe8d3e3eb0fc0dab6de5`
+- `fhgff3-v0.6.0.json`: `1942be4cefc8b3a2537942c2252b45fbcef87a5532486e4fd0f5d4c540e0fbf9`
+
+**v0.5.0, v0.4.1 and v0.4.2 are deliberately not pinned.** Citing them is an
+unsupported target; adding them needs their own snapshots, fixtures and provenance.
+
+Extension fields (shared `docs/FORMAT.md` R15) are drafted in a repeatable name/value
+section. Read the key pattern from the cited snapshot's own `patternProperties` — do
+not copy the regular expression into the form. Values are recorded as text; structured
+object/list extension values are not editable in this builder and the page says so.
+Extension fields belong to the **YAML export and the readable table only**: shared
+`docs/MICRODATA.md` M5 keeps them out of microdata, and the released toolkit rejects a
+page whose item carries an `x-` `itemprop`, so the standalone HTML omits them and names
+the keys it left out. `additionalProperties: false` must only reject a key matched by
+neither `properties` nor `patternProperties`, and `propertyNames` is implemented so a
+record stating an older minor really is held to it (no `x-` key, no dotted BUSCO).
+
+Dotted BUSCO dataset versions need no special form code: `completeness.lineageDataset`
+takes its pattern from the cited snapshot, so `diptera_odb12.2` validates at `1.2` and
+fails at `1.0`/`1.1` from the schema bytes.
+
+No released v0.6.0 record states a dotted dataset, so
+`scripts/fixtures/family-v0.6.0/dotted-lineage.fhp.yaml` is site-authored and labelled
+as such; the other six files there are unmodified released examples with digests in that
+directory's `README.md`. When updating this support, re-verify both against a reference
+JSON Schema implementation and against the released toolkit, and record the toolkit
+version and date — the round trip is a local procedure, not a CI step, until maintainers
+pin a toolkit version into the website workflow.
+
+FHR v0.6.0 is byte-identical to the v0.5.0 FHR contract, but that is a verified fact
+about two pins, not a licence to serve one for the other.
+
 ### Released family forms (issue #15)
 
-The header-type selector enables FHR, FHP and FHGFF3 v0.4.0. Type-specific
+The header-type selector enables FHR, FHP and FHGFF3. Type-specific
 drafts are retained only in page memory. Switching clears previews/downloads;
 never leak a previous profile's output into the selected profile. FHP and
-FHGFF3 use string schemaVersion `"1.0"`, not the FHR `"2.0"`. Unknown targets
+FHGFF3 use string schemaVersion `"1.2"` at v0.6.0 (`"1.0"` at their frozen v0.4.0
+snapshot), not the FHR `"2.1"`. Unknown targets
 and cross-type targets block exports; selecting a URL makes no network request.
+Committing a different pinned release rebuilds the form from that snapshot, because
+vocabularies, patterns and extension-field availability are all read from its bytes.
 
 FHP/FHGFF3 controls use an explicit section layout, with nested field types,
 requiredness, descriptions and vocabularies taken from the released schemas.
@@ -403,14 +459,15 @@ Optional objects may be omitted entirely; their required subfields apply when
 the object is populated. Array order and numeric zero survive generation.
 These are producer-reported assertions, not sequence/BUSCO/GFF3 verification.
 
-Both schemas were retrieved from shared release v0.4.0 at commit
+The v0.4.0 family schemas were retrieved from shared release v0.4.0 at commit
 `84c2f90ab0e97c81d8afbf33eafe80ebade7a009` on 2026-10-17. SHA-256:
 
 - `fhp-v0.4.0.json`: `e3f8f45260b833f931644e87ff7530cb9b4151e67094023dd96edde9a1d90366`
 - `fhgff3-v0.4.0.json`: `f89635f252f6e204944de99e6c40bad1b0c9b37af5108fce05ee63f6dfd40bbd`
 
 The browser validator covers the keywords in these snapshots, including
-`allOf`, `not`, `contains`/`minContains`, `if`/`then` and `const`. Regression
+`allOf`, `not`, `contains`/`minContains`, `if`/`then` and `const`, plus
+`patternProperties` and `propertyNames` from the v0.5.0-and-later contracts. Regression
 fixtures under `scripts/fixtures/family-v0.4.0` are unmodified released examples
 from that same tag; verify them and the validator against a reference JSON
 Schema implementation when updating support. Avoid general JSON Schema claims.
@@ -473,9 +530,12 @@ as the authority, and `check_site.py`'s `fhgm_draft_errors` keeps it that way (d
 notice and authority link present; no generated field tables, no provenance block and no
 `w3id` alias ever appear there). Do not place FHGM in any released-schema table or
 version selector, and never claim toolkit, validator or builder support for it.
-`/table-builder/` still validates its v0.4.0 snapshots, so the
-reference pages must say the builder does not yet cover the current release rather
-than implying it.
+`/table-builder/` validates its pinned v0.6.0 snapshots by default (see
+“Current-release builder support” above), so the reference pages describe that
+coverage — including the rule M5 limit that extension fields never enter HTML
+microdata — and must not overstate it: FHGFF3 still emits no microdata, FHT and
+FHGM have no form, and an unpinned citation (v0.5.0, v0.4.1, v0.4.2) is reported
+as unsupported rather than validated against a newer snapshot.
 Adding a new indexable route here means updating the sitemap allow-lists in
 `scripts/check_site.py` and `scripts/check_deployed.py` and their tests in the same change.
 

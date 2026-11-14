@@ -31,8 +31,10 @@ joint decision with FHR-Citation, not a website edit — `_data/references.yml`,
 `scripts/check_site.py` and the resources browser test must move together if it changes.
 Repository display names do not change those citation identities. See the
 [resource audit](docs/resource-audit.md) for primary-source evidence and retained
-historical URLs. The table builder supports released FHR, FHP and FHGFF3 v0.4.0 metadata,
-with explicit legacy FHR v0.3.1 support. FHT remains deferred under issue #15.
+historical URLs. The table builder supports released FHR, FHP and FHGFF3 metadata at the
+current v0.6.0 contracts (`schemaVersion` "2.1", "1.2", "1.2"), keeps its pinned v0.4.0
+snapshots and legacy FHR v0.3.1 support selectable, and writes `x-` extension fields into
+the YAML export only. FHT remains deferred under issue #15.
 
 The [FHR JavaScript guide](docs/metadata-viewer.md) teaches reading/querying JSON,
 changing a metadata copy, extracting an authored typed HTML microdata example,

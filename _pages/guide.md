@@ -12,10 +12,10 @@ that type's released contract and tooling.
 
 | Type | Resource | Contract and workflow status |
 | --- | --- | --- |
-| [FHR](/specifications/fhr/) | Reference genome assembly | FHR `2.1`; the current shared release v0.6.0 re-publishes the 2.1 bytes unchanged. Toolkit FASTA/GFA, JSON-LD and microdata. The browser builder still validates its v0.4.0 snapshot. |
-| [FHT](/specifications/fht/) | Transcriptome | **Draft** contract, `schemaVersion` "1.0" proposed; no shared release, no fixed alias, no toolkit or builder support. |
-| [FHP](/specifications/fhp/) | Protein/proteome FASTA | FHP `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit JSON/YAML, files, canonical JSON-LD and microdata. The builder validates its v0.4.0 snapshot. |
-| [FHGFF3](/specifications/fhgff3/) | GFF3 annotation metadata | FHGFF3 `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit JSON/YAML and files, no JSON-LD or microdata form yet. Feature and biology validation is a separate tool. |
+| [FHR](/specifications/fhr/) | Reference genome assembly | FHR `2.1`; the current shared release v0.6.0 re-publishes the 2.1 bytes unchanged. Toolkit `fair-bioheaders` 0.11.0 writes and checks FASTA/GFA, JSON-LD and microdata for `2.1` and accepts a `…/v0.6.0` citation. The browser builder still validates its v0.4.0 snapshot. |
+| [FHT](/specifications/fht/) | Transcriptome | **Draft** contract, `schemaVersion` "1.0" proposed; no shared release, no fixed alias, no toolkit or builder support. 0.11.0 has an opt-in experimental draft lane (`BIOHEADERS_EXPERIMENTAL_FHT`), which is a preview of publication, not support. |
+| [FHP](/specifications/fhp/) | Protein/proteome FASTA | FHP `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit 0.11.0 reads and writes `1.2` as JSON/YAML, in files, and as canonical JSON-LD and HTML microdata. The builder validates its v0.4.0 snapshot. |
+| [FHGFF3](/specifications/fhgff3/) | GFF3 annotation metadata | FHGFF3 `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit 0.11.0 reads and writes `1.2` as JSON/YAML and in files, plus experimental HTML microdata, and has no JSON-LD form. Feature and biology validation is a separate tool. |
 
 Every field, type, constraint and unit is documented on that type's schema reference
 page, generated from the published schema bytes; the
@@ -124,9 +124,11 @@ fhr-validate genome.fhr.json
   is a companion draft for reference **transcriptomes**; the two are separate
   specifications in the same family, and FHT is still draft.
 - **FHP** describes protein FASTA and **FHGFF3** describes annotation metadata.
-  Their schemaVersion `"1.0"` contracts are included alongside FHR in the
-  [shared specification v0.4.0](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/releases/tag/v0.4.0).
-  FHP/FHGFF3 JSON-LD and HTML microdata are still follow-up work.
+  Their `schemaVersion` `"1.0"` contracts were first included alongside FHR in the
+  [shared specification v0.4.0](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/releases/tag/v0.4.0),
+  and shared v0.6.0 released both at `"1.2"`. FHP has canonical JSON-LD and HTML
+  microdata in the toolkit; FHGFF3 has experimental HTML microdata (its binding is
+  still a draft) and no JSON-LD form. FHGFF3 JSON-LD remains follow-up work.
 - **File-carried metadata** travels with the sequence in `;~` (FASTA) or `#~`
   (GFA) header comments, so the metadata cannot drift away from the data it
   describes. **Repository metadata** is held by the archive that stores the
@@ -138,23 +140,32 @@ fhr-validate genome.fhr.json
 
 ## Version compatibility
 
-- The released FHR contract is now `schemaVersion: "2.0"` (a string), in shared
-  specification v0.4.0. `schemaVersion`, repository release tags and the
+- The FHR contract is `schemaVersion: "2.0"` from shared release v0.4.0 and `"2.1"`
+  from v0.5.0, shared v0.6.0 re-publishing the same 2.1 bytes; it is a quoted string,
+  not a number. `schemaVersion`, repository release tags and the
   assembly's `version` describe different things.
-- The family package **fair-bioheaders 0.8.0**, installed with
-  `python -m pip install fair-bioheaders==0.8.0`. Its `bioheaders` CLI performs
+- The family package **fair-bioheaders 0.11.0**, installed with
+  `python -m pip install fair-bioheaders==0.11.0`. Its `bioheaders` CLI performs
   conversion, validation and checksums; the legacy `fhr-*` commands remain
   supported. See the [toolkit usage](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools).
 - The worked example above is preserved as the recorded **fhr 0.3.3** workflow.
   Its numeric schemaVersion and raw-main header are historical, not a current
   v0.4 recipe. The raw-main URL now selects the current contract. For new work,
-  use the reviewed [release examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.4.0/examples)
+  use the reviewed [release examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.6.0/examples)
   and a fixed versioned schema URL; unknown schema versions are unsupported,
   never silently replaced. The [schema-version policy](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/SCHEMA-VERSIONS.md)
   explains migration and compatibility checks.
-- The browser table builder still targets v0.3.1 by default. It has not yet
-  acquired the full family or v0.4 form; a released specification is not a claim
-  that this browser supports it.
+- A `…/v0.6.0` citation needs a toolkit release that bundles that registry entry:
+  0.11.0 does, and 0.10.0 reports it as an unsupported schema version. Citations of
+  v0.3.x, v0.4.x and v0.5.0 keep resolving to their own frozen copies, so an existing
+  file-bound header never needs to be rewritten to stay readable.
+- The browser table builder defaults to FHR v0.4.0 (`schemaVersion` "2.0") and also
+  builds FHP and FHGFF3 records at their released v0.4.0 `"1.0"` contracts. It does not
+  yet cover the current release: a `2.1`/`1.2` record, and so `x-` extension fields and
+  dotted BUSCO dataset versions, cannot be produced there. A released specification is
+  not a claim that this browser supports it;
+  [issue #15](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/15)
+  tracks that work.
 - **Concept DOIs** (for example the [FHR Specification](https://doi.org/10.5281/zenodo.6762549))
   group all releases of a resource. For a reproducible citation, use the
   **version DOI** for the specific release you used; see

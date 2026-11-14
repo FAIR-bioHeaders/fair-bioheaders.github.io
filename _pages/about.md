@@ -50,20 +50,23 @@ Each header describes a different kind of biological resource. Choose the type
 that matches your file; a shared core does not make the types interchangeable.
 
 - **FHR — reference genomes.** Describe an assembly, its creators, methods and
-  statistics. The released contract is FHR 2.0 in specification v0.4.0.
+  statistics. The released contract is FHR 2.1, published in specification v0.5.0 and
+  re-published unchanged in the current release v0.6.0.
   [FHR development](https://github.com/FAIR-bioHeaders/FHR-Specification).
 - **FHT — transcriptomes.** Develop metadata for transcript sequences and their
   biological and computational origins. The field set is under consultation;
   FHT has no released family contract yet.
   [FHT development](https://github.com/FAIR-bioHeaders/FHT-Specification).
 - **FHP — protein sets.** Describe predicted, database and mixed protein FASTA
-  sets without inventing source material or quality-control results. FHP 1.0
-  is released in specification v0.4.0; JSON-LD and HTML microdata support remain
-  separate work. [FHP development](https://github.com/FAIR-bioHeaders/FHP-Specification).
+  sets without inventing source material or quality-control results. FHP 1.2 is the
+  released contract in specification v0.6.0 (1.0 came with v0.4.0); the toolkit reads and
+  writes its canonical JSON-LD and HTML microdata.
+  [FHP development](https://github.com/FAIR-bioHeaders/FHP-Specification).
 - **FHGFF3 — annotations.** Record how an annotation was made and which genome
-  its coordinates refer to. FHGFF3 1.0 is released in specification v0.4.0.
-  Its header does not validate GFF3 features or their biology; JSON-LD and HTML
-  microdata support remain separate work.
+  its coordinates refer to. FHGFF3 1.2 is the released contract in specification v0.6.0
+  (1.0 came with v0.4.0). Its header does not validate GFF3 features or their biology;
+  the toolkit's HTML microdata form is experimental while its binding stays draft, and
+  there is no JSON-LD form.
   [FHGFF3 development](https://github.com/FAIR-bioHeaders/FHGFF3).
 
 ### Shared context, resource-specific detail

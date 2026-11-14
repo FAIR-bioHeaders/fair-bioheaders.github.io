@@ -462,8 +462,9 @@ drift gate (CI runs it through the existing `test_*.py` discovery step, and
 These pages document contracts, they do not change them: any field, requiredness,
 version or release claim comes from the authority, and a page must not imply support
 the site does not ship. Keep the distinction intact: released types cite their fixed
-`w3id` alias (v0.5.0: FHR `"2.1"`, FHP `"1.1"`, FHGFF3 `"1.1"`, all with `x-` extension
-fields under rule R15); FHT is **draft** — no release, no alias, no DOI, no toolkit or
+`w3id` alias (v0.6.0: FHR `"2.1"` — re-published byte-identical from v0.5.0, FHP `"1.2"`,
+FHGFF3 `"1.2"` — 1.2 accepts dotted BUSCO dataset versions; `x-` extension fields under
+rule R15 came with v0.5.0); FHT is **draft** — no release, no alias, no DOI, no toolkit or
 builder support — and stays visibly marked as such in the nav, the page notice and the
 generated block. FHGM goes one step further: it is a *proposal* for model records inside
 FHGFF3 files with no contract at all, so `/specifications/fhgm/` carries **no generated
@@ -473,7 +474,8 @@ notice and authority link present; no generated field tables, no provenance bloc
 `w3id` alias ever appear there). Do not place FHGM in any released-schema table or
 version selector, and never claim toolkit, validator or builder support for it.
 `/table-builder/` still validates its v0.4.0 snapshots, so the
-reference pages must say the builder does not yet cover v0.5.0 rather than implying it.
+reference pages must say the builder does not yet cover the current release rather
+than implying it.
 Adding a new indexable route here means updating the sitemap allow-lists in
 `scripts/check_site.py` and `scripts/check_deployed.py` and their tests in the same change.
 

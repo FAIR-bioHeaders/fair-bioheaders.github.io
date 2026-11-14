@@ -88,7 +88,7 @@ class PinnedBytes(unittest.TestCase):
                                      f'{name} no longer matches provenance.json')
 
     def test_pinned_release_is_what_the_registry_calls_current(self):
-        registry = json.loads((schema_tools.SNAPSHOT_DIR / 'versions-v0.5.0.json').read_text())
+        registry = json.loads((schema_tools.SNAPSHOT_DIR / 'versions-v0.6.0.json').read_text())
         self.assertIsNone(registry['preRelease'], 'a pre-release marker means the pin is not a published release')
         for name, meta in self.provenance['files'].items():
             if meta['status'] != 'released':
@@ -100,7 +100,7 @@ class PinnedBytes(unittest.TestCase):
 
     def test_release_dates_are_recorded_for_every_line(self):
         dates = self.provenance['releaseDates']
-        for release in json.loads((schema_tools.SNAPSHOT_DIR / 'versions-v0.5.0.json').read_text())['releases']:
+        for release in json.loads((schema_tools.SNAPSHOT_DIR / 'versions-v0.6.0.json').read_text())['releases']:
             with self.subTest(release=release):
                 self.assertIn(release, dates, 'add the published date to provenance.json')
 
@@ -211,9 +211,9 @@ class GeneratedReferences(unittest.TestCase):
 
     def test_released_types_match_their_contracts(self):
         expected = {
-            'fhr': ('FHR', '2.1', 'v0.5.0', 'https://w3id.org/fair-bioheaders/fhr/v0.5.0'),
-            'fhp': ('FHP', '1.1', 'v0.5.0', 'https://w3id.org/fair-bioheaders/fhp/v0.5.0'),
-            'fhgff3': ('FHGFF3', '1.1', 'v0.5.0', 'https://w3id.org/fair-bioheaders/fhgff3/v0.5.0'),
+            'fhr': ('FHR', '2.1', 'v0.6.0', 'https://w3id.org/fair-bioheaders/fhr/v0.6.0'),
+            'fhp': ('FHP', '1.2', 'v0.6.0', 'https://w3id.org/fair-bioheaders/fhp/v0.6.0'),
+            'fhgff3': ('FHGFF3', '1.2', 'v0.6.0', 'https://w3id.org/fair-bioheaders/fhgff3/v0.6.0'),
         }
         for page, (type_name, version, release, alias) in expected.items():
             data = self.built[page]

@@ -1,7 +1,7 @@
 ---
 title: "FHP schema reference"
 permalink: /specifications/fhp/
-excerpt: "Complete field reference for the FHP protein FASTA header: schemaVersion 1.1, released in FAIR-bioHeaders-Specification v0.5.0, with types, constraints, units, examples and compatibility notes."
+excerpt: "Complete field reference for the FHP protein FASTA header: schemaVersion 1.2, released in FAIR-bioHeaders-Specification v0.6.0, with types, constraints, units, examples and compatibility notes."
 ---
 
 FHP is the FAIR-bioHeaders header for a **protein FASTA file**: a predicted proteome,
@@ -62,8 +62,9 @@ it uses the FHP itemtype, never the FHR one.
 ## Validation boundaries
 
 1. **Schema validity.** Required keys, types, patterns, enums and the closed nested
-   objects, plus `x-` extension keys from 1.1. The structural check does not know
-   whether `proteome` names anything real.
+   objects, plus `x-` extension keys from 1.1. From 1.2 the `completeness.lineageDataset`
+   pattern also accepts dotted dataset versions such as `enterobacterales_odb12.2`.
+   The structural check does not know whether `proteome` names anything real.
 2. **File checksum verification.** `bioheaders verify` recomputes SHA-512/256 over
    the exact bytes of the protein FASTA, excluding the root `;~checksum:` line.
    Header handling is alphabet-independent: stops (`*`), U, O, B, Z, J, X, lower case
@@ -85,8 +86,9 @@ it uses the FHP itemtype, never the FHR one.
 
 - [Using FH*](/guide/) and the [family overview](/specifications/).
 - [Table builder](/table-builder/) — builds and structurally validates FHP records
-  against its documented v0.4.0 snapshot (`schemaVersion` 1.0); v0.5.0 support is
-  tracked in [issue #15](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/15).
+  against its documented v0.4.0 snapshot (`schemaVersion` 1.0); support for the
+  current release is tracked in
+  [issue #15](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/15).
 - [Resources & citation](/resources/) for repositories and citation records.
 - [docs/FHP.md](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHP.md),
   the [FORMAT rules](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FORMAT.md)

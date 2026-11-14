@@ -48,7 +48,7 @@
     },
     "metadataAuthor[].uri": {
       "example": "https://orcid.org/0000-0002-1825-0097",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "ORCID URI used by the released family examples"
     },
     "assemblyAuthor": {
@@ -58,7 +58,7 @@
     },
     "assemblyAuthor[].uri": {
       "example": "https://orcid.org/0000-0002-1825-0097",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "ORCID URI used by the released family examples"
     },
     "assemblySoftware": {
@@ -230,7 +230,7 @@
     "derivedFrom[].checksum": {
       "units": "standard padded base64 of the parent file's SHA-512/256",
       "example": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=",
-      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.5.0/examples/fhp/rich-predicted.fhp.yaml",
+      "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "placeholder checksum style from the released family examples",
       "notes": [
         "A placeholder stands for a real parent file in the examples only. `bioheaders verify-links` does not support FHT yet (FHT-Specification#9), so no released command checks this link."
@@ -357,7 +357,7 @@
       "The draft accepts `x-` extension keys at the top level, following rule R15."
     ],
     "tooling": [
-      "**No released tool supports FHT.** `fair-bioheaders` 0.9.0 bundles schemas for FHR, FHP and FHGFF3 only; `bioheaders assess` recognises the FHT development URL and reports the header as `not assessed` with reason `unsupported-header-type`, and no command validates, writes or checksums an FHT file. Toolkit support is FHT-Specification#9.",
+      "**No released tool supports FHT.** `fair-bioheaders` 0.10.0 (the current PyPI release) bundles schemas for FHR, FHP and FHGFF3 only; `bioheaders assess` recognises the FHT development URL and reports the header as `not assessed` with reason `unsupported-header-type`, and no command validates, writes or checksums an FHT file. Toolkit support is FHT-Specification#9.",
       "The browser table builder on this site has no FHT form: it enables the released FHR, FHP and FHGFF3 contracts only, and FHT stays disabled until a contract is released (fair-bioheaders.github.io#15).",
       "Field decisions, the model and the generated development schema live in [FHT-Specification](https://github.com/FAIR-bioHeaders/FHT-Specification); shared publication is coordinated through FAIR-bioHeaders-Specification#107."
     ],

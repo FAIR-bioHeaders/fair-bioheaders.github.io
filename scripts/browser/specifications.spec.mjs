@@ -11,10 +11,10 @@ import AxeBuilder from '@axe-core/playwright';
 const TYPES = ['fhr', 'fht', 'fhp', 'fhgff3'];
 const NAV_ITEMS = [...TYPES, 'fhgm'];
 const SNAPSHOTS = {
-  fhr: 'fhr-v0.5.0.json',
+  fhr: 'fhr-v0.6.0.json',
   fht: 'fht-draft.json',
-  fhp: 'fhp-v0.5.0.json',
-  fhgff3: 'fhgff3-v0.5.0.json'
+  fhp: 'fhp-v0.6.0.json',
+  fhgff3: 'fhgff3-v0.6.0.json'
 };
 
 function pinnedDigest(page) {
@@ -159,7 +159,7 @@ test.describe('generated field references', () => {
   test('released pages name a fixed URL; the draft page does not', async ({ page }) => {
     for (const type of ['fhr', 'fhp', 'fhgff3']) {
       await openPage(page, `/specifications/${type}/`);
-      await expect(page.locator('.schema-links')).toContainText(`w3id.org/fair-bioheaders/${type}/v0.5.0`);
+      await expect(page.locator('.schema-links')).toContainText(`w3id.org/fair-bioheaders/${type}/v0.6.0`);
       await expect(page.locator('#schema-version-registry, .schema-links')).toContainText('schemas/versions.json');
       await expect(page.locator('.status-table')).toContainText('Released contract');
     }

@@ -20,10 +20,10 @@ INDEXABLE_PAGES = ('/', '/publications/', '/resources/', '/guide/', '/table-buil
 INDEXABLE_PREFIXES = ('/publication/',)
 # The four header-type reference pages, each pinned to one schema snapshot.
 SCHEMA_PAGES = {
-    'fhr': ('FHR', 'fhr-v0.5.0.json'),
+    'fhr': ('FHR', 'fhr-v0.6.0.json'),
     'fht': ('FHT', 'fht-draft.json'),
-    'fhp': ('FHP', 'fhp-v0.5.0.json'),
-    'fhgff3': ('FHGFF3', 'fhgff3-v0.5.0.json'),
+    'fhp': ('FHP', 'fhp-v0.6.0.json'),
+    'fhgff3': ('FHGFF3', 'fhgff3-v0.6.0.json'),
 }
 SCHEMA_SNAPSHOTS = Path(__file__).resolve().parent / 'schema-snapshots'
 RELEASED_TYPES = ('FHR', 'FHP', 'FHGFF3')

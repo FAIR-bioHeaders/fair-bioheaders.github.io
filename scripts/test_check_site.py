@@ -377,7 +377,7 @@ def reference_fixture(page='fhr', schema_type='FHR', draft=False, alias=True,
     region = ('<div class="field-table" role="region" tabindex="0" aria-label="FHR top-level fields">'
               if focusable else '<div class="field-table">')
     notice = '<div class="spec-notice spec-notice--draft" role="note">Draft</div>' if draft else ''
-    alias_link = (f'<a href="https://w3id.org/fair-bioheaders/{page}/v0.5.0">schema</a>' if alias else '')
+    alias_link = (f'<a href="https://w3id.org/fair-bioheaders/{page}/v0.6.0">schema</a>' if alias else '')
     return (
         f'{notice}{alias_link}'
         '<ul class="schema-links"><li><a href="https://github.com/FAIR-bioHeaders/'
@@ -433,7 +433,7 @@ class SchemaReferenceChecks(unittest.TestCase):
 
     def test_draft_page_may_not_claim_a_released_alias(self):
         forged = reference_fixture(page='fht', schema_type='FHT', draft=True) + \
-            '<a href="https://w3id.org/fair-bioheaders/fht/v0.5.0">released</a>'
+            '<a href="https://w3id.org/fair-bioheaders/fht/v0.6.0">released</a>'
         errors = schema_reference_errors('specifications/fht/index.html', forged)
         self.assertTrue(any('alias that does not exist' in error for error in errors))
 

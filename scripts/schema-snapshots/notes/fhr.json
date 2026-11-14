@@ -3,13 +3,13 @@
     "schema": {
       "units": "URL",
       "notes": [
-        "New files should cite the fixed URL of the release they target, preferably `https://w3id.org/fair-bioheaders/fhr/v0.5.0`. The raw-main URL selects the reader's current schema and has no fallback to an older release.",
+        "New files should cite the fixed URL of the release they target, preferably `https://w3id.org/fair-bioheaders/fhr/v0.6.0` — the same 2.1 bytes v0.5.0 published, re-published unchanged. The raw-main URL selects the reader's current schema and has no fallback to an older release.",
         "FHR's own `schema` value has never been pattern-constrained, so an unusual value is read as FHR and checked against the current FHR contract (rule V5 in docs/SCHEMA-VERSIONS.md)."
       ]
     },
     "schemaVersion": {
       "notes": [
-        "FHR `2.1` came with shared release v0.5.0; `2.0` came with v0.4.0. In YAML write it quoted: `schemaVersion: '2.1'`.",
+        "FHR `2.1` came with shared release v0.5.0; `2.0` came with v0.4.0. Shared release v0.6.0 left FHR unchanged: same `2.1` contract, same schema bytes; only the release tag moved. In YAML write it quoted: `schemaVersion: '2.1'`.",
         "A schema of version M.N also accepts records that state M.0 up to M.N, and holds each record to the minor it states: extension fields are invalid in a `2.0` record.",
         "v0.3.0 and v0.3.1 published the numeric FHR `1` contract. A record citing the raw-main `fhr.json` URL with the number 1 is read as FHR 1 against v0.3.1 and reported as deprecated, not invalid (rule V6)."
       ]
@@ -303,8 +303,8 @@
       "None of the linked forms carries `x-` extension fields: writers omit them and say which (J9, M5, X9)."
     ],
     "tooling": [
-      "`fair-bioheaders` 0.9.0 (PyPI) bundles the v0.5.0 schemas and implements FHR 2.1, including extension fields, for `combine`, `verify`, `validate`, `convert`, `strip`, `verify-links` and `assess`.",
-      "The browser table builder on this site validates against its documented **v0.4.0** snapshot (`schemaVersion` 2.0), not v0.5.0: extension fields cannot be produced there yet. Tracked in fair-bioheaders.github.io#15.",
+      "`fair-bioheaders` 0.10.0 (PyPI) bundles the v0.5.0 schemas — byte-identical to the FHR 2.1 bytes shared release v0.6.0 re-publishes — and implements FHR 2.1, including extension fields, for `combine`, `verify`, `validate`, `convert`, `strip`, `verify-links` and `assess`.",
+      "The browser table builder on this site validates against its documented **v0.4.0** snapshot (`schemaVersion` 2.0), not the current release: extension fields cannot be produced there yet. Tracked in fair-bioheaders.github.io#15.",
       "`bioheaders verify-links` checks a genome's own header bytes; parent linking is an FHP/FHT/FHGFF3 feature, not an FHR one."
     ],
     "caveats": [

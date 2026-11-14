@@ -1,7 +1,7 @@
 ---
 title: "FHGFF3 schema reference"
 permalink: /specifications/fhgff3/
-excerpt: "Complete field reference for the FHGFF3 GFF3 annotation header: schemaVersion 1.1, released in FAIR-bioHeaders-Specification v0.5.0, with types, constraints, units, examples and compatibility notes."
+excerpt: "Complete field reference for the FHGFF3 GFF3 annotation header: schemaVersion 1.2, released in FAIR-bioHeaders-Specification v0.6.0, with types, constraints, units, examples and compatibility notes."
 ---
 
 FHGFF3 is the FAIR-bioHeaders header for a **GFF3 annotation file**. It adds `#~`
@@ -88,7 +88,7 @@ Four questions, four tools, four separate answers.
 - [Table builder](/table-builder/) — builds and structurally validates FHGFF3 records
   against its documented v0.4.0 snapshot (`schemaVersion` 1.0). Its HTML export is a
   readable table only: there is no FHGFF3 microdata yet, so download the YAML to keep
-  the structured record. v0.5.0 support is tracked in
+  the structured record. Support for the current release is tracked in
   [issue #15](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/15).
 - [docs/FHGFF3.md](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHGFF3.md)
   for header placement in GFF3, plus
@@ -97,8 +97,8 @@ Four questions, four tools, four separate answers.
 - [gff3-validator](https://github.com/FAIR-bioHeaders/gff3-validator) — feature,
   ontology and (optionally) header checks. Header checking runs through the
   `fair-bioheaders` version it depends on: the published 0.1.0 release pins an older
-  toolkit, so it reports a v0.5.0 header as an unsupported schema version (HDR-007)
-  instead of checking it against FHGFF3 1.1. Feature validation is unaffected, and no
+  toolkit, so it reports a v0.6.0 header as an unsupported schema version (HDR-007)
+  instead of checking it against FHGFF3 1.2. Feature validation is unaffected, and no
   validator may substitute a different schema for a version it does not have.
 - [FAIR-bioHeaders-Tools](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools) —
   `combine`, `verify`, `verify-links`, `strip` and `assess` for GFF3.

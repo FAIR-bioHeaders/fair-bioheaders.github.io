@@ -1,0 +1,98 @@
+{
+  "note": "Byte-exact copies of the FAIR-bioHeaders mapping v1 surface, pinned so the /mappings/ page can be generated and drift-checked offline. Never edit these files by hand: refresh them from the authority with `python3 scripts/mapping_crosswalk.py --fetch`, update the ref/commit fields here, and regenerate. The website links the fixed URLs recorded here; the copies are a rendering source, not a second mapping authority. The v1 surface is adopted as correct-but-not-final and the 'official' label is withheld until a deterministic exporter ships: see FAIR-bioHeaders-Specification#56 and docs/mappings/v1-adoption-packet.md at the pinned revision.",
+  "authority": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+  "adoption": {
+    "issue": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/56",
+    "decisionPacket": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/1e6d692a37d55f322d7fa27c519b9a5254874e7e/docs/mappings/v1-adoption-packet.md",
+    "profileVersion": "0.1.0-draft.1",
+    "upstreamStatus": "proposal",
+    "label": "withheld: no deterministic exporter has shipped, so this site publishes the crosswalk as reference material, not as official guidance",
+    "recorded": "2026-11-14"
+  },
+  "files": {
+    "assembly-dcmi.yml": {
+      "role": "root-field handling inventory",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "main",
+      "commit": "1e6d692a37d55f322d7fa27c519b9a5254874e7e",
+      "path": "mappings/proposals/assembly-dcmi.yml",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/1e6d692a37d55f322d7fa27c519b9a5254874e7e/mappings/proposals/assembly-dcmi.yml",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/1e6d692a37d55f322d7fa27c519b9a5254874e7e/mappings/proposals/assembly-dcmi.yml",
+      "sha256": "096b9cf85f14a111dfaa3889319b112f3053f73b5247440a9cf9cbd0e73d610c",
+      "retrieved": "2026-11-14"
+    },
+    "profile-status.yml": {
+      "role": "per-target and per-header-type delivery matrix",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "main",
+      "commit": "1e6d692a37d55f322d7fa27c519b9a5254874e7e",
+      "path": "mappings/proposals/profile-status.yml",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/1e6d692a37d55f322d7fa27c519b9a5254874e7e/mappings/proposals/profile-status.yml",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/1e6d692a37d55f322d7fa27c519b9a5254874e7e/mappings/proposals/profile-status.yml",
+      "sha256": "b19aa901c129a458ed64bc485d02d9fe5a472626a662d925ab43bd3f9f2bf38a",
+      "retrieved": "2026-11-14"
+    },
+    "assembly-export-context.schema.json": {
+      "role": "supplemental export-context contract (proposed)",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "main",
+      "commit": "1e6d692a37d55f322d7fa27c519b9a5254874e7e",
+      "path": "mappings/proposals/assembly-export-context.schema.json",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/1e6d692a37d55f322d7fa27c519b9a5254874e7e/mappings/proposals/assembly-export-context.schema.json",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/1e6d692a37d55f322d7fa27c519b9a5254874e7e/mappings/proposals/assembly-export-context.schema.json",
+      "sha256": "8594bf12d7ee812c5ba4688abaa8b9f166c2e18f9243fc7f0059f9c3b237a824",
+      "retrieved": "2026-11-14"
+    },
+    "source.json": {
+      "role": "worked example: FHR source record",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "main",
+      "commit": "1e6d692a37d55f322d7fa27c519b9a5254874e7e",
+      "path": "tests/fixtures/mapping-proposal/source.json",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/1e6d692a37d55f322d7fa27c519b9a5254874e7e/tests/fixtures/mapping-proposal/source.json",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/1e6d692a37d55f322d7fa27c519b9a5254874e7e/tests/fixtures/mapping-proposal/source.json",
+      "sha256": "78f75c880d69be4797509457b658068eb8cb46ab817986d8e2f442b96f07f0d6",
+      "retrieved": "2026-11-14"
+    },
+    "context.json": {
+      "role": "worked example: supplemental export context",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "main",
+      "commit": "1e6d692a37d55f322d7fa27c519b9a5254874e7e",
+      "path": "tests/fixtures/mapping-proposal/context.json",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/1e6d692a37d55f322d7fa27c519b9a5254874e7e/tests/fixtures/mapping-proposal/context.json",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/1e6d692a37d55f322d7fa27c519b9a5254874e7e/tests/fixtures/mapping-proposal/context.json",
+      "sha256": "f78102e9b41c76855e034769819b0a1272f1b20014d9f4dcb611925dc9163c6f",
+      "retrieved": "2026-11-14"
+    },
+    "qualified-dc.ttl": {
+      "role": "worked example: manually curated qualified-DC graph (not exporter output)",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "main",
+      "commit": "1e6d692a37d55f322d7fa27c519b9a5254874e7e",
+      "path": "tests/fixtures/mapping-proposal/qualified-dc.ttl",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/1e6d692a37d55f322d7fa27c519b9a5254874e7e/tests/fixtures/mapping-proposal/qualified-dc.ttl",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/1e6d692a37d55f322d7fa27c519b9a5254874e7e/tests/fixtures/mapping-proposal/qualified-dc.ttl",
+      "sha256": "240f5c4f1aeb46ab595fa703c019e0569f8b2dba743a790b5294f5ebdb8ba0e1",
+      "retrieved": "2026-11-14"
+    },
+    "report.json": {
+      "role": "worked example: omissions, limitations and conflict policy",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "main",
+      "commit": "1e6d692a37d55f322d7fa27c519b9a5254874e7e",
+      "path": "tests/fixtures/mapping-proposal/report.json",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/1e6d692a37d55f322d7fa27c519b9a5254874e7e/tests/fixtures/mapping-proposal/report.json",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/1e6d692a37d55f322d7fa27c519b9a5254874e7e/tests/fixtures/mapping-proposal/report.json",
+      "sha256": "eda91a9f2ea1284ac0a854eef3820b6903f778a65f7c9f14c3ad239052b40222",
+      "retrieved": "2026-11-14"
+    }
+  },
+  "references": {
+    "dcmi": "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/2020-01-20/",
+    "specificationReadme": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/1e6d692a37d55f322d7fa27c519b9a5254874e7e/docs/mappings/README.md",
+    "canonicalJsonldDcmiTable": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/mappings/fhr-jsonld-dcmi.yml",
+    "schemaOrgExport": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/SCHEMAORG-EXPORT.md",
+    "mlixsProjection": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/MAPPINGS.md"
+  }
+}

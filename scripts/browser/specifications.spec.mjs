@@ -6,8 +6,8 @@ import path from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
 
 // The /specifications/ section: one dropdown, four generated field references,
-// and the FHGM draft overview, which has no field inventory because FHGM has
-// no contract (shared #204/#207).
+// the FHGM draft overview, which has no field inventory because FHGM has no
+// contract (shared #204/#207), and the /mappings/ v1 reference page.
 const TYPES = ['fhr', 'fht', 'fhp', 'fhgff3'];
 const NAV_ITEMS = [...TYPES, 'fhgm'];
 const SNAPSHOTS = {
@@ -112,7 +112,8 @@ test.describe('specifications dropdown', () => {
     const page = await context.newPage();
     await page.goto(baseURL + '/specifications/');
     const links = page.locator('#site-nav .nav-dropdown a');
-    await expect(links).toHaveCount(NAV_ITEMS.length);
+    // The five specification entries plus the /mappings/ reference page share the menu.
+    await expect(links).toHaveCount(NAV_ITEMS.length + 1);
     await expect(links.first()).toBeVisible();
     await context.close();
   });

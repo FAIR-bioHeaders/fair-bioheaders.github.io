@@ -5,7 +5,7 @@ import AxeBuilder from '@axe-core/playwright';
 // resources (repo references + citations).
 const PAGES = ['/', '/publications/', '/guide/', '/resources/', '/table-builder/', '/metadata-viewer/',
   '/specifications/', '/specifications/fhr/', '/specifications/fht/', '/specifications/fhp/',
-  '/specifications/fhgff3/', '/specifications/fhgm/'];
+  '/specifications/fhgff3/', '/specifications/fhgm/', '/mappings/'];
 
 // Inspect settled layouts, not the intro animation or a fallback-font frame.
 test.beforeEach(async ({ page }) => {

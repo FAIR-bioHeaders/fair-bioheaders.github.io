@@ -539,6 +539,37 @@ as unsupported rather than validated against a newer snapshot.
 Adding a new indexable route here means updating the sitemap allow-lists in
 `scripts/check_site.py` and `scripts/check_deployed.py` and their tests in the same change.
 
+## Metadata mappings reference (issue #29)
+
+`/mappings/` renders the adopted **mapping v1** surface of
+`FAIR-bioHeaders-Specification`: the FHR root-field handling inventory
+(`mappings/proposals/assembly-dcmi.yml`), the per-target and per-type delivery matrix
+(`mappings/proposals/profile-status.yml`), the proposed supplemental export-context schema,
+and the one worked bundle (`tests/fixtures/mapping-proposal/`). Like the schema references,
+its tables are **generated** — from byte-pinned copies in `scripts/mapping-snapshots/` with
+`provenance.json` digests, by `scripts/mapping_crosswalk.py`; `--check` is the drift gate CI
+runs, and `--fetch` is the maintainer refresh step. Never hand-edit
+`_includes/mappings/v1-crosswalk.html`, and never edit a pin to make a check pass.
+
+**The status language is the point of the page, so it is enforced twice.** V1 was adopted
+2026-11-14 as correct-but-not-final with the **"official" label withheld until a
+deterministic exporter ships**, and it stays that way on the page: `not projected by
+mapping v1` is the only allowed phrasing for the 15 ruled-out root fields (the inventory
+never calls a field unmapable), the upstream `status: proposal` and
+`profile_version: 0.1.0-draft.1` are quoted rather than restated, the worked graph is
+labelled a manually curated fixture, and no exporter, deposit readiness, registration or
+external endorsement may be implied. `scripts/mapping_crosswalk.py` refuses to emit wording
+that breaks that, and `scripts/check_site.py`'s `mapping_page_errors` re-checks the rendered
+page — including the hand-written prose — for the pinned digest, the required vocabulary and
+the forbidden claims. If maintainers later grant the label or ship an exporter, change the
+guard, the page and the pins deliberately together.
+
+V1 covers FHR root fields for an assembly resource only. FHP and FHGFF3 are recorded
+upstream as not yet profiled and FHT as blocked on its contract, so no row may be invented
+for them, and this page is not the place where mapping semantics are decided: that is
+specification #56. An interactive crosswalk explorer, any mapping export in
+`/table-builder/`, and per-target adapters are separate work.
+
 ## Metadata viewer (issue #23)
 
 `/metadata-viewer/` is independent of the table builder. The initial draft reads

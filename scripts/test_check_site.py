@@ -5,6 +5,7 @@ from check_site import (
     Page,
     feed_errors,
     fhgm_draft_errors,
+    mapping_page_errors,
     schema_reference_errors,
     sitemap_path_allowed,
     jsonld_container_errors,
@@ -356,7 +357,7 @@ class SitemapAllowListChecks(unittest.TestCase):
         for path in ('/', '/publications/', '/resources/', '/guide/', '/table-builder/',
                      '/metadata-viewer/', '/specifications/', '/specifications/fhr/',
                      '/specifications/fht/', '/specifications/fhp/', '/specifications/fhgff3/',
-                     '/specifications/fhgm/'):
+                     '/specifications/fhgm/', '/mappings/'):
             with self.subTest(path=path):
                 self.assertTrue(sitemap_path_allowed(path))
 
@@ -441,6 +442,78 @@ class SchemaReferenceChecks(unittest.TestCase):
         errors = schema_reference_errors('specifications/fhr/index.html',
                                          reference_fixture(alias=False))
         self.assertTrue(any('fixed release schema URL' in error for error in errors))
+
+
+def mapping_fixture(digest=None, disposition=True, withheld=True, version=True,
+                    authority=True, extra='', caption=True, scope=True, scroll=True):
+    """A minimal rendering of the /mappings/ page with one generated crosswalk table."""
+    import hashlib
+    from pathlib import Path
+    from check_site import MAPPING_INVENTORY, MAPPING_SNAPSHOTS
+    pinned = digest or hashlib.sha256((MAPPING_SNAPSHOTS / MAPPING_INVENTORY).read_bytes()).hexdigest()
+    parts = [f'<p class="reference-provenance" data-mapping-sha256="{pinned}">generated</p>']
+    if disposition:
+        parts.append('<td>Not projected by mapping v1</td>')
+    if withheld:
+        parts.append('<p>the label is withheld until a deterministic exporter ships</p>')
+    if version:
+        parts.append('<code>0.1.0-draft.1</code>')
+    if authority:
+        parts.append('<a href="https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/'
+                     'blob/1e6d692a/mappings/proposals/assembly-dcmi.yml">inventory</a>')
+    region_open = ('<div class="field-table" role="region" tabindex="0" aria-label="Crosswalk">'
+                   if scroll else '<div class="field-table">')
+    parts.append(region_open + '<table>'
+                 + ('<caption>Crosswalk</caption>' if caption else '')
+                 + '<thead><tr>' + ('<th scope="col">' if scope else '<th>') + 'Field</th></tr></thead>'
+                 '<tbody><tr><th scope="row">genome</th><td>value</td></tr></tbody></table></div>')
+    return ''.join(parts) + extra
+
+
+class MappingPageChecks(unittest.TestCase):
+    """The /mappings/ page renders the pinned v1 surface and never overstates it."""
+
+    def test_generated_crosswalk_renders_cleanly(self):
+        self.assertEqual(mapping_page_errors('mappings/index.html', mapping_fixture()), [])
+
+    def test_other_pages_are_not_checked(self):
+        self.assertEqual(mapping_page_errors('guide/index.html', '<p>Anything</p>'), [])
+        self.assertEqual(mapping_page_errors('specifications/fhr/index.html', mapping_fixture()), [])
+
+    def test_stale_pinned_digest_is_reported(self):
+        errors = mapping_page_errors('mappings/index.html', mapping_fixture(digest='0' * 64))
+        self.assertTrue(any('pinned' in error for error in errors), errors)
+
+    def test_lost_disposition_vocabulary_is_reported(self):
+        errors = mapping_page_errors('mappings/index.html', mapping_fixture(disposition=False))
+        self.assertTrue(any('disposition' in error for error in errors), errors)
+
+    def test_lost_withheld_label_notice_is_reported(self):
+        errors = mapping_page_errors('mappings/index.html', mapping_fixture(withheld=False))
+        self.assertTrue(any('withheld' in error for error in errors), errors)
+
+    def test_lost_profile_version_is_reported(self):
+        errors = mapping_page_errors('mappings/index.html', mapping_fixture(version=False))
+        self.assertTrue(any('profile version' in error for error in errors), errors)
+
+    def test_missing_upstream_link_is_reported(self):
+        errors = mapping_page_errors('mappings/index.html', mapping_fixture(authority=False))
+        self.assertTrue(any('upstream artifact' in error for error in errors), errors)
+
+    def test_official_label_claim_is_rejected(self):
+        for phrase in ('Official guidance from FAIR BioHeaders.',
+                       'this is an official mapping',
+                       'the field is unmappable',
+                       'the exporter writes the file',
+                       'deposit-ready output is produced'):
+            with self.subTest(phrase=phrase):
+                errors = mapping_page_errors('mappings/index.html', mapping_fixture(extra=f'<p>{phrase}</p>'))
+                self.assertTrue(any('do not support' in error for error in errors), errors)
+
+    def test_table_markup_and_scroll_region_are_enforced(self):
+        self.assertTrue(mapping_page_errors('mappings/index.html', mapping_fixture(caption=False)))
+        self.assertTrue(mapping_page_errors('mappings/index.html', mapping_fixture(scope=False)))
+        self.assertTrue(mapping_page_errors('mappings/index.html', mapping_fixture(scroll=False)))
 
 
 def fhgm_fixture(notice=True, authority=True, alias=False, table=False):

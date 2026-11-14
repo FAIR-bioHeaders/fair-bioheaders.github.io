@@ -16,7 +16,7 @@ ORIGIN = 'https://fhref.org'
 INDEXABLE_PAGES = ('/', '/publications/', '/resources/', '/guide/', '/table-builder/',
                    '/metadata-viewer/', '/specifications/', '/specifications/fhr/',
                    '/specifications/fht/', '/specifications/fhp/', '/specifications/fhgff3/',
-                   '/specifications/fhgm/')
+                   '/specifications/fhgm/', '/mappings/')
 INDEXABLE_PREFIXES = ('/publication/',)
 # The four header-type reference pages, each pinned to one schema snapshot.
 SCHEMA_PAGES = {
@@ -26,6 +26,14 @@ SCHEMA_PAGES = {
     'fhgff3': ('FHGFF3', 'fhgff3-v0.6.0.json'),
 }
 SCHEMA_SNAPSHOTS = Path(__file__).resolve().parent / 'schema-snapshots'
+# The pinned mapping v1 surface behind the generated /mappings/ crosswalk.
+MAPPING_SNAPSHOTS = Path(__file__).resolve().parent / 'mapping-snapshots'
+MAPPING_INVENTORY = 'assembly-dcmi.yml'
+# Wording the /mappings/ page may not carry while the label is withheld and no
+# deterministic exporter exists. scripts/mapping_crosswalk.py guards the generated
+# fragment; this guards what actually renders, including the hand-written prose.
+MAPPING_FORBIDDEN = ('official guidance', 'official mapping', 'unmappable', 'the exporter',
+                     'deposit-ready output')
 RELEASED_TYPES = ('FHR', 'FHP', 'FHGFF3')
 MATHJAX_INTEGRITY = 'sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei'
 MATHJAX_URL = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js'
@@ -529,6 +537,50 @@ FHGM_PAGE = 'specifications/fhgm/index.html'
 FHGM_AUTHORITY = 'FAIR-bioHeaders-Specification/blob/main/docs/FHGM.md'
 
 
+def mapping_page_errors(relative, text):
+    """Keep the generated /mappings/ crosswalk honest in the rendered page.
+
+    The fragment itself is diffed against the pinned mapping bytes by
+    `scripts/mapping_crosswalk.py --check` (and by test_mapping_crosswalk.py); this is
+    the matching rendered check. It proves the page still shows the pinned revision,
+    still uses the inventory's own vocabulary, and still does not claim the two things
+    the withheld label forbids: an "official" status, or an exporter.
+    """
+    if relative != 'mappings/index.html':
+        return []
+    errors = []
+    inventory = MAPPING_SNAPSHOTS / MAPPING_INVENTORY
+    if inventory.is_file():
+        expected = hashlib.sha256(inventory.read_bytes()).hexdigest()
+        if f'data-mapping-sha256="{expected}"' not in text:
+            errors.append('the rendered crosswalk is not the one generated from the pinned '
+                          f'bytes of {MAPPING_INVENTORY}')
+    else:
+        errors.append(f'pinned mapping inventory {MAPPING_INVENTORY} is missing')
+    for marker, why in (('Not projected by mapping v1', 'the inventory disposition vocabulary'),
+                        ('withheld', 'the withheld-label notice'),
+                        ('0.1.0-draft.1', 'the pinned profile version')):
+        if marker not in text:
+            errors.append(f'the /mappings/ page lost {why} ("{marker}")')
+    lowered = text.lower()
+    for phrase in MAPPING_FORBIDDEN:
+        if phrase in lowered:
+            errors.append(f'the /mappings/ page says "{phrase}", which the withheld label and the '
+                          'absent exporter do not support')
+    if 'FAIR-bioHeaders-Specification/blob/' not in text:
+        errors.append('the /mappings/ page does not link the pinned upstream artifact')
+    for table in re.findall(r'<table\b.*?</table>', text, re.DOTALL):
+        if '<caption' not in table:
+            errors.append('a crosswalk table has no <caption>')
+        heads = re.findall(r'<th\b([^>]*)>', table)
+        if not heads or not all('scope=' in head for head in heads):
+            errors.append('a crosswalk table has a header cell without scope=')
+    for region in re.findall(r'<div class="field-table"[^>]*>', text):
+        if 'tabindex="0"' not in region or 'role="region"' not in region or 'aria-label=' not in region:
+            errors.append('a scrollable crosswalk table is not keyboard reachable and named')
+    return errors
+
+
 def fhgm_draft_errors(relative, text):
     """Keep the FHGM page a draft overview of a proposal with no contract.
 
@@ -610,6 +662,7 @@ def check(root):
         errors.extend(f'{relative}: {error}' for error in mathjax_errors(page))
         errors.extend(f'{relative}: {error}' for error in schema_reference_errors(relative, file.read_text()))
         errors.extend(f'{relative}: {error}' for error in fhgm_draft_errors(relative, file.read_text()))
+        errors.extend(f'{relative}: {error}' for error in mapping_page_errors(relative, file.read_text()))
     # Also check font and image references in CSS, including missing vendored assets.
     for file in root.rglob('*.css'):
         css = file.read_text()

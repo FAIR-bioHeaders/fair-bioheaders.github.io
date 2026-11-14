@@ -15,7 +15,7 @@ that type's released contract and tooling.
 | [FHR](/specifications/fhr/) | Reference genome assembly | FHR `2.1`; the current shared release v0.6.0 re-publishes the 2.1 bytes unchanged. Toolkit FASTA/GFA, JSON-LD and microdata. The browser builder still validates its v0.4.0 snapshot. |
 | [FHT](/specifications/fht/) | Transcriptome | **Draft** contract, `schemaVersion` "1.0" proposed; no shared release, no fixed alias, no toolkit or builder support. |
 | [FHP](/specifications/fhp/) | Protein/proteome FASTA | FHP `1.2` is released in shared v0.6.0 (dotted BUSCO dataset versions). Toolkit 0.10.0 supports FHP through `1.1`/v0.5.0 for JSON/YAML, files, canonical JSON-LD and microdata; v0.6.0 support is not released in that toolkit. The builder validates its v0.4.0 snapshot. |
-| [FHGFF3](/specifications/fhgff3/) | GFF3 annotation metadata | FHGFF3 `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit JSON/YAML and files, no JSON-LD or microdata form yet. Feature and biology validation is a separate tool. |
+| [FHGFF3](/specifications/fhgff3/) | GFF3 annotation metadata | FHGFF3 `1.2` is released in shared v0.6.0 (dotted BUSCO dataset versions). Toolkit 0.10.0 supports FHGFF3 through `1.1`/v0.5.0 for JSON/YAML and files, with experimental HTML microdata and no JSON-LD; v0.6.0 support is not released in that toolkit. Feature and biology validation is a separate tool. |
 
 Every field, type, constraint and unit is documented on that type's schema reference
 page, generated from the published schema bytes; the
@@ -126,7 +126,7 @@ fhr-validate genome.fhr.json
 - **FHP** describes protein FASTA and **FHGFF3** describes annotation metadata.
   Their schemaVersion `"1.0"` contracts are included alongside FHR in the
   [shared specification v0.4.0](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/releases/tag/v0.4.0).
-  FHP/FHGFF3 JSON-LD and HTML microdata are still follow-up work.
+  Toolkit 0.10.0 supports FHP canonical JSON-LD and HTML microdata, plus experimental FHGFF3 HTML microdata; FHGFF3 JSON-LD remains follow-up work.
 - **File-carried metadata** travels with the sequence in `;~` (FASTA) or `#~`
   (GFA) header comments, so the metadata cannot drift away from the data it
   describes. **Repository metadata** is held by the archive that stores the

@@ -29,8 +29,24 @@ test('the form loads only local assets and renders its fields', async ({ page })
   });
   await page.goto('/table-builder/');
   await page.waitForSelector('#tb-form fieldset');
-  await expect(page.locator('#tb-form .tb-form > fieldset.tb-group')).toHaveCount(9);
+  // Nine authored FHR groups plus the extension-field section.
+  await expect(page.locator('#tb-form .tb-form > fieldset.tb-group')).toHaveCount(10);
   expect(external).toEqual([]);
+});
+
+test('only the pinned snapshots are requested, and they are the current release', async ({ page }) => {
+  const loaded = [];
+  page.on('request', (request) => {
+    if (/\/assets\/schema\/.*\.json$/.test(request.url())) loaded.push(request.url().replace('http://127.0.0.1:4000', ''));
+  });
+  await page.goto('/table-builder/');
+  await page.waitForSelector('#tb-schema');
+  expect(loaded.sort()).toEqual([
+    '/assets/schema/fhgff3-v0.4.0.json', '/assets/schema/fhgff3-v0.6.0.json',
+    '/assets/schema/fhp-v0.4.0.json', '/assets/schema/fhp-v0.6.0.json',
+    '/assets/schema/fhr-v0.3.1.json', '/assets/schema/fhr-v0.4.0.json', '/assets/schema/fhr-v0.6.0.json',
+    '/assets/schema/fhr.json'
+  ].sort());
 });
 
 test('invalid input reports issues, preserves entries, and disables downloads', async ({ page }) => {
@@ -208,21 +224,21 @@ test('field errors become accessible descriptions and clear without losing help'
   await expect(page.locator('#tb-download-yaml')).toBeEnabled();
 });
 
-test('current release defaults to a string version and preserves new fields through exports', async ({ page }) => {
+test('current release defaults to schema 2.1 and preserves new fields through exports', async ({ page }) => {
   await page.goto('/table-builder/');
-  await expect(page.locator('#tb-schema')).toHaveValue('https://w3id.org/fair-bioheaders/fhr/v0.4.0');
-  await expect(page.locator('#tb-schemaVersion')).toHaveValue('2.0');
+  await expect(page.locator('#tb-schema')).toHaveValue('https://w3id.org/fair-bioheaders/fhr/v0.6.0');
+  await expect(page.locator('#tb-schemaVersion')).toHaveValue('2.1');
   await expect(page.locator('#tb-schemaVersion')).toHaveAttribute('readonly', '');
   await fillValid(page);
-  await page.fill('#tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v0.4.0');
+  await page.fill('#tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v0.6.0');
   await page.selectOption('#tb-metadataAuthor-0-nameType', 'Organizational');
   await page.fill('#tb-vitalStats-scaffoldN50', '200');
   await page.fill('#tb-vitalStats-scaffoldL50', '0');
   await page.fill('#tb-vitalStats-gcContent', '0.42');
   await expect(page.locator('#tb-download-yaml')).toBeDisabled();
   await page.click('#tb-generate');
-  await expect(page.locator('#tb-status')).toContainText('FHR v0.4.0 (schema 2.0)');
-  await expect(page.locator('#tb-yaml-source')).toContainText('schemaVersion: "2.0"');
+  await expect(page.locator('#tb-status')).toContainText('FHR v0.6.0 (schema 2.1)');
+  await expect(page.locator('#tb-yaml-source')).toContainText('schemaVersion: "2.1"');
   await expect(page.locator('#tb-yaml-source')).toContainText('scaffoldL50: 0');
   await expect(page.locator('#tb-yaml-source')).toContainText('gcContent: 0.42');
   await expect(page.locator('#tb-table')).toContainText('Organizational');
@@ -234,17 +250,112 @@ test('current release defaults to a string version and preserves new fields thro
   await expect(page.locator('#tb-yaml-source')).toContainText('schemaVersion: 1.0');
   await expect(page.locator('#tb-vitalStats-scaffoldN50')).toHaveValue('200');
   await page.fill('#tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v0.4.0');
+  await expect(page.locator('#tb-schemaVersion')).toHaveValue('2.0');
   await page.fill('#tb-vitalStats-scaffoldL50', '-1');
   await page.click('#tb-generate');
   await expect(page.locator('#tb-vitalStats-scaffoldL50')).toHaveAttribute('aria-invalid', 'true');
 });
 
-for (const [kind, fixture] of [['FHP','rich-mixed.fhp.yaml'], ['FHGFF3','rich.fhgff3.yaml']]) {
-  test(`${kind} released form preserves nested values, downloads, draft switching and local requests`, async ({ page }) => {
+test('extension fields reach the YAML and the table but not the microdata item', async ({ page }) => {
+  await fillValid(page);
+  await page.fill('#tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v0.6.0');
+  await page.click('#tb-add-extension');
+  await page.fill('#tb-extension-0-name', 'x-site-builder');
+  await page.fill('#tb-extension-0-value', 'built on fhref.org');
+  await page.click('#tb-generate');
+  await expect(page.locator('#tb-status')).toContainText('Structural validation passed');
+  const { parse } = await import('yaml');
+  const record = parse(await page.textContent('#tb-yaml-source'));
+  expect(record['x-site-builder']).toBe('built on fhref.org');
+  await expect(page.locator('#tb-table')).toContainText('Extension fields');
+  await expect(page.locator('#tb-table')).toContainText('x-site-builder');
+  const htmlSource = await page.textContent('#tb-html-source');
+  expect(htmlSource).not.toContain('itemprop="x-site-builder"');
+  expect(htmlSource).toContain('Extension fields are not carried by HTML microdata');
+  const [download] = await Promise.all([page.waitForEvent('download'), page.click('#tb-download-yaml')]);
+  expect((await import('node:fs')).readFileSync(await download.path(), 'utf8')).toContain('x-site-builder: "built on fhref.org"');
+  // A name the cited contract does not allow is reported against its own row.
+  await page.fill('#tb-extension-0-name', 'X-site-builder');
+  await page.click('#tb-generate');
+  await expect(page.locator('#tb-download-yaml')).toBeDisabled();
+  await expect(page.locator('#tb-extension-0-name')).toHaveAttribute('aria-invalid', 'true');
+  await expect(page.locator('#tb-extension-0-name')).toHaveAccessibleDescription(/not an allowed property/);
+  await page.locator('#tb-errors a[href="#tb-extension-0-name"]').click();
+  await expect(page.locator('#tb-extension-0-name')).toBeFocused();
+  // The older frozen release declares no extension fields at all.
+  await page.fill('#tb-extension-0-name', 'x-site-builder');
+  await page.fill('#tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v0.4.0');
+  await page.click('#tb-generate');
+  await expect(page.locator('#tb-download-yaml')).toBeDisabled();
+  await expect(page.locator('#tb-errors')).toContainText('x-site-builder: is not an allowed property');
+  await page.fill('#tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v0.6.0');
+  await page.click('#tb-generate');
+  await expect(page.locator('#tb-download-yaml')).toBeEnabled();
+
+  // A second row writing the same key, and a row renaming itself onto a standard
+  // field, are both reported against the row that caused them.
+  await page.click('#tb-add-extension');
+  await page.fill('#tb-extension-1-name', 'x-site-builder');
+  await page.fill('#tb-extension-1-value', 'second writer');
+  await page.click('#tb-generate');
+  await expect(page.locator('#tb-download-yaml')).toBeDisabled();
+  await expect(page.locator('#tb-errors')).toContainText('written by more than one extension row');
+  await expect(page.locator('#tb-extension-1-name')).toHaveAttribute('aria-invalid', 'true');
+  await page.locator('#tb-errors a[href="#tb-extension-1-name"]').click();
+  await expect(page.locator('#tb-extension-1-name')).toBeFocused();
+  await page.fill('#tb-extension-1-name', 'documentation');
+  await page.click('#tb-generate');
+  await expect(page.locator('#tb-errors')).toContainText('extension fields never override one');
+  await expect(page.locator('#tb-extension-1-name')).toHaveAttribute('aria-invalid', 'true');
+  await expect(page.locator('#tb-documentation')).not.toHaveAttribute('aria-invalid', 'true');
+  await page.locator('#tb-row-extension-1 .tb-remove, #tb-extensions .tb-list__row:nth-child(2) .tb-remove').first().click();
+  await page.click('#tb-generate');
+  await expect(page.locator('#tb-download-yaml')).toBeEnabled();
+});
+
+test('an unpinned real release is unsupported instead of falling back', async ({ page }) => {
+  await fillValid(page);
+  await page.fill('#tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v0.4.1');
+  await page.click('#tb-generate');
+  await expect(page.locator('#tb-download-yaml')).toBeDisabled();
+  await expect(page.locator('#tb-errors')).toContainText('Unsupported schema target');
+});
+
+test('FHT stays disabled and FHGM is absent from the builder', async ({ page }) => {
+  await page.goto('/table-builder/');
+  await expect(page.locator('#tb-profile option[value="FHT"]')).toHaveCount(0);
+  const fht = page.locator('#tb-profile option').filter({ hasText: 'FHT' });
+  await expect(fht).toHaveCount(1);
+  await expect(fht).toBeDisabled();
+  await expect(page.locator('#tb-profile option')).toHaveCount(4);
+  await expect(page.locator('#tb-profile')).not.toContainText('FHGM');
+});
+
+test('a 320px narrow layout keeps the extension rows and table inside the viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 800 });
+  await fillValid(page);
+  await page.fill('#tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v0.6.0');
+  await page.click('#tb-add-extension');
+  await page.fill('#tb-extension-0-name', 'x-site-builder');
+  await page.fill('#tb-extension-0-value', 'a deliberately long extension value to stress the narrow layout');
+  await page.click('#tb-generate');
+  await expect(page.locator('#tb-download-yaml')).toBeEnabled();
+  const overflow = await page.evaluate(() =>
+    document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+});
+
+for (const [kind, release, fixture] of [
+  ['FHP', 'v0.4.0', 'rich-mixed.fhp.yaml'], ['FHGFF3', 'v0.4.0', 'rich.fhgff3.yaml'],
+  ['FHP', 'v0.6.0', 'rich-database.fhp.json'], ['FHGFF3', 'v0.6.0', 'rich.fhgff3.yaml']
+]) {
+  test(`${kind} ${release} form preserves nested values, downloads, draft switching and local requests`, async ({ page }) => {
     const { readFileSync } = await import('node:fs');
     const { parse } = await import('yaml');
-    const record = parse(readFileSync(new URL(`../fixtures/family-v0.4.0/${fixture}`, import.meta.url),'utf8'));
-    record.schema = `https://w3id.org/fair-bioheaders/${kind.toLowerCase()}/v0.4.0`;
+    const directory = release === 'v0.4.0' ? 'family-v0.4.0' : 'family-v0.6.0';
+    const text = readFileSync(new URL(`../fixtures/${directory}/${fixture}`, import.meta.url), 'utf8');
+    const record = fixture.endsWith('.json') ? JSON.parse(text) : parse(text);
+    record.schema = `https://w3id.org/fair-bioheaders/${kind.toLowerCase()}/${release}`;
     await page.emulateMedia({reducedMotion:'reduce'});
     const external=[];
     page.on('request',request=>{if(!request.url().startsWith('http://127.0.0.1:4000/')) external.push(request.url());});
@@ -309,7 +420,7 @@ for (const [kind, fixture] of [['FHP','rich-mixed.fhp.yaml'], ['FHGFF3','rich.fh
     await page.selectOption('#tb-profile',kind);
     await page.click('#tb-generate');
     expect(parse(await page.textContent('#tb-yaml-source'))).toEqual(record);
-    await page.fill('#tb-schema',record.schema.replace('v0.4.0','v999.0.0'));
+    await page.fill('#tb-schema',record.schema.replace(release,'v999.0.0'));
     await page.click('#tb-generate');
     await expect(page.locator('#tb-download-yaml')).toBeDisabled();
     expect(external).toEqual([]);
@@ -325,11 +436,12 @@ for (const kind of ['FHP', 'FHGFF3']) {
     await page.selectOption('#tb-profile', kind);
     await expect(page.locator('#tb-form')).toBeEmpty();
     release();
-    await expect(page.locator('#tb-schema')).toHaveValue(`https://w3id.org/fair-bioheaders/${kind.toLowerCase()}/v0.4.0`);
+    await expect(page.locator('#tb-schema')).toHaveValue(`https://w3id.org/fair-bioheaders/${kind.toLowerCase()}/v0.6.0`);
     await expect(page.locator(kind === 'FHP' ? '#tb-proteome' : '#tb-annotation')).toBeVisible();
     await expect(page.locator('#tb-genome')).toHaveCount(0);
     await page.click('#tb-generate');
-    await expect(page.locator('#tb-yaml-source')).toContainText(`schema: "https://w3id.org/fair-bioheaders/${kind.toLowerCase()}/v0.4.0"`);
+    await expect(page.locator('#tb-yaml-source')).toContainText(`schema: "https://w3id.org/fair-bioheaders/${kind.toLowerCase()}/v0.6.0"`);
+    await expect(page.locator('#tb-yaml-source')).toContainText(`schemaVersion: "${kind === 'FHP' ? '1.2' : '1.2'}"`);
     if (kind === 'FHP') {
       await expect(page.locator('#tb-html-source')).toContainText('itemtype="https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json"');
     } else {
@@ -367,7 +479,7 @@ test('pruned blank parents keep errors, accessible descriptions and focus on the
 test('error paths map through blank entries in both outer and nested arrays', async ({ page }) => {
   // Exercise nested index translation with a supported URI constraint on this
   // test-only schema copy; the released command-line strings have no constraint.
-  await page.route('**/assets/schema/fhp-v0.4.0.json', async route => {
+  await page.route('**/assets/schema/fhp-v0.6.0.json', async route => {
     const response = await route.fetch();
     const schema = await response.json();
     schema.$defs.Software.properties.commandLineOption.items.format = 'uri';

@@ -1,0 +1,21 @@
+schema: https://w3id.org/fair-bioheaders/fhp/v0.6.0
+schemaVersion: '1.2'
+proteome: Synthetic FHP dotted-lineage example
+sourceType: predicted
+taxon:
+  name: Drosophila melanogaster
+  uri: https://identifiers.org/taxonomy:7227
+version: '1.0.0'
+metadataAuthor:
+- name: Synthetic metadata author (placeholder)
+dateCreated: '2026-11-14'
+documentation: Site-authored synthetic vector for a dotted BUSCO dataset version. The dataset name and the count shape follow the released conformance vector fhp-fasta-busco-lineage-dotted.fhp.fasta (shared specification v0.6.0); no protein set was measured and no sequence is described.
+completeness:
+  lineageDataset: diptera_odb12.2
+  mode: proteins
+  completeSingle: 1
+  completeDuplicated: 0
+  fragmented: 0
+  missing: 1
+  total: 2
+checksum: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=

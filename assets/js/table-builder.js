@@ -16,30 +16,114 @@
   // cache of this URL; see docs/maintenance.md for provenance and refresh.
   var SCHEMA_URL = 'https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json';
 
-  var RELEASE_URL = 'https://w3id.org/fair-bioheaders/fhr/v0.3.1';
-  var RELEASE_RAW_URL = 'https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.3.1/fhr.json';
-  var RELEASE_COMMIT_URL = 'https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/378b534dda9c1d759f25b4b32287172402492233/fhr.json';
+  var SHARED_RAW = 'https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/';
 
-  var CURRENT_URL = 'https://w3id.org/fair-bioheaders/fhr/v0.4.0';
-  var CURRENT_RAW_URL = 'https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json';
+  // Supported released contracts. One entry per (type, shared release) pair the
+  // builder can produce, each backed by a byte-pinned local snapshot and the
+  // citation aliases that select it. `declares` is the schemaVersion that release
+  // publishes for that type, taken from the shared registry
+  // (FAIR-bioHeaders-Specification schemas/versions.json, pinned at
+  // scripts/schema-snapshots/versions-v0.6.0.json); it is not derived from the
+  // enum order of whichever schema is loaded. The first entry per type is the
+  // default a new draft starts from. No entry here is a fallback for another: a
+  // citation that matches no alias is unsupported and blocks export.
+  var RELEASES = {
+    FHR: [
+      { type: 'FHR', release: 'v0.6.0', declares: '2.1', snapshot: 'fhr-v0.6.0.json',
+        aliases: [
+          'https://w3id.org/fair-bioheaders/fhr/v0.6.0',
+          'https://w3id.org/fair-bioheaders/fhr/v0.6.0/',
+          SHARED_RAW + 'v0.6.0/fhr.json'
+        ] },
+      { type: 'FHR', release: 'v0.4.0', declares: '2.0', snapshot: 'fhr-v0.4.0.json',
+        aliases: [
+          'https://w3id.org/fair-bioheaders/fhr/v0.4.0',
+          'https://w3id.org/fair-bioheaders/fhr/v0.4.0/',
+          SHARED_RAW + 'v0.4.0/fhr.json'
+        ] },
+      { type: 'FHR', release: 'v0.3.1', declares: 1, snapshot: 'fhr-v0.3.1.json',
+        legacy: true,
+        aliases: [
+          'https://w3id.org/fair-bioheaders/fhr/v0.3.1',
+          SHARED_RAW + 'v0.3.1/fhr.json',
+          'https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.3.1/fhr.json',
+          'https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/378b534dda9c1d759f25b4b32287172402492233/fhr.json'
+        ] }
+    ],
+    FHP: [
+      { type: 'FHP', release: 'v0.6.0', declares: '1.2', snapshot: 'fhp-v0.6.0.json',
+        aliases: [
+          'https://w3id.org/fair-bioheaders/fhp/v0.6.0',
+          'https://w3id.org/fair-bioheaders/fhp/v0.6.0/',
+          SHARED_RAW + 'v0.6.0/fhp.json'
+        ] },
+      { type: 'FHP', release: 'v0.4.0', declares: '1.0', snapshot: 'fhp-v0.4.0.json',
+        aliases: [
+          'https://w3id.org/fair-bioheaders/fhp/v0.4.0',
+          'https://w3id.org/fair-bioheaders/fhp/v0.4.0/',
+          SHARED_RAW + 'v0.4.0/fhp.json'
+        ] }
+    ],
+    FHGFF3: [
+      { type: 'FHGFF3', release: 'v0.6.0', declares: '1.2', snapshot: 'fhgff3-v0.6.0.json',
+        aliases: [
+          'https://w3id.org/fair-bioheaders/fhgff3/v0.6.0',
+          'https://w3id.org/fair-bioheaders/fhgff3/v0.6.0/',
+          SHARED_RAW + 'v0.6.0/fhgff3.json'
+        ] },
+      { type: 'FHGFF3', release: 'v0.4.0', declares: '1.0', snapshot: 'fhgff3-v0.4.0.json',
+        aliases: [
+          'https://w3id.org/fair-bioheaders/fhgff3/v0.4.0',
+          'https://w3id.org/fair-bioheaders/fhgff3/v0.4.0/',
+          SHARED_RAW + 'v0.4.0/fhgff3.json'
+        ] }
+    ]
+  };
+
+  // The historical raw-main development cache. Selecting it is an explicit
+  // development action against the documented October 9 copy, never an automatic
+  // substitute for a cited release (docs/maintenance.md).
+  var DEVELOPMENT = { type: 'FHR', release: 'raw-main', snapshot: 'fhr.json',
+    declares: 1, legacy: true, aliases: [SCHEMA_URL] };
+
+  function allReleases() {
+    return [DEVELOPMENT].concat(RELEASES.FHR, RELEASES.FHP, RELEASES.FHGFF3);
+  }
 
   // The FHP itemtype identity is the raw-main FHP schema URL, fixed by the FHP
   // microdata binding (FHP-Specification docs/FHP-MICRODATA.md F1); the record's
   // own `schema` property selects the contract version. FHP is never labeled
   // with the FHR itemtype. FHGFF3 has no website microdata binding yet.
-  var FHP_ITEMTYPE_URL = 'https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json';
+  var FHP_ITEMTYPE_URL = SHARED_RAW + 'main/fhp.json';
 
-  function selectSchema(target, development, release, current, family) {
-    var kind = recordType({ schema: target });
-    if (kind !== 'FHR') {
-      var url = 'https://w3id.org/fair-bioheaders/' + kind.toLowerCase() + '/v0.4.0';
-      var raw = CURRENT_RAW_URL.replace('fhr.json', kind.toLowerCase() + '.json');
-      return [url, url + '/', raw].indexOf(target) !== -1 && family ? family[kind] || null : null;
-    }
-    if ([CURRENT_URL, CURRENT_RAW_URL].indexOf(target) !== -1) return current || null;
-    if (target === SCHEMA_URL) return development;
-    if ([RELEASE_URL, RELEASE_RAW_URL, RELEASE_COMMIT_URL].indexOf(target) !== -1) return release;
-    return null;
+  // The extension-key pattern the released v0.5.0+ contracts declare. Named here for
+  // reader-facing help text; validation always reads patternProperties from the bytes.
+  var EXTENSION_KEY_PATTERN = '^x-[A-Za-z0-9][A-Za-z0-9_.-]*$';
+
+  // Extension fields (docs/FORMAT.md rule R15) are top-level keys the closed
+  // object otherwise rejects. The pattern is read from the selected snapshot's
+  // own `patternProperties` so the builder follows the contract bytes instead of
+  // duplicating the regular expression.
+  function extensionPatterns(schema) {
+    var declared = schema && schema.patternProperties;
+    return declared ? Object.keys(declared) : [];
+  }
+
+  function selectRelease(target) {
+    var matches = allReleases().filter(function (entry) {
+      return entry.aliases.indexOf(target) !== -1;
+    });
+    if (matches.length !== 1) return null;
+    return matches[0];
+  }
+
+  // Maps a cited schema URL onto the loaded snapshot for exactly that release.
+  // `snapshots` is keyed by snapshot file name; an unknown or cross-type target
+  // returns null so the caller can block export rather than substitute.
+  function selectSchema(target, snapshots) {
+    var entry = selectRelease(target);
+    if (!entry || !snapshots) return null;
+    return snapshots[entry.snapshot] || null;
   }
 
   function recordType(record) {
@@ -69,10 +153,10 @@
     {
       id: 'resource', legend: 'Resource',
       fields: [
-        { path: 'schema', label: 'FHR schema URL', kind: 'text', required: true, default: CURRENT_URL,
-          help: 'Use FHR v0.4.0 (schema 2.0), v0.3.1 (schema 1.0), or its supported fixed raw-tag alias. Raw-main only checks the historical October 9 cache.' },
-        { path: 'schemaVersion', label: 'Schema version', kind: 'text', required: true, default: '2.0',
-          help: 'Set from the selected supported release; distinct from the genome version. Schema 2.0 is a string; legacy 1.0 is numeric.' }
+        { path: 'schema', label: 'FHR schema URL', kind: 'text', required: true, default: RELEASES.FHR[0].aliases[0],
+          help: 'Cite one supported FHR release: v0.6.0 (schema 2.1), v0.4.0 (schema 2.0) or legacy v0.3.1 (schema 1), or a fixed raw-tag alias of the same release. Raw-main checks only the documented October 9 cache; any other target is unsupported and blocks downloads.' },
+        { path: 'schemaVersion', label: 'Schema version', kind: 'text', required: true, default: RELEASES.FHR[0].declares,
+          help: 'Set from the cited release; distinct from the genome version. Schema 2.x is a string; legacy 1 is numeric.' }
       ]
     },
     {
@@ -309,15 +393,39 @@
     }
     if (jsonType(value) === 'object') {
       var properties = schema.properties || {};
+      var patterns = schema.patternProperties || {};
       (schema.required || []).forEach(function (key) {
         if (value[key] === undefined) {
           errors.push({ path: path.concat([key]), message: 'is required' });
         }
       });
+      // `propertyNames` constrains the keys themselves; the released v0.5.0+ schemas
+      // use it to forbid a line feed in any key and to forbid `x-` keys in a record
+      // that states an older minor.
+      if (schema.propertyNames) {
+        var forbidden = schema.propertyNames.not && schema.propertyNames.not.pattern;
+        var reason = forbidden === '\n' ? 'no key may contain a line feed (rule R15)'
+          : forbidden === '^x-' ? 'is not allowed by the schemaVersion this record states: extension fields need the newer minor (rule R15)'
+          : 'is not an allowed property name for this contract';
+        Object.keys(value).forEach(function (key) {
+          var sink = [];
+          validateSchema(key, schema.propertyNames, root, path.concat([key]), sink);
+          if (sink.length) errors.push({ path: path.concat([key]), message: reason });
+        });
+      }
       Object.keys(value).forEach(function (key) {
+        var matched = false;
         if (properties[key]) {
+          matched = true;
           validateSchema(value[key], properties[key], root, path.concat([key]), errors);
-        } else if (schema.additionalProperties === false) {
+        }
+        Object.keys(patterns).forEach(function (expression) {
+          if (new RegExp(expression).test(key)) {
+            matched = true;
+            validateSchema(value[key], patterns[expression], root, path.concat([key]), errors);
+          }
+        });
+        if (!matched && schema.additionalProperties === false) {
           errors.push({ path: path.concat([key]), message: 'is not an allowed property' });
         }
       });
@@ -388,8 +496,35 @@
     });
   }
 
+  // Top-level keys the closed object would reject but the selected contract allows
+  // through `patternProperties` — the rule R15 extension fields, in record order.
+  // Without a snapshot (an unsupported citation) any `x-` shaped key qualifies, so
+  // the preview stays conservative about what it puts into microdata.
+  function extensionKeys(record, schema) {
+    var patterns = schema ? extensionPatterns(schema) : [];
+    return Object.keys(record).filter(function (key) {
+      if (!patterns.length) return key.indexOf('x-') === 0;
+      if (schema.properties && schema.properties[key]) return false;
+      return patterns.some(function (expression) { return new RegExp(expression).test(key); });
+    });
+  }
+
+  // Emission order: the canonical order for known fields, then any extension
+  // fields the selected contract allows. Extension keys are never dropped here:
+  // the YAML export is the lossless record, and docs/MICRODATA.md M5 removes them
+  // from HTML instead.
+  function orderedKeys(record, schema, canonical) {
+    var known = canonical || Object.keys(record);
+    var order = known.filter(function (key) { return record[key] !== undefined; });
+    extensionKeys(record, schema).forEach(function (key) {
+      if (order.indexOf(key) === -1) order.push(key);
+    });
+    return order;
+  }
+
   function toYaml(record, schema) {
-    return emitMap(record, 0, recordType(record) === 'FHR' ? FIELD_ORDER : Object.keys(record), schema).join('\n') + '\n';
+    var canonical = recordType(record) === 'FHR' ? FIELD_ORDER : null;
+    return emitMap(record, 0, orderedKeys(record, schema, canonical), schema).join('\n') + '\n';
   }
 
   // The declared data-fhr-type follows the schema where known, so a numeric
@@ -421,9 +556,13 @@
     }
     if (value && typeof value === 'object') {
       var props = resolved.properties || {};
-      var content = Object.keys(value).map(function (k) {
-        return htmlValue(k, value[k], props[k]);
-      }).join('');
+      // Rule R15 keys are never written into microdata at any level (M5); a record
+      // that nests one is already invalid, and its preview must not tempt a reader.
+      var content = Object.keys(value)
+        .filter(function (k) { return k.indexOf('x-') !== 0; })
+        .map(function (k) {
+          return htmlValue(k, value[k], props[k]);
+        }).join('');
       return '<span itemprop="' + prop + '" itemscope data-fhr-type="object">' + content + '</span>';
     }
     var kind = declaredKind(value, resolved);
@@ -439,10 +578,26 @@
     var props = (schema && schema.properties) || {};
     // FHR keeps its canonical FIELD_ORDER; FHP follows the record's own key
     // order, matching its YAML export and the toolkit writer's property order.
+    // Extension fields are left out of the item in both cases: docs/MICRODATA.md
+    // M5 says microdata carries no `x-` key, and the released toolkit rejects a
+    // page whose item has one (verified with fair-bioheaders 0.11.0).
+    var extensions = extensionKeys(record, schema);
     var order = (kind === 'FHR' ? FIELD_ORDER : Object.keys(record))
-      .filter(function (key) { return record[key] !== undefined; });
+      .filter(function (key) {
+        return record[key] !== undefined && extensions.indexOf(key) === -1;
+      });
     return '<div itemscope itemtype="' + (kind === 'FHR' ? SCHEMA_URL : FHP_ITEMTYPE_URL) + '">' +
       order.map(function (key) { return htmlValue(key, record[key], props[key]); }).join('') + '</div>';
+  }
+
+  // The M5 note a microdata writer owes the reader: which keys it left out.
+  function microdataOmissionNote(record, schema) {
+    var extensions = extensionKeys(record, schema);
+    if (!extensions.length) return '';
+    return '\n<p>Extension fields are not carried by HTML microdata ' +
+      '(FAIR-bioHeaders-Specification docs/MICRODATA.md M5); this document omits ' +
+      extensions.map(function (key) { return '"' + escapeHtml(key) + '"'; }).join(', ') +
+      '. The YAML metadata export keeps them.</p>';
   }
 
   function displayValue(value) {
@@ -503,6 +658,18 @@
       });
       if (groupRows.length) rows.push({ group: group.legend, rows: groupRows });
     });
+    // Extension fields (rule R15) are the only top-level keys the released FHR
+    // contract allows outside FIELD_ORDER; the readable table shows them as their
+    // own key/value rows.
+    var extra = Object.keys(record).filter(function (key) {
+      return FIELD_ORDER.indexOf(key) === -1 && record[key] !== undefined;
+    });
+    if (extra.length) {
+      rows.push({
+        group: 'Extension fields',
+        rows: extra.map(function (key) { return { label: key, value: displayValue(record[key]) }; })
+      });
+    }
     return rows;
   }
 
@@ -524,23 +691,32 @@
   function standaloneHtml(record, schema) {
     var title = recordTitle(record);
     var kind = recordType(record);
+    var carriesMicrodata = kind === 'FHR' || kind === 'FHP';
     return '<!doctype html>\n<html lang="en"><head><meta charset="utf-8">' +
       '<title>' + escapeHtml(title) + '</title></head><body>\n' +
       '<h1>' + escapeHtml(title) + '</h1>\n' +
       tableHtml(record) + '\n' +
-      (kind === 'FHR' || kind === 'FHP' ?
-        '<h2>Machine-readable ' + kind + ' microdata</h2>\n' + microdataDiv(record, schema) :
+      (carriesMicrodata ?
+        '<h2>Machine-readable ' + kind + ' microdata</h2>\n' + microdataDiv(record, schema) +
+          microdataOmissionNote(record, schema) :
         '<p>Readable table only: ' + kind + ' HTML microdata is not supported. Preserve the YAML metadata separately.</p>') + '\n' +
       '</body></html>\n';
   }
 
   var api = {
     SCHEMA_URL: SCHEMA_URL,
-    RELEASE_URL: RELEASE_URL,
-    CURRENT_URL: CURRENT_URL,
+    SHARED_RAW: SHARED_RAW,
+    RELEASES: RELEASES,
+    DEVELOPMENT: DEVELOPMENT,
     FHP_ITEMTYPE_URL: FHP_ITEMTYPE_URL,
     recordType: recordType,
+    selectRelease: selectRelease,
     selectSchema: selectSchema,
+    extensionPatterns: extensionPatterns,
+    EXTENSION_KEY_PATTERN: EXTENSION_KEY_PATTERN,
+    extensionKeys: extensionKeys,
+    orderedKeys: orderedKeys,
+    contractLabel: contractLabel,
     FIELD_ORDER: FIELD_ORDER,
     GROUPS: GROUPS,
     escapeHtml: escapeHtml,
@@ -566,12 +742,34 @@
   var outputs = null;      // {html, yaml, record}
   var stale = false;
   var objectUrls = [];
-  var schema = null;
-  var releaseSchema = null;
-  var currentSchema = null;
-  var familySchemas = {};
+  // Pinned contract bytes, keyed by snapshot file name and loaded once from the
+  // local assets directory. Nothing here is fetched from a cited URL.
+  var snapshots = {};
   var activeType = 'FHR';
   var drafts = { FHR: state };
+  // Extension fields are drafted separately from the record body: they are
+  // name/value rows the producer appends, and the record is assembled from them
+  // at generate time (see buildRecord).
+  var extensionDrafts = { FHR: [], FHP: [], FHGFF3: [] };
+
+  function extensionRows() {
+    return extensionDrafts[activeType];
+  }
+
+  function releasesFor(type) {
+    return RELEASES[type] || [];
+  }
+
+  function defaultRelease(type) {
+    return releasesFor(type)[0] || RELEASES.FHR[0];
+  }
+
+  // Local load path for one registry entry. The development cache stays
+  // overridable from the page so its documented provenance can be exercised.
+  function pathFor(entry, directory, development) {
+    if (entry === DEVELOPMENT && development) return development;
+    return directory + entry.snapshot;
+  }
 
   function el(tag, attrs, children) {
     var node = document.createElement(tag);
@@ -645,10 +843,14 @@
     if (field.path === 'schema') {
       input.setAttribute('list', 'tb-schema-options');
       input.addEventListener('input', function () {
-        var selected = selectSchema(state.schema, schema, releaseSchema, currentSchema, familySchemas);
-        if (!selected) return;
-        state.schemaVersion = selected.properties.schemaVersion.type === 'string' ? selected.properties.schemaVersion.enum[0] : 1;
-        document.getElementById('tb-schemaVersion').value = state.schemaVersion;
+        // The declared schemaVersion follows the cited release exactly as the shared
+        // registry publishes it. An unrecognized target changes nothing here: the
+        // generate step reports it and blocks export.
+        var entry = selectRelease(state.schema);
+        if (!entry) return;
+        state.schemaVersion = entry.declares;
+        var shown = document.getElementById('tb-schemaVersion');
+        if (shown) shown.value = state.schemaVersion;
       });
     }
     if (field.help) input.setAttribute('aria-describedby', id + '-help');
@@ -658,6 +860,81 @@
     wrap.appendChild(el('p', { class: 'tb-error', id: id + '-error', hidden: 'hidden' }));
     registerControl(field.path, input, id + '-error');
     return wrap;
+  }
+
+  // Extension fields (rule R15) as a repeatable name/value section. The help text is
+  // deliberately static: rewriting it when the citation changes shifts the layout under
+  // a control the producer may be interacting with at that moment.
+  function extensionFieldset() {
+    var rows = extensionRows();
+    var wrap = el('fieldset', { class: 'tb-group tb-extension', id: 'tb-extensions', tabindex: '-1' });
+    wrap.appendChild(el('legend', { text: 'Extension fields' }));
+    wrap.appendChild(el('p', { class: 'tb-help', id: 'tb-extensions-help', text:
+      'Optional keys the released contracts call extension fields (docs/FORMAT.md rule R15). A name must match '
+      + EXTENSION_KEY_PATTERN + ' and the value is recorded as text. Only FHR 2.1 and FHP/FHGFF3 1.1 or later '
+      + 'accept them, so a record citing an older release — or stating an older schemaVersion — reports the key '
+      + 'as unknown. They appear in the readable table and the YAML; HTML microdata carries none '
+      + '(docs/MICRODATA.md M5).' }));
+    var host = el('div', { class: 'tb-list__rows' });
+    function draw() {
+      rerenderList(host, function () {
+        rows.forEach(function (row, index) { host.appendChild(extensionRow(row, index, rows, host, draw)); });
+      });
+    }
+    draw();
+    wrap.appendChild(host);
+    wrap.appendChild(el('button', { type: 'button', class: 'tb-add', id: 'tb-add-extension',
+      text: 'Add extension field' }))
+      .addEventListener('click', function () {
+        rows.push({ name: '', value: '' });
+        draw();
+        markStale();
+        var inputs = host.querySelectorAll('input');
+        if (inputs.length) inputs[inputs.length - 2].focus();
+      });
+    return wrap;
+  }
+
+  function extensionRow(row, index, rows, host, draw) {
+    var box = el('div', { class: 'tb-list__row' });
+    // Each row registers twice: at its stable draft position and, when a key is
+    // typed, at that record path — so a schema error on the key and a form-level
+    // issue on the row both land on this input. Renaming clears the old key.
+    var draftPath = 'extension.' + index + '.name';
+    var registrations = function () { return row.name ? [draftPath, row.name] : [draftPath]; };
+    var nameId = 'tb-extension-' + index + '-name';
+    var valueId = 'tb-extension-' + index + '-value';
+    var nameField = el('div', { class: 'tb-field' });
+    nameField.appendChild(el('label', { for: nameId, text: 'Extension field ' + (index + 1) + ' name' }));
+    var name = el('input', { id: nameId, class: 'tb-input', type: 'text', placeholder: 'x-example-note',
+      'aria-describedby': 'tb-extensions-help', autocapitalize: 'off', spellcheck: 'false' });
+    name.value = row.name;
+    name.addEventListener('input', function () {
+      registrations().forEach(function (path) { delete controlRegistry[path]; });
+      row.name = name.value;
+      registrations().forEach(function (path) { registerControl(path, name, nameId + '-error'); });
+      markStale();
+    });
+    nameField.appendChild(name);
+    nameField.appendChild(el('p', { class: 'tb-error', id: nameId + '-error', hidden: 'hidden' }));
+    box.appendChild(nameField);
+    registrations().forEach(function (path) { registerControl(path, name, nameId + '-error'); });
+    var valueField = el('div', { class: 'tb-field' });
+    valueField.appendChild(el('label', { for: valueId, text: 'Extension field ' + (index + 1) + ' value' }));
+    var value = el('input', { id: valueId, class: 'tb-input', type: 'text' });
+    value.value = row.value;
+    value.addEventListener('input', function () { row.value = value.value; markStale(); });
+    valueField.appendChild(value);
+    valueField.appendChild(el('p', { class: 'tb-error', id: valueId + '-error', hidden: 'hidden' }));
+    box.appendChild(valueField);
+    registerControl('extension.' + index + '.value', value, valueId + '-error');
+    box.appendChild(el('button', { type: 'button', class: 'tb-remove', text: 'Remove',
+      'aria-label': 'Remove extension field ' + (index + 1) })).addEventListener('click', function () {
+      rows.splice(index, 1);
+      draw();
+      markStale();
+    });
+    return box;
   }
 
   function stringListField(field, array) {
@@ -813,17 +1090,43 @@
       });
       form.appendChild(fieldset);
     });
+    // Extension fields are their own repeatable section, after the standard groups.
+    form.appendChild(extensionFieldset());
     container.textContent = '';
-    var choices = el('datalist', { id: 'tb-schema-options' });
-    [CURRENT_URL, RELEASE_URL].forEach(function (url) { choices.appendChild(el('option', { value: url })); });
-    form.appendChild(choices);
+    form.appendChild(schemaChoices());
     container.appendChild(form);
   }
+
+  // Suggestions for the schema URL field: the pinned releases of the active type
+  // plus, for FHR, the documented development cache. A free-text target that
+  // matches none of them stays selectable and is reported as unsupported.
+  function schemaChoices() {
+    var choices = el('datalist', { id: 'tb-schema-options' });
+    var entries = activeType === 'FHR' ? [DEVELOPMENT].concat(RELEASES.FHR) : releasesFor(activeType);
+    entries.forEach(function (entry) { choices.appendChild(el('option', { value: entry.aliases[0] })); });
+    return choices;
+  }
+
+  // The snapshot file that drives the form for the current draft: the cited
+  // release when it names one of the pinned snapshots for this type, otherwise
+  // the type's default release.
+  function contractFile() {
+    var entry = selectRelease(state.schema);
+    if (entry && entry.type === activeType) return entry.snapshot;
+    return defaultRelease(activeType).snapshot;
+  }
+
+  // The contract the current draft cites, falling back to the active type's
+  // default release when the URL field does not name a pinned snapshot.
+  function activeSnapshot() {
+    return snapshots[contractFile()] || null;
+  }
+
 
   // The released family contracts define these groups; field types, vocabulary,
   // descriptions and requiredness are read from the fixed local schema.
   function renderFamilyForm(container) {
-    var root = familySchemas[activeType];
+    var root = activeSnapshot();
     var form = el('form', { class: 'tb-form', novalidate: 'novalidate' });
     var sections = [
       ['Resource', ['schema', 'schemaVersion', 'proteome', 'annotation', 'version', 'sourceType', 'taxon', 'metadataAuthor', 'dateCreated']],
@@ -836,8 +1139,8 @@
       var title = typeof key === 'number' ? 'Entry ' + (key + 1) : String(key).replace(/([a-z])([A-Z])/g, '$1 $2');
       title = title.charAt(0).toUpperCase() + title.slice(1);
       var description = node.description;
-      if (path === 'schema') description = 'Use the supported v0.4.0 release URL or its fixed raw-tag alias. Other releases and raw-main are unavailable for this type.';
-      if (path === 'schemaVersion') description = 'Set from the released schema; separate from your resource version.';
+      if (path === 'schema') description = 'Cite a pinned ' + activeType + ' release: ' + releasesFor(activeType).map(function (entry) { return entry.release + ' (schema ' + entry.declares + ')'; }).join(' or ') + ', or a fixed raw-tag alias of the same release. Other releases and raw-main are unavailable for this type.';
+      if (path === 'schemaVersion') description = 'Set from the cited release; separate from your resource version.';
       if (key === 'relationship') description = 'Relationship to the parent file; choose from the released vocabulary.';
       if (path === 'checksum') description = 'Producer-supplied sha2-512/256 checksum. Checked structurally only; no file is read or verified.';
       var definition = { path: path, label: title, required: required, help: description,
@@ -891,19 +1194,25 @@
       });
       form.appendChild(group);
     });
-    container.textContent = ''; container.appendChild(form);
+    // Extension fields are their own repeatable section, after the standard groups.
+    form.appendChild(extensionFieldset());
+    container.textContent = '';
+    form.appendChild(schemaChoices());
+    container.appendChild(form);
   }
 
   function changeProfile() {
     drafts[activeType] = state;
     activeType = document.getElementById('tb-profile').value;
-    state = drafts[activeType] || { schema: 'https://w3id.org/fair-bioheaders/' + activeType.toLowerCase() + '/v0.4.0', schemaVersion: '1.0' };
+    var entry = defaultRelease(activeType);
+    state = drafts[activeType] || { schema: entry.aliases[0], schemaVersion: entry.declares };
     drafts[activeType] = state;
     outputs = null; stale = false; toggleDownloads(false);
     ['tb-table', 'tb-html-source', 'tb-yaml-source', 'tb-errors'].forEach(function (id) { document.getElementById(id).textContent = ''; });
     document.getElementById('tb-errors').hidden = true;
     renderForm(document.getElementById('tb-form'));
-    setStatus(activeType + ' selected. Entries are kept separately for each type during this visit. Generate to validate.', 'stale');
+    setStatus(activeType + ' selected, citing ' + entry.release + ' (schema ' + entry.declares +
+      '). Entries are kept separately for each type during this visit. Generate to validate.', 'stale');
   }
 
   function markStale() {
@@ -961,19 +1270,51 @@
     return path;
   }
 
+  // Rows the producer typed that cannot become a key: an empty row is simply
+  // omitted, but a duplicate or standard-field name is reported instead of
+  // silently winning over the field above it (rule R15).
+  var extensionIssues = [];
+
   function buildRecord() {
     recordPaths = {};
     var record = prune(state, [], []);
-    return record && typeof record === 'object' ? record : {};
+    record = record && typeof record === 'object' ? record : {};
+    var properties = (activeSnapshot() || {}).properties || {};
+    var seen = {};
+    extensionIssues = [];
+    extensionRows().forEach(function (row, index) {
+      var name = String(row.name || '');
+      if (!name || !String(row.value || '').length) return;
+      if (Object.prototype.hasOwnProperty.call(properties, name)) {
+        extensionIssues.push({ path: [name], draft: ['extension', index, 'name'], label: [name],
+          message: 'is a standard field name; extension fields never override one (rule R15), so edit the field above instead' });
+        return;
+      }
+      if (seen[name] !== undefined) {
+        extensionIssues.push({ path: [name], draft: ['extension', index, 'name'], label: [name],
+          message: 'is written by more than one extension row; keep one row per key' });
+        return;
+      }
+      seen[name] = index;
+      record[name] = row.value;
+      recordPaths[JSON.stringify([name])] = [name];
+    });
+    return record;
   }
 
   function renderOutputs() {
     var record = buildRecord();
-    var selected = recordType(record) === activeType ? selectSchema(record.schema, schema, releaseSchema, currentSchema, familySchemas) : null;
-    var errors = selected ? validateRecord(record, selected) : [{ path: ['schema'],
+    var entry = recordType(record) === activeType ? selectRelease(record.schema) : null;
+    var selected = entry ? snapshots[entry.snapshot] || null : null;
+    var errors = selected ? validateRecord(record, selected).concat(extensionIssues) : [{ path: ['schema'],
       message: 'Unsupported schema target. Select a supported released schema for this header type. Unknown releases never fall back.' }];
     renderErrorSummary(errors.map(function (error) {
-      return { path: draftErrorPath(error.path), message: error.message };
+      var draft = error.draft || draftErrorPath(error.path);
+      // Ordinary errors are named by their draft position, which is the row the
+      // producer sees. An extension row has no record-shaped draft position, so it
+      // is named by the key it holds.
+      var label = draft[0] === 'extension' ? error.path : error.label || draft;
+      return { label: label.join('.'), path: draft, message: error.message };
     }));
     renderTable(record);
     outputs = { record: record, html: standaloneHtml(record, selected), yaml: toYaml(record, selected) };
@@ -983,11 +1324,18 @@
     var ready = errors.length === 0;
     toggleDownloads(ready);
     if (ready) {
-      setStatus('Structural validation passed against ' + (record.schema === SCHEMA_URL ? 'the cached raw-main development snapshot' : (recordType(record) !== 'FHR' ? recordType(record) + ' v0.4.0 (schema 1.0)' : (record.schemaVersion === '2.0' ? 'FHR v0.4.0 (schema 2.0)' : 'FHR v0.3.1'))) + '. The checksum is not verified against any file.', 'ok');
+      setStatus('Structural validation passed against ' + contractLabel(entry) +
+        '. The checksum is not verified against any file.', 'ok');
     } else {
       setStatus('Incomplete or invalid: ' + errors.length + ' issue' + (errors.length === 1 ? '' : 's') +
         '. A draft preview is shown; downloads are disabled until it validates.', 'error');
     }
+  }
+
+  function contractLabel(entry) {
+    if (!entry) return 'an unsupported target';
+    if (entry === DEVELOPMENT) return 'the cached raw-main development snapshot';
+    return entry.type + ' ' + entry.release + ' (schema ' + entry.declares + ')';
   }
 
   function renderErrorSummary(errors) {
@@ -998,7 +1346,7 @@
     summary.hidden = false;
     var list = el('ul');
     errors.forEach(function (error) {
-      var pointer = error.path.join('.');
+      var pointer = error.label;
       var item = el('li');
       var target = errorTarget(error.path);
       var link = el('a', { href: '#' + target.id,
@@ -1119,23 +1467,23 @@
   function init() {
     var container = document.getElementById('table-builder');
     if (!container) return;
+    var directory = container.getAttribute('data-schema-directory') || '/assets/schema/';
+    if (directory.slice(-1) !== '/') directory += '/';
+    // The documented development cache stays page-overridable; every released
+    // snapshot comes from the registry above. All files are local to this site:
+    // citing a URL in the form never causes a network request.
+    var development = container.getAttribute('data-schema') || null;
+    var entries = allReleases();
     function load(url) {
       return fetch(url).then(function (response) {
         if (!response.ok) throw new Error('schema request failed');
         return response.json();
       });
     }
-    Promise.all([
-      load(container.getAttribute('data-schema') || '/assets/schema/fhr.json'),
-      load(container.getAttribute('data-release-schema') || '/assets/schema/fhr-v0.3.1.json'),
-      load(container.getAttribute('data-current-schema') || '/assets/schema/fhr-v0.4.0.json'),
-      load('/assets/schema/fhp-v0.4.0.json'),
-      load('/assets/schema/fhgff3-v0.4.0.json')
-    ]).then(function (loaded) {
-        schema = loaded[0];
-        releaseSchema = loaded[1];
-        currentSchema = loaded[2];
-        familySchemas = { FHP: loaded[3], FHGFF3: loaded[4] };
+    Promise.all(entries.map(function (entry) {
+      return load(pathFor(entry, directory, development));
+    })).then(function (loaded) {
+        entries.forEach(function (entry, index) { snapshots[entry.snapshot] = loaded[index]; });
         document.getElementById('tb-profile').addEventListener('change', changeProfile);
         changeProfile();
         document.getElementById('tb-generate').addEventListener('click', renderOutputs);
@@ -1144,7 +1492,7 @@
         cleanup();
       })
       .catch(function () {
-        setStatus('The FHR schema could not be loaded, so validation is unavailable. Reload the page and try again.', 'error');
+        setStatus('The released schemas could not be loaded, so validation is unavailable. Reload the page and try again.', 'error');
       });
     window.addEventListener('pagehide', cleanup);
   }

@@ -66,7 +66,8 @@ Four different questions get four different answers. Do not merge them.
    types, patterns, enums, ranges and closed objects — and, from 2.1, the `x-`
    extension keys. This says nothing about whether the values are true or the file
    intact. On this site, the [table builder](/table-builder/) performs structural
-   validation against its documented v0.4.0 snapshot.
+   validation against its pinned v0.6.0 snapshot, and against its pinned v0.4.0 and
+   v0.3.1 snapshots when a record cites them.
 2. **File checksum verification.** `bioheaders verify` recomputes SHA-512/256 over
    the exact bytes of the FASTA or GFA, excluding the root `;~checksum:` or
    `#~checksum:` line, and compares it with the header's `checksum`. It proves the
@@ -88,8 +89,10 @@ something false. The header makes that claim identifiable and durable, not corre
 
 - [Using FH*](/guide/) — choosing a header type and a supported workflow.
 - [Table builder](/table-builder/) — build and structurally validate FHR metadata in
-  the browser (v0.4.0 snapshot; support for the current release is tracked in
-  [issue #15](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/15)).
+  the browser from the pinned v0.6.0 snapshot (schema version `2.1`), including `x-`
+  extension fields, which the YAML export keeps and the microdata export does not
+  carry. The remaining builder gates are tracked in
+  [issue #15](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/15).
 - [Metadata viewer](/metadata-viewer/) — read FHR JSON and microdata, with the
   JavaScript integration guide.
 - [Resources & citation](/resources/) — repositories, releases and citation records.

@@ -707,6 +707,12 @@ html[data-theme="dark"] {
   border-bottom: 1px solid var(--surface-border);
 }
 .tb-list > .tb-list__rows > .tb-list__row:last-child { border-bottom: 0; }
+// Extension fields (rule R15) are a top-level group whose rows are name/value
+// pairs. Each pair keeps the ordinary field chrome and shares the row line when
+// there is room, so nothing overflows at 320px.
+.tb-extension > .tb-list__rows > .tb-list__row:last-child { border-bottom: 0; }
+.tb-extension .tb-list__row > .tb-field { flex: 1 1 14em; min-width: 0; margin-bottom: 0; }
+.tb-extension .tb-list__row > .tb-remove { flex: 0 0 auto; }
 .tb-list > legend,
 .tb-object > legend { color: inherit; border-bottom: 0; }
 .tb-add,

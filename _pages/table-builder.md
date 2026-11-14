@@ -5,10 +5,11 @@ excerpt: "A browser-only prototype that builds a readable metadata table and FAI
 ---
 
 Build a **genome (FHR), protein set (FHP), or annotation (FHGFF3)** metadata
-record using the released v0.4.0 schemas. Choose a header type below. Each type
+record using the released v0.6.0 schemas. Choose a header type below. Each type
 keeps its own entries while this page is open; reloading discards them.
 Everything runs in your browser; nothing is uploaded or saved to this site.
-FHT transcriptome support will follow its released contract.
+FHT transcriptome support will follow its released contract, and FHGM gene-model
+records have no contract of their own yet: neither is available in this form.
 
 FHR and FHP exports include typed HTML microdata, each marked with its own
 header-type identity. FHGFF3 HTML exports are readable tables only: download
@@ -17,24 +18,46 @@ produces metadata, not a FASTA/GFF3 file with an embedded
 header. Reported counts, completeness and provenance are supplied by you and
 are not verified against sequence or annotation files.
 
-**Schema:** requiredness and types follow the selected header type and supported snapshot. FHR uses schema version 2.0; FHP and FHGFF3 use schema version 1.0.
+**Schema:** requiredness and types follow the selected header type and supported snapshot. FHR uses schema version 2.1; FHP and FHGFF3 use schema version 1.2.
 Current released contracts are published in
 [FAIR BioHeaders Specification](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification).
-The default is [FHR v0.4.0](https://w3id.org/fair-bioheaders/fhr/v0.4.0),
-using schema version **2.0** and a fixed local release snapshot. The form includes
+The default is [FHR v0.6.0](https://w3id.org/fair-bioheaders/fhr/v0.6.0),
+using schema version **2.1** and a fixed local release snapshot. The form includes
 personal/organizational author types and separate contig/scaffold statistics.
-FHR v0.3.1 remains available through the schema URL field's suggestions. Fields
-marked “defined in schema 2.0” have normative definitions in that contract.
+The older pinned releases stay selectable: FHR v0.4.0 (schema 2.0) and legacy
+FHR v0.3.1 (numeric schema 1), and FHP/FHGFF3 at their v0.4.0 `"1.0"` contracts.
+A release that is **not** pinned here — v0.5.0, v0.4.1, v0.4.2, or any later one
+— is reported as an unsupported target and blocks downloads; it is never
+validated against whichever schema happens to be newest. Raw-main explicitly
+checks only the historical October 9 cache, not today's development schema.
 Switching releases preserves your entries and applies the selected contract,
 including its policy on extra fields.
 The read-only schema version follows the selected release; the genome version
-is yours to enter. Raw-main explicitly checks only the historical October 9
-cache, not today's development schema. Unsupported targets block downloads.
+is yours to enter.
 See
 [maintenance](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/blob/main/docs/maintenance.md)
 for retrieval provenance and refresh behavior. Validation here is structural
 only: passing it is not a claim about biological quality, it does not verify a
 checksum against any file, and it is not a journal or repository acceptance.
+
+**Extension fields (rule R15).** The *Extension fields* section writes top-level
+keys that start with `x-`: information this contract allows but does not define.
+Names follow the pattern in the cited schema — `^x-[A-Za-z0-9][A-Za-z0-9_.-]*$`
+— and this form records the value as text. Extension fields are available only
+from FHR 2.1 and FHP/FHGFF3 1.1, so they appear when a record cites v0.6.0; a
+record that states an older `schemaVersion`, or cites v0.4.0, is held to that
+minor and the key is reported as unknown. They are written into the YAML metadata
+and shown in the readable table, and they are **not** written into HTML microdata:
+the microdata binding carries no extension fields (shared `docs/MICRODATA.md`
+M5), so the standalone document states which keys it left out and the YAML stays
+the lossless copy. Structured extension values (an object or list under one `x-`
+key) are valid metadata but are not editable here; add them to the exported YAML.
+
+**Dotted BUSCO dataset versions.** `completeness.lineageDataset` accepts a
+dot-separated dataset version such as `diptera_odb12.2` in an FHP or FHGFF3
+record that states `schemaVersion: '1.2'`; the undotted `diptera_odb12` stays
+valid. A record stating `1.0` or `1.1` keeps the older pattern and rejects the
+dotted form.
 
 ## What it checks
 
@@ -58,12 +81,12 @@ are disabled until you generate again.
 
 <noscript>
   <p><strong>JavaScript is required to use the form.</strong> You can still
-  read the <a href="https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.3.1/examples">FHR
-  examples</a> and use the <a href="{{ '/guide/' | relative_url }}">Using FHR
+  read the <a href="https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.6.0/examples">released
+  examples</a> and use the <a href="{{ '/guide/' | relative_url }}">Using FH*
   guide</a> to build a header or metadata file by hand.</p>
 </noscript>
 
-<div id="table-builder" data-schema="{{ '/assets/schema/fhr.json' | relative_url }}" data-current-schema="{{ '/assets/schema/fhr-v0.4.0.json' | relative_url }}" data-release-schema="{{ '/assets/schema/fhr-v0.3.1.json' | relative_url }}">
+<div id="table-builder" data-schema="{{ '/assets/schema/fhr.json' | relative_url }}" data-schema-directory="{{ '/assets/schema/' | relative_url }}">
   <div class="tb-field">
   <label for="tb-profile">Header type</label>
   <select id="tb-profile" class="tb-input">

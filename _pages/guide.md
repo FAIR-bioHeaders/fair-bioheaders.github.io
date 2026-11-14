@@ -12,9 +12,9 @@ that type's released contract and tooling.
 
 | Type | Resource | Contract and workflow status |
 | --- | --- | --- |
-| [FHR](/specifications/fhr/) | Reference genome assembly | FHR `2.1`; the current shared release v0.6.0 re-publishes the 2.1 bytes unchanged. Toolkit `fair-bioheaders` 0.11.0 writes and checks FASTA/GFA, JSON-LD and microdata for `2.1` and accepts a `…/v0.6.0` citation. The browser builder still validates its v0.4.0 snapshot. |
+| [FHR](/specifications/fhr/) | Reference genome assembly | FHR `2.1`; the current shared release v0.6.0 re-publishes the 2.1 bytes unchanged. Toolkit `fair-bioheaders` 0.11.0 writes and checks FASTA/GFA, JSON-LD and microdata for `2.1` and accepts a `…/v0.6.0` citation. The browser builder cites the pinned v0.6.0 snapshot by default and can write `x-` extension fields (YAML only). |
 | [FHT](/specifications/fht/) | Transcriptome | **Draft** contract, `schemaVersion` "1.0" proposed; no shared release, no fixed alias, no toolkit or builder support. 0.11.0 has an opt-in experimental preview of draft validation, which is not support. |
-| [FHP](/specifications/fhp/) | Protein/proteome FASTA | FHP `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit 0.11.0 reads and writes `1.2` as JSON/YAML, in files, and as canonical JSON-LD and HTML microdata. The builder validates its v0.4.0 snapshot. |
+| [FHP](/specifications/fhp/) | Protein/proteome FASTA | FHP `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit 0.11.0 reads and writes `1.2` as JSON/YAML, in files, and as canonical JSON-LD and HTML microdata. The browser builder cites the pinned v0.6.0 snapshot by default, accepts a dotted `lineageDataset` in a `1.2` record, and writes `x-` extension fields into YAML only. |
 | [FHGFF3](/specifications/fhgff3/) | GFF3 annotation metadata | FHGFF3 `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit 0.11.0 reads and writes `1.2` as JSON/YAML and in files, plus experimental HTML microdata, and has no JSON-LD form. Feature and biology validation is a separate tool. |
 
 Every field, type, constraint and unit is documented on that type's schema reference
@@ -161,13 +161,15 @@ fhr-validate genome.fhr.json
   0.11.0 does, and 0.10.0 reports it as an unsupported schema version. Citations of
   v0.3.x, v0.4.x and v0.5.0 keep resolving to their own frozen copies, so an existing
   file-bound header never needs to be rewritten to stay readable.
-- The browser table builder defaults to FHR v0.4.0 (`schemaVersion` "2.0") and also
-  builds FHP and FHGFF3 records at their released v0.4.0 `"1.0"` contracts. It does not
-  yet cover the current release: a `2.1`/`1.2` record, and so `x-` extension fields and
-  dotted BUSCO dataset versions, cannot be produced there. A released specification is
-  not a claim that this browser supports it;
+- The browser table builder defaults to FHR v0.6.0 (`schemaVersion` "2.1") and also
+  builds FHP and FHGFF3 records at their released v0.6.0 `"1.2"` contracts — including
+  `x-` extension fields in the YAML export and dotted BUSCO dataset versions. Its
+  pinned v0.4.0 snapshots (FHR `"2.0"`, FHP/FHGFF3 `"1.0"`) and legacy FHR v0.3.1 stay
+  selectable on their own bytes; shared release v0.5.0 is not pinned, so citing it is
+  reported as unsupported. A released specification is not a claim that this browser
+  supports it;
   [issue #15](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/15)
-  tracks that work.
+  tracks the remaining builder gates.
 - **Concept DOIs** (for example the [FHR Specification](https://doi.org/10.5281/zenodo.6762549))
   group all releases of a resource. For a reproducible citation, use the
   **version DOI** for the specific release you used; see

@@ -28,7 +28,7 @@ DEFAULT_ORIGIN = 'https://fhref.org'
 SM_NS = '{http://www.sitemaps.org/schemas/sitemap/0.9}'
 INDEXABLE = ('/', '/publications/', '/resources/', '/guide/', '/table-builder/', '/metadata-viewer/',
              '/specifications/', '/specifications/fhr/', '/specifications/fht/', '/specifications/fhp/',
-             '/specifications/fhgff3/', '/specifications/fhgm/')
+             '/specifications/fhgff3/', '/specifications/fhgm/', '/mappings/')
 SITEMAP_PREFIX = '/publication/'
 
 

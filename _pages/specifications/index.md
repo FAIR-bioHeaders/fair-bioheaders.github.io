@@ -58,6 +58,15 @@ Three points hold for the whole family:
   select that schema and never substitute another. Cite the versioned URL of the release
   you target, not a moving development URL.
 
+## Mappings and citation profiles
+
+The field tables above describe the contracts. How FHR root fields relate to qualified
+Dublin Core — with each field's condition, transformation and stated loss, and the
+supplemental export context a descriptive export needs — is on the
+[metadata mappings reference](/mappings/). That page renders the adopted mapping v1
+surface from pinned upstream bytes; it publishes no exporter, claims no deposit readiness,
+and inherits v1's withheld "official" label exactly as recorded upstream.
+
 ## Where the authority lies
 
 These pages are generated from byte-pinned copies of the published schemas and are

@@ -173,7 +173,9 @@ CI currently checks microdata markup, not an installed-converter round-trip.
 ## Resource and citation data after the repository split
 
 `_data/references.yml` holds actual resource citation records; stable citation
-keys retain the DataCite titles FHR Specification / FHR File Converter.
+keys retain the titles this site cites, FHR Specification / FHR File Converter
+(DataCite registers the specification record as FAIR-bioHeaders Specification and the
+toolkit record as FHR File Converter, checked 2026-11-14).
 `resource_name` is the current overview label, and `release`/`version_doi`
 provide explicit release links without replacing the concept DOI in Cite output.
 `_data/development.yml` holds the four per-type development homes without

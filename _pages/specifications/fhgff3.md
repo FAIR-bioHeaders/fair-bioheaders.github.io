@@ -87,8 +87,9 @@ Four questions, four tools, four separate answers.
 - [Using FH*](/guide/) and the [family overview](/specifications/).
 - [Table builder](/table-builder/) — builds and structurally validates FHGFF3 records
   against its documented v0.4.0 snapshot (`schemaVersion` 1.0). Its HTML export is a
-  readable table only: there is no FHGFF3 microdata yet, so download the YAML to keep
-  the structured record. Support for the current release is tracked in
+  readable table with no microdata: the toolkit's experimental FHGFF3 microdata form is
+  separate, and this site does not emit it, so download the YAML to keep the structured
+  record. Support for the current release is tracked in
   [issue #15](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/15).
 - [docs/FHGFF3.md](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHGFF3.md)
   for header placement in GFF3, plus
@@ -96,10 +97,14 @@ Four questions, four tools, four separate answers.
   and [SCHEMA-VERSIONS.md](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/SCHEMA-VERSIONS.md).
 - [gff3-validator](https://github.com/FAIR-bioHeaders/gff3-validator) — feature,
   ontology and (optionally) header checks. Header checking runs through the
-  `fair-bioheaders` version it depends on: the published 0.1.0 release pins an older
-  toolkit, so it reports a v0.6.0 header as an unsupported schema version (HDR-007)
-  instead of checking it against FHGFF3 1.2. Feature validation is unaffected, and no
-  validator may substitute a different schema for a version it does not have.
+  `fair-bioheaders` version it depends on: the published 0.1.0 release (PyPI and the
+  `v0.1.0` tag, both 2026-10-09, still the newest) pins `fair-bioheaders >=0.4,<0.5`,
+  and 0.4.0 has no FHGFF3 support, so 0.1.0 reports an FHGFF3 header as not checked
+  (HDR-002, `header validation is not implemented in this version`) instead of checking
+  it against FHGFF3 1.2. Its `main` branch marks HDR-004 to HDR-010 implemented, so
+  checking a v0.6.0 header there needs a validator release whose toolkit pin covers
+  0.11.0. Feature validation is unaffected, and no validator may substitute a different
+  schema for a version it does not have.
 - [FAIR-bioHeaders-Tools](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools) —
   `combine`, `verify`, `verify-links`, `strip` and `assess` for GFF3.
 - Propose FHGFF3 field changes in [FHGFF3](https://github.com/FAIR-bioHeaders/FHGFF3);

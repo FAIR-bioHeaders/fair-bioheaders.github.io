@@ -75,7 +75,7 @@
     "checksum": {
       "units": "standard padded base64 of the SHA-512/256 digest",
       "notes": [
-        "Computed by the shared family rules (R1 to R4) over the exact FASTA bytes, excluding the root `;~checksum:` line. The development repository recomputes it in its own tests; no released toolkit command writes it.",
+        "Computed by the shared family rules (R1 to R4) over the exact FASTA bytes, excluding the root `;~checksum:` line. The development repository recomputes it in its own tests; by default no released toolkit command writes one. `fair-bioheaders` 0.11.0 writes it only inside the opt-in `BIOHEADERS_EXPERIMENTAL_FHT` draft lane, with `ExperimentalDraftWarning` (checked 2026-11-14).",
         "Legacy `md5:` values are not FHT checksums: T/U conversion and MD5-to-SHA recalculation are not header fixes."
       ]
     },
@@ -233,7 +233,7 @@
       "exampleSource": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.6.0/examples/fhp/rich-predicted.fhp.yaml",
       "exampleLabel": "placeholder checksum style from the released family examples",
       "notes": [
-        "A placeholder stands for a real parent file in the examples only. `bioheaders verify-links` does not support FHT yet (FHT-Specification#9), so no released command checks this link."
+        "A placeholder stands for a real parent file in the examples only. No supported command checks this link by default: `bioheaders verify-links` reads an FHT citation as FHR (rule V5) and refuses it. In the opt-in `BIOHEADERS_EXPERIMENTAL_FHT` lane of `fair-bioheaders` 0.11.0 a recorded parent reports `matched`, `not matched` or `not checked` against supplied files (checked 2026-11-14); FHT support is FHT-Specification#9."
       ]
     },
     "derivedFrom[].seqcol_id": {
@@ -357,7 +357,7 @@
       "The draft accepts `x-` extension keys at the top level, following rule R15."
     ],
     "tooling": [
-      "**No released tool supports FHT.** `fair-bioheaders` 0.10.0 (the current PyPI release) bundles schemas for FHR, FHP and FHGFF3 only; `bioheaders assess` recognises the FHT development URL and reports the header as `not assessed` with reason `unsupported-header-type`, and no command validates, writes or checksums an FHT file. Toolkit support is FHT-Specification#9.",
+      "**No released tool supports FHT.** `fair-bioheaders` 0.11.0 (the current PyPI release, 2026-11-14) bundles released schemas for FHR, FHP and FHGFF3 only; its FHT copy is a pinned draft. By default `bioheaders assess` recognises the FHT development URL and reports the header as `not assessed` with reason `unsupported-header-type`, and `validate`, `combine`, `verify` and `verify-links` read an FHT citation as FHR (rule V5), so no command validates, writes, checksums or parent-checks an FHT file. 0.11.0 adds an opt-in preview of that behaviour: with `BIOHEADERS_EXPERIMENTAL_FHT=1` those commands select the bundled draft contract and report `ExperimentalDraftWarning` — a recorded `derivedFrom` parent then reports `matched`, `not matched` or `not checked`. The lane is preparation for publication, not support — FHT has no release, no `w3id` alias and no registry entry — and `assess` reports FHT as not assessed with the gate open or closed (checked 2026-11-14). Toolkit support is FHT-Specification#9.",
       "The browser table builder on this site has no FHT form: it enables the released FHR, FHP and FHGFF3 contracts only, and FHT stays disabled until a contract is released (fair-bioheaders.github.io#15).",
       "Field decisions, the model and the generated development schema live in [FHT-Specification](https://github.com/FAIR-bioHeaders/FHT-Specification); shared publication is coordinated through FAIR-bioHeaders-Specification#107."
     ],

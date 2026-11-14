@@ -23,9 +23,13 @@ FHT-Specification, FHP-Specification and FHGFF3 are development homes.
 is the active family converter/validator; the standalone FHT converter is retired.
 
 Resource citations live in `_data/references.yml`, while per-type development
-links live in `_data/development.yml`. Keep their roles distinct. The registered
-specification/toolkit DOI titles remain FHR Specification / FHR File Converter;
-repository display names do not change those citation identities. See the
+links live in `_data/development.yml`. Keep their roles distinct. The site cites
+the specification and toolkit DOI records under the titles FHR Specification /
+FHR File Converter; DataCite now registers the specification record as
+FAIR-bioHeaders Specification (checked 2026-11-14), and renaming a citation title is a
+joint decision with FHR-Citation, not a website edit — `_data/references.yml`,
+`scripts/check_site.py` and the resources browser test must move together if it changes.
+Repository display names do not change those citation identities. See the
 [resource audit](docs/resource-audit.md) for primary-source evidence and retained
 historical URLs. The table builder supports released FHR, FHP and FHGFF3 v0.4.0 metadata,
 with explicit legacy FHR v0.3.1 support. FHT remains deferred under issue #15.

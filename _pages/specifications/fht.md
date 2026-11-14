@@ -12,7 +12,10 @@ excerpt: "Draft field reference for the proposed FHT transcriptome header: schem
   version registry, no fixed <code>w3id</code> alias, no DOI and no released tool
   support. Nothing on this page should be read as adopted guidance or as a citable
   version. The reference is published because the model is now concrete enough to
-  review, and it is marked as a draft everywhere it appears.</p>
+  review, and it is marked as a draft everywhere it appears. The opt-in
+  <code>BIOHEADERS_EXPERIMENTAL_FHT</code> draft lane added in <code>fair-bioheaders</code>
+  0.11.0 previews publication against a pinned draft copy; it is not FHT support, and it
+  creates no release, alias or registry entry.</p>
 </div>
 
 FHT is the proposed FAIR-bioHeaders header for a **reference transcriptome FASTA
@@ -68,10 +71,16 @@ the repository's own tests, never written by hand.
    actually extracted from the named FHR genome.
 2. **Checksum.** The shared family rules (R1–R4) define what an FHT checksum would
    cover, and the development repository recomputes its examples' checksums in tests.
-   No released command writes or verifies one yet.
+   By default no released command writes or verifies one: `fair-bioheaders` 0.11.0 does
+   both only when the operator opts in to its experimental draft lane
+   (`BIOHEADERS_EXPERIMENTAL_FHT=1`), which reads the unreleased contract and reports
+   `ExperimentalDraftWarning` (checked 2026-11-14).
 3. **Parent links.** `derivedFrom` requires the parent's FHR-family checksum, so the
-   intent is verifiable — but `bioheaders verify-links` does not support FHT, so no
-   released tool performs that check today.
+   intent is verifiable, and the lane described above does check it: with
+   `BIOHEADERS_EXPERIMENTAL_FHT=1`, 0.11.0 reported `derivedFrom[0] FHR transcribedFrom:
+   matched` against a supplied FHR parent file (checked 2026-11-14). With the default
+   settings the same command reads the FHT file as FHR (rule V5) and refuses it, so no
+   supported command performs that check on FHT today.
 4. **Biology.** Transcript completeness, expression, isoform correctness and
    orthology are outside the header entirely.
 

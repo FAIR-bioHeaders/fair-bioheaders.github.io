@@ -74,6 +74,30 @@ def documented_paths(html: str) -> set:
     return {html_lib.unescape(row) for row in rows}
 
 
+class InlineMarkup(unittest.TestCase):
+    """Curated prose becomes HTML without letting a link URL leave its attribute."""
+
+    def test_a_quote_in_a_link_url_cannot_close_the_href(self):
+        out = schema_tools.markup('see [docs](https://x.org/"onmouseover="alert(1)) here')
+        # Left as escaped text: a quote in element content cannot start an attribute.
+        self.assertNotIn('<a ', out)
+        self.assertNotIn('href=', out)
+
+    def test_angle_brackets_end_the_link_url(self):
+        out = schema_tools.markup('[docs](https://x.org/<script>)')
+        self.assertNotIn('<script', out)
+        self.assertNotIn('<a ', out)
+
+    def test_ordinary_links_and_code_still_render(self):
+        out = schema_tools.markup('use `a<b` and [the guide](https://example.org/a?b=1&c=2)')
+        self.assertEqual(out, 'use <code>a&lt;b</code> and '
+                              '<a href="https://example.org/a?b=1&amp;c=2">the guide</a>')
+
+    def test_attribute_values_are_quoted(self):
+        self.assertEqual(schema_tools.attr('https://x.org/"a\'<b>&'),
+                         'https://x.org/&quot;a&#x27;&lt;b&gt;&amp;')
+
+
 class PinnedBytes(unittest.TestCase):
     def setUp(self):
         self.provenance = schema_tools.load_provenance()

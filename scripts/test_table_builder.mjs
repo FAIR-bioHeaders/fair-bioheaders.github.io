@@ -127,6 +127,39 @@ test('YAML preserves ambiguous strings and control characters', () => {
   }
 });
 
+// YAML 1.1/1.2 printable set (c-printable). Every other code unit, and any
+// surrogate not part of a pair, must reach the file as an escape sequence.
+const YAML_PRINTABLE = /^[\t\n\r\u0020-\u007e\u0085\u00a0-\ud7ff\ue000-\ufffd\u{10000}-\u{10ffff}]*$/u;
+
+test('YAML escapes every character a YAML loader treats as non-printable', () => {
+  const awkward = ['\u007f', '\u0080', '\u0085', '\u009f', '\u2028', '\u2029', '\ufffe', '\uffff', '\ud800', '\udfff'];
+  for (let code = 0x7f; code <= 0x9f; code += 1) awkward.push(String.fromCharCode(code));
+  for (const character of awkward) {
+    const record = { genome: 'a' + character + 'b' };
+    const yaml = tb.toYaml(record, development);
+    assert.match(yaml, YAML_PRINTABLE, 'U+' + character.charCodeAt(0).toString(16).padStart(4, '0') + ' is escaped');
+    for (const version of ['1.1', '1.2']) {
+      assert.deepEqual(parse(yaml, { version }), record);
+    }
+  }
+  // Printable non-ASCII text, including a paired astral character, stays literal.
+  const literal = { genome: 'caf\u00e9 \u{1f9ec} \u00a0' };
+  const yaml = tb.toYaml(literal, development);
+  assert.ok(yaml.includes('caf\u00e9 \u{1f9ec} \u00a0'));
+  assert.deepEqual(parse(yaml), literal);
+});
+
+test('inherited Object.prototype names are not treated as schema properties', () => {
+  for (const name of ['toString', '__proto__', 'constructor', 'hasOwnProperty']) {
+    const record = currentRecord();
+    Object.defineProperty(record, name, { value: 'value', enumerable: true, writable: true, configurable: true });
+    const errors = tb.validateRecord(record, fhrCurrent).filter((e) => e.path.join('.') === name);
+    assert.ok(errors.length, name + ' is reported');
+    assert.ok(errors.some((e) => e.message === 'is not an allowed property'), name + ': ' + JSON.stringify(errors));
+    assert.deepEqual(tb.extensionKeys(record, fhrCurrent), []);
+  }
+});
+
 test('schema selection honors supported release aliases and never falls back', () => {
   const stubDevelopment = { properties: { genome: { type: 'string', minLength: 20 } } };
   const stubRelease = { properties: { genome: { type: 'string' } } };

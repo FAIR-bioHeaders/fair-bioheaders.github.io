@@ -127,6 +127,16 @@ class GeneratedFragment(unittest.TestCase):
         self.assertIn('0.1.0-draft.1', fragment)
         self.assertIn('withheld', fragment)
 
+    def test_provenance_urls_are_escaped_inside_href(self):
+        provenance = tools.load_provenance()
+        evil = 'https://x.org/"onmouseover="alert(1)'
+        provenance['files'][tools.INVENTORY]['url'] = evil
+        provenance['references']['dcmi'] = evil
+        provenance['adoption']['decisionPacket'] = evil
+        fragment = tools.render(inventory(), matrix(), provenance, [])
+        self.assertNotIn('onmouseover="', fragment)
+        self.assertEqual(fragment.count('href="https://x.org/&quot;onmouseover=&quot;alert(1)"'), 3)
+
     def test_fragment_never_claims_the_withheld_label_or_an_exporter(self):
         fragment, _ = tools.build()
         lowered = fragment.lower()

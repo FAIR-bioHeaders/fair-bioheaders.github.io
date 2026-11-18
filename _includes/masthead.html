@@ -6,7 +6,7 @@
       <nav id="site-nav" class="greedy-nav" aria-label="Main navigation">
         <button type="button" class="nav-toggle" aria-label="More navigation links" aria-expanded="false" aria-controls="overflow-navigation"><span class="navicon" aria-hidden="true"></span></button>
         <ul class="visible-links">
-          <li class="masthead__menu-item masthead__menu-item--lg"><a href="{{ base_path }}/">{{ site.title }}</a></li>
+          <li class="masthead__menu-item masthead__menu-item--lg"><a href="{{ base_path }}/">{{ site.title | escape }}</a></li>
           {% for link in site.data.navigation.main %}
             {% if link.url contains 'http' %}
               {% assign domain = '' %}
@@ -20,8 +20,8 @@
                 {% if child.url == page.url %}{% assign in_group = true %}{% endif %}
               {% endfor %}
               <li class="masthead__menu-item masthead__menu-item--group{% if in_group %} is-current{% endif %}"{% if link.overflow %} data-overflow-only{% endif %}>
-                <a href="{{ domain }}{{ link.url }}"{% if page.url == link.url %} aria-current="page"{% endif %}>{{ link.title }}</a>
-                <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-controls="nav-dropdown-{{ forloop.index }}"><span class="nav-dropdown-caret" aria-hidden="true"></span><span class="visually-hidden">Show the {{ link.title }} pages</span></button>
+                <a href="{{ domain }}{{ link.url }}"{% if page.url == link.url %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+                <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-controls="nav-dropdown-{{ forloop.index }}"><span class="nav-dropdown-caret" aria-hidden="true"></span><span class="visually-hidden">Show the {{ link.title | escape }} pages</span></button>
                 <ul id="nav-dropdown-{{ forloop.index }}" class="nav-dropdown">
                   {% for child in link.children %}
                     {% if child.url contains 'http' %}
@@ -29,12 +29,12 @@
                       {% else %}
                       {% assign child_domain = domain %}
                     {% endif %}
-                    <li><a href="{{ child_domain }}{{ child.url }}"{% if page.url == child.url %} aria-current="page"{% endif %}>{{ child.title }}</a></li>
+                    <li><a href="{{ child_domain }}{{ child.url }}"{% if page.url == child.url %} aria-current="page"{% endif %}>{{ child.title | escape }}</a></li>
                   {% endfor %}
                 </ul>
               </li>
             {% else %}
-              <li class="masthead__menu-item{% if link.url == page.url %} is-current{% endif %}"{% if link.overflow %} data-overflow-only{% endif %}><a href="{{ domain }}{{ link.url }}"{% if link.url == page.url %} aria-current="page"{% endif %}>{{ link.title }}</a></li>
+              <li class="masthead__menu-item{% if link.url == page.url %} is-current{% endif %}"{% if link.overflow %} data-overflow-only{% endif %}><a href="{{ domain }}{{ link.url }}"{% if link.url == page.url %} aria-current="page"{% endif %}>{{ link.title | escape }}</a></li>
             {% endif %}
           {% endfor %}
         </ul>

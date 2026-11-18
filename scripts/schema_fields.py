@@ -126,7 +126,9 @@ def sha256(data: bytes) -> str:
 # Inline presentation
 # --------------------------------------------------------------------------
 
-LINK = re.compile(r'\[([^\]]+)\]\((https://[^)\s]+)\)')
+# The URL may not contain a quote or angle bracket: it is placed inside a
+# double-quoted href, so it must not be able to close that attribute.
+LINK = re.compile(r'\[([^\]]+)\]\((https://[^)\s"<>]+)\)')
 
 
 def markup(text):
@@ -141,12 +143,29 @@ def markup(text):
     escaped = html.escape(str(text), quote=False)
     escaped = re.sub(r'`([^`]+)`', r'<code>\1</code>', escaped)
     escaped = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', escaped)
-    escaped = LINK.sub(r'<a href="\2">\1</a>', escaped)
+    escaped = LINK.sub(link, escaped)
     return escaped
+
+
+def link(match) -> str:
+    """One [label](url) match, found in text already escaped with quote=False.
+
+    The URL is unescaped and escaped again with quote=True for its attribute; a
+    URL that would carry a quote or angle bracket is left as plain text.
+    """
+    url = html.unescape(match.group(2))
+    if any(character in url for character in '"<>'):
+        return match.group(0)
+    return '<a href="' + attr(url) + '">' + match.group(1) + '</a>'
 
 
 def code(value) -> str:
     return '<code>' + html.escape(str(value), quote=False) + '</code>'
+
+
+def attr(value) -> str:
+    """A value for a double-quoted HTML attribute (href, data-*)."""
+    return html.escape(str(value), quote=True)
 
 
 # --------------------------------------------------------------------------
@@ -820,7 +839,7 @@ def render_example(row: dict) -> str:
     value = f'<code>{html.escape(str(example["value"]), quote=False)}</code>'
     label = markup(example['label'])
     if example['source']:
-        return f'{value}<span class="field-example-source">{label} <a href="{example["source"]}">source</a></span>'
+        return f'{value}<span class="field-example-source">{label} <a href="{attr(example["source"])}">source</a></span>'
     return f'{value}<span class="field-example-source">{label}</span>'
 
 
@@ -930,17 +949,17 @@ def render_location(data: dict) -> str:
     if data['status'] == 'released':
         links = [
             f'<li><strong>Fixed schema URL of the current release</strong>: '
-            f'<a href="{pinned["url"]}">{pinned["url"]}</a>. Cite the release a record targets: never '
+            f'<a href="{attr(pinned["url"])}">{pinned["url"]}</a>. Cite the release a record targets: never '
             'hard-code a "latest" schema, and never check an unknown version against a different one.</li>',
-            f'<li>The same bytes at the release tag: <a href="{tag_url}">{tag_url}</a>, also fixed at '
-            f'commit <a href="{blob_url}">{pinned["commit"][:10]}</a>.</li>',
+            f'<li>The same bytes at the release tag: <a href="{attr(tag_url)}">{tag_url}</a>, also fixed at '
+            f'commit <a href="{attr(blob_url)}">{pinned["commit"][:10]}</a>.</li>',
             f'<li>Development URL on <code>main</code>, the current contract, which moves: '
-            f'<a href="{data["schemaId"]}">{data["schemaId"]}</a>.</li>',
+            f'<a href="{attr(data["schemaId"])}">{data["schemaId"]}</a>.</li>',
         ]
     else:
         links = [
             f'<li><strong>Development schema only</strong>, and it moves with <code>main</code>: '
-            f'<a href="{pinned["url"]}">{pinned["url"]}</a>. Read it as a review input, not a citable '
+            f'<a href="{attr(pinned["url"])}">{pinned["url"]}</a>. Read it as a review input, not a citable '
             'release.</li>',
             '<li>No w3id alias, release-tag URL or DOI exists for this type, so none is offered. Release '
             f'work is tracked in [{project}#10]({project_url}/issues/10) and shared publication in '
@@ -951,8 +970,8 @@ def render_location(data: dict) -> str:
             'is never hand-edited.</li>',
         ]
     links.append('<li>Schema-version registry: '
-                 f'<a href="{data["releases"]["urls"]["versions"]}"><code>schemas/versions.json</code></a> and '
-                 f'<a href="{data["releases"]["urls"]["guide"]}"><code>docs/SCHEMA-VERSIONS.md</code></a>.</li>')
+                 f'<a href="{attr(data["releases"]["urls"]["versions"])}"><code>schemas/versions.json</code></a> and '
+                 f'<a href="{attr(data["releases"]["urls"]["guide"])}"><code>docs/SCHEMA-VERSIONS.md</code></a>.</li>')
     return '<ul class="schema-links">\n' + '\n'.join(links) + '\n</ul>\n' + render_history(data)
 
 
@@ -966,11 +985,11 @@ def render_history(data: dict) -> str:
                    for name in ('Shared release', 'schemaVersion', 'Published', 'Fixed schema URL'))
     rows = []
     for line in lines:
-        release = f'<a href="{RELEASES_URL}{line["release"]}">{line["release"]}</a>'
+        release = f'<a href="{attr(RELEASES_URL + line["release"])}">{line["release"]}</a>'
         version = f'<code>{line["schemaVersion"]}</code>' + (' (the number, not a string)' if line['legacy'] else '')
         unchanged = (f'<span class="field-none">unchanged from {line["unchangedFrom"]}</span>'
                      if line['unchangedFrom'] else '')
-        alias = (f'<a href="{line["alias"]}">{line["alias"].split("fair-bioheaders/", 1)[1]}</a>'
+        alias = (f'<a href="{attr(line["alias"])}">{line["alias"].split("fair-bioheaders/", 1)[1]}</a>'
                  if line['alias']
                  else '<span class="field-none">none published</span>')
         rows.append(f'<tr><th scope="row">{release}</th><td>{version}</td>'
@@ -1025,8 +1044,8 @@ def render_provenance(data: dict) -> str:
         moving = (' Because this development URL moves, the table documents exactly that commit: refresh the '
                   'pin and regenerate before citing it.')
     return (f'<p class="reference-provenance" data-schema-type="{data["type"]}" '
-            f'data-schema-sha256="{pinned["sha256"]}">Generated from '
-            f'<a href="{pinned["url"]}"><code>{pinned["path"]}</code></a> of '
+            f'data-schema-sha256="{attr(pinned["sha256"])}">Generated from '
+            f'<a href="{attr(pinned["url"])}"><code>{pinned["path"]}</code></a> of '
             f'{pinned["repository"]} at <code>{pinned["ref"]}</code> (commit '
             f'<code>{pinned["commit"][:10]}</code>), {identity} '
             f'<code>{pinned["file"]}</code> — SHA-256 <code>{pinned["sha256"]}</code>. It documents '

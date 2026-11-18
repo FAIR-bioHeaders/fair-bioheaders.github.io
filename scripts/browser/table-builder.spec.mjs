@@ -313,6 +313,21 @@ test('extension fields reach the YAML and the table but not the microdata item',
   await expect(page.locator('#tb-download-yaml')).toBeEnabled();
 });
 
+test('Object.prototype names in an extension row get the not-allowed message', async ({ page }) => {
+  await fillValid(page);
+  await page.fill('#tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v0.6.0');
+  await page.click('#tb-add-extension');
+  await page.fill('#tb-extension-0-value', 'value');
+  for (const name of ['toString', '__proto__', 'constructor']) {
+    await page.fill('#tb-extension-0-name', name);
+    await page.click('#tb-generate');
+    await expect(page.locator('#tb-download-yaml')).toBeDisabled();
+    await expect(page.locator('#tb-extension-0-name')).toHaveAttribute('aria-invalid', 'true');
+    await expect(page.locator('#tb-extension-0-name')).toHaveAccessibleDescription(/not an allowed property/);
+    await expect(page.locator('#tb-errors')).not.toContainText('more than one extension row');
+  }
+});
+
 test('an unpinned real release is unsupported instead of falling back', async ({ page }) => {
   await fillValid(page);
   await page.fill('#tb-schema', 'https://w3id.org/fair-bioheaders/fhr/v0.4.1');

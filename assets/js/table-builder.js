@@ -291,6 +291,12 @@
     return actual === type;
   }
 
+  // A schema's own property definition, never one inherited from
+  // Object.prototype (a record key such as toString or __proto__).
+  function ownProperty(object, key) {
+    return object && Object.prototype.hasOwnProperty.call(object, key) ? object[key] : undefined;
+  }
+
   function resolveRef(schema, root) {
     if (!schema || !schema.$ref) return schema;
     if (schema.$ref.indexOf('#/') !== 0) throw new Error('Unsupported external schema reference');
@@ -415,7 +421,7 @@
       }
       Object.keys(value).forEach(function (key) {
         var matched = false;
-        if (properties[key]) {
+        if (ownProperty(properties, key)) {
           matched = true;
           validateSchema(value[key], properties[key], root, path.concat([key]), errors);
         }
@@ -448,8 +454,12 @@
       // "integer" stays integral (N50 16).
       return declaredType === 'number' && Number.isInteger(value) ? value.toFixed(1) : String(value);
     }
+    // JSON.stringify already escapes C0 controls, quotes, backslashes and lone
+    // surrogates. YAML additionally treats DEL, the C1 block (U+0080-U+009F),
+    // U+FFFE and U+FFFF as non-printable, and U+0085/U+2028/U+2029 as line
+    // breaks, so a YAML loader rejects or folds them unless they are escaped.
     var text = String(value);
-    return JSON.stringify(text).replace(/[\u0085\u2028\u2029]/g, function (character) {
+    return JSON.stringify(text).replace(/[\u007f-\u009f\u2028\u2029\ufffe\uffff]/g, function (character) {
       return '\\u' + character.charCodeAt(0).toString(16).padStart(4, '0');
     });
   }
@@ -463,7 +473,7 @@
     var keys = order ? order.filter(function (key) { return object[key] !== undefined; }) : Object.keys(object);
     keys.forEach(function (key) {
       var value = object[key];
-      var node = resolveRef(props[key] || {}, root);
+      var node = resolveRef(ownProperty(props, key) || {}, root);
       if (Array.isArray(value)) {
         if (value.length === 0) { lines.push(pad + key + ': []'); return; }
         lines.push(pad + key + ':');
@@ -504,7 +514,7 @@
     var patterns = schema ? extensionPatterns(schema) : [];
     return Object.keys(record).filter(function (key) {
       if (!patterns.length) return key.indexOf('x-') === 0;
-      if (schema.properties && schema.properties[key]) return false;
+      if (ownProperty(schema.properties, key)) return false;
       return patterns.some(function (expression) { return new RegExp(expression).test(key); });
     });
   }
@@ -561,7 +571,7 @@
       var content = Object.keys(value)
         .filter(function (k) { return k.indexOf('x-') !== 0; })
         .map(function (k) {
-          return htmlValue(k, value[k], props[k]);
+          return htmlValue(k, value[k], ownProperty(props, k));
         }).join('');
       return '<span itemprop="' + prop + '" itemscope data-fhr-type="object">' + content + '</span>';
     }
@@ -587,7 +597,7 @@
         return record[key] !== undefined && extensions.indexOf(key) === -1;
       });
     return '<div itemscope itemtype="' + (kind === 'FHR' ? SCHEMA_URL : FHP_ITEMTYPE_URL) + '">' +
-      order.map(function (key) { return htmlValue(key, record[key], props[key]); }).join('') + '</div>';
+      order.map(function (key) { return htmlValue(key, record[key], ownProperty(props, key)); }).join('') + '</div>';
   }
 
   // The M5 note a microdata writer owes the reader: which keys it left out.
@@ -776,7 +786,6 @@
     if (attrs) {
       Object.keys(attrs).forEach(function (key) {
         if (key === 'text') node.textContent = attrs[key];
-        else if (key === 'html') node.innerHTML = attrs[key];
         else if (attrs[key] !== null && attrs[key] !== undefined) node.setAttribute(key, attrs[key]);
       });
     }
@@ -1280,7 +1289,9 @@
     var record = prune(state, [], []);
     record = record && typeof record === 'object' ? record : {};
     var properties = (activeSnapshot() || {}).properties || {};
-    var seen = {};
+    // A Map, so names such as toString or __proto__ are not mistaken for
+    // keys already written by an earlier row.
+    var seen = new Map();
     extensionIssues = [];
     extensionRows().forEach(function (row, index) {
       var name = String(row.name || '');
@@ -1290,13 +1301,15 @@
           message: 'is a standard field name; extension fields never override one (rule R15), so edit the field above instead' });
         return;
       }
-      if (seen[name] !== undefined) {
+      if (seen.has(name)) {
         extensionIssues.push({ path: [name], draft: ['extension', index, 'name'], label: [name],
           message: 'is written by more than one extension row; keep one row per key' });
         return;
       }
-      seen[name] = index;
-      record[name] = row.value;
+      seen.set(name, index);
+      // Define rather than assign, so a __proto__ row stays an own key that
+      // validation reports instead of silently changing the record prototype.
+      Object.defineProperty(record, name, { value: row.value, enumerable: true, writable: true, configurable: true });
       recordPaths[JSON.stringify([name])] = [name];
     });
     return record;

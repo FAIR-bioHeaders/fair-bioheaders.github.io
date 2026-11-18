@@ -161,8 +161,8 @@ FHR_File_Converter:
   status: Published
   resource_name: FAIR BioHeaders Tools
   purpose: Family metadata conversion, validation and file checksums
-  release: v0.11.0
-  version_doi: 10.5281/zenodo.24210269
+  release: v0.12.0
+  version_doi: 10.5281/zenodo.24292408
   type: software
   title: "FHR File Converter"
   authors:
@@ -174,7 +174,7 @@ FHR_File_Converter:
   repository: https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools
   programming_language: Python
   license: MPL-2.0
-  note: "The registered citation title remains FHR File Converter; the active package is fair-bioheaders. The v0.11.0 version DOI (10.5281/zenodo.24210269) is registered and findable in DataCite as checked 2026-11-14; v0.11.0 is the first toolkit release whose bundled schema set is shared specification v0.6.0."
+  note: "The registered citation title remains FHR File Converter; the active package is fair-bioheaders. The v0.12.0 version DOI (10.5281/zenodo.24292408) is registered and findable in DataCite as checked 2026-11-18. v0.11.0 (10.5281/zenodo.24210269) is the first toolkit release whose bundled schema set is shared specification v0.6.0; v0.12.0 bundles the same set and adds bioheaders metadata."
 
 FHR_Nextflow:
   status: Published
@@ -186,10 +186,10 @@ FHR_Nextflow:
     - { family: Wright, given: Adam }
   year: 2025
   repository: https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Nextflow
-  release: v0.1.0
+  release: v0.2.0
   programming_language: Nextflow
   license: MPL-2.0
-  note: "Formerly FHR-Nextflow. First release v0.1.0 (2026-10-28); no DOI yet."
+  note: "Formerly FHR-Nextflow. First release v0.1.0 (2026-10-28); current release v0.2.0 (2026-11-05), which pins fair-bioheaders 0.9.0. The repository's CITATION.cff cites no DOI yet."
 
 FHR_Citation:
   status: Published

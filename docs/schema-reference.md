@@ -89,16 +89,16 @@ The pages distinguish four things that are easy to conflate:
   FHP "1.2", FHGFF3 "1.2"; the FHR 2.1 bytes are unchanged from v0.5.0).
   FHT cites only the FHT-Specification development URL and is
   marked draft on the page, in the nav and in the index tables.
-- **Toolkit** — the current PyPI release, `fair-bioheaders` 0.11.0 (2026-11-14), bundles the
-  v0.6.0 schema set (FHR 2.1, FHP 1.2, FHGFF3 1.2) and accepts a `…/v0.6.0` citation for all
-  three types. Releases before it do not bundle v0.6.0 — 0.9.0 and 0.10.0 both name v0.5.0 as
+- **Toolkit** — the current PyPI release, `fair-bioheaders` 0.12.0 (2026-11-16), bundles the
+  v0.6.0 schema set (FHR 2.1, FHP 1.2, FHGFF3 1.2), unchanged from 0.11.0, and accepts a
+  `…/v0.6.0` citation for all three types (checked 2026-11-18). Releases before 0.11.0 do not bundle v0.6.0 — 0.9.0 and 0.10.0 both name v0.5.0 as
   current — and 0.10.0 reports a `…/v0.6.0` citation as an unsupported schema version
   (checked 2026-11-14). FHGFF3 HTML microdata is available from 0.10.0 onward but
   **experimental** — its binding is a draft, so reading or writing emits
   `ExperimentalMicrodataWarning`, and that runtime availability is not website enablement
   (see shared `docs/MICRODATA.md`). FHT detection is unchanged: `assess` reports
   `not assessed` / `unsupported-header-type`, and the opt-in `BIOHEADERS_EXPERIMENTAL_FHT`
-  draft lane in 0.11.0 previews publication without supporting FHT. That is detection and a
+  draft lane (0.11.0 onward) previews publication without supporting FHT. That is detection and a
   gated preview, not support.
 - **This site's builder** — `/table-builder/` validates its pinned **v0.6.0**
   snapshots (FHR "2.1", FHP/FHGFF3 "1.2") and can produce `x-` extension fields and

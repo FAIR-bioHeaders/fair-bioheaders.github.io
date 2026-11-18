@@ -31,5 +31,6 @@ Every file above, including the site-authored one, was validated with the
 released runtime rather than only with this repository's browser validator:
 `fair-bioheaders` 0.11.0 (PyPI) printed `FHR metadata is valid.` /
 `FHP metadata is valid.` / `FHGFF3 metadata is valid.` for each of them on
-2026-11-14. That is a structural statement about the records; it says nothing
+2026-11-14, and `fair-bioheaders` 0.12.0 (PyPI) printed the same for each of them
+on 2026-11-18. That is a structural statement about the records; it says nothing
 about sequences, BUSCO runs or annotation files.

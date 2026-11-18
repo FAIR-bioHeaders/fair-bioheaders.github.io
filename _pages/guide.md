@@ -12,10 +12,10 @@ that type's released contract and tooling.
 
 | Type | Resource | Contract and workflow status |
 | --- | --- | --- |
-| [FHR](/specifications/fhr/) | Reference genome assembly | FHR `2.1`; the current shared release v0.6.0 re-publishes the 2.1 bytes unchanged. Toolkit `fair-bioheaders` 0.11.0 writes and checks FASTA/GFA, JSON-LD and microdata for `2.1` and accepts a `…/v0.6.0` citation. The browser builder cites the pinned v0.6.0 snapshot by default and can write `x-` extension fields (YAML only). |
-| [FHT](/specifications/fht/) | Transcriptome | **Draft** contract, `schemaVersion` "1.0" proposed; no shared release, no fixed alias, no toolkit or builder support. 0.11.0 has an opt-in experimental preview of draft validation, which is not support. |
-| [FHP](/specifications/fhp/) | Protein/proteome FASTA | FHP `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit 0.11.0 reads and writes `1.2` as JSON/YAML, in files, and as canonical JSON-LD and HTML microdata. The browser builder cites the pinned v0.6.0 snapshot by default, accepts a dotted `lineageDataset` in a `1.2` record, and writes `x-` extension fields into YAML only. |
-| [FHGFF3](/specifications/fhgff3/) | GFF3 annotation metadata | FHGFF3 `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit 0.11.0 reads and writes `1.2` as JSON/YAML and in files, plus experimental HTML microdata, and has no JSON-LD form. Feature and biology validation is a separate tool. |
+| [FHR](/specifications/fhr/) | Reference genome assembly | FHR `2.1`; the current shared release v0.6.0 re-publishes the 2.1 bytes unchanged. Toolkit `fair-bioheaders` 0.12.0 writes and checks FASTA/GFA, JSON-LD and microdata for `2.1`, accepts a `…/v0.6.0` citation, and can write a new `2.1` record from typed fields with `bioheaders metadata`. The browser builder cites the pinned v0.6.0 snapshot by default and can write `x-` extension fields (YAML only). |
+| [FHT](/specifications/fht/) | Transcriptome | **Draft** contract, `schemaVersion` "1.0" proposed; no shared release, no fixed alias, no toolkit or builder support. 0.12.0 has an opt-in experimental preview of draft validation, which is not support. |
+| [FHP](/specifications/fhp/) | Protein/proteome FASTA | FHP `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit 0.12.0 reads and writes `1.2` as JSON/YAML, in files, and as canonical JSON-LD and HTML microdata. The browser builder cites the pinned v0.6.0 snapshot by default, accepts a dotted `lineageDataset` in a `1.2` record, and writes `x-` extension fields into YAML only. |
+| [FHGFF3](/specifications/fhgff3/) | GFF3 annotation metadata | FHGFF3 `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit 0.12.0 reads and writes `1.2` as JSON/YAML and in files, plus experimental HTML microdata, and has no JSON-LD form. Feature and biology validation is a separate tool. |
 
 Every field, type, constraint and unit is documented on that type's schema reference
 page, generated from the published schema bytes; the
@@ -47,6 +47,25 @@ Its sample identifiers are placeholders.
 
 Prefer a form? The [FHR table builder](/table-builder/) builds the metadata,
 validates it against the schema, and downloads the table and metadata file.
+
+Prefer the command line? `bioheaders metadata` (fair-bioheaders 0.12.0 and later)
+writes an FHR `2.1` record citing v0.6.0 from typed fields and checks it against the
+bundled schema before writing. It never invents a required value: a missing one is
+listed and the command exits with an error. `--stats-from` computes `vitalStats` from
+the FASTA, and `bioheaders combine` then adds the checksum:
+
+```bash
+bioheaders metadata --genome "Example assembly" --taxon-name "Homo sapiens" \
+  --taxon-id 9606 --version 1 \
+  --metadata-author "Adam Wright <https://orcid.org/0000-0002-5719-4024>" \
+  --assembly-author "David Molik <https://orcid.org/0000-0003-3192-6538>" \
+  --date-created 2026-11-18 --masking soft-masked \
+  --stats-from genome.fasta -o metadata.yaml
+bioheaders combine metadata.yaml genome.fasta -o genome.fhr.fasta
+bioheaders verify genome.fhr.fasta
+```
+
+FHP and FHGFF3 records are not written by this command yet.
 
 ## A historical worked example (fhr 0.3.3)
 
@@ -146,10 +165,11 @@ fhr-validate genome.fhr.json
   from v0.5.0, shared v0.6.0 re-publishing the same 2.1 bytes; it is a quoted string,
   not a number. `schemaVersion`, repository release tags and the
   assembly's `version` describe different things.
-- The family package **fair-bioheaders 0.11.0**, installed with
-  `python -m pip install fair-bioheaders==0.11.0`. Its `bioheaders` CLI performs
-  conversion, validation and checksums; the legacy `fhr-*` commands remain
-  supported. See the [toolkit usage](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools).
+- The family package **fair-bioheaders 0.12.0**, installed with
+  `python -m pip install fair-bioheaders==0.12.0`. Its `bioheaders` CLI performs
+  conversion, validation and checksums, and from 0.12.0 writes FHR metadata from
+  typed fields (`bioheaders metadata`); the legacy `fhr-*` commands remain
+  supported. 0.12.0 bundles the same v0.6.0 schema set as 0.11.0. See the [toolkit usage](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools).
 - The worked example above is preserved as the recorded **fhr 0.3.3** workflow.
   Its numeric schemaVersion and raw-main header are historical, not a current
   v0.4 recipe. The raw-main URL now selects the current contract. For new work,
@@ -158,7 +178,7 @@ fhr-validate genome.fhr.json
   never silently replaced. The [schema-version policy](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/SCHEMA-VERSIONS.md)
   explains migration and compatibility checks.
 - A `…/v0.6.0` citation needs a toolkit release that bundles that registry entry:
-  0.11.0 does, and 0.10.0 reports it as an unsupported schema version. Citations of
+  0.11.0 and later do, and 0.10.0 reports it as an unsupported schema version. Citations of
   v0.3.x, v0.4.x and v0.5.0 keep resolving to their own frozen copies, so an existing
   file-bound header never needs to be rewritten to stay readable.
 - The browser table builder defaults to FHR v0.6.0 (`schemaVersion` "2.1") and also

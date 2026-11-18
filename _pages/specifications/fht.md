@@ -14,7 +14,7 @@ excerpt: "Draft field reference for the proposed FHT transcriptome header: schem
   version. The reference is published because the model is now concrete enough to
   review, and it is marked as a draft everywhere it appears. The opt-in
   <code>BIOHEADERS_EXPERIMENTAL_FHT</code> draft lane added in <code>fair-bioheaders</code>
-  0.11.0 previews publication against a pinned draft copy; it is not FHT support, and it
+  0.11.0, and kept in 0.12.0, previews publication against a pinned draft copy; it is not FHT support, and it
   creates no release, alias or registry entry.</p>
 </div>
 
@@ -71,8 +71,8 @@ the repository's own tests, never written by hand.
    actually extracted from the named FHR genome.
 2. **Checksum.** The shared family rules (R1–R4) define what an FHT checksum would
    cover, and the development repository recomputes its examples' checksums in tests.
-   By default no released command writes or verifies one: `fair-bioheaders` 0.11.0 does
-   both only when the operator opts in to its experimental draft lane
+   By default no released command writes or verifies one: `fair-bioheaders` 0.11.0 and
+   0.12.0 do both only when the operator opts in to its experimental draft lane
    (`BIOHEADERS_EXPERIMENTAL_FHT=1`), which reads the unreleased contract and reports
    `ExperimentalDraftWarning` (checked 2026-11-14).
 3. **Parent links.** `derivedFrom` requires the parent's FHR-family checksum, so the

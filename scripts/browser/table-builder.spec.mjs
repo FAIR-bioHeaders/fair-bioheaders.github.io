@@ -439,7 +439,9 @@ for (const [kind, release, fixture] of [
       expect(htmlSource).toContain('itemprop="schemaVersion" data-fhr-type="string"');
       if(record.isoformPolicy) expect(htmlSource).toContain('itemprop="isoformPolicy" data-fhr-type="string">'+record.isoformPolicy+'</span>');
     } else {
-      expect(htmlSource).not.toContain('itemscope');
+      expect(htmlSource).toContain('itemscope itemtype="https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhgff3.json"');
+      expect(htmlSource).toContain('Experimental FHGFF3 HTML binding');
+      expect(htmlSource).not.toContain('main/fhr.json');
     }
     const [download]=await Promise.all([page.waitForEvent('download'),page.click('#tb-download-yaml')]);
     expect(download.suggestedFilename()).toBe(kind.toLowerCase()+'-metadata.yaml');

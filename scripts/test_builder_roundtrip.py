@@ -10,7 +10,7 @@ with standard library parsing only (mirroring the stdlib discipline of
 producer boundary for the pinned v0.6.0 releases:
 
     record -> table-builder.js export (YAML, readable table, standalone HTML,
-    typed FHR/FHP microdata) -> re-read with stdlib-only parsers written
+    typed FHR/FHP/FHGFF3 microdata) -> re-read with stdlib-only parsers written
     against the published bindings -> re-validate the reconstructed record
     with this repository's existing snapshot validator
 
@@ -23,8 +23,7 @@ Assertions per fixture and per hostile vector:
 * the readable table and the standalone document carry every value as text
   only — no script, anchor, href or src is ever produced from metadata, so a
   `javascript:` URL or a `</script>` sequence cannot execute;
-* FHGFF3 standalone HTML carries no microdata at all (its binding has not
-  landed; see issue #15 item 1);
+* FHGFF3 standalone HTML carries its own explicitly experimental itemtype;
 * each reconstructed record validates against the same byte-pinned snapshot
   that the source record does — the validator is `table-builder.js`'s own,
   invoked through `scripts/builder_roundtrip.mjs --validate`.
@@ -52,6 +51,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DRIVER = ROOT / 'scripts' / 'builder_roundtrip.mjs'
 
 FHR_ITEMTYPE = 'https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json'
+FHGFF3_ITEMTYPE = 'https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhgff3.json'
 FHP_ITEMTYPE = 'https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json'
 
 
@@ -416,9 +416,9 @@ class ReleasedTypeRoundTrip(unittest.TestCase):
         self.assert_node_present()
         names = [entry['name'] for entry in entries()]
         self.assertEqual(names, [
-            'example.fhr.json', 'extension-fields.fhr.yaml', 'rich-database.fhp.json', 'rich-mixed.fhp.yaml',
+            'example.fhr.json', 'extension-fields.fhr.yaml', 'rich-database.fhp.json', 'rich-mixed-canonical.fhp.yaml',
             'minimal-reference.fhgff3.json', 'rich.fhgff3.yaml', 'dotted-lineage.fhp.yaml',
-            'vector.fhr', 'vector.fhp'])
+            'vector.fhr', 'vector.fhp', 'vector.fhgff3'])
 
     def test_source_records_validate_against_their_pinned_snapshot(self):
         self.assert_node_present()
@@ -448,10 +448,8 @@ class ReleasedTypeRoundTrip(unittest.TestCase):
     def test_microdata_reloads_to_the_record_without_extension_fields(self):
         self.assert_node_present()
         for entry in entries():
-            if entry['kind'] == 'FHGFF3':
-                continue
             with self.subTest(entry['name']):
-                itemtype = FHR_ITEMTYPE if entry['kind'] == 'FHR' else FHP_ITEMTYPE
+                itemtype = {'FHR': FHR_ITEMTYPE, 'FHP': FHP_ITEMTYPE, 'FHGFF3': FHGFF3_ITEMTYPE}[entry['kind']]
                 rebuilt = read_microdata(entry['microdataDiv'], itemtype)
                 expected = {key: value for key, value in entry['record'].items() if key not in entry['extensions']}
                 typed_equal(expected, rebuilt, entry['name'])
@@ -459,11 +457,9 @@ class ReleasedTypeRoundTrip(unittest.TestCase):
     def test_reconstructed_records_validate_against_the_same_snapshot(self):
         self.assert_node_present()
         for entry in entries():
-            if entry['kind'] == 'FHGFF3':
-                continue
             with self.subTest(entry['name']):
                 rebuilt = read_microdata(entry['microdataDiv'],
-                                         FHR_ITEMTYPE if entry['kind'] == 'FHR' else FHP_ITEMTYPE)
+                                         {'FHR': FHR_ITEMTYPE, 'FHP': FHP_ITEMTYPE, 'FHGFF3': FHGFF3_ITEMTYPE}[entry['kind']])
                 errors = json.loads(_run_node(['--validate', entry['snapshot']], json.dumps(rebuilt)))
                 self.assertEqual(errors, [], f"{entry['name']}: reconstructed record is invalid")
                 # The M5 boundary is observable, not assumed: exactly the
@@ -475,16 +471,15 @@ class ReleasedTypeRoundTrip(unittest.TestCase):
                     self.assertIn(f'"{key}"', entry['standaloneHtml'],
                                   f"{entry['name']}: omitted extension {key} must be reported")
 
-    def test_fhgff3_still_emits_no_microdata(self):
+    def test_fhgff3_uses_its_own_experimental_binding(self):
         self.assert_node_present()
         for entry in entries():
-            if entry['kind'] != 'FHGFF3':
-                continue
-            with self.subTest(entry['name']):
-                self.assertIsNone(entry['microdataDiv'])
-                self.assertTrue(entry['microdataThrows'], 'microdataDiv must keep refusing FHGFF3')
-                self.assertNotIn('itemscope', entry['standaloneHtml'])
-                self.assertIn('HTML microdata is not supported', entry['standaloneHtml'])
+            if entry['kind'] == 'FHGFF3':
+                with self.subTest(entry['name']):
+                    self.assertIn(FHGFF3_ITEMTYPE, entry['microdataDiv'])
+                    self.assertNotIn(FHR_ITEMTYPE + '"', entry['microdataDiv'])
+                    self.assertIn('Experimental FHGFF3 HTML binding', entry['standaloneHtml'])
+                    self.assertIn('JSON-LD is unsupported', entry['standaloneHtml'])
 
     def test_standalone_documents_are_inert_for_every_value(self):
         self.assert_node_present()
@@ -514,8 +509,7 @@ class ReleasedTypeRoundTrip(unittest.TestCase):
                                   'object', 'embed', 'link', 'style'):
                     self.assertNotIn(forbidden, scan.tags, f"{entry['name']}: <{forbidden}> appeared")
                 self.assertIn(entry['tableHtml'], html_text, 'the displayed table is the one embedded')
-                if entry['kind'] != 'FHGFF3':
-                    self.assertIn(entry['microdataDiv'], html_text, 'the typed item is embedded verbatim')
+                self.assertIn(entry['microdataDiv'], html_text, 'the typed item is embedded verbatim')
 
     @staticmethod
     def _strings(value):
@@ -542,6 +536,7 @@ class ReleasedTypeRoundTrip(unittest.TestCase):
                 'x\u202Eoverriding\u202B text\ufeff\u200b',      # bidi override + zero-width bytes
                 'tab\there\u0007bel\u001bescape',
             ],
+            'vector.fhgff3': ['annotation <script>alert(1)</script>', '%YAML 1.1', '!!tag &anchor *alias', '\u202e\u200b'],
             'vector.fhp': [
                 '<a href="javascript:alert(1)">link</a>',
                 'javascript:alert(document.domain)',

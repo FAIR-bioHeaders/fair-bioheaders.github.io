@@ -8,12 +8,12 @@ Build a **genome (FHR), protein set (FHP), or annotation (FHGFF3)** metadata
 record using the released v0.6.0 schemas. Choose a header type below. Each type
 keeps its own entries while this page is open; reloading discards them.
 Everything runs in your browser; nothing is uploaded or saved to this site.
-FHT transcriptome support will follow its released contract, and FHGM gene-model
-records have no contract of their own yet: neither is available in this form.
+FHT transcriptome support will follow its released contract, and FHGM native gene-model
+records await shared publication: neither is available in this form.
 
-FHR and FHP exports include typed HTML microdata, each marked with its own
-header-type identity. FHGFF3 HTML exports are readable tables only: download
-their YAML metadata separately to preserve the structured record. This form
+FHR, FHP and FHGFF3 exports include typed HTML microdata, each marked with its own
+header-type identity. FHGFF3 HTML uses the experimental binding supported by
+`fair-bioheaders` 0.12.0; FHGFF3 JSON-LD remains unsupported. This form
 produces metadata, not a FASTA/GFF3 file with an embedded
 header. Reported counts, completeness and provenance are supplied by you and
 are not verified against sequence or annotation files.
@@ -113,7 +113,7 @@ are disabled until you generate again.
 
   <h2>Standalone HTML source</h2>
   <p>This is the complete HTML document, including the readable table and, for
-  FHR and FHP, typed microdata. Its download uses exactly this text.</p>
+  FHR, FHP and FHGFF3, typed microdata. Its download uses exactly this text.</p>
   <pre id="tb-html-source" class="tb-source" tabindex="0"></pre>
 
   <h2>Metadata source (YAML)</h2>

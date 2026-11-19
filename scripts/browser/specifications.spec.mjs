@@ -182,9 +182,9 @@ test.describe('generated field references', () => {
     await expect(page.locator('h1')).toContainText('Draft');
     await expect(page.locator('.spec-notice--draft')).toBeVisible();
     const body = page.locator('#main');
-    await expect(body).toContainText(/FHGM is a draft proposal, not a contract/i);
+    await expect(body).toContainText(/FHGM is a reviewed development model, not a released contract/i);
     await expect(body).toContainText(/no field inventory/i);
-    await expect(body).toContainText(/not a contract/i);
+    await expect(body).toContainText(/not a released contract/i);
     // The page states the deferrals instead of inventing artifacts.
     await expect(body).toContainText(/schemas\/versions\.json/);
     // No generated reference exists for a type with no contract to inventory.

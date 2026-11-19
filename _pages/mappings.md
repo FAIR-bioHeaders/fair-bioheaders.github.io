@@ -13,6 +13,12 @@ ships**. No exporter ships, here or in the toolkit: nothing on this page writes 
 Core file for you, validates a DataCite or Crossref deposit, registers a DOI, or mints an
 ARK.
 
+The completed foundation is deliberately limited to the FHR root-field inventory,
+export context and curated DCMI example. Additional target adapters and nested or
+reverse mappings are deferred work, not conditions for this reference page.
+The table lists other targets to explain their current limits, without claiming
+that they are implemented. The label remains conditional on a released exporter.
+
 Every table below is generated from byte-pinned copies of the upstream artifacts and
 re-checked against them in CI, so the page cannot quietly grow a meaning of its own. The
 specification repository is the authority, and

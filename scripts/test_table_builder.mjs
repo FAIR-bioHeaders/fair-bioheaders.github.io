@@ -224,6 +224,93 @@ test('absent optional fields are omitted from YAML output', () => {
   assert.doesNotMatch(tb.toYaml(minimal, development), /funding/);
 });
 
+// --------------------------------------------------- preservation and inertness
+// (issue #15 items 5-6: the byte classes and sigils the earlier escaping tests
+// did not place in free-text values — bidi/zero-width controls, YAML tag and
+// indicator characters, and URI fields holding executable-scheme URLs.)
+
+test('bidi and zero-width control bytes in free text survive every export as inert text', () => {
+  const marks = ['\u202A', '\u202B', '\u202C', '\u202D', '\u202E',        // bidi embedding/override
+    '\u2066', '\u2067', '\u2068', '\u2069',                                // bidi isolates
+    '\u200B', '\u200C', '\u200D', '\u2060', '\uFEFF'];                     // zero-width and BOM/word-joiner
+  for (const mark of marks) {
+    const record = currentRecord();
+    record.documentation = 'a' + mark + 'b';
+    assert.deepEqual(tb.validateRecord(record, fhrCurrent), [], 'U+' + mark.charCodeAt(0).toString(16));
+    const value = record.documentation;
+    assert.deepEqual(parse(tb.toYaml(record, fhrCurrent)), record, 'YAML preserves the byte exactly');
+    const div = tb.microdataDiv(record, fhrCurrent);
+    assert.ok(div.includes('itemprop="documentation" data-fhr-type="string">' + value + '</span>'),
+      'microdata carries the text untouched (rendered via textContent in the browser)');
+    const html = tb.standaloneHtml(record, fhrCurrent);
+    assert.ok(!/<script/i.test(html) && !/<a[ >]/i.test(html), 'the byte cannot open or forge markup');
+  }
+});
+
+test('YAML indicator and tag characters never escape their quoted scalar', () => {
+  const tokens = ['*alias', '&anchor', '!!py/object:tag', '!custom', '@reserved', '`reserved',
+    '- dash first', 'key: value', 'x: {y: 1}', '[1, 2]', '{a: 1}', '%TAG directive',
+    '# comment start', '> folded', '| literal', 'line\nnext: 1', '\ttab first', '---', '...',
+    '? query', ': border', ', comma', '[bracket]', '{} empty'];
+  for (const token of tokens) {
+    const record = currentRecord();
+    record.instrument = ['plain', token];
+    record.funding = token;
+    assert.deepEqual(tb.validateRecord(record, fhrCurrent), [], JSON.stringify(token));
+    const yaml = tb.toYaml(record, fhrCurrent);
+    assert.deepEqual(parse(yaml, { version: '1.2' }), record, JSON.stringify(token) + ' (1.2)');
+    assert.deepEqual(parse(yaml, { version: '1.1' }), record, JSON.stringify(token) + ' (1.1)');
+    for (const line of yaml.split('\n')) {
+      const shape = line.trim();
+      if (!shape) continue;
+      assert.ok(/^[A-Za-z_][A-Za-z0-9_.-]*:( |$)/.test(shape) || shape === '-' || /^- \S/.test(shape),
+        'unexpected structural line: ' + JSON.stringify(line));
+    }
+  }
+});
+
+test('executable-scheme URIs are inert text: exports never write a link', () => {
+  for (const target of ['javascript:alert(1)', 'vbscript:msgbox(1)',
+    'data:text/html,%3Cscript%3Ealert(1)%3C%2Fscript%3E']) {
+    const record = currentRecord();
+    record.relatedLink = [target];
+    record.documentation = target + ' javascript&colon;alert(1)';
+    // These are valid absolute URIs per RFC 3986 — the grammar the released
+    // toolkit enforces for `format: uri` (verified 2026-11-19 against
+    // fair-bioheaders 0.12.0). Safety in the exports is rendering, not a
+    // scheme allow-list, and that is what the rest of this test pins.
+    assert.deepEqual(tb.validateRecord(record, fhrCurrent), [], target);
+    const html = tb.standaloneHtml(record, fhrCurrent);
+    assert.ok(!/<a[ >]/i.test(html) && !/href=/i.test(html) && !/<script/i.test(html), target);
+    const div = tb.microdataDiv(record, fhrCurrent);
+    assert.ok(!/href=/i.test(div), target + ' stays out of any attribute position');
+    assert.ok(div.includes('>' + tb.escapeHtml(target) + '<'), target + ' is a typed string leaf');
+    assert.ok(div.includes(tb.escapeHtml(record.documentation)) && !div.includes('javascript&colon;'),
+      'the entity lookalike stays double-escaped as text');
+  }
+});
+
+test('format uri follows the toolkit RFC 3986 grammar, not WHATWG laxness', () => {
+  // fair-bioheaders 0.12.0 (jsonschema strict checker, run 2026-11-19) rejects
+  // `data:text/html,<script>alert(1)</script>` as not a URI; WHATWG `new URL()`
+  // had accepted it. The browser validator now refuses the same strings, so the
+  // builder cannot export a record the released reader declines.
+  for (const bad of ['data:text/html,<script>alert(1)</script>', 'https://exa mple.org/',
+    'https://example.org/a"b', 'http://[unbalanced', 'not a uri at all', '', 'javascript&colon;alert(1)']) {
+    const record = currentRecord();
+    record.relatedLink = [bad];
+    const errors = tb.validateRecord(record, fhrCurrent);
+    assert.ok(errors.some((e) => e.path.join('.') === 'relatedLink.0' && /uri/i.test(e.message)),
+      JSON.stringify(bad));
+  }
+  for (const good of ['https://example.org/a&b%3Cc%3Ed%22e%27f#frag', 'urn:isbn:0451450523',
+    'https://identifiers.org/taxonomy:9606', 'http://ok.example:8080/p;params?q=1+2']) {
+    const record = currentRecord();
+    record.relatedLink = [good];
+    assert.deepEqual(tb.validateRecord(record, fhrCurrent), [], good);
+  }
+});
+
 // ---------------------------------------------------------------- pinned snapshots
 
 const PINNED = {

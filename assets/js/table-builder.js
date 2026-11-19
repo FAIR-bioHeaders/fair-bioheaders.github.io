@@ -306,12 +306,16 @@
   }
 
   function isUri(value) {
-    try {
-      new URL(value);
-      return true;
-    } catch (error) {
-      return false;
-    }
+    // RFC 3986 absolute-URI grammar, aligned with the released toolkit's
+    // `format: uri` enforcement (fair-bioheaders 0.12.0 uses the strict
+    // jsonschema checker: verified 2026-11-19, it rejects
+    // `data:text/html,<script>alert(1)</script>` with "is not a 'uri'" where
+    // WHATWG `new URL()` accepts it). The builder must not green-light records
+    // the released reader refuses; percent-encoded forms of the same payload
+    // are valid URIs. Executable-scheme URIs that ARE valid URIs
+    // (`javascript:alert(1)`) pass here exactly as the toolkit passes them,
+    // and stay safe only because the exports render every value as text.
+    return /^[A-Za-z][A-Za-z0-9+.\-]*:[A-Za-z0-9\-._~%!$&'()*+,;=:@/?#]*$/.test(String(value));
   }
 
   function isDate(value) {

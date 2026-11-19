@@ -129,7 +129,7 @@ BUNDLE_FROZEN=true JEKYLL_ENV=production bundle exec jekyll build --strict_front
 python3 scripts/check_site.py _site
 python3 -m unittest discover -s scripts -p 'test_*.py'
 node --test scripts/test_cite.mjs
-npm run test:browser             # once: npx playwright install --with-deps chromium
+npm run test:browser             # once: npx playwright install --with-deps chromium firefox webkit
 ```
 
 After a deployment, `npm run test:deploy` smoke-checks the live homepage,
@@ -256,8 +256,11 @@ sitemap, robots policy, and feeds. Toolchain is pinned in `.ruby-version`
   `aria-controls` consistent, preserve author order/DOIs, and support clipboard
   failure. The Node parser tests do not prove browser interaction works.
 - Current automation covers production builds, deterministic JS, Python site
-  regressions, Node citation mapping, Chromium browser/accessibility/layout
-  checks, and weekly/manual external links.
+  regressions (including the in-repo builder export round trips added 2026-11-19
+  in `scripts/test_builder_roundtrip.py`), Node citation mapping,
+  Chromium/Firefox/WebKit browser and accessibility checks (matrix and engine
+  accommodations in `docs/maintenance.md` and
+  `scripts/browser/engine-helpers.mjs`), and weekly/manual external links.
   Inspect changed views in a browser at desktop and 320px, in both themes, using
   keyboard navigation and reduced-motion preferences. Check Cite/Copy after
   citation changes. Do not claim those checks ran unless actually performed.
@@ -399,7 +402,9 @@ and only the error reference should be removed when validation clears. Apply
 this to repeatable scalar controls as well as ordinary/nested inputs. Browser
 regressions check computed accessible descriptions and corrected-input cleanup.
 The converter round-trip in the PR validation notes is a local verification;
-CI currently checks microdata markup, not an installed-converter round-trip.
+CI since 2026-11-19 re-reads the builder exports in-repo and re-validates the
+reconstructions against the pinned snapshots
+(`scripts/test_builder_roundtrip.py`), but does not run an installed converter.
 
 ### FHR v0.4.0 builder support (issue #15, first slice)
 
@@ -465,8 +470,10 @@ No released v0.6.0 record states a dotted dataset, so
 as such; the other six files there are unmodified released examples with digests in that
 directory's `README.md`. When updating this support, re-verify both against a reference
 JSON Schema implementation and against the released toolkit, and record the toolkit
-version and date — the round trip is a local procedure, not a CI step, until maintainers
-pin a toolkit version into the website workflow.
+version and date — the converter round trip is a local procedure, not a CI step, until maintainers
+pin a toolkit version into the website workflow; the in-repo export round-trip tripwire added
+2026-11-19 (`scripts/test_builder_roundtrip.py`, see `docs/maintenance.md`) automates this
+repository's own producer boundary only.
 
 FHR v0.6.0 is byte-identical to the v0.5.0 FHR contract, but that is a verified fact
 about two pins, not a licence to serve one for the other.

@@ -125,12 +125,26 @@ is local; there is no backend, upload, login, or persistence.
   in `scripts/test_table_builder.mjs`; browser checks in
   `scripts/browser/table-builder.spec.mjs`. The page is indexable and in the
   sitemap allow-list.
-- **Browser coverage:** the Playwright project runs Chromium at desktop and 320px
-  widths (light and dark). Firefox and WebKit were not added to CI to keep the
-  browser install small; the download and cleanup paths use only standard
-  `Blob`/`URL.createObjectURL`/anchor behavior, and this limitation is noted in
-  the PR. A synthetic example pair for review is committed at
-  `docs/table-builder-example.html` and `docs/table-builder-example.yaml` (not
+- **Browser coverage:** the Playwright suite runs Chromium at desktop and 320px
+  widths (light and dark), plus Firefox and WebKit at desktop width; CI installs
+  all three (`npx playwright install --with-deps chromium firefox webkit`,
+  added 2026-11-19 for issue #15). Four behaviors are engine conventions, not
+  site defects, and each accommodation is documented in
+  `scripts/browser/engine-helpers.mjs` with the 2026-11-19 local matrix run as
+  evidence: (1) axe-core color sampling on WebKit misreads computed colors
+  after a mid-session theme switch (it reported masthead links as `#16171a`
+  while `getComputedStyle` returned `rgb(255,181,102)`), so the two
+  mid-session theme scans of the filled builder form run on Chromium and
+  Firefox while WebKit keeps its load-time light+dark axe scans of every page
+  in `site.spec.mjs`; (2) `grantPermissions` for the clipboard is Chromium-only,
+  so Firefox/WebKit assert the Copy control through a captured `writeText`
+  payload; (3) WebKit's platform default keeps links out of the Tab order, so
+  the skip-link and dropdown tests focus links directly on that engine while
+  the Tab path stays asserted on Chromium/Firefox; (4) srcset candidate choice
+  is UA discretion — the exact `-400.webp` selection is a Chromium assertion
+  and other engines must select a local small-family candidate. The 320px
+  project runs on Chromium only. A synthetic example pair for review is
+  committed at `docs/table-builder-example.html` and `docs/table-builder-example.yaml` (not
   deployed, since `docs/` is excluded). That pair was generated from the legacy
   FHR v0.3.1 contract and is kept unchanged as a frozen artifact: it is not
   current-release builder output, and the current-release outputs are the
@@ -171,8 +185,11 @@ Field errors must join existing `aria-describedby` help references while invalid
 and only the error reference should be removed when validation clears. Apply
 this to repeatable scalar controls as well as ordinary/nested inputs. Browser
 regressions check computed accessible descriptions and corrected-input cleanup.
-The converter round-trip in the PR validation notes is a local verification;
-CI currently checks microdata markup, not an installed-converter round-trip.
+The installed-converter round trip in the maintenance notes stays a local
+verification; since 2026-11-19 CI additionally re-reads every builder export
+with standard library parsers and re-validates the reconstructions against the
+pinned snapshots (`scripts/test_builder_roundtrip.py`), but CI still does not
+run an installed converter.
 
 ## Resource and citation data after the repository split
 
@@ -331,9 +348,49 @@ against output produced by this repository's own `standaloneHtml()`/`toYaml()`:
   implementation (`python3 -m jsonschema`, Draft 2020-12): 21 cases, site
   verdict equal to the reference verdict in all of them.
 
-CI does not install the toolkit, so this is a documented local procedure with a
-dated result, not an automated gate; pinning a toolkit version into website CI
-remains a maintainer decision (see issue #15).
+**Round-trip proof, refreshed 2026-11-19 (local, dated — not a CI step).**
+`fair-bioheaders` 0.12.0 (PyPI wheel, SHA-256
+`fe1407bb91887bd41b2e47b756fb46a4b2a2e45405c29f5d6a325a284e6a29d6`) was
+installed in a throwaway venv on Python 3.15 and run against the exports now
+produced by `scripts/builder_roundtrip.mjs`: all seven v0.6.0 fixtures **plus
+the two hostile vectors** validated from both the YAML and the standalone
+HTML (`bioheaders validate`), `convert` of every builder HTML page returned a
+record equal to the source minus the `x-` keys (M5, all seven pages), and
+YAML→JSON conversion of `vector.fhr`, `vector.fhp` and
+`extension-fields.fhr` returned the source record with `x-` keys retained.
+The vector payloads are bidi overrides, zero-width and control bytes, YAML
+indicator/tag characters, and valid-but-hostile URIs (`javascript:alert(1)`,
+percent-encoded `data:`). One divergence from the runtime and its fix: the
+site's `format: uri` check had used WHATWG `new URL()`, which accepts
+`data:text/html,<script>alert(1)</script>` while the toolkit's strict RFC 3986
+checker rejects it (`... is not a 'uri'`, reproduced with 0.12.0 on
+2026-11-19). `table-builder.js` now enforces the RFC 3986 absolute-URI
+grammar, the round-trip suite pins the boundary in both directions, and a
+14-case probe against 0.12.0's checker (seven strings the site now rejects,
+seven it accepts, including `javascript:` and percent-encoded `data:` as
+valid URIs that render inert) showed zero disagreements.
+
+CI does not install the toolkit, so the converter round trip above remains a
+documented local procedure with a dated result; pinning a toolkit version into
+website CI remains a maintainer decision (see issue #15).
+
+**What CI does gate (added 2026-11-19, issue #15):**
+`scripts/test_builder_roundtrip.py` runs in the standard `unittest discover`
+step and automates the repository's own producer boundary for the pinned
+v0.6.0 releases. It drives the shipping `table-builder.js` export functions
+through `scripts/builder_roundtrip.mjs` over the seven v0.6.0 fixtures plus two
+hostile vectors, then re-reads the exports with standard library parsing only
+(a strict loader for the builder's restricted YAML subset, an `html.parser`
+walk of the typed-span microdata and the readable table) and re-validates each
+reconstructed record against the same byte-pinned snapshot with this
+repository's own validator. It asserts YAML/microdata/table round-trip
+equality including zero/false/absence, array order, bidi and zero-width
+control bytes, YAML indicator and tag characters, and `javascript:`/`data:`
+URI values rendering as inert text with no link, script or attribute
+position; it asserts FHGFF3 output still carries no microdata. This is a
+structural tripwire over this repository's bytes and bindings — it is not a
+toolkit round trip, and the dated 0.11.0/0.12.0 local procedure above stays
+the authority for released-runtime acceptance.
 
 ### Builder draft paths and schema loading
 

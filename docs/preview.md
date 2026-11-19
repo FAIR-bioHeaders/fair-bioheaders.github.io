@@ -39,9 +39,14 @@ link, the overflow menu (including Escape), theme persistence, console errors,
 the Cite/Copy interaction, and axe accessibility scans:
 
 ```sh
-npx playwright install --with-deps chromium
+npx playwright install --with-deps chromium firefox webkit
 npm run test:browser
 ```
+
+The suite runs Chromium at desktop and 320px widths plus Firefox and WebKit at
+desktop width. Engine accommodations (axe sampling on WebKit, clipboard
+permissions, Tab-to-link behavior, srcset choice) are documented in
+`scripts/browser/engine-helpers.mjs` and `docs/maintenance.md`.
 
 ## Deployed-site smoke check
 

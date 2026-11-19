@@ -16,8 +16,8 @@
       display.json = source.value;
       const record = JSON.parse(source.value);
       if (!record || typeof record !== 'object' || Array.isArray(record) || typeof record.schema !== 'string' ||
-          !/^https:\/\/w3id\.org\/fair-bioheaders\/fhr\/v(?:0\.4\.0|0\.3\.1)$/.test(record.schema)) {
-        throw new Error('Use an FHR v0.4.0 or v0.3.1 JSON example.');
+          !/^https:\/\/w3id\.org\/fair-bioheaders\/fhr\/v(?:0\.3\.1|0\.4\.0|0\.5\.0|0\.6\.0)$/.test(record.schema)) {
+        throw new Error('Use an FHR JSON example citing a released FHR alias (v0.6.0, v0.5.0, v0.4.0 or legacy v0.3.1).');
       }
       if (action === 'edit') {
         const copy = structuredClone(record);

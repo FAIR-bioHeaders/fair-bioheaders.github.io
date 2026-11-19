@@ -14,7 +14,13 @@ export default defineConfig({
   },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
-    { name: 'mobile-320', use: { ...devices['Desktop Chrome'], viewport: { width: 320, height: 800 } } }
+    { name: 'mobile-320', use: { ...devices['Desktop Chrome'], viewport: { width: 320, height: 800 } } },
+    // Cross-engine coverage (issue #15): the two Blink projects above share an
+    // engine, so Firefox and WebKit run the same desktop suite. Narrow-layout
+    // (320px) coverage stays Chromium-only until that matrix is measured on the
+    // other engines; the limitation is recorded in docs/maintenance.md.
+    { name: 'firefox-desktop', use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit-desktop', use: { ...devices['Desktop Safari'] } }
   ],
   webServer: {
     command: 'python3 scripts/preview.py',

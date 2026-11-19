@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { midSessionThemeAxeEngines } from './engine-helpers.mjs';
 
 // Fill the required fields plus one metadata and one assembly author.
 async function fillValid(page) {
@@ -364,7 +365,13 @@ for (const [kind, release, fixture] of [
   ['FHP', 'v0.4.0', 'rich-mixed.fhp.yaml'], ['FHGFF3', 'v0.4.0', 'rich.fhgff3.yaml'],
   ['FHP', 'v0.6.0', 'rich-database.fhp.json'], ['FHGFF3', 'v0.6.0', 'rich.fhgff3.yaml']
 ]) {
-  test(`${kind} ${release} form preserves nested values, downloads, draft switching and local requests`, async ({ page }) => {
+  test(`${kind} ${release} form preserves nested values, downloads, draft switching and local requests`, async ({ page, browserName }) => {
+    // This test is deliberately thorough (recursive fill of a released record,
+    // two themes, four downloads). In the 2026-11-19 matrix all four Firefox
+    // runs exceeded the 30 s default and one Chromium desktop run flaked in the
+    // same download stage; with the raised ceiling every engine completes with
+    // margin (Chromium 6-10 s, Firefox 14-20 s, WebKit 2-3 s per case).
+    test.setTimeout(180000);
     const { readFileSync } = await import('node:fs');
     const { parse } = await import('yaml');
     const directory = release === 'v0.4.0' ? 'family-v0.4.0' : 'family-v0.6.0';
@@ -397,10 +404,30 @@ for (const [kind, release, fixture] of [
     await fill(record,'');
     await page.click('#tb-generate');
     await expect(page.locator('#tb-status')).toContainText('Structural validation passed');
-    const { default: AxeBuilder } = await import('@axe-core/playwright');
-    for (const theme of ['light','dark']) {
-      await page.evaluate(value=>document.documentElement.setAttribute('data-theme',value),theme);
-      expect((await new AxeBuilder({page}).analyze()).violations).toEqual([]);
+    // Both-theme axe scans of the filled form run on engines where axe reads
+    // colors reliably after a mid-session theme switch; WebKit's mid-session
+    // scans return colors that contradict getComputedStyle (engine-helpers.mjs),
+    // and WebKit still gets load-time light+dark axe scans of this page from
+    // site.spec's PAGES list, where it is reliable.
+    if (midSessionThemeAxeEngines.includes(browserName)) {
+      const { default: AxeBuilder } = await import('@axe-core/playwright');
+      for (const theme of ['light','dark']) {
+        await page.evaluate(value=>document.documentElement.setAttribute('data-theme',value),theme);
+        expect((await new AxeBuilder({page}).analyze()).violations).toEqual([]);
+      }
+    }
+    // The theme switch itself stays functionally verified on every engine:
+    // the site's own disclosure toggles attribute, pressed state and label
+    // together.
+    for (const theme of ['light', 'dark']) {
+      const current = await page.evaluate(() => document.documentElement.getAttribute('data-theme'));
+      if (current !== theme) await page.click('#theme-toggle');
+      expect(await page.evaluate(() => ({
+        attr: document.documentElement.getAttribute('data-theme'),
+        pressed: document.getElementById('theme-toggle').getAttribute('aria-pressed'),
+        label: document.getElementById('theme-toggle').getAttribute('aria-label')
+      })), theme).toEqual({ attr: theme, pressed: String(theme === 'dark'),
+        label: theme === 'dark' ? 'Use light theme' : 'Use dark theme' });
     }
     const yaml=await page.textContent('#tb-yaml-source');
     expect(parse(yaml)).toEqual(record);

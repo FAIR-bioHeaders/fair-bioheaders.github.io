@@ -69,7 +69,12 @@ $(window).resize(function() {
 
 $btn.on('click', function() {
   $hlinks.toggleClass('hidden');
-  $(this).toggleClass('close').attr('aria-expanded', String(!$hlinks.hasClass('hidden')));
+  var open = !$hlinks.hasClass('hidden');
+  $(this).toggleClass('close').attr('aria-expanded', String(open));
+  // WebKit does not focus buttons on mouse click, which would leave the next
+  // Escape keydown outside $nav and the menu uncloseable by keyboard after a
+  // click. Keep focus on the disclosure control when opening (issue #15).
+  if (open) $btn.trigger('focus');
 });
 
 updateNav();

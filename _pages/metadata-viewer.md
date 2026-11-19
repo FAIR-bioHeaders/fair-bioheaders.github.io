@@ -129,6 +129,9 @@ and use FAIR BioHeaders Tools locally instead.</p></noscript>
       <option value="{{ '/assets/examples/viewer/rich-fhp.json' | relative_url }}">Rich protein-set metadata (FHP)</option>
       <option value="{{ '/assets/examples/viewer/minimal-fhgff3.json' | relative_url }}">Minimal annotation metadata (FHGFF3)</option>
       <option value="{{ '/assets/examples/viewer/rich-fhgff3.json' | relative_url }}">Rich annotation metadata (FHGFF3)</option>
+      <option value="{{ '/assets/examples/viewer/release-v0.6.0-fhr.json' | relative_url }}">Released FHR v0.6.0 example (schema 2.1)</option>
+      <option value="{{ '/assets/examples/viewer/release-v0.6.0-fhp.json' | relative_url }}">Released FHP v0.6.0 example (schema 1.2)</option>
+      <option value="{{ '/assets/examples/viewer/release-v0.6.0-fhgff3.json' | relative_url }}">Released FHGFF3 v0.6.0 example (schema 1.2)</option>
       <option value="{{ '/assets/examples/viewer/no-header.json' | relative_url }}">JSON without a header identity</option>
       <option value="{{ '/assets/examples/viewer/unsupported.json' | relative_url }}">Unsupported schema version</option>
       <option value="{{ '/assets/examples/viewer/invalid.txt' | relative_url }}">Malformed JSON</option>
@@ -147,9 +150,19 @@ and use FAIR BioHeaders Tools locally instead.</p></noscript>
 
 The FHP and FHGFF3 examples come from the shared specification's
 [v0.4.0 release](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/releases/tag/v0.4.0).
-The genome record and error cases are synthetic. Placeholder identifiers,
-checksums, sources and software in these examples are not verified biological
-data. Nested values retain their field paths and array order in the display.
+The three "Released … v0.6.0 example" records are unmodified released examples from the
+shared specification's
+[v0.6.0 release](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/releases/tag/v0.6.0)
+(the same bytes the table builder pins as fixtures). The genome record and error cases are
+synthetic. Placeholder identifiers, checksums, sources and software in these examples are
+not verified biological data. Nested values retain their field paths and array order in
+the display.
+
+The display recognizes the schema identities of shared releases v0.4.0, v0.5.0 and v0.6.0
+for the types each one publishes, plus legacy FHR v0.3.1. That is identity recognition
+only: it does not validate the record against a schema, and it is deliberately separate
+from the table builder's supported release set, which pins different snapshots and reports
+v0.5.0 as an unsupported builder target.
 
 For schema, sequence checksum or parent-link checks, use the toolkit's documented
 validation and verification commands. This viewer does not contact external

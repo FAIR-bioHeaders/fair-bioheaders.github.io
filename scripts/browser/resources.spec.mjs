@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { prepareClipboard, copiedText } from './engine-helpers.mjs';
 
 test('resources distinguish publication, development and retired tooling', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -38,8 +39,8 @@ for (const [key, title, doi, repository] of [
   ['FHR_Specification', 'FHR Specification', '10.5281/zenodo.6762549', 'FAIR-bioHeaders-Specification'],
   ['FHR_File_Converter', 'FHR File Converter', '10.5281/zenodo.6762547', 'FAIR-bioHeaders-Tools']
 ]) {
-  test(`${key}: Cite and Copy retain registered identity after rename`, async ({ page, context }) => {
-    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  test(`${key}: Cite and Copy retain registered identity after rename`, async ({ page, context, browserName }) => {
+    await prepareClipboard(page, context, browserName);
     await page.goto('/resources/');
     const reference = page.locator(`#${key}`);
     await reference.locator('.cite-button').click();
@@ -52,6 +53,6 @@ for (const [key, title, doi, repository] of [
     await expect(reference.locator('.reference__version')).toBeVisible();
     await reference.locator('.cite-copy').click();
     await expect(reference.locator('.cite-copy')).toHaveText('Copied');
-    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(source);
+    expect(await copiedText(page, browserName)).toBe(source);
   });
 }

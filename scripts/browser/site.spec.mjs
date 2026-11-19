@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { focusFirstLink, prepareClipboard, copiedText } from './engine-helpers.mjs';
 
 // Representative pages: home (h-cards, theme), publications (cite controls),
 // resources (repo references + citations).
@@ -57,9 +58,12 @@ test.describe('layout and motion', () => {
 });
 
 test.describe('keyboard and theme', () => {
-  test('skip link focuses the main landmark', async ({ page }) => {
+  test('skip link focuses the main landmark', async ({ page, browserName }) => {
     await openPage(page, '/');
-    await page.keyboard.press('Tab');
+    // WebKit's platform default keeps links out of the sequential Tab order
+    // entirely (engine-helpers.mjs), so the keyboard path is asserted where
+    // Tab reaches links and the activation contract is asserted everywhere.
+    await focusFirstLink(page, browserName, '.skip-link');
     await expect(page.locator('.skip-link')).toBeFocused();
     await page.keyboard.press('Enter');
     await expect(page.locator('#main')).toBeFocused();
@@ -99,8 +103,8 @@ test.describe('keyboard and theme', () => {
 });
 
 test.describe('citation controls', () => {
-  test('Cite reveals BibTeX and Copy updates the button', async ({ page, context }) => {
-    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  test('Cite reveals BibTeX and Copy updates the button', async ({ page, context, browserName }) => {
+    await prepareClipboard(page, context, browserName);
     await openPage(page, '/resources/');
     const reference = page.locator('#Wright2024');
     await reference.locator('.cite-button').click();
@@ -109,8 +113,7 @@ test.describe('citation controls', () => {
     await expect(output).toContainText('@article{Wright2024,');
     await reference.locator('.cite-copy').click();
     await expect(reference.locator('.cite-copy')).toHaveText('Copied');
-    const clipboard = await page.evaluate(() => navigator.clipboard.readText());
-    expect(clipboard).toContain('@article{Wright2024,');
+    expect(await copiedText(page, browserName)).toContain('@article{Wright2024,');
   });
 
   test('Copy falls back when the Clipboard API rejects', async ({ page }) => {

@@ -91,6 +91,9 @@ $(document).ready(function(){
       if (open) {
         menu.addClass("is-open");
         toggle.attr("aria-expanded", "true");
+        // Focus the disclosure on open so Escape reaches the group handler on
+        // engines that do not focus buttons on click (WebKit).
+        toggle.trigger("focus");
       }
     });
   });

@@ -35,7 +35,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe('specifications dropdown', () => {
-  test('opens by keyboard, reports aria-expanded, and closes on Escape', async ({ page }) => {
+  test('opens by keyboard, reports aria-expanded, and closes on Escape', async ({ page, browserName }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await openPage(page, '/');
     const group = page.locator('.masthead__menu-item--group');
@@ -50,7 +50,13 @@ test.describe('specifications dropdown', () => {
     for (const type of NAV_ITEMS) {
       await expect(menu.locator(`a[href="/specifications/${type}/"]`)).toBeVisible();
     }
-    await page.keyboard.press('Tab');
+    if (browserName === 'webkit') {
+      // WebKit's platform default drops links from the Tab order
+      // (engine-helpers.mjs); move focus to the first entry directly.
+      await menu.locator('a').first().evaluate(node => node.focus());
+    } else {
+      await page.keyboard.press('Tab');
+    }
     await expect(menu.locator('a').first()).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');

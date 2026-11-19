@@ -44,7 +44,7 @@ jobs:
       - name: Check links, metadata and sitemap
         run: python3 scripts/check_site.py _site
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium firefox webkit
       - name: Browser and accessibility checks
         run: npm run test:browser
       - name: Check external links (weekly or on demand)

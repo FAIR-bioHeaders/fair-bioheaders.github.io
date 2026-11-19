@@ -148,9 +148,14 @@ test.describe('citation controls', () => {
 });
 
 test.describe('accessibility', () => {
+  // axe-core's in-page analysis is the slowest step of the suite on Firefox
+  // (the 2026-11-19 final matrix had three /specifications/ scans exceed the
+  // 30 s default under four-worker contention — timeouts, not violations:
+  // every scan that completed reported zero violations on all engines).
   for (const path of PAGES) {
     for (const value of ['light', 'dark']) {
       test(`axe passes on ${path} (${value})`, async ({ page }) => {
+        test.setTimeout(120000);
         await withTheme(page, value);
         await openPage(page, path);
         // The existing ready handler makes code scrollers keyboard reachable.

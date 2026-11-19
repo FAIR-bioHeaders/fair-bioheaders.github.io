@@ -296,14 +296,16 @@ test('format uri follows the toolkit RFC 3986 grammar, not WHATWG laxness', () =
   // had accepted it. The browser validator now refuses the same strings, so the
   // builder cannot export a record the released reader declines.
   for (const bad of ['data:text/html,<script>alert(1)</script>', 'https://exa mple.org/',
-    'https://example.org/a"b', 'http://[unbalanced', 'not a uri at all', '', 'javascript&colon;alert(1)']) {
+    'https://example.org/a"b', 'https://example.org/%GG', 'https://example.org:abc/',
+    'https://example.org/a#one#two', 'https://[2001:db8:::1]/', 'http://[unbalanced',
+    'not a uri at all', '', 'javascript&colon;alert(1)']) {
     const record = currentRecord();
     record.relatedLink = [bad];
     const errors = tb.validateRecord(record, fhrCurrent);
     assert.ok(errors.some((e) => e.path.join('.') === 'relatedLink.0' && /uri/i.test(e.message)),
       JSON.stringify(bad));
   }
-  for (const good of ['https://example.org/a&b%3Cc%3Ed%22e%27f#frag', 'urn:isbn:0451450523',
+  for (const good of ['https://example.org/a&b%3Cc%3Ed%22e%27f#frag', 'https://[2001:db8::1]/', 'urn:isbn:0451450523',
     'https://identifiers.org/taxonomy:9606', 'http://ok.example:8080/p;params?q=1+2']) {
     const record = currentRecord();
     record.relatedLink = [good];

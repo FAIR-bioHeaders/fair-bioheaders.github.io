@@ -306,16 +306,110 @@
   }
 
   function isUri(value) {
-    // RFC 3986 absolute-URI grammar, aligned with the released toolkit's
-    // `format: uri` enforcement (fair-bioheaders 0.12.0 uses the strict
-    // jsonschema checker: verified 2026-11-19, it rejects
-    // `data:text/html,<script>alert(1)</script>` with "is not a 'uri'" where
-    // WHATWG `new URL()` accepts it). The builder must not green-light records
-    // the released reader refuses; percent-encoded forms of the same payload
-    // are valid URIs. Executable-scheme URIs that ARE valid URIs
-    // (`javascript:alert(1)`) pass here exactly as the toolkit passes them,
-    // and stay safe only because the exports render every value as text.
-    return /^[A-Za-z][A-Za-z0-9+.\-]*:[A-Za-z0-9\-._~%!$&'()*+,;=:@/?#]*$/.test(String(value));
+    value = String(value);
+    var match = /^([A-Za-z][A-Za-z0-9+.-]*):/.exec(value);
+    if (!match) return false;
+
+    function component(text, extra) {
+      for (var i = 0; i < text.length; i++) {
+        var character = text.charAt(i);
+        if (character === '%') {
+          if (!/^[0-9A-Fa-f]{2}$/.test(text.slice(i + 1, i + 3))) return false;
+          i += 2;
+        } else if (!/[A-Za-z0-9._~-]/.test(character) &&
+          !/[!$&'()*+,;=]/.test(character) && extra.indexOf(character) === -1) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function ipv4(address) {
+      var octets = address.split('.');
+      return octets.length === 4 && octets.every(function (octet) {
+        return /^(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$/.test(octet);
+      });
+    }
+
+    function ipv6(address) {
+      if (address.indexOf('.') !== -1) {
+        var lastColon = address.lastIndexOf(':');
+        if (lastColon === -1 || !ipv4(address.slice(lastColon + 1))) return false;
+        address = address.slice(0, lastColon) + ':0:0';
+      }
+      var compression = address.indexOf('::');
+      var compressed = compression !== -1;
+      if (address.indexOf(':::') !== -1 ||
+        (compressed && compression !== address.lastIndexOf('::'))) return false;
+      var groups = compressed
+        ? (address.slice(0, compression) ? address.slice(0, compression).split(':') : [])
+          .concat(address.slice(compression + 2) ? address.slice(compression + 2).split(':') : [])
+        : address.split(':');
+      if (groups.some(function (group) { return !/^[0-9A-Fa-f]{1,4}$/.test(group); })) return false;
+      return compressed ? groups.length < 8 : groups.length === 8;
+    }
+
+    function ipLiteral(host) {
+      if (/^v[0-9A-Fa-f]+\.[A-Za-z0-9._~!$&'()*+,;=:-]+$/i.test(host)) return true;
+      return ipv6(host);
+    }
+
+    function authorityIsValid(authority) {
+      var at = authority.indexOf('@');
+      if (at !== -1) {
+        if (!component(authority.slice(0, at), ':') || authority.indexOf('@', at + 1) !== -1) return false;
+        authority = authority.slice(at + 1);
+      }
+
+      var host;
+      var port = null;
+      if (authority.charAt(0) === '[') {
+        var close = authority.indexOf(']');
+        if (close === -1 || !ipLiteral(authority.slice(1, close))) return false;
+        host = authority.slice(0, close + 1);
+        var suffix = authority.slice(close + 1);
+        if (suffix && suffix.charAt(0) !== ':') return false;
+        if (suffix) port = suffix.slice(1);
+      } else {
+        if (authority.indexOf('[') !== -1 || authority.indexOf(']') !== -1) return false;
+        var colon = authority.indexOf(':');
+        if (colon !== -1) {
+          if (colon !== authority.lastIndexOf(':')) return false;
+          host = authority.slice(0, colon);
+          port = authority.slice(colon + 1);
+        } else {
+          host = authority;
+        }
+        if (!component(host, '')) return false;
+      }
+      return port === null || /^[0-9]*$/.test(port);
+    }
+
+    var remainder = value.slice(match[0].length);
+    var fragment = remainder.indexOf('#');
+    if (fragment !== -1) {
+      if (fragment !== remainder.lastIndexOf('#') || !component(remainder.slice(fragment + 1), '/?:@')) return false;
+      remainder = remainder.slice(0, fragment);
+    }
+    var query = remainder.indexOf('?');
+    if (query !== -1) {
+      if (!component(remainder.slice(query + 1), '/?:@')) return false;
+      remainder = remainder.slice(0, query);
+    }
+
+    var path = remainder;
+    if (remainder.indexOf('//') === 0) {
+      var pathStart = remainder.indexOf('/', 2);
+      var authority = pathStart === -1 ? remainder.slice(2) : remainder.slice(2, pathStart);
+      path = pathStart === -1 ? '' : remainder.slice(pathStart);
+      if (!authorityIsValid(authority) || (path && path.charAt(0) !== '/') || !component(path, ':/@')) return false;
+    } else if (remainder.charAt(0) === '/' && remainder.indexOf('//') !== 0) {
+      if (!component(path, ':/@')) return false;
+    } else if (remainder) {
+      if (remainder.charAt(0) === '/') return false;
+      if (!component(path, ':/@')) return false;
+    }
+    return true;
   }
 
   function isDate(value) {

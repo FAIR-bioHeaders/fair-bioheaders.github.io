@@ -26,6 +26,33 @@ test('all bundled records and error examples have distinct states',async({page})
   }
  }
 });
+test('a builder-produced v0.6.0 record is recognized, and recognition still says nothing about validity',async({page})=>{
+ // The 2026-11-14 #39 finding: the viewer stopped at v0.4.0/v0.3.1, so the
+ // builder's own default output read as unrecognized in the sibling tool.
+ await upload(page,{schema:'https://w3id.org/fair-bioheaders/fhr/v0.6.0',schemaVersion:'2.1',genome:'Synthetic builder-style record'});
+ await expect(page.locator('#metadata-viewer fair-bioheaders-metadata')).toContainText('Recognized schema/version identity');
+ await expect(page.locator('#metadata-viewer fair-bioheaders-metadata')).toContainText('Recognition is not schema validation');
+ await expect(page.locator('#metadata-viewer fair-bioheaders-metadata')).toContainText('Schema validation: not checked');
+ await upload(page,{schema:'https://w3id.org/fair-bioheaders/fhp/v0.5.0',schemaVersion:'1.1'});
+ await expect(page.locator('#metadata-viewer fair-bioheaders-metadata')).toContainText('Recognized schema/version identity');
+ // A version another release publishes is not recognized for this one.
+ await upload(page,{schema:'https://w3id.org/fair-bioheaders/fhp/v0.5.0',schemaVersion:'1.2'});
+ await expect(page.locator('#metadata-viewer fair-bioheaders-metadata')).toContainText('Unsupported or unrecognized');
+});
+
+test('the playground runs a current-release record, not only the authored example',async({page})=>{
+ await page.click('#fhr-run-json');
+ const record=JSON.parse(await page.locator('#fhr-json-input').inputValue());
+ record.schema='https://w3id.org/fair-bioheaders/fhr/v0.6.0';record.schemaVersion='2.1';
+ await page.locator('#fhr-json-input').fill(JSON.stringify(record));
+ await page.click('#fhr-run-json');
+ await expect(page.locator('#fhr-playground-status')).toContainText('example ran');
+ await expect(page.locator('#fhr-playground-display')).toContainText('Recognized schema/version identity');
+ await page.locator('#fhr-json-input').fill(JSON.stringify({...record,schema:'https://w3id.org/fair-bioheaders/fhr/v0.4.2'}));
+ await page.click('#fhr-run-json');
+ await expect(page.locator('#fhr-playground-status')).toContainText('released FHR alias');
+ await expect(page.locator('#fhr-playground-display')).toBeEmpty();
+});
 test('invalid, oversized, missing-identity and unsupported input clear stale results',async({page})=>{
  await upload(page,record);await expect(page.locator('#metadata-viewer fair-bioheaders-metadata')).not.toBeEmpty();
  await upload(page,'{bad');await expect(page.locator('#mv-status')).toContainText('not valid JSON');await expect(page.locator('#metadata-viewer fair-bioheaders-metadata')).toBeEmpty();

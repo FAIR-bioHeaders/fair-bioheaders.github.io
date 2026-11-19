@@ -9,6 +9,22 @@
   var MAX_DEPTH = 12;
   var MAX_OUTPUT_CHARS = 524288;
 
+  // Released shared-specification versions whose (release, schemaVersion) identity
+  // this adapter recognizes. The declared version per type and release comes from
+  // the shared registry `schemas/versions.json` at each tag; the site pins those
+  // bytes at scripts/schema-snapshots/versions-v0.5.0.json and versions-v0.6.0.json,
+  // and scripts/test_metadata_viewer.mjs ties this table to them. This is identity
+  // recognition only: it is not schema validation, not file/parent verification,
+  // and not the table builder's pinned-snapshot support list (that set differs —
+  // the builder serves v0.6.0/v0.4.0/v0.3.1 plus the raw-main cache, and reports
+  // v0.5.0 as unsupported). Legacy FHR v0.3.1 keeps its numeric schemaVersion 1
+  // and is matched separately below.
+  var KNOWN_RELEASES = {
+    'v0.6.0': { FHR: '2.1', FHP: '1.2', FHGFF3: '1.2' },
+    'v0.5.0': { FHR: '2.1', FHP: '1.1', FHGFF3: '1.1' },
+    'v0.4.0': { FHR: '2.0', FHP: '1.0', FHGFF3: '1.0' }
+  };
+
   function inspect(text) {
     if (typeof text !== 'string') throw new Error('Supply JSON text; use JSON.stringify(record) for a metadata object.');
     if (new TextEncoder().encode(text).length > MAX_BYTES) throw new Error('Choose a JSON metadata file no larger than 256 KiB. Sequence files are not supported here.');
@@ -38,7 +54,8 @@
       type = (raw ? match[2] : match[1]).toUpperCase();
       release = raw ? match[1] : match[2];
     }
-    var known = release === 'v0.4.0' && record.schemaVersion === (type === 'FHR' ? '2.0' : '1.0') ||
+    var known = (type !== 'Unrecognized' && Object.prototype.hasOwnProperty.call(KNOWN_RELEASES, release) &&
+      KNOWN_RELEASES[release][type] === record.schemaVersion) ||
       type === 'FHR' && release === 'v0.3.1' && record.schemaVersion === 1;
     return { record: record, type: type, release: release, known: Boolean(known) };
   }
@@ -85,7 +102,7 @@
   }
 
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { inspect: inspect, rows: rows, MAX_BYTES: MAX_BYTES, MAX_OUTPUT_CHARS: MAX_OUTPUT_CHARS };
+    module.exports = { inspect: inspect, rows: rows, KNOWN_RELEASES: KNOWN_RELEASES, MAX_BYTES: MAX_BYTES, MAX_OUTPUT_CHARS: MAX_OUTPUT_CHARS };
     return;
   }
   if (typeof document === 'undefined') return;

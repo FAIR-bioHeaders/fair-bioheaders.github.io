@@ -1,10 +1,12 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
+import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 const require=createRequire(import.meta.url);
 const viewer=require('../assets/js/metadata-viewer.js');
-for(const [name,type] of [['minimal-fhr','FHR'],['minimal-fhp','FHP'],['rich-fhp','FHP'],['minimal-fhgff3','FHGFF3'],['rich-fhgff3','FHGFF3']]) {
+for(const [name,type] of [['minimal-fhr','FHR'],['minimal-fhp','FHP'],['rich-fhp','FHP'],['minimal-fhgff3','FHGFF3'],['rich-fhgff3','FHGFF3'],
+ ['release-v0.6.0-fhr','FHR'],['release-v0.6.0-fhp','FHP'],['release-v0.6.0-fhgff3','FHGFF3']]) {
  test(`${name} identity is recognized without claiming validation`,()=>{
   const text=readFileSync(new URL(`../assets/examples/viewer/${name}.json`,import.meta.url),'utf8');
   const result=viewer.inspect(text);assert.equal(result.type,type);assert.equal(result.known,true);
@@ -12,6 +14,44 @@ for(const [name,type] of [['minimal-fhr','FHR'],['minimal-fhp','FHP'],['rich-fhp
   assert.ok(!Object.hasOwn(result,'valid'));assert.ok(!Object.hasOwn(result,'verified'));
  });
 }
+test('the bundled v0.6.0 examples are the released fixture bytes unchanged',()=>{
+ for(const [example,fixture] of [['release-v0.6.0-fhr','example.fhr.json'],
+   ['release-v0.6.0-fhp','rich-database.fhp.json'],['release-v0.6.0-fhgff3','minimal-reference.fhgff3.json']]) {
+  assert.deepEqual(readFileSync(new URL(`../assets/examples/viewer/${example}.json`,import.meta.url)),
+   readFileSync(new URL(`./fixtures/family-v0.6.0/${fixture}`,import.meta.url)),example);
+ }
+});
+test('the recognized-release table is the pinned shared registry, not an opinion',()=>{
+ // The two pinned registries carry the declared schemaVersion per type per release;
+ // v0.4.0 rows are tied to the builder's frozen-release table, which its own test
+ // checks against the release bytes.
+ for(const [file,digest] of [['versions-v0.6.0.json','7535e3569ce4157b22f14b9cd89dc98612b4e90cf553ef0a3250f5811529ce62'],
+   ['versions-v0.5.0.json','a570c2a5b742e02ecfec5ebc548775092e4ebc51bd272fef164d26b11efc9e61']])
+  assert.equal(createHash('sha256').update(readFileSync(new URL(`./schema-snapshots/${file}`,import.meta.url))).digest('hex'),digest,file);
+ const registry60=JSON.parse(readFileSync(new URL('./schema-snapshots/versions-v0.6.0.json',import.meta.url),'utf8'));
+ const registry50=JSON.parse(readFileSync(new URL('./schema-snapshots/versions-v0.5.0.json',import.meta.url),'utf8'));
+ assert.deepEqual(viewer.KNOWN_RELEASES['v0.6.0'],registry60.releases['v0.6.0']);
+ assert.deepEqual(viewer.KNOWN_RELEASES['v0.5.0'],registry50.releases['v0.5.0']);
+ const builder=require('../assets/js/table-builder.js');
+ for(const kind of ['FHR','FHP','FHGFF3']){
+  const declared=builder.RELEASES[kind].find((entry)=>entry.release==='v0.4.0').declares;
+  assert.equal(viewer.KNOWN_RELEASES['v0.4.0'][kind],declared,kind);
+ }
+});
+test('recognition is per (release, type, version) and never borrows a neighbor',()=>{
+ const known=(schema,schemaVersion)=>viewer.inspect(JSON.stringify({schema,schemaVersion})).known;
+ assert.ok(known('https://w3id.org/fair-bioheaders/fhr/v0.5.0','2.1'));
+ assert.ok(known('https://w3id.org/fair-bioheaders/fhp/v0.5.0','1.1'));
+ assert.ok(known('https://w3id.org/fair-bioheaders/fhgff3/v0.6.0','1.2'));
+ // A release that does not publish the stated version stays unrecognized.
+ assert.ok(!known('https://w3id.org/fair-bioheaders/fhp/v0.5.0','1.2'));
+ assert.ok(!known('https://w3id.org/fair-bioheaders/fhr/v0.6.0','2.0'));
+ assert.ok(!known('https://w3id.org/fair-bioheaders/fhgff3/v0.5.0',1));
+ // Unreleased and unpinned identities stay unrecognized.
+ assert.ok(!known('https://w3id.org/fair-bioheaders/fht/v0.7.0','1.0'));
+ assert.ok(!known('https://w3id.org/fair-bioheaders/fhr/v0.4.2','2.0'));
+ assert.ok(known('https://w3id.org/fair-bioheaders/fhr/v0.6.0/','2.1'),'a trailing slash is the same cited alias');
+});
 test('no identity, unsupported versions, and wrong types remain distinct',()=>{
  assert.equal(viewer.inspect('').record,null);assert.equal(viewer.inspect('{}').record,null);
  assert.throws(()=>viewer.inspect('[]'),/one JSON/);assert.throws(()=>viewer.inspect('null'),/one JSON/);

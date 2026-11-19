@@ -12,7 +12,10 @@ standard JSON.parse. It does not parse sequence/header containers or implement
 another FAIR BioHeaders validator. The public page clearly distinguishes JSON
 parsing, identity recognition, schema validity and file/parent verification.
 All schema/verification states remain not checked. A known URI/version pair is
-only identity recognition, never validation. Unknown versions display as
+only identity recognition, never validation. The recognized set is the shared
+releases v0.6.0, v0.5.0 and v0.4.0 (each type with the `schemaVersion` its
+release publishes in the pinned `schemas/versions.json` copies) plus legacy
+FHR v0.3.1; it is deliberately not the table builder's snapshot list. Unknown versions display as
 unsupported, without schema fetching or fallback. FHT is not enabled.
 
 The input is one JSON metadata object, at most 256 KiB, 3,000 values and 12 levels
@@ -76,6 +79,13 @@ The project MPL-2.0 license applies. `minimal-fhr.json`, `no-header.json`,
 file-backed verification result. Retain the original examples' placeholder
 wording; do not present their synthetic sources as real biological assertions.
 
+Since 2026-11-19 (issue #39 finding) the page also bundles three current-release
+examples — `release-v0.6.0-fhr.json`, `release-v0.6.0-fhp.json` and
+`release-v0.6.0-fhgff3.json` — byte-identical copies of the unmodified released
+v0.6.0 examples in `scripts/fixtures/family-v0.6.0/` (a Node test compares the
+bytes); they show that the viewer recognizes exactly the release the builder now
+emits by default. Recognition remains identity only.
+
 ## Review and follow-up gates
 
 The October 20 maintainer correction defines #23 as a page teaching JavaScript
@@ -103,8 +113,11 @@ for teaching the adopted FHR representation on this page.
 Tests: `node --test scripts/test_metadata_viewer.mjs` and
 `scripts/browser/metadata-viewer.spec.mjs` and
 `scripts/browser/fhr-javascript.spec.mjs`, plus the existing production, Python,
-site, layout and axe checks. The initial browser checks cover Chromium desktop
-and 320px; other engines remain unverified.
+site, layout and axe checks. The browser checks run on Chromium (desktop and
+320px) and on Firefox/WebKit at desktop width (2026-11-19 matrix,
+`docs/maintenance.md`); recognition covers released v0.6.0/v0.5.0/v0.4.0
+identities plus legacy FHR v0.3.1, tied by test to the pinned schema-version
+registries.
 
 ## Implementation-guide example
 

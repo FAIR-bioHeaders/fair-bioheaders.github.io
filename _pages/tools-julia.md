@@ -32,7 +32,6 @@ result.computed
 println(result)
 ```
 
-
 `verify_file()` coordinates framing, checksum, YAML portability and cited-contract
 validation. `read_fhr_file()`, `read_fhr_header()`, `header_checksum()`,
 `select_contract()` and `validate_record()` expose individual layers; consult

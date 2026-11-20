@@ -491,6 +491,24 @@
         errors.push({ path: path, message: 'must be <= ' + schema.maximum });
       }
     }
+    if (Array.isArray(value)) {
+      if (schema.minItems !== undefined && value.length < schema.minItems) {
+        errors.push({ path: path, message: 'must contain at least ' + schema.minItems + ' items' });
+      }
+      if (schema.uniqueItems) {
+        function identity(item) {
+          if (Array.isArray(item)) return ['array', item.map(identity)];
+          if (item && typeof item === 'object') return ['object', Object.keys(item).sort().map(function (key) { return [key, identity(item[key])]; })];
+          return [typeof item, item];
+        }
+        var seen = new Set();
+        value.forEach(function (item) {
+          var key = JSON.stringify(identity(item));
+          if (seen.has(key)) errors.push({ path: path, message: 'must contain unique items' });
+          seen.add(key);
+        });
+      }
+    }
     if (Array.isArray(value) && schema.items) {
       value.forEach(function (item, index) {
         validateSchema(item, schema.items, root, path.concat([index]), errors);
@@ -649,6 +667,12 @@
     return emitMap(record, 0, orderedKeys(record, schema, canonical), schema).join('\n') + '\n';
   }
 
+  // Pure record-order serializer for separately reviewed candidate profiles.
+  // It does not register a release or enable a type in the browser form.
+  function recordYaml(record, schema) {
+    return emitMap(record, 0, Object.keys(record), schema).join('\n') + '\n';
+  }
+
   // The declared data-fhr-type follows the schema where known, so a numeric
   // schemaVersion keeps type "number" even though JavaScript reports 1.0 as an
   // integer. Unknown paths fall back to the runtime value type.
@@ -668,13 +692,13 @@
     return 'string';
   }
 
-  function htmlValue(key, value, schemaNode) {
+  function htmlValue(key, value, schemaNode, root) {
     var prop = escapeHtml(key);
-    var resolved = schemaNode || {};
+    var resolved = root ? resolveRef(schemaNode || {}, root) : schemaNode || {};
     if (Array.isArray(value)) {
       var itemSchema = resolved.items || {};
       return '<span itemprop="' + prop + '" data-fhr-type="array">' +
-        value.map(function (item) { return htmlValue('item', item, itemSchema); }).join('') + '</span>';
+        value.map(function (item) { return htmlValue('item', item, itemSchema, root); }).join('') + '</span>';
     }
     if (value && typeof value === 'object') {
       var props = resolved.properties || {};
@@ -683,7 +707,7 @@
       var content = Object.keys(value)
         .filter(function (k) { return k.indexOf('x-') !== 0; })
         .map(function (k) {
-          return htmlValue(k, value[k], ownProperty(props, k));
+          return htmlValue(k, value[k], ownProperty(props, k), root);
         }).join('');
       return '<span itemprop="' + prop + '" itemscope data-fhr-type="object">' + content + '</span>';
     }
@@ -846,6 +870,8 @@
     escapeHtml: escapeHtml,
     validateRecord: validateRecord,
     toYaml: toYaml,
+    recordYaml: recordYaml,
+    typedHtmlValue: htmlValue,
     microdataDiv: microdataDiv,
     standaloneHtml: standaloneHtml,
     tableRows: tableRows,
@@ -855,6 +881,8 @@
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = api;
   }
+
+  if (typeof window !== 'undefined') window.FairBioHeadersBuilder = api;
 
   if (typeof document === 'undefined' || typeof module !== 'undefined') {
     return;

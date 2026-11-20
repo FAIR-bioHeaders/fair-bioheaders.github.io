@@ -51,11 +51,11 @@ that matches your file; a shared core does not make the types interchangeable.
 
 - **FHR — reference genomes.** Describe an assembly, its creators, methods and
   statistics. The released contract is FHR 2.1, published in specification v0.5.0 and
-  re-published unchanged in the current release v0.6.0.
+  re-published unchanged in release v0.6.0.
   [FHR development](https://github.com/FAIR-bioHeaders/FHR-Specification).
-- **FHT — transcriptomes.** Develop metadata for transcript sequences and their
-  biological and computational origins. The field set is under consultation;
-  FHT has no released family contract yet.
+- **FHT — transcriptomes.** Describe transcript sequences and their
+  biological and computational origins. FHT 1.0 was published in shared v0.7.0;
+  final released toolkit acceptance and browser activation are separate gates.
   [FHT development](https://github.com/FAIR-bioHeaders/FHT-Specification).
 - **FHP — protein sets.** Describe predicted, database and mixed protein FASTA
   sets without inventing source material or quality-control results. FHP 1.2 is the

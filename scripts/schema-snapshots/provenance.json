@@ -54,21 +54,22 @@
       "sha256": "1942be4cefc8b3a2537942c2252b45fbcef87a5532486e4fd0f5d4c540e0fbf9",
       "retrieved": "2026-11-13"
     },
-    "fht-draft.json": {
+    "fht-v0.7.0.json": {
       "page": "fht",
       "type": "FHT",
-      "status": "draft",
+      "status": "released",
       "schemaVersion": "1.0",
-      "release": null,
-      "releaseDate": null,
-      "repository": "FAIR-bioHeaders/FHT-Specification",
-      "ref": "main",
-      "commit": "226f923c28b680edb3c546e99a751482d06aef1a",
+      "release": "v0.7.0",
+      "releaseDate": "2026-11-20",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "v0.7.0",
+      "commit": "623c79fe58edeb238a20fb6de518c62dd69b92bc",
       "path": "fht.json",
-      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
-      "rawUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
-      "sha256": "59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e",
-      "retrieved": "2026-11-14"
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.7.0/fht.json",
+      "rawUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.7.0/fht.json",
+      "sha256": "082b0790b7878940c4496c97d7485e32c65de8ba75ecc080e53f04fb44251a43",
+      "retrieved": "2026-11-20",
+      "registrySnapshot": "versions-v0.7.0.json"
     }
   },
   "examples": {
@@ -138,16 +139,89 @@
       "label": "minimal reference FHGFF3 example (synthetic)",
       "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/examples/fhgff3/minimal-reference.fhgff3.json"
     },
-    "examples/de-novo.fht.json": {
+    "examples/fht-v0.7.0/annotation-derived.fht.json": {
       "type": "FHT",
       "kind": "rich",
-      "repository": "FAIR-bioHeaders/FHT-Specification",
-      "ref": "main",
-      "path": "examples/de-novo.fht.json",
-      "url": "https://github.com/FAIR-bioHeaders/FHT-Specification/blob/main/examples/de-novo.fht.json",
-      "sha256": "72931c258881d8136ee380e0a628d5a2a83d7aad02c23262c68f9fe9ebe7b358",
-      "label": "de novo FHT development example (synthetic)",
-      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/examples/de-novo.fht.json"
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "v0.7.0",
+      "commit": "623c79fe58edeb238a20fb6de518c62dd69b92bc",
+      "path": "examples/fht/annotation-derived.fht.json",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/annotation-derived.fht.json",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.7.0/examples/fht/annotation-derived.fht.json",
+      "sha256": "3b56adbb92c4cb9e807066ee9cea21002efe828d1c68fa71370267284446ea10",
+      "label": "Published v0.7.0 synthetic FHT example: annotation-derived.fht"
+    },
+    "examples/fht-v0.7.0/de-novo.fht.json": {
+      "type": "FHT",
+      "kind": "rich",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "v0.7.0",
+      "commit": "623c79fe58edeb238a20fb6de518c62dd69b92bc",
+      "path": "examples/fht/de-novo.fht.json",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/de-novo.fht.json",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.7.0/examples/fht/de-novo.fht.json",
+      "sha256": "fc848e5f6decfca0ad7a6e636d3baecafaf9d44adf79986e3fa57d8e0b4c4d06",
+      "label": "Published v0.7.0 synthetic FHT example: de-novo.fht"
+    },
+    "examples/fht-v0.7.0/genome-guided.fht.json": {
+      "type": "FHT",
+      "kind": "rich",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "v0.7.0",
+      "commit": "623c79fe58edeb238a20fb6de518c62dd69b92bc",
+      "path": "examples/fht/genome-guided.fht.json",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/genome-guided.fht.json",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.7.0/examples/fht/genome-guided.fht.json",
+      "sha256": "5ce2b35608bc1f79d11ac1c0eb6410d73fb2026cc01e0c457aacd4be81cff106",
+      "label": "Published v0.7.0 synthetic FHT example: genome-guided.fht"
+    },
+    "examples/fht-v0.7.0/minimal-annotation-derived.fht.json": {
+      "type": "FHT",
+      "kind": "minimal",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "v0.7.0",
+      "commit": "623c79fe58edeb238a20fb6de518c62dd69b92bc",
+      "path": "examples/fht/minimal-annotation-derived.fht.json",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/minimal-annotation-derived.fht.json",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.7.0/examples/fht/minimal-annotation-derived.fht.json",
+      "sha256": "18a901724b3cd704c5e8452c3fb0c4a875446826c9e1872373343b997fb129c4",
+      "label": "Published v0.7.0 synthetic FHT example: minimal-annotation-derived.fht"
+    },
+    "examples/fht-v0.7.0/minimal-de-novo.fht.json": {
+      "type": "FHT",
+      "kind": "minimal",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "v0.7.0",
+      "commit": "623c79fe58edeb238a20fb6de518c62dd69b92bc",
+      "path": "examples/fht/minimal-de-novo.fht.json",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/minimal-de-novo.fht.json",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.7.0/examples/fht/minimal-de-novo.fht.json",
+      "sha256": "b820921f9e61c96ecfc6306472861851cac8cfba984ada6ed32624ef534e0ff0",
+      "label": "Published v0.7.0 synthetic FHT example: minimal-de-novo.fht"
+    },
+    "examples/fht-v0.7.0/minimal-genome-guided.fht.json": {
+      "type": "FHT",
+      "kind": "minimal",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "v0.7.0",
+      "commit": "623c79fe58edeb238a20fb6de518c62dd69b92bc",
+      "path": "examples/fht/minimal-genome-guided.fht.json",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/minimal-genome-guided.fht.json",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.7.0/examples/fht/minimal-genome-guided.fht.json",
+      "sha256": "9f015c4f2c66dba28a409c80d7d709b6e9811351d02a130e44951f55976ba3de",
+      "label": "Published v0.7.0 synthetic FHT example: minimal-genome-guided.fht"
+    },
+    "examples/fht-v0.7.0/mixed-molecules.fht.json": {
+      "type": "FHT",
+      "kind": "rich",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "v0.7.0",
+      "commit": "623c79fe58edeb238a20fb6de518c62dd69b92bc",
+      "path": "examples/fht/mixed-molecules.fht.json",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/mixed-molecules.fht.json",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.7.0/examples/fht/mixed-molecules.fht.json",
+      "sha256": "09e7ef4f57fa6ed40306689f810a335022a13280c28755b144a524d20b8c02e4",
+      "label": "Published v0.7.0 synthetic FHT example: mixed-molecules.fht"
     }
   },
   "references": {
@@ -249,6 +323,63 @@
       "sha256": "20ce320f5d706f11ed21cdece4dfb56e3568b50be126e25b4016f46f2e8e416c",
       "retrieved": "2026-11-10",
       "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhgff3.json"
+    },
+    "fht-draft.json": {
+      "page": "fht",
+      "type": "FHT",
+      "status": "draft",
+      "schemaVersion": "1.0",
+      "release": null,
+      "releaseDate": null,
+      "repository": "FAIR-bioHeaders/FHT-Specification",
+      "ref": "226f923c28b680edb3c546e99a751482d06aef1a",
+      "commit": "226f923c28b680edb3c546e99a751482d06aef1a",
+      "path": "fht.json",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/226f923c28b680edb3c546e99a751482d06aef1a/fht.json",
+      "rawUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/226f923c28b680edb3c546e99a751482d06aef1a/fht.json",
+      "sha256": "59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e",
+      "retrieved": "2026-11-14",
+      "label": "Historical owning draft at226f923; not the published FHT1.0 contract"
+    },
+    "examples/de-novo.fht.json": {
+      "type": "FHT",
+      "kind": "rich",
+      "repository": "FAIR-bioHeaders/FHT-Specification",
+      "ref": "226f923c28b680edb3c546e99a751482d06aef1a",
+      "path": "examples/de-novo.fht.json",
+      "url": "https://github.com/FAIR-bioHeaders/FHT-Specification/blob/226f923c28b680edb3c546e99a751482d06aef1a/examples/de-novo.fht.json",
+      "sha256": "72931c258881d8136ee380e0a628d5a2a83d7aad02c23262c68f9fe9ebe7b358",
+      "label": "Historical owning-draft synthetic example; not the published example",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/226f923c28b680edb3c546e99a751482d06aef1a/examples/de-novo.fht.json"
+    },
+    "history/fht-owning-226f923-notes.json": {
+      "label": "Historical website rendering/notes for owning draft226f923; retained byte-exact",
+      "sha256": "2ebd889e9ad57e090685f00a12d275f30645cb2bb675f0a0b52c98bb2c548af7",
+      "repository": "FAIR-bioHeaders/fair-bioheaders.github.io",
+      "ref": "d8bbaf6d4bea4de70edfc1e581f61a70d3b08304",
+      "commit": "d8bbaf6d4bea4de70edfc1e581f61a70d3b08304",
+      "path": "scripts/schema-snapshots/notes/fht.json",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/fair-bioheaders.github.io/d8bbaf6d4bea4de70edfc1e581f61a70d3b08304/scripts/schema-snapshots/notes/fht.json"
+    },
+    "history/fht-owning-226f923-reference.html.txt": {
+      "label": "Historical website rendering/notes for owning draft226f923; retained byte-exact",
+      "sha256": "3aef2fd5058f1cbeb20b1db4b2be6e465ee1252e24663a0e969a9fa98305b65d",
+      "repository": "FAIR-bioHeaders/fair-bioheaders.github.io",
+      "ref": "d8bbaf6d4bea4de70edfc1e581f61a70d3b08304",
+      "commit": "d8bbaf6d4bea4de70edfc1e581f61a70d3b08304",
+      "path": "_includes/schema/fht-reference.html",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/fair-bioheaders.github.io/d8bbaf6d4bea4de70edfc1e581f61a70d3b08304/_includes/schema/fht-reference.html"
+    },
+    "versions-v0.7.0.json": {
+      "label": "Published v0.7.0 version registry, used for FHT; older type pins retain their own registry snapshots",
+      "repository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+      "ref": "v0.7.0",
+      "commit": "623c79fe58edeb238a20fb6de518c62dd69b92bc",
+      "path": "schemas/versions.json",
+      "url": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/schemas/versions.json",
+      "fetchUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.7.0/schemas/versions.json",
+      "sha256": "0b426eedfbf3eeff987ae484b8d16a75a757b97ba1daf29d36ce2e96c14bdf19",
+      "retrieved": "2026-11-20"
     }
   },
   "releaseDates": {
@@ -258,6 +389,8 @@
     "v0.4.1": "2026-10-21",
     "v0.4.2": "2026-10-28",
     "v0.5.0": "2026-11-04",
-    "v0.6.0": "2026-11-13"
+    "v0.6.0": "2026-11-13",
+    "v0.6.1": "2026-11-20",
+    "v0.7.0": "2026-11-20"
   }
 }

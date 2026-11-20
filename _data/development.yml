@@ -6,8 +6,8 @@
   repository: https://github.com/FAIR-bioHeaders/FHR-Specification
 - key: FHT_Specification
   name: FHT development
-  purpose: Transcriptome metadata; field set under consultation
-  status: Draft
+  purpose: Transcriptome contract development; final publication in the shared specification
+  status: Development
   repository: https://github.com/FAIR-bioHeaders/FHT-Specification
 - key: FHP_Development
   name: FHP development

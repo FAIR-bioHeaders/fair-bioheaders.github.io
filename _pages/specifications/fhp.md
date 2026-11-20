@@ -29,7 +29,7 @@ It does **not** describe:
 - the sequences themselves: no per-record annotation, no per-residue data;
 - the underlying genome assembly — that is [FHR](/specifications/fhr/), linked by
   checksum through `derivedFrom` when the genome file carries its own header;
-- transcript sets ([FHT](/specifications/fht/), still a draft) or annotations
+- transcript sets ([FHT](/specifications/fht/), released in v0.7.0) or annotations
   ([FHGFF3](/specifications/fhgff3/));
 - quality: FHP records **asserted provenance**, and is not a quality-control report.
 

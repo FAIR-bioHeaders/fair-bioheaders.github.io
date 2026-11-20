@@ -378,7 +378,7 @@ def reference_fixture(page='fhr', schema_type='FHR', draft=False, alias=True,
     region = ('<div class="field-table" role="region" tabindex="0" aria-label="FHR top-level fields">'
               if focusable else '<div class="field-table">')
     notice = '<div class="spec-notice spec-notice--draft" role="note">Draft</div>' if draft else ''
-    alias_link = (f'<a href="https://w3id.org/fair-bioheaders/{page}/v0.6.0">schema</a>' if alias else '')
+    alias_link = (f'<a href="https://w3id.org/fair-bioheaders/{page}/' + ('v0.7.0' if page == 'fht' else 'v0.6.0') + '">schema</a>' if alias else '')
     return (
         f'{notice}{alias_link}'
         '<ul class="schema-links"><li><a href="https://github.com/FAIR-bioHeaders/'
@@ -427,16 +427,16 @@ class SchemaReferenceChecks(unittest.TestCase):
                                          reference_fixture(page='fhgff3', schema_type='FHGFF3', focusable=False))
         self.assertTrue(any('keyboard reachable' in error for error in errors))
 
-    def test_draft_page_without_notice_is_reported(self):
+    def test_released_fht_page_with_stale_draft_notice_is_reported(self):
         errors = schema_reference_errors('specifications/fht/index.html',
-                                         reference_fixture(page='fht', schema_type='FHT', draft=False))
-        self.assertTrue(any('draft notice' in error for error in errors))
+                                         reference_fixture(page='fht', schema_type='FHT', draft=True))
+        self.assertTrue(any('current draft notice' in error for error in errors))
 
-    def test_draft_page_may_not_claim_a_released_alias(self):
+    def test_fht_page_may_not_claim_a_release_without_fht(self):
         forged = reference_fixture(page='fht', schema_type='FHT', draft=True) + \
             '<a href="https://w3id.org/fair-bioheaders/fht/v0.6.0">released</a>'
         errors = schema_reference_errors('specifications/fht/index.html', forged)
-        self.assertTrue(any('alias that does not exist' in error for error in errors))
+        self.assertTrue(any('unsupported release alias' in error for error in errors))
 
     def test_released_page_must_link_its_fixed_url(self):
         errors = schema_reference_errors('specifications/fhr/index.html',

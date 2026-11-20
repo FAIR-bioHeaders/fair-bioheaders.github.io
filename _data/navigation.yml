@@ -10,7 +10,7 @@ main:
     children:
       - title: "FHR — reference genome"
         url: /specifications/fhr/
-      - title: "FHT — transcriptome (draft)"
+      - title: "FHT — transcriptome"
         url: /specifications/fht/
       - title: "FHP — protein FASTA"
         url: /specifications/fhp/

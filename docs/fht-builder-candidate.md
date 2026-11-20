@@ -42,14 +42,17 @@ inert escaped text. JSON-LD is unsupported. fht-builder-candidate.js is now only
 a compatibility adapter for the existing preparation harness; the public form
 uses the normal builder and does not load that adapter.
 
+## Reference promotion completed
+
+The generated FHT schema-reference page/pins/notes and public guide now use
+the actual published source. The previous owning snapshot/example and archived
+notes/rendering retain exact historical bytes and fixed source links.
+
 ## Remaining final publication work
 
-- Promote the generated FHT schema-reference page/pins/notes and public guide
-  status from their historical owning-draft snapshot to this published source.
-  Those existing historical bytes have deliberately not been overwritten here.
 - Install and verify the actual published final toolkit artifact, then re-run
   the seven JSON/FASTA/HTML interoperability pairs and exact exported HTML/YAML
-  equality; a locally built0.13.0 candidate is not that release.
+  equality; a locally built 0.13.0 candidate is not that release.
 - Run the full final site/browser suite and obtain current-head independent
   review after the documentation promotion, then recheck findings/base/dependencies.
 - Merge only after all gates pass, await actual Pages, test the live form/exports,

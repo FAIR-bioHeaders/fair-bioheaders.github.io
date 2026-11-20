@@ -202,7 +202,7 @@ provide explicit release links without replacing the concept DOI in Cite output.
 `_data/development.yml` holds the four per-type development homes without
 inventing independent release citations. Published artifacts link to the shared
 publication repository; active converter links use FAIR-bioHeaders-Tools.
-FHT remains Draft; Nextflow (FAIR-bioHeaders-Nextflow) is Published from v0.1.0. The standalone FHT converter is
+FHT development is labelled Development after shared v0.7.0 publication; Nextflow (FAIR-bioHeaders-Nextflow) is Published from v0.1.0. The standalone FHT converter is
 retired and has no active download link.
 
 The current specification/toolkit records use MPL-2.0, verified against the
@@ -223,7 +223,7 @@ builder support" below).
 `168a60467e3651dfdfe9855747f38257d5889bfcce6ec8661d9a378762a362dd`.
 The existing validator covers the validation keywords used by this FHR snapshot;
 the family extension also implements the FHGFF3 conditional validation keywords.
-FHT remains deferred. Keep #15 open for its outstanding full delivery gates.
+FHT 1.0 now has a published shared v0.7.0 contract and prepared normal builder/reference support. Keep #15 open until actual final released toolkit acceptance, current review/CI and actual Pages/live verification pass.
 
 Schema selection sets the read-only schemaVersion to string `"2.0"` for v0.4.0,
 or numeric `1.0` for the legacy contracts. Preserve entries when switching;

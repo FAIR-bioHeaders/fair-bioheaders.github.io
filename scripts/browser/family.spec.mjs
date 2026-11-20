@@ -7,7 +7,7 @@ test('family overview and guide keep type scope and historical workflow clear', 
   for (const type of ['FHR — reference genomes', 'FHT — transcriptomes', 'FHP — protein sets', 'FHGFF3 — annotations']) {
     await expect(main).toContainText(type);
   }
-  await expect(main).toContainText('FHT has no released family contract yet');
+  await expect(main).toContainText('FHT 1.0 was published in shared v0.7.0');
   await page.goto('/#use-the-standard');
   await expect(page.locator('#use-the-standard')).toHaveText('Use the headers');
   await expect(page.locator('#use-the-standard')).toBeInViewport();

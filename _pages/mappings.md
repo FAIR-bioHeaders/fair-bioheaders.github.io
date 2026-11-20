@@ -134,6 +134,10 @@ does not archive the assembly or guarantee future persistence. The example
 illustrates resource identity within the adopted foundation, without claiming
 DataCite validity, a formatted citation adapter or deposit readiness.
 
+The pinned v1 delivery matrix predates the FHT v0.7.0 release. FHT now has
+a published header contract, but no FHT mapping profile is adopted by that
+assembly-only foundation; contract publication does not expand this crosswalk.
+
 ## Generated from the pinned v1 surface
 
 {% include mappings/v1-crosswalk.html %}
@@ -160,7 +164,7 @@ DataCite, Crossref or the ARK community, and it is not a submission recipe.
 ## Related
 
 - [FHR schema reference](/specifications/fhr/) — the contract whose root fields are crosswalked above.
-- [Specifications overview](/specifications/) — released contracts, the FHT draft and the FHGM proposal.
+- [Specifications overview](/specifications/) — released header contracts and the FHGM development model.
 - [Table builder](/table-builder/) — builds and structurally validates FH\* metadata records against pinned released contracts; it performs no mapping export.
 - [Using FH\*](/guide/) — choosing a header type and a supported workflow.
 - [Resources & citation](/resources/) — repositories, releases and citation records.

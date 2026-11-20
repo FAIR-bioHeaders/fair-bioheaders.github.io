@@ -21,7 +21,7 @@ INDEXABLE_PREFIXES = ('/publication/',)
 # The four header-type reference pages, each pinned to one schema snapshot.
 SCHEMA_PAGES = {
     'fhr': ('FHR', 'fhr-v0.6.0.json'),
-    'fht': ('FHT', 'fht-draft.json'),
+    'fht': ('FHT', 'fht-v0.7.0.json'),
     'fhp': ('FHP', 'fhp-v0.6.0.json'),
     'fhgff3': ('FHGFF3', 'fhgff3-v0.6.0.json'),
 }
@@ -34,7 +34,7 @@ MAPPING_INVENTORY = 'assembly-dcmi.yml'
 # fragment; this guards what actually renders, including the hand-written prose.
 MAPPING_FORBIDDEN = ('official guidance', 'official mapping', 'unmappable', 'the exporter',
                      'deposit-ready output')
-RELEASED_TYPES = ('FHR', 'FHP', 'FHGFF3')
+RELEASED_TYPES = ('FHR', 'FHP', 'FHGFF3', 'FHT')
 MATHJAX_INTEGRITY = 'sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei'
 MATHJAX_URL = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js'
 
@@ -520,16 +520,18 @@ def schema_reference_errors(relative, text):
             errors.append('a scrollable field reference table is not keyboard reachable and named')
     if 'schema-links' not in text:
         errors.append('no schema location block')
+    expected_release = 'v0.7.0' if page_type == 'FHT' else 'v0.6.0'
+    expected_alias = f'https://w3id.org/fair-bioheaders/{match.group(1)}/{expected_release}'
+    if expected_alias not in text:
+        errors.append(f'{page_type} page does not link its fixed release schema URL')
+    if page_type in RELEASED_TYPES and 'versions.json' not in text:
+        errors.append(f'{page_type} page does not link the schema-version registry')
     if page_type == 'FHT':
-        if 'spec-notice--draft' not in text:
-            errors.append('the FHT reference page lacks its draft notice')
-        if 'w3id.org/fair-bioheaders/fht' in text:
-            errors.append('the FHT draft page links a released alias that does not exist')
-    else:
-        if f'w3id.org/fair-bioheaders/{match.group(1)}/v' not in text:
-            errors.append(f'{page_type} page does not link its fixed release schema URL')
-        if page_type in RELEASED_TYPES and 'versions.json' not in text:
-            errors.append(f'{page_type} page does not link the schema-version registry')
+        if 'spec-notice--draft' in text:
+            errors.append('the released FHT reference page retains a current draft notice')
+        cited = re.findall(r'href="(https://w3id.org/fair-bioheaders/fht/[^"]+)"', text)
+        if any(url.rstrip('/') != expected_alias for url in cited):
+            errors.append('the FHT reference page links an unsupported release alias')
     return errors
 
 

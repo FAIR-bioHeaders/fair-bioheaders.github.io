@@ -10,7 +10,7 @@ sitemap: false
 - [Using FH*](/guide/)
 - [Header type specifications](/specifications/)
   - [FHR schema reference](/specifications/fhr/)
-  - [FHT schema reference (draft)](/specifications/fht/)
+  - [FHT schema reference](/specifications/fht/)
   - [FHP schema reference](/specifications/fhp/)
   - [FHGFF3 schema reference](/specifications/fhgff3/)
   - [FHGM gene model records (draft)](/specifications/fhgm/)

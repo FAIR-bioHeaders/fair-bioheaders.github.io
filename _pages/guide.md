@@ -12,8 +12,8 @@ that type's released contract and tooling.
 
 | Type | Resource | Contract and workflow status |
 | --- | --- | --- |
-| [FHR](/specifications/fhr/) | Reference genome assembly | FHR `2.1`; the current shared release v0.6.0 re-publishes the 2.1 bytes unchanged. Toolkit `fair-bioheaders` 0.12.0 writes and checks FASTA/GFA, JSON-LD and microdata for `2.1`, accepts a `…/v0.6.0` citation, and can write a new `2.1` record from typed fields with `bioheaders metadata`. The browser builder cites the pinned v0.6.0 snapshot by default and can write `x-` extension fields (YAML only). |
-| [FHT](/specifications/fht/) | Transcriptome | **Draft** contract, `schemaVersion` "1.0" proposed; no shared release, no fixed alias, no toolkit or builder support. 0.12.0 has an opt-in experimental preview of draft validation, which is not support. |
+| [FHR](/specifications/fhr/) | Reference genome assembly | FHR `2.1`; the pinned shared release v0.6.0 re-publishes the 2.1 bytes unchanged. Toolkit `fair-bioheaders` 0.12.0 writes and checks FASTA/GFA, JSON-LD and microdata for `2.1`, accepts a `…/v0.6.0` citation, and can write a new `2.1` record from typed fields with `bioheaders metadata`. The browser builder cites the pinned v0.6.0 snapshot by default and can write `x-` extension fields (YAML only). |
+| [FHT](/specifications/fht/) | Transcriptome | Released FHT 1.0 in shared v0.7.0, DOI 10.5281/zenodo.24385024. Normal toolkit acceptance still awaits the actual published final 0.13.0 artifact; 0.12.0’s opt-in owning-draft lane is historical preparation, not support for this published contract. The FHT browser form is prepared against the released schema and remains subject to runtime and actual deployment gates. JSON-LD is unsupported. |
 | [FHP](/specifications/fhp/) | Protein/proteome FASTA | FHP `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit 0.12.0 reads and writes `1.2` as JSON/YAML, in files, and as canonical JSON-LD and HTML microdata. The browser builder cites the pinned v0.6.0 snapshot by default, accepts a dotted `lineageDataset` in a `1.2` record, and writes `x-` extension fields into YAML only. |
 | [FHGFF3](/specifications/fhgff3/) | GFF3 annotation metadata | FHGFF3 `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit 0.12.0 reads and writes `1.2` as JSON/YAML and in files, plus experimental HTML microdata, and has no JSON-LD form. Feature and biology validation is a separate tool. |
 
@@ -31,7 +31,7 @@ See the [FHGM draft page](/specifications/fhgm/) and the authoritative
 [draft overview](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHGM.md)
 in the shared specification.
 
-Toolkit 0.10.0 rejects v0.6.0 aliases for all three released types. For workflows with that toolkit release, use the [v0.5.0 examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.5.0/examples) and its [tagged documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/tree/v0.10.0). Choose a supported alias when creating new records; changing an existing file-bound header requires checksum recomputation.
+Toolkit 0.10.0 rejects v0.6.0 aliases for FHR, FHP and FHGFF3. For workflows with that toolkit release, use the [v0.5.0 examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.5.0/examples) and its [tagged documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/tree/v0.10.0). Choose a supported alias when creating new records; changing an existing file-bound header requires checksum recomputation.
 
 Read the [released examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.6.0/examples)
 and [current toolkit documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools)
@@ -144,8 +144,8 @@ fhr-validate genome.fhr.json
 ## Scope: the header family and where metadata lives
 
 - **FHR** (FAIR Header Reference genome) describes reference **genomes**. **FHT**
-  is a companion draft for reference **transcriptomes**; the two are separate
-  specifications in the same family, and FHT is still draft.
+  describes reference **transcriptomes**, with contract 1.0 published in shared v0.7.0;
+  their contracts and installed runtime support are separate.
 - **FHP** describes protein FASTA and **FHGFF3** describes annotation metadata.
   Their `schemaVersion` `"1.0"` contracts were first included alongside FHR in the
   [shared specification v0.4.0](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/releases/tag/v0.4.0),

@@ -29,7 +29,7 @@ test('resources distinguish publication, development and retired tooling', async
   await expect(page.getByRole('link', { name: 'FHP development', exact: true })
     .locator('xpath=ancestor::tr')).toContainText('Draft');
   await expect(page.getByRole('link', { name: 'FHT development', exact: true })
-    .locator('xpath=ancestor::tr')).toContainText('Draft');
+    .locator('xpath=ancestor::tr')).toContainText('Development');
   await expect(page.locator('a[href*="/FHT-File-Converter"], a[href*="/FHR-File-Converter"]')).toHaveCount(0);
   await expect(page.locator('#FHT_Specification')).toBeVisible();
   await expect(page.locator('#FHT_File_Converter')).toHaveCount(1);

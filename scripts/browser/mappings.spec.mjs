@@ -144,3 +144,23 @@ test('the mappings entry is reachable from the specifications menu', async ({ pa
   await expect(page).toHaveURL(/\/mappings\/$/);
   await expect(group).toHaveClass(/is-current/);
 });
+
+test('metadata-only source reference preserves roles and evidence boundaries', async ({ page }) => {
+  await openPage(page, '/mappings/');
+  const main = page.locator('#main');
+  for (const value of [
+    'GCF_000001215.4', 'Release 6 plus ISO1 MT', '2014-08-01',
+    'The FlyBase Consortium/Berkeley Drosophila Genome Project/Celera Genomics',
+    '2026-11-16', '3,681 bytes', 'metadata snapshot',
+    'not an inferred assembly creator list', 'No sequence was obtained',
+    'no exact file checksum, SeqCol digest or verified parent-file identity',
+    'not a complete FHR header or export-context input',
+    'does not archive the assembly or guarantee future persistence'
+  ]) {
+    await expect(main).toContainText(value, { useInnerText: true });
+  }
+  const base = 'https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/1a0792e6f8db1b73959999d30f5e6575b982cbfc/tests/fixtures/mapping-reference/';
+  for (const file of ['README.md', 'reference.json', 'ncbi-response.json']) {
+    await expect(main.locator('a[href="' + base + file + '"]')).toHaveCount(1);
+  }
+});

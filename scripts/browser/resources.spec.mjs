@@ -36,7 +36,7 @@ test('resources distinguish publication, development and retired tooling', async
 });
 
 for (const [key, title, doi, repository] of [
-  ['FHR_Specification', 'FHR Specification', '10.5281/zenodo.6762549', 'FAIR-bioHeaders-Specification'],
+  ['FHR_Specification', 'FAIR-bioHeaders Specification', '10.5281/zenodo.6762549', 'FAIR-bioHeaders-Specification'],
   ['FHR_File_Converter', 'FHR File Converter', '10.5281/zenodo.6762547', 'FAIR-bioHeaders-Tools']
 ]) {
   test(`${key}: Cite and Copy retain registered identity after rename`, async ({ page, context, browserName }) => {

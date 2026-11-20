@@ -200,7 +200,7 @@ fhr-validate genome.fhr.json
   supports it;
   [issue #15](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/15)
   tracks the remaining builder gates.
-- **Concept DOIs** (for example the [FHR Specification](https://doi.org/10.5281/zenodo.6762549))
+- **Concept DOIs** (for example the [FAIR-bioHeaders Specification](https://doi.org/10.5281/zenodo.6762549))
   group all releases of a resource. For a reproducible citation, use the
   **version DOI** for the specific release you used; see
   [Resources & citation](/resources/).

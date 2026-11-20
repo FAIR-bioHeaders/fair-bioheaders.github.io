@@ -194,9 +194,9 @@ run an installed converter.
 ## Resource and citation data after the repository split
 
 `_data/references.yml` holds actual resource citation records; stable citation
-keys retain the titles this site cites, FHR Specification / FHR File Converter
-(DataCite registers the specification record as FAIR-bioHeaders Specification and the
-toolkit record as FHR File Converter, checked 2026-11-14).
+keys stay unchanged while current citation titles follow the verified DataCite
+records: FAIR-bioHeaders Specification / FHR File Converter (checked 2026-11-20).
+A repository or product rename does not by itself rename a registered title.
 `resource_name` is the current overview label, and `release`/`version_doi`
 provide explicit release links without replacing the concept DOI in Cite output.
 `_data/development.yml` holds the four per-type development homes without

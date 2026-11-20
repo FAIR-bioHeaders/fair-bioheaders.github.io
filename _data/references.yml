@@ -146,7 +146,7 @@ FHR_Specification:
   release: v0.6.0
   version_doi: 10.5281/zenodo.24223950
   type: dataset
-  title: "FHR Specification"
+  title: "FAIR-bioHeaders Specification"
   authors:
     - { family: Molik, given: David }
     - { family: Wright, given: Adam }
@@ -155,7 +155,7 @@ FHR_Specification:
   doi: 10.5281/zenodo.6762549
   repository: https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification
   license: MPL-2.0
-  note: "This site and FHR-Citation retain the historical citation title FHR Specification; DataCite registers the record as FAIR-bioHeaders Specification (checked 2026-11-14). The v0.6.0 version DOI (10.5281/zenodo.24223950) is registered and findable in DataCite as checked 2026-11-14. The earlier v0.5.0 record (10.5281/zenodo.23948191) also stays findable and remains the citation for that release."
+  note: "DataCite registers this specification concept and its v0.6.0 version record as FAIR-bioHeaders Specification (checked 2026-11-20). FHR-Citation follows that registered concept title after its November 20, 2026 correction. The v0.6.0 version DOI (10.5281/zenodo.24223950) is registered and findable in DataCite as checked 2026-11-20. The earlier v0.5.0 record (10.5281/zenodo.23948191) also stays findable and remains the citation for that release."
 
 FHR_File_Converter:
   status: Published

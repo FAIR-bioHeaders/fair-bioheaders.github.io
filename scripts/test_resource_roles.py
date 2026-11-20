@@ -13,7 +13,7 @@ def fixture():
         'FHR-Specification', 'FHT-Specification', 'FHP-Specification', 'FHGFF3'))
     entries = []
     for key, title, repository, doi in (
-        ('FHR_Specification', 'FHR Specification', 'FAIR-bioHeaders-Specification',
+        ('FHR_Specification', 'FAIR-bioHeaders Specification', 'FAIR-bioHeaders-Specification',
          '10.5281/zenodo.6762549'),
         ('FHR_File_Converter', 'FHR File Converter', 'FAIR-bioHeaders-Tools',
          '10.5281/zenodo.6762547'),

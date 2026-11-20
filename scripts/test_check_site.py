@@ -4,7 +4,7 @@ import unittest
 from check_site import (
     Page,
     feed_errors,
-    fhgm_draft_errors,
+    fhgm_native_errors,
     mapping_page_errors,
     schema_reference_errors,
     sitemap_path_allowed,
@@ -378,7 +378,7 @@ def reference_fixture(page='fhr', schema_type='FHR', draft=False, alias=True,
     region = ('<div class="field-table" role="region" tabindex="0" aria-label="FHR top-level fields">'
               if focusable else '<div class="field-table">')
     notice = '<div class="spec-notice spec-notice--draft" role="note">Draft</div>' if draft else ''
-    alias_link = (f'<a href="https://w3id.org/fair-bioheaders/{page}/v0.6.0">schema</a>' if alias else '')
+    alias_link = (f'<a href="https://w3id.org/fair-bioheaders/{page}/' + ('v0.7.0' if page == 'fht' else 'v0.6.0') + '">schema</a>' if alias else '')
     return (
         f'{notice}{alias_link}'
         '<ul class="schema-links"><li><a href="https://github.com/FAIR-bioHeaders/'
@@ -427,16 +427,16 @@ class SchemaReferenceChecks(unittest.TestCase):
                                          reference_fixture(page='fhgff3', schema_type='FHGFF3', focusable=False))
         self.assertTrue(any('keyboard reachable' in error for error in errors))
 
-    def test_draft_page_without_notice_is_reported(self):
+    def test_released_fht_page_with_stale_draft_notice_is_reported(self):
         errors = schema_reference_errors('specifications/fht/index.html',
-                                         reference_fixture(page='fht', schema_type='FHT', draft=False))
-        self.assertTrue(any('draft notice' in error for error in errors))
+                                         reference_fixture(page='fht', schema_type='FHT', draft=True))
+        self.assertTrue(any('current draft notice' in error for error in errors))
 
-    def test_draft_page_may_not_claim_a_released_alias(self):
+    def test_fht_page_may_not_claim_a_release_without_fht(self):
         forged = reference_fixture(page='fht', schema_type='FHT', draft=True) + \
             '<a href="https://w3id.org/fair-bioheaders/fht/v0.6.0">released</a>'
         errors = schema_reference_errors('specifications/fht/index.html', forged)
-        self.assertTrue(any('alias that does not exist' in error for error in errors))
+        self.assertTrue(any('unsupported release alias' in error for error in errors))
 
     def test_released_page_must_link_its_fixed_url(self):
         errors = schema_reference_errors('specifications/fhr/index.html',
@@ -500,11 +500,15 @@ class MappingPageChecks(unittest.TestCase):
         errors = mapping_page_errors('mappings/index.html', mapping_fixture(authority=False))
         self.assertTrue(any('upstream artifact' in error for error in errors), errors)
 
+    def test_shipped_runtime_exporter_does_not_grant_an_official_label(self):
+        text = mapping_fixture(extra='<p>Published0.13.1 ships the narrow export-dcmi CLI.</p>')
+        self.assertEqual(mapping_page_errors('mappings/index.html', text), [])
+
     def test_official_label_claim_is_rejected(self):
         for phrase in ('Official guidance from FAIR BioHeaders.',
                        'this is an official mapping',
                        'the field is unmappable',
-                       'the exporter writes the file',
+                       'this page exports a mapped file',
                        'deposit-ready output is produced'):
             with self.subTest(phrase=phrase):
                 errors = mapping_page_errors('mappings/index.html', mapping_fixture(extra=f'<p>{phrase}</p>'))
@@ -516,44 +520,63 @@ class MappingPageChecks(unittest.TestCase):
         self.assertTrue(mapping_page_errors('mappings/index.html', mapping_fixture(scroll=False)))
 
 
-def fhgm_fixture(notice=True, authority=True, alias=False, table=False):
+def fhgm_fixture(notice=True, authority=True, alias=False, table=False, native_link=False, draft=False):
     parts = []
     if notice:
-        parts.append('<div class="spec-notice spec-notice--draft" role="note">'
-                     'FHGM is a draft proposal, not a contract.</div>')
+        parts.append('<div class="spec-notice" role="note" data-fhgm-release="v0.8.0" '
+                     'data-fhgm-contract-version="0.1">Published native model contract.</div>')
     if authority:
         parts.append('<a href="https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/'
-                     'blob/main/docs/FHGM.md">docs/FHGM.md</a>')
+                     'blob/v0.8.0/model-contracts/fhgm/0.1/publication.json">publication.json</a>')
     if alias:
-        parts.append('<a href="https://w3id.org/fair-bioheaders/fhgm/v0.6.0">released alias</a>')
+        parts.append('<a href="https://w3id.org/fair-bioheaders/fhgm/v0.8.0">invented header alias</a>')
+    if native_link:
+        parts.append('<a href="https://w3id.org/fair-bioheaders/model-contracts/fhgm/0.1">pending alias</a>')
+    if draft:
+        parts.append('<div class="spec-notice--draft">Current draft</div>')
     if table:
-        parts.append('<div class="field-table" role="region" tabindex="0" aria-label="Fields">'
-                     '<table><caption>Fields</caption></table></div>')
+        parts.append('<div class="field-table"><table><caption>Fields</caption></table></div>')
     return ''.join(parts)
 
 
-class FhgmDraftPageChecks(unittest.TestCase):
-    """FHGM has no contract, so its page stays a draft overview and never a reference."""
+class FhgmNativePageChecks(unittest.TestCase):
+    """Native publication does not make a fifth header or activate an alias."""
 
-    def test_draft_overview_renders_cleanly(self):
-        self.assertEqual(fhgm_draft_errors('specifications/fhgm/index.html', fhgm_fixture()), [])
+    def test_native_overview_renders_cleanly(self):
+        self.assertEqual(fhgm_native_errors('specifications/fhgm/index.html', fhgm_fixture()), [])
 
     def test_other_pages_are_not_checked(self):
-        self.assertEqual(fhgm_draft_errors('specifications/fht/index.html', '<p>Anything</p>'), [])
-        self.assertEqual(fhgm_draft_errors('guide/index.html', fhgm_fixture(alias=True, table=True)), [])
+        self.assertEqual(fhgm_native_errors('specifications/fht/index.html', '<p>Anything</p>'), [])
+        self.assertEqual(fhgm_native_errors('guide/index.html', fhgm_fixture(alias=True, table=True)), [])
 
-    def test_missing_draft_notice_is_reported(self):
-        errors = fhgm_draft_errors('specifications/fhgm/index.html', fhgm_fixture(notice=False))
-        self.assertTrue(any('draft notice' in error for error in errors))
+    def test_missing_publication_notice_is_reported(self):
+        errors = fhgm_native_errors('specifications/fhgm/index.html', fhgm_fixture(notice=False))
+        self.assertTrue(any('published model/version notice' in error for error in errors))
 
-    def test_missing_authority_link_is_reported(self):
-        errors = fhgm_draft_errors('specifications/fhgm/index.html', fhgm_fixture(authority=False))
-        self.assertTrue(any('docs/FHGM.md' in error for error in errors))
+    def test_missing_immutable_authority_link_is_reported(self):
+        errors = fhgm_native_errors('specifications/fhgm/index.html', fhgm_fixture(authority=False))
+        self.assertTrue(any('publication.json authority' in error for error in errors))
 
-    def test_forged_release_alias_is_reported(self):
-        errors = fhgm_draft_errors('specifications/fhgm/index.html', fhgm_fixture(alias=True))
-        self.assertTrue(any('alias that does not exist' in error for error in errors))
+    def test_forged_header_alias_is_reported(self):
+        errors = fhgm_native_errors('specifications/fhgm/index.html', fhgm_fixture(alias=True))
+        self.assertTrue(any('invents an FHGM header alias' in error for error in errors))
 
-    def test_generated_field_reference_is_rejected(self):
-        errors = fhgm_draft_errors('specifications/fhgm/index.html', fhgm_fixture(table=True))
-        self.assertTrue(any('no contract to inventory' in error for error in errors))
+    def test_pending_native_alias_link_is_reported(self):
+        errors = fhgm_native_errors('specifications/fhgm/index.html', fhgm_fixture(native_link=True))
+        self.assertTrue(any('pending native alias as live' in error for error in errors))
+
+    def test_logical_identifier_without_network_claim_is_allowed(self):
+        text = fhgm_fixture() + '<code>https://w3id.org/fair-bioheaders/model-contracts/fhgm/0.1</code>'
+        self.assertEqual(fhgm_native_errors('specifications/fhgm/index.html', text), [])
+
+    def test_stale_current_draft_notice_is_reported(self):
+        errors = fhgm_native_errors('specifications/fhgm/index.html', fhgm_fixture(draft=True))
+        self.assertTrue(any('current draft notice' in error for error in errors))
+
+    def test_generated_header_inventory_is_rejected(self):
+        errors = fhgm_native_errors('specifications/fhgm/index.html', fhgm_fixture(table=True))
+        self.assertTrue(any('unrequested generated header inventory' in error for error in errors))
+
+
+if __name__ == '__main__':
+    unittest.main()

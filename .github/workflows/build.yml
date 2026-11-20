@@ -39,6 +39,8 @@ jobs:
         run: node --test scripts/test_cite.mjs
       - name: Test table builder
         run: node --test scripts/test_table_builder.mjs
+      - name: Test released FHT profile
+        run: node --test scripts/test_fht_builder_candidate.mjs
       - name: Test metadata viewer
         run: node --test scripts/test_metadata_viewer.mjs
       - name: Check links, metadata and sitemap

@@ -731,8 +731,22 @@ html[data-theme="dark"] {
 .tb-remove:hover,
 .tb-add:focus,
 .tb-remove:focus { background: var(--brand-orange); color: #1a1a1a; }
+/* Interactive validation/download controls must not inherit the page intro fade. */
+#main.table-builder-main { -webkit-animation: none; animation: none; }
 .tb-actions { display: flex; flex-wrap: wrap; gap: .6em; margin: $space-block 0 0; }
-.tb-actions .btn[disabled] { opacity: .5; cursor: not-allowed; }
+/* State changes must stay legible on their first enabled frame. The inherited
+   all-property transition otherwise fades from disabled opacity after the DOM
+   has already enabled a download. Use opaque disabled colours and no fade. */
+.tb-actions .btn {
+  opacity: 1;
+  -webkit-transition: none;
+  transition: none;
+}
+.tb-actions .btn[disabled] {
+  color: var(--text-muted) !important;
+  background-color: var(--surface-soft);
+  cursor: not-allowed;
+}
 .tb-status { margin: .8em 0; padding: .6em .8em; border-left: 3px solid var(--surface-border); font-size: $type-size-6; }
 .tb-status[data-kind="ok"] { border-left-color: $success-color; }
 .tb-status[data-kind="error"] { border-left-color: $danger-color; }
@@ -816,6 +830,7 @@ fair-bioheaders-metadata h3 { overflow-wrap: anywhere; }
 .field-origin,
 .field-none { color: var(--text-muted); }
 .group-facts {
+  overflow-wrap: anywhere;
   margin: 0 0 1em;
   padding: .6em .9em;
   border-left: 3px solid var(--surface-border);
@@ -826,6 +841,7 @@ fair-bioheaders-metadata h3 { overflow-wrap: anywhere; }
 .group-contents ul { columns: 2 16em; column-gap: 2em; }
 .schema-links { font-size: $type-size-6; overflow-wrap: anywhere; }
 .schema-links a { overflow-wrap: anywhere; }
+.release-source { overflow-wrap: anywhere; }
 .field-table {
   overflow-x: auto;
   max-width: 100%;
@@ -833,6 +849,11 @@ fair-bioheaders-metadata h3 { overflow-wrap: anywhere; }
 }
 .field-table:focus-visible { outline: 3px solid var(--brand-orange); outline-offset: 2px; }
 .field-table table { width: 100%; min-width: 62em; font-size: $type-size-7; }
+.guide-family-table table { min-width: 36em; font-size: $type-size-6; }
+.guide-family-table th:first-child,
+.guide-family-table td:first-child { min-width: 5em; }
+.guide-family-table th:nth-child(2),
+.guide-family-table td:nth-child(2) { min-width: 9em; }
 .field-table caption { text-align: left; font-weight: $font-weight-bold; }
 .field-table th,
 .field-table td {

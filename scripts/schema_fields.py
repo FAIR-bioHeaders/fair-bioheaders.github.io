@@ -671,7 +671,7 @@ def build_releases(meta: dict, schema: dict, provenance: dict) -> dict:
     `schemaVersion`; the pinned schema's own enum is cross-checked against it so a
     release line and a contract version cannot disagree with the shipped bytes.
     """
-    registry_name = 'versions-v0.6.0.json'
+    registry_name = meta.get('registrySnapshot', 'versions-v0.6.0.json')
     reference = provenance.get('references', {}).get(registry_name)
     if reference is None:
         raise SystemExit(f'{registry_name}: the version registry is not pinned in provenance.json')
@@ -795,6 +795,7 @@ def build_type(page: str, provenance: dict, shared: dict) -> dict:
         'schemaId': schema.get('$id', ''),
         'schemaVersions': [str(value) for value in version.get('enum', [])],
         'release': meta['release'],
+        'aliasPending': meta.get('aliasStatus') == 'pending-registration',
         'releases': releases,
         'pinned': {
             'file': f'scripts/schema-snapshots/{name}',
@@ -947,14 +948,18 @@ def render_location(data: dict) -> str:
     tag_url = f'{TAG_URL}{pinned["ref"]}/{pinned["path"]}'
     blob_url = f'{TAG_URL}{pinned["commit"]}/{pinned["path"]}'
     if data['status'] == 'released':
+        identity_label = ('Development URL on <code>main</code>, the current contract, which moves'
+                          if '/main/' in data['schemaId'] else 'Fixed schema identity (<code>$id</code>), distinct from a moving branch')
         links = [
             f'<li><strong>Fixed schema URL of the current release</strong>: '
             f'<a href="{attr(pinned["url"])}">{pinned["url"]}</a>. Cite the release a record targets: never '
             'hard-code a "latest" schema, and never check an unknown version against a different one.</li>',
             f'<li>The same bytes at the release tag: <a href="{attr(tag_url)}">{tag_url}</a>, also fixed at '
             f'commit <a href="{attr(blob_url)}">{pinned["commit"][:10]}</a>.</li>',
-            f'<li>Development URL on <code>main</code>, the current contract, which moves: '
-            f'<a href="{attr(data["schemaId"])}">{data["schemaId"]}</a>.</li>',
+            (f'<li>Logical schema identity (<code>$id</code>), alias registration pending: '
+             f'{code(data["schemaId"])}. Use the raw-tag resource above for published bytes.</li>'
+             if data.get('aliasPending') else
+             f'<li>{identity_label}: <a href="{attr(data["schemaId"])}">{data["schemaId"]}</a>.</li>'),
         ]
     else:
         links = [
@@ -989,9 +994,10 @@ def render_history(data: dict) -> str:
         version = f'<code>{line["schemaVersion"]}</code>' + (' (the number, not a string)' if line['legacy'] else '')
         unchanged = (f'<span class="field-none">unchanged from {line["unchangedFrom"]}</span>'
                      if line['unchangedFrom'] else '')
-        alias = (f'<a href="{attr(line["alias"])}">{line["alias"].split("fair-bioheaders/", 1)[1]}</a>'
-                 if line['alias']
-                 else '<span class="field-none">none published</span>')
+        alias = (code(line['alias'].split('fair-bioheaders/', 1)[1]) + ' (registration pending)'
+                 if line['alias'] and data.get('aliasPending') else
+                 f'<a href="{attr(line["alias"])}">{line["alias"].split("fair-bioheaders/", 1)[1]}</a>'
+                 if line['alias'] else '<span class="field-none">none published</span>')
         rows.append(f'<tr><th scope="row">{release}</th><td>{version}</td>'
                     f'<td>{line["date"]}{unchanged}</td><td>{alias}</td></tr>')
     label = f'{data["type"]} schema versions by shared release'

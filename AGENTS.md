@@ -542,7 +542,7 @@ builder details describe its supported snapshots, not another schema policy.
 ## Schema reference pages (issue #46)
 
 `/specifications/` holds one overview plus four stable type pages (FHR, FHT, FHP,
-FHGFF3) and the FHGM draft overview. Their field tables are **generated**: `_includes/schema/<type>-reference.html`
+FHGFF3) and the published FHGM native model overview. Their field tables are **generated**: `_includes/schema/<type>-reference.html`
 comes from the byte-pinned schemas in `scripts/schema-snapshots/` and is produced by
 `scripts/schema_fields.py`. Never hand-edit a generated fragment and never edit a
 pinned schema copy to make a check pass — refresh from the authority, update
@@ -551,26 +551,30 @@ drift gate (CI runs it through the existing `test_*.py` discovery step, and
 `scripts/check_site.py` re-verifies the rendered pages); see
 [docs/schema-reference.md](docs/schema-reference.md) for the refresh procedure.
 
-These pages document contracts, they do not change them: any field, requiredness,
-version or release claim comes from the authority, and a page must not imply support
-the site does not ship. Keep the distinction intact: released types cite their fixed
-`w3id` alias (v0.6.0: FHR `"2.1"` — re-published byte-identical from v0.5.0, FHP `"1.2"`,
-FHGFF3 `"1.2"` — 1.2 accepts dotted BUSCO dataset versions; `x-` extension fields under
-rule R15 came with v0.5.0); FHT is **draft** — no release, no alias, no DOI, no toolkit or
-builder support — and stays visibly marked as such in the nav, the page notice and the
-generated block. FHGM goes one step further: it is a *proposal* for model records inside
-FHGFF3 files with no contract at all, so `/specifications/fhgm/` carries **no generated
-field inventory** — nothing is pinned for FHGM, the page links the shared `docs/FHGM.md`
-as the authority, and `check_site.py`'s `fhgm_draft_errors` keeps it that way (draft
-notice and authority link present; no generated field tables, no provenance block and no
-`w3id` alias ever appear there). Do not place FHGM in any released-schema table or
-version selector, and never claim toolkit, validator or builder support for it.
-`/table-builder/` validates its pinned v0.6.0 snapshots by default (see
-“Current-release builder support” above), so the reference pages describe that
-coverage — including the rule M5 limit that extension fields never enter HTML
-microdata — and must not overstate it: FHGFF3 emits explicitly experimental microdata, FHT and
-FHGM have no form, and an unpinned citation (v0.5.0, v0.4.1, v0.4.2) is reported
-as unsupported rather than validated against a newer snapshot.
+These pages document contracts; they do not change them. Requiredness, meaning
+and version claims come from the publication authority. FHR/FHP/FHGFF3 retain
+their v0.6.0 pins, while FHT 1.0 uses published v0.7.0 at 623c79 with its own pinned
+registry and preserved owning history. Runtime support and website activation
+still require actual released artifacts and current validation.
+
+FHGM native model 0.1 was published in shared v0.8.0 at 72cb46b, DOI
+10.5281/zenodo.24385999. It is selected outside model records and introduces no
+FHGM header schemaVersion, in-record schema field or header registry row.
+The existing /specifications/fhgm/ overview links the immutable native schema
+and publication.json; it does not add a generated header inventory or a header
+selector. The logical native w3id identifier is pending external registration
+and must not be presented as a live resolving link. Its release does not imply
+JSON-LD, biology/curator endorsement or installed runtime support.
+check_site.py's fhgm_native_errors enforces the published native notice and
+immutable authority, rejects invented header aliases/unrequested inventories,
+and distinguishes the logical native identifier from a live-link claim.
+
+The prepared builder supports FHT v0.7.0 alongside the unchanged released-type
+snapshots, retaining M5 extension omission and experimental FHGFF3 HTML
+disclosures. Actual published 0.13.1 installed-export acceptance is verified; current
+independent review, green CI and real Pages/live evidence still gate activation. FHGM has no model editor
+in this form, and adding one is not an FHT activation requirement.
+An unpinned citation is unsupported rather than substituted with another schema.
 Adding a new indexable route here means updating the sitemap allow-lists in
 `scripts/check_site.py` and `scripts/check_deployed.py` and their tests in the same change.
 
@@ -592,12 +596,14 @@ deterministic exporter ships**, and it stays that way on the page: `not projecte
 mapping v1` is the only allowed phrasing for the 15 ruled-out root fields (the inventory
 never calls a field unmapable), the upstream `status: proposal` and
 `profile_version: 0.1.0-draft.1` are quoted rather than restated, the worked graph is
-labelled a manually curated fixture, and no exporter, deposit readiness, registration or
-external endorsement may be implied. `scripts/mapping_crosswalk.py` refuses to emit wording
+labelled a manually curated fixture. Actual toolkit 0.13.1 now ships the narrow
+export-dcmi CLI, measured with preserved inputs and deterministic repeated bundles.
+This grants no new official label, browser converter, deposit readiness, registration
+or external endorsement. `scripts/mapping_crosswalk.py` refuses to emit wording
 that breaks that, and `scripts/check_site.py`'s `mapping_page_errors` re-checks the rendered
 page — including the hand-written prose — for the pinned digest, the required vocabulary and
-the forbidden claims. If maintainers later grant the label or ship an exporter, change the
-guard, the page and the pins deliberately together.
+the forbidden claims. Any later label grant or scope change needs its recorded disposition; shipped
+runtime facts do not rewrite the preserved source pins or curated fixture.
 
 V1 covers FHR root fields for an assembly resource only. FHP and FHGFF3 are recorded
 upstream as not yet profiled and FHT as blocked on its contract, so no row may be invented

@@ -18,7 +18,7 @@ CI and so a schema change cannot leave the documentation quietly stale.
 | --- | --- |
 | `scripts/schema_fields.py` | Generator, drift checker, coverage reporter and refresh command |
 | `scripts/schema-snapshots/provenance.json` | Every pinned file with its repository, ref, commit, path, URLs and SHA-256, plus release dates |
-| `scripts/schema-snapshots/*.json`, `*.yaml` | The pinned schema and shared-model bytes (FHR/FHP/FHGFF3 v0.6.0, the FHT development draft, `schemas/core.yaml`, `schemas/shared.yaml`, `schemas/versions.json`; the superseded v0.5.0 copies stay pinned under `references` as immutable history) |
+| `scripts/schema-snapshots/*.json`, `*.yaml` | The pinned schema and shared-model bytes (FHR/FHP/FHGFF3 v0.6.0, FHT v0.7.0; the previous owning draft stays byte-exact under references/history, `schemas/core.yaml`, `schemas/shared.yaml`, `schemas/versions.json`; the superseded v0.5.0 copies stay pinned under `references` as immutable history) |
 | `scripts/schema-snapshots/examples/*.json` | Pinned released example records — the source of the "Example" column |
 | `scripts/schema-snapshots/shared-core.json` | Which slots and objects are shared core/shared-model rather than type-specific |
 | `scripts/schema-snapshots/notes/<type>.json` | Curated editorial layer: status prose, serializations, tooling support, units, examples where no example reaches a field, migration notes, and the explanation of each conditional rule |
@@ -44,7 +44,7 @@ check runs automatically inside the existing CI step
 **rendered** pages: the pinned digest still appears in the markup, every reference
 table has a `<caption>` and scoped headers, each scrollable table is focusable and
 named, the released pages link their fixed `w3id` URL and the version registry, and
-the FHT page keeps its draft notice and never links a released alias.
+FHT cites its actual v0.7.0 identity, rejects a stale current draft notice and refuses release aliases without FHT.
 
 ## What the drift check refuses to accept
 
@@ -85,10 +85,12 @@ to make a check pass, and never rewrite an immutable release, tag or alias.
 
 The pages distinguish four things that are easy to conflate:
 
-- **Contract** — released types cite their fixed alias (`…/v0.6.0` = FHR "2.1",
-  FHP "1.2", FHGFF3 "1.2"; the FHR 2.1 bytes are unchanged from v0.5.0).
-  FHT cites only the FHT-Specification development URL and is
-  marked draft on the page, in the nav and in the index tables.
+- **Contract** — FHR/FHP/FHGFF3 retain the documented v0.6.0 pins, and
+  FHT 1.0 uses published v0.7.0 at 623c79fe58edeb238a20fb6de518c62dd69b92bc.
+  Each type selects its own immutable registry snapshot; promoting FHT does not
+  rewrite older type/source bytes. The old owning FHT schema and example stay
+  under references, and old notes/rendering stay under history with digests and
+  fixed source links.
 - **Toolkit** — the current PyPI release, `fair-bioheaders` 0.12.0 (2026-11-16), bundles the
   v0.6.0 schema set (FHR 2.1, FHP 1.2, FHGFF3 1.2), unchanged from 0.11.0, and accepts a
   `…/v0.6.0` citation for all three types (checked 2026-11-18). Releases before 0.11.0 do not bundle v0.6.0 — 0.9.0 and 0.10.0 both name v0.5.0 as
@@ -96,35 +98,39 @@ The pages distinguish four things that are easy to conflate:
   (checked 2026-11-14). FHGFF3 HTML microdata is available from 0.10.0 onward but
   **experimental** — its binding is a draft, so reading or writing emits
   `ExperimentalMicrodataWarning`, and that runtime availability is not website enablement
-  (see shared `docs/MICRODATA.md`). FHT detection is unchanged: `assess` reports
-  `not assessed` / `unsupported-header-type`, and the opt-in `BIOHEADERS_EXPERIMENTAL_FHT`
-  draft lane (0.11.0 onward) previews publication without supporting FHT. That is detection and a
-  gated preview, not support.
+  (see shared `docs/MICRODATA.md`). FHT handling in that published 0.12.0 wheel remains the historical opt-in
+  owning-draft lane, not normal support for the new shared contract. Actual
+  published 0.13.1 now supports the normal FHT lane; a fresh actual-wheel install
+  validated all 14 normal browser exports with strict typed source equality.
 - **This site's builder** — `/table-builder/` validates its pinned **v0.6.0**
   snapshots (FHR "2.1", FHP/FHGFF3 "1.2") and can produce `x-` extension fields and
   dotted BUSCO dataset versions; extension fields go to the YAML export, never to
   HTML microdata (M5). Its **v0.4.0** snapshots (FHR "2.0", FHP/FHGFF3 "1.0") stay
   selectable on their own bytes, and shared release **v0.5.0 is not pinned**, so a
   `…/v0.5.0` citation is reported as unsupported rather than validated against a
-  newer snapshot. The remaining gates — FHGFF3 typed microdata, FHT, cross-browser
-  coverage — are [issue #15](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/15).
+  newer snapshot. FHGFF3 typed microdata is deployed; the prepared FHT 1.0/v0.7.0
+  form has separate actual released-runtime and Pages gates. These are [issue #15](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/15).
 - **Verification** — schema validity, file checksum verification, parent-link checking
   and biological/feature validation are separate questions with separate tools, spelled
   out in each page's "Validation boundaries" section.
 
-FHGM (gene model) is a separate draft under review
-([shared #204](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/204),
-[#207](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/207)).
-Since the #52 follow-up it has its own page, `/specifications/fhgm/`, but **not** a
-generated field reference: FHGM has no contract to inventory, so nothing is pinned
-for it in `scripts/schema-snapshots/`, `schema_fields.py` never learns an `fhgm`
-type, and the page links the shared `docs/FHGM.md` as the authority instead of
-mirroring the development repository's draft overlay. `check_site.py` enforces that
-boundary on the rendered page (`fhgm_draft_errors`): the draft notice and the
-`docs/FHGM.md` link must be present, and no generated field tables, `reference-provenance`
-block or `w3id.org/fair-bioheaders/fhgm` alias may ever appear there. When — and only
-when — #204 resolves into a reviewable model, the page gains a generated reference the
-same way FHT's draft one did.
+FHGM native model 0.1 is published in shared v0.8.0 at 72cb46b, DOI 10.5281/zenodo.24385999; published 0.13.1 includes the independently opt-in model checker selecting native 0.1. This header-type reference generator
+does not invent an FHGM header registry row. Its existing overview links the exact raw-tag schema and publication.json while keeping the logical native alias unlinked pending registration. It has no generated header inventory or header selector. A native model editor is not a prerequisite for FHT support.
+
+## FHT publication promotion
+
+The generated current reference now uses exact shared v0.7.0 bytes,
+seven published JSON examples and versions-v0.7.0.json. The generator's
+registrySnapshot setting defaults to the prior v0.6.0 pin for unchanged types.
+The FHT source explicitly selects the v0.7.0 registry; both assert published
+preRelease:null. Documentation covers the fifth molecule value mixed, named
+metadata authors, unique parents, C1 runtime arithmetic, canonical checksums and
+typed F1 HTML. JSON-LD remains unsupported. A frozen v1 mapping matrix does not
+acquire an FHT profile merely because its header contract was published.
+
+Actual final 0.13.1 release/installed-export acceptance is recorded. Current
+review/CI and actual Pages verification remain before browser activation. No FHGM condition is
+added. A source commit or locally built package does not satisfy those gates.
 
 ## Checks after changing this section
 

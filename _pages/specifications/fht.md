@@ -1,118 +1,104 @@
 ---
-title: "FHT schema reference (Draft)"
+title: "FHT schema reference"
 permalink: /specifications/fht/
-excerpt: "Draft field reference for the proposed FHT transcriptome header: schemaVersion 1.0 under development in FHT-Specification. Not released, no fixed alias, no toolkit support."
+excerpt: "Released FHT 1.0 transcriptome contract in shared v0.7.0: complete generated field reference, examples, provenance and validation boundaries."
 ---
 
-<div class="spec-notice spec-notice--draft" role="note">
-  <p><strong>FHT is a draft.</strong> The transcriptome header contract below is the
-  <em>development</em> model in
-  <a href="https://github.com/FAIR-bioHeaders/FHT-Specification">FHT-Specification</a>:
-  it has no shared specification release, no <code>schemaVersion</code> listed in the
-  version registry, no fixed <code>w3id</code> alias, no DOI and no released tool
-  support. Nothing on this page should be read as adopted guidance or as a citable
-  version. The reference is published because the model is now concrete enough to
-  review, and it is marked as a draft everywhere it appears. The opt-in
-  <code>BIOHEADERS_EXPERIMENTAL_FHT</code> draft lane added in <code>fair-bioheaders</code>
-  0.11.0, and kept in 0.12.0, previews publication against a pinned draft copy; it is not FHT support, and it
-  creates no release, alias or registry entry.</p>
-</div>
+FHT describes a **reference transcriptome FASTA file**. The shared specification
+published contract version **"1.0"** in
+[v0.7.0](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/releases/tag/v0.7.0)
+on 2026-11-20, with version DOI
+[10.5281/zenodo.24385024](https://doi.org/10.5281/zenodo.24385024).
+The contract version, repository release and transcriptome resource version are
+separate values.
 
-FHT is the proposed FAIR-bioHeaders header for a **reference transcriptome FASTA
-file**. Like the released types it is a `;~` YAML header block with one SHA-512/256
-checksum over the file's exact bytes; unlike them it is not yet a contract that any
-published file should cite.
+This page uses the exact released schema at commit
+[623c79fe58edeb238a20fb6de518c62dd69b92bc](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/623c79fe58edeb238a20fb6de518c62dd69b92bc).
+Published [fair-bioheaders 0.13.1](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/releases/tag/v0.13.1) supports FHT through its normal released lane,
+with no development opt-in. A fresh noneditable install of the actual published
+wheel validated all seven normal browser HTML/YAML pairs and converted them to
+JSON equal in value and type to the published source records. This is metadata
+interoperability evidence, not sequence-byte or parent verification.
+{: .release-source}
 
-## What the draft describes
+## What FHT describes
 
-The draft records how a transcript set was constructed — `de novo`, `genome-guided`
-or `annotation-derived` — which organism and version it is, who asserts the metadata
-and who assembled or extracted the set, which sample, library strategy and
-strandedness were actually supplied, which run accessions support it, which reviewed
-FAIR-bioHeaders parents it derives from, and what the producer measured about the
-file and, separately, what one BUSCO run counted.
+The record identifies the transcriptome and its construction history:
+de novo, genome-guided or annotation-derived. It keeps metadata authors,
+assembly or extraction attribution, supplied sample/library context, parent-file
+assertions, file statistics and one BUSCO run's counts distinct.
 
-It does **not** describe, and the draft deliberately refuses:
+Optional moleculeType admits mRNA, rRNA, tRNA, transcribed RNA or mixed.
+That last value describes heterogeneous molecules, not a mixed construction
+history. Total RNA and cDNA describe preparation, not molecule classes.
+Unknown context is omitted rather than inferred.
 
-- a construction history that is not known: there is no `mixed` or `unknown`
-  `assemblyType`, and an uncertain case leaves the record incomplete rather than guessed;
-- preparation contexts as biological classes: `total RNA` and `cDNA` are not
-  `moleculeType` values, so a heterogeneous set omits the field;
-- per-record expression, isoform structure or gene models;
-- quality: BUSCO counts are one run's report about ortholog groups, not a verdict.
+The header does not describe per-record expression, isoform or gene-model
+structure, or certify biological quality. Sample remains an array; repeated
+partial entries preserve supplied pooled-source context.
 
 {% include schema/fht-reference.html %}
 
-## Examples
+## Published examples and conformance
 
-The examples below come from the **development** repository and validate against its
-draft schema. They are **synthetic**: names, statistics and sequence bytes are
-invented; the taxon and ontology identifiers are real. They are not the byte-backed
-conformance vectors, which are still open work in
-[FHT-Specification#8](https://github.com/FAIR-bioHeaders/FHT-Specification/issues/8).
+Seven synthetic publication examples have paired JSON, headed FASTA and typed
+HTML forms at the released tag. Names, statistics and sequence bytes are
+invented; taxon and ontology identifiers are real.
 
-- [examples/de-novo.fht.json](https://github.com/FAIR-bioHeaders/FHT-Specification/blob/main/examples/de-novo.fht.json),
-  with the same header as [YAML](https://github.com/FAIR-bioHeaders/FHT-Specification/blob/main/examples/de-novo.fht.yaml)
-  and inside a headed [FASTA](https://github.com/FAIR-bioHeaders/FHT-Specification/blob/main/examples/de-novo.fht.fasta).
-- [examples/genome-guided.fht.fasta](https://github.com/FAIR-bioHeaders/FHT-Specification/blob/main/examples/genome-guided.fht.fasta) —
-  genome guidance, with the reasoning for why that alone is not a parent link.
-- [examples/annotation-derived.fht.fasta](https://github.com/FAIR-bioHeaders/FHT-Specification/blob/main/examples/annotation-derived.fht.fasta) —
-  sequences extracted from existing annotation.
+- **de-novo** — [JSON](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/de-novo.fht.json), [FASTA](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/de-novo.fht.fasta), [HTML](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/de-novo.fht.html).
+- **genome-guided** — [JSON](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/genome-guided.fht.json), [FASTA](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/genome-guided.fht.fasta), [HTML](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/genome-guided.fht.html).
+- **annotation-derived** — [JSON](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/annotation-derived.fht.json), [FASTA](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/annotation-derived.fht.fasta), [HTML](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/annotation-derived.fht.html).
+- **minimal-de-novo** — [JSON](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/minimal-de-novo.fht.json), [FASTA](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/minimal-de-novo.fht.fasta), [HTML](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/minimal-de-novo.fht.html).
+- **minimal-genome-guided** — [JSON](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/minimal-genome-guided.fht.json), [FASTA](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/minimal-genome-guided.fht.fasta), [HTML](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/minimal-genome-guided.fht.html).
+- **minimal-annotation-derived** — [JSON](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/minimal-annotation-derived.fht.json), [FASTA](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/minimal-annotation-derived.fht.fasta), [HTML](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/minimal-annotation-derived.fht.html).
+- **mixed-molecules** — [JSON](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/mixed-molecules.fht.json), [FASTA](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/mixed-molecules.fht.fasta), [HTML](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/examples/fht/mixed-molecules.fht.html).
 
-The development README states the header shape directly; its checksum is computed by
-the repository's own tests, never written by hand.
+The [93-counterpart manifest](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/conformance/fht-v0.7.0/manifest.json)
+covers released positive and negative carriers. Byte-backed conformance includes
+checksum, parent and compressed-file behavior beyond this field reference.
+Typed HTML follows the [F1 binding](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/docs/FHT-MICRODATA.md);
+its itemtype is the published schema identity, separate from a record's selector.
+FHT JSON-LD remains unsupported.
 
-## Validation boundaries — for the draft
+## Validation boundaries
 
-1. **Schema validity.** The draft JSON Schema checks required keys, types, patterns,
-   enums, ranges, closed nested objects and the two allowed `derivedFrom` pairs:
-   `FHT` + `filteredFrom` or `FHR` + `transcribedFrom`. It cannot establish that an
-   asserted relationship is factually true—for example, that transcript bases were
-   actually extracted from the named FHR genome.
-2. **Checksum.** The shared family rules (R1–R4) define what an FHT checksum would
-   cover, and the development repository recomputes its examples' checksums in tests.
-   By default no released command writes or verifies one: `fair-bioheaders` 0.11.0 and
-   0.12.0 do both only when the operator opts in to its experimental draft lane
-   (`BIOHEADERS_EXPERIMENTAL_FHT=1`), which reads the unreleased contract and reports
-   `ExperimentalDraftWarning` (checked 2026-11-14).
-3. **Parent links.** `derivedFrom` requires the parent's FHR-family checksum, so the
-   intent is verifiable, and the lane described above does check it: with
-   `BIOHEADERS_EXPERIMENTAL_FHT=1`, 0.11.0 reported `derivedFrom[0] FHR transcribedFrom:
-   matched` against a supplied FHR parent file (checked 2026-11-14). With the default
-   settings the same command reads the FHT file as FHR (rule V5) and refuses it, so no
-   supported command performs that check on FHT today.
-4. **Biology.** Transcript completeness, expression, isoform correctness and
-   orthology are outside the header entirely.
+1. **Schema validity.** The published JSON Schema checks requiredness, types, nonblank
+   values, enums, ranges, non-empty/unique arrays and closed objects. Required
+   metadata authors must contain a name. The root schema selector admits the
+   shared raw-main, v0.7.0 raw-tag and fixed w3id forms; owning-draft selectors
+   are a separate historical lane, and unknown releases never fall back.
+2. **Runtime policy.** C1 requires the four BUSCO component counts to sum
+   exactly to total when all five are supplied. This arithmetic is outside
+   standard JSON Schema. Counts are not inferred, and browser numeric capability
+   limits are not new biological constraints.
+3. **File and parent identity.** Shared checksum rules R1–R4 cover exact bytes,
+   excluding the root checksum line. DerivedFrom permits FHT + filteredFrom or
+   FHR + transcribedFrom; canonical checksums, file verification and a matching
+   parent are separate checks. Genome guidance alone never establishes that
+   transcript bases came from that genome.
+4. **Biology.** Neither valid metadata nor matching parent-file identity proves
+   biological derivation, expression, completeness or repository acceptance.
 
-## Status, dependencies and how the draft can change
+## Owning history and publication authority
 
-- Model and generated contract: [FHT-Specification](https://github.com/FAIR-bioHeaders/FHT-Specification)
-  (`fht_linkml.yml` is the source, `fht.json` is generated from it).
-- Field decisions and the migration record:
-  [docs/FHT-MIGRATION.md](https://github.com/FAIR-bioHeaders/FHT-Specification/blob/main/docs/FHT-MIGRATION.md),
-  which maps the legacy `fht-v0.1` draft onto this contract and explains what is dropped.
-  The retired `FHT-File-Converter` is not current support and its old examples are
-  historical review inputs, not FHT 1.0 fixtures.
-- Open release gates:
-  [#8 examples and conformance vectors](https://github.com/FAIR-bioHeaders/FHT-Specification/issues/8),
-  [#9 toolkit support](https://github.com/FAIR-bioHeaders/FHT-Specification/issues/9)
-  and [#10 release, documentation and a public pilot](https://github.com/FAIR-bioHeaders/FHT-Specification/issues/10).
-  Publication of the reviewed contract runs through the shared repository
-  ([#107](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/107)).
-- Independent metadata-coverage review against the INSDC minimum specifications, whose
-  FHT rows are marked draft:
-  [FAIR-bioHeaders-Specification#157](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/157).
-- What is **not** implied by this page: a release, an alias, a DOI, toolkit support,
-  builder support, INSDC submission readiness, or that the field set is final.
+The [owning development repository](https://github.com/FAIR-bioHeaders/FHT-Specification)
+retains field decisions and migration history. Its
+[earlier pinned draft](https://github.com/FAIR-bioHeaders/FHT-Specification/blob/226f923c28b680edb3c546e99a751482d06aef1a/fht.json),
+the legacy numeric-version draft and retired converter examples are historical
+inputs, not the published contract. This site's old draft schema, example,
+notes and rendered reference are retained byte-exact in its snapshot history;
+the field inventory above now uses the shared released authority.
+
+Do not silently rewrite existing citations or headers. Header changes require
+checksum recomputation and can affect downstream parent links. The FHT w3id identity remains a logical identifier with alias registration
+pending; it is not a live-resolution claim. The
+[raw-tag schema](https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.7.0/fht.json)
+provides the immutable published bytes.
 
 ## Related guidance
 
-- [Using FH*](/guide/) — the type table marks FHT as draft, exactly as this page does.
-- [Resources & citation](/resources/) — repository roles and why a development
-  repository is not a citation record.
-- Shared format and versioning rules that the draft follows:
-  [FORMAT.md](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FORMAT.md)
-  and [SCHEMA-VERSIONS.md](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/SCHEMA-VERSIONS.md).
-- Discussion of the transcriptome contract belongs in
-  [FHT-Specification](https://github.com/FAIR-bioHeaders/FHT-Specification/issues),
-  not on this website.
+- [Using FH*](/guide/) — choose a header and distinguish contract from runtime support.
+- [Table builder](/table-builder/) — metadata form and inert typed exports.
+- [Resources & citation](/resources/) — publication and development roles.
+- [Format rules](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/docs/FORMAT.md)
+  and [version selection](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/docs/SCHEMA-VERSIONS.md).

@@ -19,7 +19,7 @@ Commands, from the repository root:
 recorded digest, when an entry appears, disappears or changes disposition against
 the committed fragment, when the delivery matrix gains a row this generator does
 not know, or when the generated wording starts claiming something the upstream
-status does not support: an "official" label, or an exporter.
+status does not support: an official label, deposit readiness or a browser converter.
 
 Standard library only, like `scripts/check_site.py` and `scripts/schema_fields.py`.
 """
@@ -55,9 +55,9 @@ TYPE_STATUS = {'draft-fixture': 'Covered by the v1 assembly inventory',
                'not-yet-profiled': 'Not profiled',
                'blocked': 'Blocked on its contract'}
 
-# Wording the page must never carry while the "official" label is withheld and no
-# deterministic exporter exists.
-FORBIDDEN = ('official guidance', 'official mapping', 'unmappable', 'the exporter',
+# Unrecorded label/deposit/browser-converter claims remain forbidden even though
+# the narrow documented runtime exporter now ships.
+FORBIDDEN = ('official guidance', 'official mapping', 'unmappable', 'this page exports',
              'deposit-ready output', 'we export')
 
 
@@ -385,6 +385,7 @@ def render(inventory: dict, matrix: dict, provenance: dict, errors: list,
     meta, matrix_meta = provenance['files'][INVENTORY], provenance['files'][MATRIX]
     context_meta = provenance['files']['assembly-export-context.schema.json']
     adoption = provenance['adoption']
+    runtime = provenance['runtimeExporter']
     summary = totals(inventory)
     target = inventory.get('target') or {}
     parts = [
@@ -442,9 +443,12 @@ def render(inventory: dict, matrix: dict, provenance: dict, errors: list,
         '</section>\n<section id="adoption">\n<h2>Adoption state of what is shown here</h2>\n',
         '<p>Maintainers adopted this v1 surface as <strong>correct-but-not-final</strong> on '
         f'{cell(adoption["recorded"])} and <strong>withheld the "official" label until a deterministic '
-        'exporter ships</strong>. This page therefore publishes the crosswalk as reference material: no label '
-        'of that kind is claimed here, no exporter exists in this repository or ships anywhere else yet, and '
-        'the worked example graph is a manually curated fixture rather than tool output. The pinned artifacts '
+        'exporter ships</strong>. That is the dated adoption record. Published fair-bioheaders '
+        f'{cell(runtime["toolkitVersion"])} now ships the narrow '
+        f'<a href="{attr(runtime["documentation"])}">export-dcmi CLI</a> for complete FHR v0.4.0 inputs. '
+        'Actual installed repeated runs produced identical preservation bundles. This page grants no new '
+        'official label or expanded profile: it remains reference material, and the worked graph remains '
+        'a manually curated fixture rather than tool output. The pinned artifacts '
         f'still carry their own upstream label {code("status: " + str(inventory.get("status")))} and profile version '
         f'{code(inventory.get("profile_version"))}; any version bump, label or re-scoping is recorded on '
         '<a href="https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/56">#56</a>, not '
@@ -497,7 +501,7 @@ def command_check() -> int:
     for phrase in FORBIDDEN:
         if phrase in fragment.lower():
             problems.append(f'the generated fragment says "{phrase}", which the withheld label and the missing '
-                            'exporter do not support')
+                            'do not support')
     for delimiter in ('{{', '{%'):
         if delimiter in fragment:
             problems.append(f'the generated fragment contains "{delimiter}", which Liquid would execute')

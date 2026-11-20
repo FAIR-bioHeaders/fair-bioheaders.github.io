@@ -10,18 +10,24 @@ Released specifications, tools, development repositories and citation guidance f
 
 ## Project repositories
 
-The shared specification repository publishes the reviewed family contracts:
-The shared repository publishes the reviewed family contracts. The current release
-is **v0.6.0**: FHP `schemaVersion` "1.2" and FHGFF3 "1.2" (dotted BUSCO dataset
-versions), with FHR "2.1" re-published byte-identical — extension fields (FORMAT rule
-R15) came with v0.5.0. FHT transcriptome metadata is still a draft with no shared release,
-and FHGM gene model records are a draft proposal with no contract at all — no
-`schemaVersion`, no fixed alias, no registry entry and no tooling support; see the
-[FHGM draft page](/specifications/fhgm/) and the authoritative
-[draft overview](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHGM.md).
+The shared specification publishes reviewed family contracts. Shared
+**v0.7.0** adds FHT transcriptome contract 1.0, with version DOI
+[10.5281/zenodo.24385024](https://doi.org/10.5281/zenodo.24385024).
+FHR 2.1 and FHP/FHGFF3 1.2 retain their published v0.6.0 contracts and citations.
+Published [fair-bioheaders 0.13.1](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/releases/tag/v0.13.1) supports FHT with its released
+contract; actual installed browser-export interoperability is verified. Its
+version DOI is [10.5281/zenodo.24387470](https://doi.org/10.5281/zenodo.24387470).
+
+FHGM native model contract 0.1 is published in shared **v0.8.0**, DOI
+[10.5281/zenodo.24385999](https://doi.org/10.5281/zenodo.24385999).
+It describes model records inside FHGFF3 and adds no FHGM header type or
+header-registry entry. Toolkit 0.13.1 includes an independently opt-in experimental
+model checker selecting published native 0.1 when enabled;
+the logical native alias is not presented as resolving. See the
+[FHGM native model overview](/specifications/fhgm/).
 FAIR BioHeaders Tools is the single active conversion and validation package, and each
 type's complete field list lives on its schema reference page:
-[FHR](/specifications/fhr/), [FHT (draft)](/specifications/fht/),
+[FHR](/specifications/fhr/), [FHT](/specifications/fht/),
 [FHP](/specifications/fhp/) and [FHGFF3](/specifications/fhgff3/).
 
 | Resource | Purpose | Status |
@@ -47,11 +53,12 @@ shared repository above; these development homes do not have separate final-rele
 The protein header (FHP) development tracker is [issue #1](https://github.com/FAIR-bioHeaders/FHP-Specification/issues/1),
 which tracks completion of the release after `schemaVersion` "1.0" landed in shared v0.4.0.
 
-The gene-model proposal (FHGM) is under review in the shared specification
-([issue #204](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/204),
-draft overview [docs/FHGM.md](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHGM.md));
-its development repository hosts pilot fixtures and a draft overlay that is review
-input only — it makes no FHGM contract, schema version, release or tooling-support claim.
+FHGM adoption and native publication are recorded in
+[shared #204](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/204).
+The [v0.8.0 native publication record](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.8.0/model-contracts/fhgm/0.1/publication.json)
+distinguishes published identity from accepted owning history, runtime support
+and alias resolution. The inherited historical feature-model snapshot remains
+separate from the authored native contract.
 
 <span id="FHT_File_Converter"></span>The standalone FHT File Converter is retired.
 Use FAIR BioHeaders Tools for active tooling; FHT support awaits the reviewed

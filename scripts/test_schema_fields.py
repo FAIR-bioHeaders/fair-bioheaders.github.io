@@ -8,8 +8,8 @@ step, so a schema change cannot ship with stale documentation:
 3. an independently written walk of each schema must find exactly the field paths the
    rendered tables document (this is the completeness proof, not the generator's own
    bookkeeping);
-4. every curated note must still name a real field, and the draft type must stay a
-   draft: no release, no fixed alias.
+4. every curated note must still name a real field, and each reference must cite
+   its own published registry snapshot without rewriting older pins.
 """
 import html as html_lib
 import json
@@ -112,19 +112,20 @@ class PinnedBytes(unittest.TestCase):
                                      f'{name} no longer matches provenance.json')
 
     def test_pinned_release_is_what_the_registry_calls_current(self):
-        registry = json.loads((schema_tools.SNAPSHOT_DIR / 'versions-v0.6.0.json').read_text())
-        self.assertIsNone(registry['preRelease'], 'a pre-release marker means the pin is not a published release')
+
         for name, meta in self.provenance['files'].items():
             if meta['status'] != 'released':
                 continue
             with self.subTest(schema=name):
+                registry = json.loads((schema_tools.SNAPSHOT_DIR / meta.get('registrySnapshot', 'versions-v0.6.0.json')).read_text())
+                self.assertIsNone(registry['preRelease'])
                 self.assertEqual(meta['release'], registry['current'])
                 self.assertEqual(registry['releases'][registry['current']][meta['type']],
                                  meta['schemaVersion'])
 
     def test_release_dates_are_recorded_for_every_line(self):
         dates = self.provenance['releaseDates']
-        for release in json.loads((schema_tools.SNAPSHOT_DIR / 'versions-v0.6.0.json').read_text())['releases']:
+        for release in json.loads((schema_tools.SNAPSHOT_DIR / 'versions-v0.7.0.json').read_text())['releases']:
             with self.subTest(release=release):
                 self.assertIn(release, dates, 'add the published date to provenance.json')
 
@@ -176,7 +177,7 @@ class GeneratedReferences(unittest.TestCase):
                 'relatedLink': 'per item: format: uri',
             },
             'fht': {
-                'sequencingRuns': 'per item: pattern: ^(SRR|ERR|DRR)[0-9]+$',
+                'sequencingRuns': r'per item: pattern: ^(SRR|ERR|DRR)[0-9]+(?![\s\S])',
                 'identifier': 'per item: pattern: ^[A-Za-z0-9._-]+:.+$',
                 'relatedLink': 'per item: format: uri',
             },
@@ -222,19 +223,16 @@ class GeneratedReferences(unittest.TestCase):
                     self.assertTrue(rule['text'].strip())
                     self.assertTrue(rule['title'].strip())
 
-    def test_draft_type_carries_no_release_claims(self):
-        draft = [data for data in self.built.values() if data['status'] != 'released']
-        self.assertEqual([data['page'] for data in draft], ['fht'])
-        for data in draft:
-            self.assertIsNone(data['release'])
-            self.assertEqual(data['releases']['lines'], [])
-            self.assertIsNone(data['releases']['alias'])
-            html = (INCLUDES / f'{data["page"]}-reference.html').read_text()
-            self.assertNotIn(f'w3id.org/fair-bioheaders/{data["page"]}', html)
-            self.assertIn('Draft', html)
+    def test_historical_owning_draft_is_retained_outside_current_references(self):
+        self.assertTrue(all(data['status'] == 'released' for data in self.built.values()))
+        history = schema_tools.load_provenance()['references']['fht-draft.json']
+        self.assertEqual(history['sha256'], '59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e')
+        self.assertIn('Historical', history['label'])
+        self.assertNotIn('fht-draft.json', schema_tools.load_provenance()['files'])
 
     def test_released_types_match_their_contracts(self):
         expected = {
+            'fht': ('FHT', '1.0', 'v0.7.0', 'https://w3id.org/fair-bioheaders/fht/v0.7.0'),
             'fhr': ('FHR', '2.1', 'v0.6.0', 'https://w3id.org/fair-bioheaders/fhr/v0.6.0'),
             'fhp': ('FHP', '1.2', 'v0.6.0', 'https://w3id.org/fair-bioheaders/fhp/v0.6.0'),
             'fhgff3': ('FHGFF3', '1.2', 'v0.6.0', 'https://w3id.org/fair-bioheaders/fhgff3/v0.6.0'),
@@ -245,7 +243,7 @@ class GeneratedReferences(unittest.TestCase):
                 self.assertEqual(data['type'], type_name)
                 self.assertEqual(data['release'], release)
                 self.assertEqual(data['schemaVersions'][-1], version)
-                self.assertEqual(data['pinned']['url'], alias)
+                self.assertEqual(data['pinned']['url'], 'https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.7.0/fht.json' if page == 'fht' else alias)
                 self.assertEqual(data['releases']['alias'], alias.rsplit('/', 1)[0])
                 self.assertEqual(data['pinned']['schemaVersion'], version)
                 self.assertIn(alias, (INCLUDES / f'{page}-reference.html').read_text())

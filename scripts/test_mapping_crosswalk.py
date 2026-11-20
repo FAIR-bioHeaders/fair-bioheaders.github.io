@@ -7,7 +7,7 @@ page cannot outlive the bytes it was rendered from:
 2. the committed fragment must equal what those bytes produce right now;
 3. the reader must refuse a changed file shape instead of guessing;
 4. the semantic guards must fire — a disposition that appears, a target row that is
-   invented, or wording that claims the withheld "official" label or an exporter;
+   invented, or wording that claims an unrecorded official label, deposit readiness or browser conversion;
 5. the fragment must carry the inventory's own vocabulary.
 """
 import json
@@ -137,11 +137,23 @@ class GeneratedFragment(unittest.TestCase):
         self.assertNotIn('onmouseover="', fragment)
         self.assertEqual(fragment.count('href="https://x.org/&quot;onmouseover=&quot;alert(1)"'), 3)
 
-    def test_fragment_never_claims_the_withheld_label_or_an_exporter(self):
+    def test_fragment_never_claims_an_unrecorded_label_or_browser_converter(self):
         fragment, _ = tools.build()
         lowered = fragment.lower()
         for phrase in tools.FORBIDDEN:
             self.assertNotIn(phrase, lowered, phrase)
+
+    def test_published_runtime_is_scoped_separately_from_preserved_curated_fixture(self):
+        provenance = json.loads((PINS / 'provenance.json').read_text())
+        runtime = provenance['runtimeExporter']
+        self.assertEqual(runtime['toolkitVersion'], '0.13.1')
+        self.assertEqual(runtime['status'], 'shipped')
+        self.assertEqual(runtime['profileVersion'], inventory()['profile_version'])
+        fragment, errors = tools.build()
+        self.assertEqual(errors, [])
+        self.assertIn('export-dcmi CLI', fragment)
+        self.assertIn('manually curated fixture', fragment)
+        self.assertNotIn('ships anywhere else yet', fragment)
 
     def test_every_root_field_and_context_key_appears(self):
         fragment, _ = tools.build()

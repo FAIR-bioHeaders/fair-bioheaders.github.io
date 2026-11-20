@@ -10,13 +10,13 @@ main:
     children:
       - title: "FHR — reference genome"
         url: /specifications/fhr/
-      - title: "FHT — transcriptome (draft)"
+      - title: "FHT — transcriptome"
         url: /specifications/fht/
       - title: "FHP — protein FASTA"
         url: /specifications/fhp/
       - title: "FHGFF3 — GFF3 annotation"
         url: /specifications/fhgff3/
-      - title: "FHGM — gene model (draft)"
+      - title: "FHGM — native gene model"
         url: /specifications/fhgm/
       - title: "Metadata mappings (v1 reference)"
         url: /mappings/

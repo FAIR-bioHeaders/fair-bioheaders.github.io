@@ -6,13 +6,12 @@ import path from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
 
 // The /specifications/ section: one dropdown, four generated field references,
-// the FHGM draft overview, which has no field inventory because FHGM has no
-// contract (shared #204/#207), and the /mappings/ v1 reference page.
+// the published native FHGM overview, kept outside the four header inventories, and the /mappings/ v1 reference page.
 const TYPES = ['fhr', 'fht', 'fhp', 'fhgff3'];
 const NAV_ITEMS = [...TYPES, 'fhgm'];
 const SNAPSHOTS = {
   fhr: 'fhr-v0.6.0.json',
-  fht: 'fht-draft.json',
+  fht: 'fht-v0.7.0.json',
   fhp: 'fhp-v0.6.0.json',
   fhgff3: 'fhgff3-v0.6.0.json'
 };
@@ -46,7 +45,7 @@ test.describe('specifications dropdown', () => {
     await page.keyboard.press('Enter');
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
     await expect(menu).toBeVisible();
-    // The reference pages plus the FHGM draft entry are reachable from the one menu.
+    // The reference pages plus the FHGM native entry are reachable from the one menu.
     for (const type of NAV_ITEMS) {
       await expect(menu.locator(`a[href="/specifications/${type}/"]`)).toBeVisible();
     }
@@ -163,41 +162,41 @@ test.describe('generated field references', () => {
     });
   }
 
-  test('released pages name a fixed URL; the draft page does not', async ({ page }) => {
-    for (const type of ['fhr', 'fhp', 'fhgff3']) {
-      await openPage(page, `/specifications/${type}/`);
-      await expect(page.locator('.schema-links')).toContainText(`w3id.org/fair-bioheaders/${type}/v0.6.0`);
+  test('all four reference pages cite their actual published contract and registry', async ({ page }) => {
+    for (const type of TYPES) {
+      const release = type === 'fht' ? 'v0.7.0' : 'v0.6.0';
+      await openPage(page, '/specifications/' + type + '/');
+      await expect(page.locator('.schema-links')).toContainText('w3id.org/fair-bioheaders/' + type + '/' + release);
       await expect(page.locator('#schema-version-registry, .schema-links')).toContainText('schemas/versions.json');
       await expect(page.locator('.status-table')).toContainText('Released contract');
     }
     await openPage(page, '/specifications/fht/');
-    await expect(page.locator('.spec-notice--draft')).toBeVisible();
-    await expect(page.locator('#main')).toContainText('FHT is a draft');
-    await expect(page.locator('a[href^="https://w3id.org/fair-bioheaders/fht"]')).toHaveCount(0);
-    await expect(page.locator('h1')).toContainText('Draft');
+    await expect(page.locator('.spec-notice--draft')).toHaveCount(0);
+    await expect(page.locator('#main')).toContainText('24385024');
+    await expect(page.locator('#main')).toContainText('supports FHT through its normal released lane');
+    await expect(page.locator('#main')).toContainText('JSON-LD remains unsupported');
+    await expect(page.locator('a[href^="https://w3id.org/fair-bioheaders/fht/"]')).toHaveCount(0);
+    await expect(page.locator('.schema-links')).toContainText('alias registration pending');
+    await expect(page.locator('#main')).toContainText('historical');
   });
 
-  test('fhgm: draft overview, marked draft, and no field inventory', async ({ page }) => {
+  test('fhgm: published native model stays separate from header inventory and live aliases', async ({ page }) => {
     await openPage(page, '/specifications/fhgm/');
-    await expect(page.locator('h1')).toContainText('Draft');
-    await expect(page.locator('.spec-notice--draft')).toBeVisible();
+    await expect(page.locator('h1')).toHaveText('FHGM native gene model records');
+    await expect(page.locator('[data-fhgm-release="v0.8.0"]')).toHaveAttribute('data-fhgm-contract-version', '0.1');
+    await expect(page.locator('.spec-notice--draft')).toHaveCount(0);
     const body = page.locator('#main');
-    await expect(body).toContainText(/FHGM is a reviewed development model, not a released contract/i);
-    await expect(body).toContainText(/no field inventory/i);
-    await expect(body).toContainText(/not a released contract/i);
-    // The page states the deferrals instead of inventing artifacts.
-    await expect(body).toContainText(/schemas\/versions\.json/);
-    // No generated reference exists for a type with no contract to inventory.
-    await expect(page.locator('.field-table')).toHaveCount(0);
-    await expect(page.locator('.reference-provenance')).toHaveCount(0);
-    // No released alias, and the authority plus the open questions are linked.
-    await expect(page.locator('a[href^="https://w3id.org/fair-bioheaders/fhgm"]')).toHaveCount(0);
-    await expect(page.locator('a[href="https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHGM.md"]').first()).toBeVisible();
-    await expect(page.locator('a[href*="FHGM-Specification"]').first()).toBeVisible();
+    for (const value of ['0.1 is published', '24385999', '72cb46b98160ecc7a7f20ef579a6879d5030c40b',
+      'no generated header field inventory', 'outside the record', 'not-run', '92-case',
+      'Alias registration is pending', 'No FHGM JSON-LD form', 'not alternatives to each other']) {
+      await expect(body).toContainText(value);
+    }
+    await expect(page.locator('.field-table, .reference-provenance')).toHaveCount(0);
+    await expect(page.locator('a[href^="https://w3id.org/fair-bioheaders/"]')).toHaveCount(0);
+    await expect(page.locator('a[href="https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.8.0/model-contracts/fhgm/0.1/fhgm-model.schema.json"]')).toBeVisible();
+    await expect(page.locator('a[href="https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.8.0/model-contracts/fhgm/0.1/publication.json"]')).toBeVisible();
     await expect(page.locator('a[href*="issues/204"]').first()).toBeVisible();
     await expect(page.locator('a[href*="issues/206"]').first()).toBeVisible();
-    // FHGM is described as model records inside an FHGFF3 file, not a rival type.
-    await expect(body).toContainText(/not alternatives to each/);
   });
 
   test('references distinguish schema validity from checksum, parent and biology checks', async ({ page }) => {

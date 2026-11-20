@@ -21,7 +21,7 @@ INDEXABLE_PREFIXES = ('/publication/',)
 # The four header-type reference pages, each pinned to one schema snapshot.
 SCHEMA_PAGES = {
     'fhr': ('FHR', 'fhr-v0.6.0.json'),
-    'fht': ('FHT', 'fht-draft.json'),
+    'fht': ('FHT', 'fht-v0.7.0.json'),
     'fhp': ('FHP', 'fhp-v0.6.0.json'),
     'fhgff3': ('FHGFF3', 'fhgff3-v0.6.0.json'),
 }
@@ -29,12 +29,12 @@ SCHEMA_SNAPSHOTS = Path(__file__).resolve().parent / 'schema-snapshots'
 # The pinned mapping v1 surface behind the generated /mappings/ crosswalk.
 MAPPING_SNAPSHOTS = Path(__file__).resolve().parent / 'mapping-snapshots'
 MAPPING_INVENTORY = 'assembly-dcmi.yml'
-# Wording the /mappings/ page may not carry while the label is withheld and no
-# deterministic exporter exists. scripts/mapping_crosswalk.py guards the generated
+# Unrecorded label/deposit/browser-converter claims stay forbidden despite the
+# shipped narrow runtime exporter. scripts/mapping_crosswalk.py guards the generated
 # fragment; this guards what actually renders, including the hand-written prose.
-MAPPING_FORBIDDEN = ('official guidance', 'official mapping', 'unmappable', 'the exporter',
+MAPPING_FORBIDDEN = ('official guidance', 'official mapping', 'unmappable', 'this page exports',
                      'deposit-ready output')
-RELEASED_TYPES = ('FHR', 'FHP', 'FHGFF3')
+RELEASED_TYPES = ('FHR', 'FHP', 'FHGFF3', 'FHT')
 MATHJAX_INTEGRITY = 'sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei'
 MATHJAX_URL = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js'
 
@@ -520,21 +520,23 @@ def schema_reference_errors(relative, text):
             errors.append('a scrollable field reference table is not keyboard reachable and named')
     if 'schema-links' not in text:
         errors.append('no schema location block')
+    expected_release = 'v0.7.0' if page_type == 'FHT' else 'v0.6.0'
+    expected_alias = f'https://w3id.org/fair-bioheaders/{match.group(1)}/{expected_release}'
+    if expected_alias not in text:
+        errors.append(f'{page_type} page does not link its fixed release schema URL')
+    if page_type in RELEASED_TYPES and 'versions.json' not in text:
+        errors.append(f'{page_type} page does not link the schema-version registry')
     if page_type == 'FHT':
-        if 'spec-notice--draft' not in text:
-            errors.append('the FHT reference page lacks its draft notice')
-        if 'w3id.org/fair-bioheaders/fht' in text:
-            errors.append('the FHT draft page links a released alias that does not exist')
-    else:
-        if f'w3id.org/fair-bioheaders/{match.group(1)}/v' not in text:
-            errors.append(f'{page_type} page does not link its fixed release schema URL')
-        if page_type in RELEASED_TYPES and 'versions.json' not in text:
-            errors.append(f'{page_type} page does not link the schema-version registry')
+        if 'spec-notice--draft' in text:
+            errors.append('the released FHT reference page retains a current draft notice')
+        cited = re.findall(r'href="(https://w3id.org/fair-bioheaders/fht/[^"]+)"', text)
+        if any(url.rstrip('/') != expected_alias for url in cited):
+            errors.append('the FHT reference page links an unsupported release alias')
     return errors
 
 
 FHGM_PAGE = 'specifications/fhgm/index.html'
-FHGM_AUTHORITY = 'FAIR-bioHeaders-Specification/blob/main/docs/FHGM.md'
+FHGM_AUTHORITY = 'FAIR-bioHeaders-Specification/blob/v0.8.0/model-contracts/fhgm/0.1/publication.json'
 
 
 def mapping_page_errors(relative, text):
@@ -544,7 +546,7 @@ def mapping_page_errors(relative, text):
     `scripts/mapping_crosswalk.py --check` (and by test_mapping_crosswalk.py); this is
     the matching rendered check. It proves the page still shows the pinned revision,
     still uses the inventory's own vocabulary, and still does not claim the two things
-    the withheld label forbids: an "official" status, or an exporter.
+    the recorded scope forbids: an ungranted official status, deposit readiness or browser conversion.
     """
     if relative != 'mappings/index.html':
         return []
@@ -581,36 +583,40 @@ def mapping_page_errors(relative, text):
     return errors
 
 
-def fhgm_draft_errors(relative, text):
-    """Keep the FHGM page a draft overview of a proposal with no contract.
+def fhgm_native_errors(relative, text):
+    """Keep the published native overview distinct from generated header types.
 
-    The four generated references above are backed by pinned schema bytes; FHGM
-    has no contract to inventory, so its page must look like a draft and say so:
-    a visible draft notice, a link to the authoritative shared docs/FHGM.md, no
-    generated field reference dressed up as a contract, and no invented release
-    alias. This mirrors the FHT draft rules for a type one step earlier.
+    FHGM0.1 is published in shared v0.8.0, selected outside model records.
+    The existing overview links immutable source facts without introducing a
+    header selector/inventory or presenting a pending native alias as live.
     """
     if relative != FHGM_PAGE:
         return []
-    class AuthorityLinkParser(HTMLParser):
-        found = False
+
+    class Links(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.hrefs = []
 
         def handle_starttag(self, tag, attributes):
-            if tag == 'a' and dict(attributes).get('href') == (
-                    f'https://github.com/FAIR-bioHeaders/{FHGM_AUTHORITY}'):
-                self.found = True
+            if tag == 'a':
+                self.hrefs.append(dict(attributes).get('href', ''))
 
-    authority = AuthorityLinkParser()
-    authority.feed(text)
+    links = Links()
+    links.feed(text)
     errors = []
-    if 'spec-notice--draft' not in text:
-        errors.append('the FHGM draft page lacks its draft notice')
-    if not authority.found:
-        errors.append('the FHGM draft page does not link the authoritative docs/FHGM.md')
-    if 'w3id.org/fair-bioheaders/fhgm' in text:
-        errors.append('the FHGM draft page links a released alias that does not exist')
+    if 'data-fhgm-release="v0.8.0"' not in text or 'data-fhgm-contract-version="0.1"' not in text:
+        errors.append('the FHGM native page lacks its published model/version notice')
+    if f'https://github.com/FAIR-bioHeaders/{FHGM_AUTHORITY}' not in links.hrefs:
+        errors.append('the FHGM native page does not link its immutable publication.json authority')
+    if 'spec-notice--draft' in text:
+        errors.append('the published FHGM native page retains a current draft notice')
+    if any(url.startswith('https://w3id.org/fair-bioheaders/fhgm') for url in links.hrefs):
+        errors.append('the FHGM native page invents an FHGM header alias')
+    if any(url.startswith('https://w3id.org/fair-bioheaders/model-contracts/fhgm') for url in links.hrefs):
+        errors.append('the FHGM native page links the pending native alias as live')
     if 'field-table' in text or 'reference-provenance' in text:
-        errors.append('the FHGM draft page carries a generated field reference; FHGM has no contract to inventory')
+        errors.append('the FHGM native page carries an unrequested generated header inventory')
     return errors
 
 
@@ -661,7 +667,7 @@ def check(root):
             errors.extend(resource_errors(file.read_text()))
         errors.extend(f'{relative}: {error}' for error in mathjax_errors(page))
         errors.extend(f'{relative}: {error}' for error in schema_reference_errors(relative, file.read_text()))
-        errors.extend(f'{relative}: {error}' for error in fhgm_draft_errors(relative, file.read_text()))
+        errors.extend(f'{relative}: {error}' for error in fhgm_native_errors(relative, file.read_text()))
         errors.extend(f'{relative}: {error}' for error in mapping_page_errors(relative, file.read_text()))
     # Also check font and image references in CSS, including missing vendored assets.
     for file in root.rglob('*.css'):

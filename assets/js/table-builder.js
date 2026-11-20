@@ -1,6 +1,6 @@
 /* ==========================================================================
    FAIR BioHeaders table builder
-   Builds one typed FHR, FHP or FHGFF3 metadata record from a form, validates it
+   Builds one typed FHR, FHP, FHGFF3 or FHT metadata record from a form, validates it
    against the selected supported schema snapshot, and produces a readable table,
    a standalone HTML document (with type-specific microdata), and a YAML metadata
    file.
@@ -64,6 +64,12 @@
           SHARED_RAW + 'v0.4.0/fhp.json'
         ] }
     ],
+    FHT: [
+      { type: 'FHT', release: 'v0.7.0', declares: '1.0', snapshot: 'fht-v0.7.0.json',
+        aliases: ['https://w3id.org/fair-bioheaders/fht/v0.7.0',
+          'https://w3id.org/fair-bioheaders/fht/v0.7.0/', SHARED_RAW + 'v0.7.0/fht.json',
+          SHARED_RAW + 'main/fht.json'] }
+    ],
     FHGFF3: [
       { type: 'FHGFF3', release: 'v0.6.0', declares: '1.2', snapshot: 'fhgff3-v0.6.0.json',
         aliases: [
@@ -87,13 +93,14 @@
     declares: 1, legacy: true, aliases: [SCHEMA_URL] };
 
   function allReleases() {
-    return [DEVELOPMENT].concat(RELEASES.FHR, RELEASES.FHP, RELEASES.FHGFF3);
+    return [DEVELOPMENT].concat(RELEASES.FHR, RELEASES.FHP, RELEASES.FHGFF3, RELEASES.FHT);
   }
 
   // The FHP itemtype identity is the raw-main FHP schema URL, fixed by the FHP
   // microdata binding (FHP-Specification docs/FHP-MICRODATA.md F1); the record's
   // own `schema` property selects the contract version. FHP is never labeled
   // with the FHR itemtype. FHGFF3 uses its own H1 identity.
+  var FHT_ITEMTYPE_URL = 'https://w3id.org/fair-bioheaders/fht/v0.7.0';
   var FHP_ITEMTYPE_URL = SHARED_RAW + 'main/fhp.json';
   var FHGFF3_ITEMTYPE_URL = SHARED_RAW + 'main/fhgff3.json';
 
@@ -128,13 +135,13 @@
   }
 
   function recordType(record) {
-    var match = String(record.schema || '').match(/(?:\/)(fhp|fhgff3)(?:\/|\.json)/);
+    var match = String(record.schema || '').match(/(?:\/)(fhp|fhgff3|fht)(?:\/|\.json)/);
     return match ? match[1].toUpperCase() : 'FHR';
   }
 
   function recordTitle(record) {
-    return recordType(record) + ' metadata' + ((record.genome || record.proteome || record.annotation) ?
-      ': ' + (record.genome || record.proteome || record.annotation) : '');
+    return recordType(record) + ' metadata' + ((record.genome || record.proteome || record.annotation || record.transcriptome) ?
+      ': ' + (record.genome || record.proteome || record.annotation || record.transcriptome) : '');
   }
 
   // Canonical output order, matching the schema's property order.
@@ -491,6 +498,24 @@
         errors.push({ path: path, message: 'must be <= ' + schema.maximum });
       }
     }
+    if (Array.isArray(value)) {
+      if (schema.minItems !== undefined && value.length < schema.minItems) {
+        errors.push({ path: path, message: 'must contain at least ' + schema.minItems + ' items' });
+      }
+      if (schema.uniqueItems) {
+        function identity(item) {
+          if (Array.isArray(item)) return ['array', item.map(identity)];
+          if (item && typeof item === 'object') return ['object', Object.keys(item).sort().map(function (key) { return [key, identity(item[key])]; })];
+          return [typeof item, item];
+        }
+        var seen = new Set();
+        value.forEach(function (item) {
+          var key = JSON.stringify(identity(item));
+          if (seen.has(key)) errors.push({ path: path, message: 'must contain unique items' });
+          seen.add(key);
+        });
+      }
+    }
     if (Array.isArray(value) && schema.items) {
       value.forEach(function (item, index) {
         validateSchema(item, schema.items, root, path.concat([index]), errors);
@@ -537,6 +562,26 @@
     }
   }
 
+  function completenessIssues(record) {
+    var counts = record.completeness;
+    var names = ['completeSingle', 'completeDuplicated', 'fragmented', 'missing', 'total'];
+    if (!counts || !names.every(function (key) { return Number.isSafeInteger(counts[key]); })) return [];
+    var sum = names.slice(0, 4).reduce(function (total, key) { return total + BigInt(counts[key]); }, BigInt(0));
+    return sum === BigInt(counts.total) ? [] : [{ path: ['completeness'], kind: 'semantic',
+      message: 'C1: completeness component counts must sum to total (sum ' + sum + ', total ' + counts.total + ')' }];
+  }
+
+  function capabilityIssues(value, path) {
+    path = path || [];
+    if (typeof value === 'number' && (!Number.isFinite(value) || (Number.isInteger(value) && !Number.isSafeInteger(value)))) {
+      return [{ path: path, kind: 'unsupported-value', message: 'Browser cannot preserve this numeric value exactly; use an exact-number runtime' }];
+    }
+    if (!value || typeof value !== 'object') return [];
+    return Object.keys(value).reduce(function (issues, key) {
+      return issues.concat(capabilityIssues(value[key], path.concat(Array.isArray(value) ? Number(key) : key)));
+    }, []);
+  }
+
   function validateRecord(record, schema) {
     var errors = [];
     validateSchema(record, schema, schema, [], errors);
@@ -553,6 +598,7 @@
         if (parent && typeof parent === 'object') canonical(parent.checksum, ['derivedFrom', index, 'checksum']);
       });
     }
+    if (record && recordType(record) === 'FHT') errors = errors.concat(capabilityIssues(record), completenessIssues(record));
     return errors;
   }
 
@@ -649,6 +695,12 @@
     return emitMap(record, 0, orderedKeys(record, schema, canonical), schema).join('\n') + '\n';
   }
 
+  // Pure record-order serializer for separately reviewed candidate profiles.
+  // It does not register a release or enable a type in the browser form.
+  function recordYaml(record, schema) {
+    return emitMap(record, 0, Object.keys(record), schema).join('\n') + '\n';
+  }
+
   // The declared data-fhr-type follows the schema where known, so a numeric
   // schemaVersion keeps type "number" even though JavaScript reports 1.0 as an
   // integer. Unknown paths fall back to the runtime value type.
@@ -668,13 +720,13 @@
     return 'string';
   }
 
-  function htmlValue(key, value, schemaNode) {
+  function htmlValue(key, value, schemaNode, root) {
     var prop = escapeHtml(key);
-    var resolved = schemaNode || {};
+    var resolved = root ? resolveRef(schemaNode || {}, root) : schemaNode || {};
     if (Array.isArray(value)) {
       var itemSchema = resolved.items || {};
       return '<span itemprop="' + prop + '" data-fhr-type="array">' +
-        value.map(function (item) { return htmlValue('item', item, itemSchema); }).join('') + '</span>';
+        value.map(function (item) { return htmlValue('item', item, itemSchema, root); }).join('') + '</span>';
     }
     if (value && typeof value === 'object') {
       var props = resolved.properties || {};
@@ -683,7 +735,7 @@
       var content = Object.keys(value)
         .filter(function (k) { return k.indexOf('x-') !== 0; })
         .map(function (k) {
-          return htmlValue(k, value[k], ownProperty(props, k));
+          return htmlValue(k, value[k], ownProperty(props, k), root);
         }).join('');
       return '<span itemprop="' + prop + '" itemscope data-fhr-type="object">' + content + '</span>';
     }
@@ -694,8 +746,8 @@
 
   function microdataDiv(record, schema) {
     var kind = recordType(record);
-    if (kind !== 'FHR' && kind !== 'FHP' && kind !== 'FHGFF3') {
-      throw new Error('HTML microdata is only supported for FHR, FHP and FHGFF3');
+    if (kind !== 'FHR' && kind !== 'FHP' && kind !== 'FHGFF3' && kind !== 'FHT') {
+      throw new Error('HTML microdata is only supported for FHR, FHP, FHGFF3 and FHT');
     }
     var props = (schema && schema.properties) || {};
     // FHR keeps its canonical FIELD_ORDER; FHP follows the record's own key
@@ -708,8 +760,8 @@
       .filter(function (key) {
         return record[key] !== undefined && extensions.indexOf(key) === -1;
       });
-    return '<div itemscope itemtype="' + (kind === 'FHR' ? SCHEMA_URL : kind === 'FHP' ? FHP_ITEMTYPE_URL : FHGFF3_ITEMTYPE_URL) + '">' +
-      order.map(function (key) { return htmlValue(key, record[key], ownProperty(props, key)); }).join('') + '</div>';
+    return '<div itemscope itemtype="' + (kind === 'FHR' ? SCHEMA_URL : kind === 'FHP' ? FHP_ITEMTYPE_URL : kind === 'FHT' ? FHT_ITEMTYPE_URL : FHGFF3_ITEMTYPE_URL) + '">' +
+      order.map(function (key) { return htmlValue(key, record[key], ownProperty(props, key), schema); }).join('') + '</div>';
   }
 
   // The M5 note a microdata writer owes the reader: which keys it left out.
@@ -813,14 +865,14 @@
   function standaloneHtml(record, schema) {
     var title = recordTitle(record);
     var kind = recordType(record);
-    var carriesMicrodata = kind === 'FHR' || kind === 'FHP' || kind === 'FHGFF3';
+    var carriesMicrodata = kind === 'FHR' || kind === 'FHP' || kind === 'FHGFF3' || kind === 'FHT';
     return '<!doctype html>\n<html lang="en"><head><meta charset="utf-8">' +
       '<title>' + escapeHtml(title) + '</title></head><body>\n' +
       '<h1>' + escapeHtml(title) + '</h1>\n' +
       tableHtml(record) + '\n' +
       (carriesMicrodata ?
         '<h2>Machine-readable ' + kind + ' microdata</h2>\n' +
-          (kind === 'FHGFF3' ? '<p>Experimental FHGFF3 HTML binding; JSON-LD is unsupported. Header metadata does not validate annotation features.</p>\n' : '') + microdataDiv(record, schema) +
+          (kind === 'FHT' ? '<p>FHT v0.7.0 typed HTML; JSON-LD is unsupported. Metadata validity does not verify file bytes, parent identity or biological derivation.</p>\n' : kind === 'FHGFF3' ? '<p>Experimental FHGFF3 HTML binding; JSON-LD is unsupported. Header metadata does not validate annotation features.</p>\n' : '') + microdataDiv(record, schema) +
           microdataOmissionNote(record, schema) :
         '<p>Readable table only: ' + kind + ' HTML microdata is not supported. Preserve the YAML metadata separately.</p>') + '\n' +
       '</body></html>\n';
@@ -833,6 +885,9 @@
     DEVELOPMENT: DEVELOPMENT,
     FHP_ITEMTYPE_URL: FHP_ITEMTYPE_URL,
     FHGFF3_ITEMTYPE_URL: FHGFF3_ITEMTYPE_URL,
+    FHT_ITEMTYPE_URL: FHT_ITEMTYPE_URL,
+    completenessIssues: completenessIssues,
+    capabilityIssues: capabilityIssues,
     recordType: recordType,
     selectRelease: selectRelease,
     selectSchema: selectSchema,
@@ -846,6 +901,8 @@
     escapeHtml: escapeHtml,
     validateRecord: validateRecord,
     toYaml: toYaml,
+    recordYaml: recordYaml,
+    typedHtmlValue: htmlValue,
     microdataDiv: microdataDiv,
     standaloneHtml: standaloneHtml,
     tableRows: tableRows,
@@ -855,6 +912,8 @@
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = api;
   }
+
+  if (typeof window !== 'undefined') window.FairBioHeadersBuilder = api;
 
   if (typeof document === 'undefined' || typeof module !== 'undefined') {
     return;
@@ -874,7 +933,7 @@
   // Extension fields are drafted separately from the record body: they are
   // name/value rows the producer appends, and the record is assembled from them
   // at generate time (see buildRecord).
-  var extensionDrafts = { FHR: [], FHP: [], FHGFF3: [] };
+  var extensionDrafts = { FHR: [], FHP: [], FHGFF3: [], FHT: [] };
 
   function extensionRows() {
     return extensionDrafts[activeType];
@@ -994,7 +1053,7 @@
     wrap.appendChild(el('legend', { text: 'Extension fields' }));
     wrap.appendChild(el('p', { class: 'tb-help', id: 'tb-extensions-help', text:
       'Optional keys the released contracts call extension fields (docs/FORMAT.md rule R15). A name must match '
-      + EXTENSION_KEY_PATTERN + ' and the value is recorded as text. Only FHR 2.1 and FHP/FHGFF3 1.1 or later '
+      + EXTENSION_KEY_PATTERN + ' and the value is recorded as text. FHR 2.1, FHP/FHGFF3 1.1 or later and FHT 1.0 '
       + 'accept them, so a record citing an older release — or stating an older schemaVersion — reports the key '
       + 'as unknown. They appear in the readable table and the YAML; HTML microdata carries none '
       + '(docs/MICRODATA.md M5).' }));
@@ -1251,7 +1310,12 @@
   function renderFamilyForm(container) {
     var root = activeSnapshot();
     var form = el('form', { class: 'tb-form', novalidate: 'novalidate' });
-    var sections = [
+    var sections = activeType === 'FHT' ? [
+      ['Resource', ['schema', 'schemaVersion', 'transcriptome', 'transcriptomeSynonym', 'version', 'assemblyType', 'moleculeType', 'taxon', 'metadataAuthor', 'dateCreated']],
+      ['Provenance and methods', ['assemblyAuthor', 'assemblySoftware', 'derivedFrom', 'instrument', 'libraryStrategy', 'strandedness', 'sequencingRuns', 'sample']],
+      ['Reported statistics', ['vitalStats', 'completeness']],
+      ['Identifiers, rights and integrity', ['accessionID', 'identifier', 'relatedLink', 'scholarlyArticle', 'documentation', 'funding', 'reuseConditions', 'voucherSpecimen', 'checksum']]
+    ] : [
       ['Resource', ['schema', 'schemaVersion', 'proteome', 'annotation', 'version', 'sourceType', 'taxon', 'metadataAuthor', 'dateCreated']],
       ['Provenance and methods', ['derivedFrom', 'genomeReference', 'source', 'predictionSoftware', 'annotationSoftware', 'predictionProtocol', 'annotationProtocol', 'geneticCode', 'isoformPolicy', 'soVersion']],
       ['Reported statistics', ['sequenceStats', 'featureCounts', 'completeness']],
@@ -1262,7 +1326,7 @@
       var title = typeof key === 'number' ? 'Entry ' + (key + 1) : String(key).replace(/([a-z])([A-Z])/g, '$1 $2');
       title = title.charAt(0).toUpperCase() + title.slice(1);
       var description = node.description;
-      if (path === 'schema') description = 'Cite a pinned ' + activeType + ' release: ' + releasesFor(activeType).map(function (entry) { return entry.release + ' (schema ' + entry.declares + ')'; }).join(' or ') + ', or a fixed raw-tag alias of the same release. Other releases and raw-main are unavailable for this type.';
+      if (path === 'schema') description = 'Cite a pinned ' + activeType + ' release: ' + releasesFor(activeType).map(function (entry) { return entry.release + ' (schema ' + entry.declares + ')'; }).join(' or ') + ', or a fixed raw-tag alias of the same release. Other releases are unavailable for this type.' + (activeType === 'FHT' ? ' Shared raw-main selects this published FHT snapshot, never a future contract.' : ' Raw-main is unavailable for this type.') + '';
       if (path === 'schemaVersion') description = 'Set from the cited release; separate from your resource version.';
       if (key === 'relationship') description = 'Relationship to the parent file; choose from the released vocabulary.';
       if (path === 'checksum') description = 'Producer-supplied sha2-512/256 checksum. Checked structurally only; no file is read or verified.';
@@ -1306,7 +1370,12 @@
         list.appendChild(add); return list;
       }
       return scalarField(definition, function () { return parent[key] === undefined ? '' : parent[key]; }, function (value) {
-        parent[key] = value !== '' && (node.type === 'integer' || node.type === 'number') ? Number(value) : value;
+        var number = Number(value);
+        var mantissa = String(value).split(/[eE]/)[0];
+        var underflow = number === 0 && /[1-9]/.test(mantissa);
+        // Preserve unrepresentable input as text so validation refuses it rather
+        // than silently exporting zero after numeric underflow.
+        parent[key] = value !== '' && (node.type === 'integer' || node.type === 'number') && !underflow ? number : value;
       });
     }
     sections.forEach(function (section) {

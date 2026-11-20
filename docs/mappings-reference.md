@@ -84,3 +84,16 @@ python3 scripts/mapping_crosswalk.py --fetch    # refresh the pins (maintainer s
   assign an ARK, or imply that DCMI, DataCite, Crossref or any other body endorses it.
 - Interactive exploration, per-target adapters and any change to `/table-builder/` are
   separate work; this page is documentation only.
+
+## Metadata-only source-reference example
+
+The separate “Referencing an assembly without downloading its sequence” section
+uses the adopted upstream fixture at immutable commit
+`1a0792e6f8db1b73959999d30f5e6575b982cbfc`,
+`tests/fixtures/mapping-reference/{README.md,reference.json,ncbi-response.json}`.
+It links those authoritative artifacts rather than refreshing or duplicating
+the older crosswalk snapshots. It preserves accession, submitter and repository
+release-date roles, and distinguishes the metadata-snapshot digest from sequence
+identity. No complete FHR input, additional target adapter, exporter or official
+label follows from publishing this reference. The mappings browser suite checks
+the rendered facts, immutable links and evidence boundaries.

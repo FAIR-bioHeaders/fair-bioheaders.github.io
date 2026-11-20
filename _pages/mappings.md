@@ -103,6 +103,37 @@ schema.org export is one-way, and the qualified-DC graph here is lossy in a thir
 drops array order and nested structure. That is why the bundle keeps `source.json` and
 `context.json` as the preservation layer, and why no reverse mapping is claimed.
 
+## Referencing an assembly without downloading its sequence
+
+A metadata-only source reference can identify an externally held assembly while
+keeping its evidence separate from a file-bound header. The adopted
+[source-reference example][reference-example] uses a dated NCBI metadata snapshot:
+
+> *Drosophila melanogaster*, “Release 6 plus ISO1 MT”; NCBI RefSeq assembly
+> [GCF_000001215.4](https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001215.4/)
+> (repository release date: 2014-08-01).
+
+The [authored reference][reference-json] preserves the source's submitter as
+“The FlyBase Consortium/Berkeley Drosophila Genome Project/Celera Genomics”.
+That is a **submitter**, not an inferred assembly creator list. The repository
+release date is not automatically assembly creation, article publication,
+specimen collection or deposition. The accession includes its accession version;
+no separate assembly version, resource DOI or describing article is supplied.
+
+The [unmodified NCBI response][reference-snapshot] was retrieved on 2026-11-16.
+The authored reference records its actual downloaded length (3,681 bytes), API
+source URL and SHA-256. This digest identifies the **metadata snapshot**, not a
+sequence file. The upstream fixture checks that the transcribed values match that
+snapshot without making live requests.
+
+No sequence was obtained. Metadata statistics therefore establish no exact file
+checksum, SeqCol digest or verified parent-file identity. This reference is
+**not a complete FHR header or export-context input**: do not invent missing
+authors, dates or checksums to make it one. A landing URL records a source; it
+does not archive the assembly or guarantee future persistence. The example
+illustrates resource identity within the adopted foundation, without claiming
+DataCite validity, a formatted citation adapter or deposit readiness.
+
 ## Generated from the pinned v1 surface
 
 {% include mappings/v1-crosswalk.html %}
@@ -140,3 +171,7 @@ DataCite, Crossref or the ARK community, and it is not a submission recipe.
 [canonical]: https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/mappings/fhr-jsonld-dcmi.yml
 [schemaorg]: https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/SCHEMAORG-EXPORT.md
 [mlixs]: https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/MAPPINGS.md
+
+[reference-example]: https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/1a0792e6f8db1b73959999d30f5e6575b982cbfc/tests/fixtures/mapping-reference/README.md
+[reference-json]: https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/1a0792e6f8db1b73959999d30f5e6575b982cbfc/tests/fixtures/mapping-reference/reference.json
+[reference-snapshot]: https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/1a0792e6f8db1b73959999d30f5e6575b982cbfc/tests/fixtures/mapping-reference/ncbi-response.json

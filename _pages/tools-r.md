@@ -5,9 +5,19 @@ permalink: /tools/r/
 excerpt: "Set up and use the native R source library for FAIR BioHeaders."
 ---
 
+## Setup
+
 An R installation with package dependencies from `DESCRIPTION`, a C compiler and
 zlib development headers is required. The native code builds SHA-512/256 and
 strict gzip handling; `digest` is not a substitute for SHA-512/256.
+
+First install the R dependencies:
+
+```r
+install.packages(c("digest", "jsonlite", "jsonvalidate", "yaml"))
+```
+
+Then build and install the source package:
 
 ```sh
 git clone https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-R.git
@@ -17,16 +27,12 @@ R CMD build .
 R CMD INSTALL FAIRbioHeadersTools_0.1.0.tar.gz
 ```
 
-Install the dependencies before building (for example in R):
-
-```r
-install.packages(c("digest", "jsonlite", "jsonvalidate", "yaml"))
-```
-
 `jsonvalidate` also needs its V8 dependency available on your platform;
 consult its installation instructions if compilation reports missing libraries.
 Install the `DESCRIPTION` dependencies before building; package installation
 reports missing dependencies rather than providing a standalone binary.
+
+## Read and inspect results
 
 ```r
 library(FAIRbioHeadersTools)

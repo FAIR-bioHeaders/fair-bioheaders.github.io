@@ -5,6 +5,8 @@ permalink: /tools/javascript/
 excerpt: "Set up and use the native JavaScript (Node.js) source library for FAIR BioHeaders."
 ---
 
+## Setup
+
 Use Node.js 20 or later (development uses Node 24). This ESM library uses
 Node crypto, zlib and Ajv; it is separate from the browser metadata lesson.
 Install this exact source revision in your own Node project:
@@ -12,6 +14,8 @@ Install this exact source revision in your own Node project:
 ```sh
 npm install github:FAIR-bioHeaders/FAIR-bioHeaders-Tools-JavaScript#bac1781aac5162ccb18003a8bc268fe576f6eba7
 ```
+
+## Read and inspect results
 
 Save as `read.mjs`, then run `node read.mjs` with your own local file:
 

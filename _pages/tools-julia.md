@@ -5,6 +5,8 @@ permalink: /tools/julia/
 excerpt: "Set up and use the native Julia source library for FAIR BioHeaders."
 ---
 
+## Setup
+
 Use Julia **1.12 or later**: the required SHA-512/256 API determines the runtime
 floor. In a clean project environment, install this source revision:
 
@@ -21,6 +23,8 @@ println(result)
 ```
 
 This selects repository source rather than a General registry release.
+## Read and inspect results
+
 `verify_file()` coordinates framing, checksum, YAML portability and cited-contract
 validation. `read_fhr_file()`, `read_fhr_header()`, `header_checksum()`,
 `select_contract()` and `validate_record()` expose individual layers; consult

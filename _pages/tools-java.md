@@ -5,6 +5,8 @@ permalink: /tools/java/
 excerpt: "Set up and use the native Java source library for FAIR BioHeaders."
 ---
 
+## Setup
+
 Use JDK 17 or later. The committed Maven wrapper resolves the dependencies.
 Build from this source revision; the source version is `0.1.0-SNAPSHOT`.
 
@@ -21,6 +23,8 @@ The package command above builds the artifact; it does not run acceptance tests.
 Keep `target/lib/` alongside the jar when moving it: the jar manifest references
 those runtime dependencies. This is a source-build workflow, not a Maven Central
 coordinate or publication claim.
+
+## Read and inspect results
 
 In a Java application with the built library and dependencies on its classpath:
 

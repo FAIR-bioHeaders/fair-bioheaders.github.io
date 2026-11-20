@@ -99,7 +99,7 @@ publication/citation metadata and navigation remain part of the acceptance check
 `/table-builder/` supports released FHR, FHP and FHGFF3 metadata (issues #16/#15).
 Each form drives one typed record, validated against its selected schema,
 previewed as a readable table, and serialized as standalone HTML and YAML.
-FHR and FHP HTML include typed microdata; FHGFF3 HTML does not. All processing
+FHR, FHP and FHGFF3 HTML include type-specific microdata; FHGFF3 is experimental. All processing
 is local; there is no backend, upload, login, or persistence.
 
 - **Schema copy:** `assets/schema/fhr.json` is a cache of
@@ -258,9 +258,9 @@ fixtures under `scripts/fixtures/family-v0.4.0` are unmodified released examples
 from that same tag; verify them and the validator against a reference JSON
 Schema implementation when updating support. Avoid general JSON Schema claims.
 
-FHR HTML retains its established microdata binding. FHP/FHGFF3 HTML is a readable
-table with stable field paths, without microdata; its separate YAML preserves
-the structured record. Do not emit FHR microdata for another header type. These
+FHR HTML retains its established microdata binding. FHP/FHGFF3 HTML includes its own typed microdata with a readable table.
+FHGFF3 carries the experimental label and no JSON-LD support; YAML retains
+extension fields. Do not emit FHR microdata for another header type. These
 exports are metadata documents and do not embed headers into sequence files.
 
 ### Current-release builder support: v0.6.0 snapshots (issue #15)
@@ -387,7 +387,7 @@ repository's own validator. It asserts YAML/microdata/table round-trip
 equality including zero/false/absence, array order, bidi and zero-width
 control bytes, YAML indicator and tag characters, and `javascript:`/`data:`
 URI values rendering as inert text with no link, script or attribute
-position; it asserts FHGFF3 output still carries no microdata. This is a
+position; it asserts FHGFF3 output uses its own experimental itemtype. This is a
 structural tripwire over this repository's bytes and bindings — it is not a
 toolkit round trip, and the dated 0.11.0/0.12.0 local procedure above stays
 the authority for released-runtime acceptance.

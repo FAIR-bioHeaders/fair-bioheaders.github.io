@@ -43,13 +43,8 @@ function build(name, record) {
   if (!entry || entry.type !== kind) throw new Error(`${name}: cites an unsupported or cross-type target`);
   const schema = snapshots[entry.snapshot];
   const errors = tb.validateRecord(record, schema);
-  let microdataDiv = null;
-  let microdataThrows = false;
-  if (kind === 'FHGFF3') {
-    try { tb.microdataDiv(record, schema); } catch (_) { microdataThrows = true; }
-  } else {
-    microdataDiv = tb.microdataDiv(record, schema);
-  }
+  const microdataDiv = tb.microdataDiv(record, schema);
+  const microdataThrows = false;
   return {
     name,
     kind,
@@ -128,12 +123,22 @@ const fhpVector = () => {
   return record;
 };
 
+const fhgff3Vector = () => {
+  const record = readFixture('rich.fhgff3.yaml');
+  record.annotation = 'annotation <script>alert(1)</script> & "quoted"';
+  record.documentation = '  ---\n%YAML 1.1\n!!tag &anchor *alias \u202e\u200b';
+  record.featureCounts[0].count = 0;
+  record.identifier = [];
+  record['x-site-builder'] = { checksum: 'arbitrary extension value', enabled: false };
+  return record;
+};
+
 const report = {
   fixtures: [
-    'example.fhr.json', 'extension-fields.fhr.yaml', 'rich-database.fhp.json', 'rich-mixed.fhp.yaml',
+    'example.fhr.json', 'extension-fields.fhr.yaml', 'rich-database.fhp.json', 'rich-mixed-canonical.fhp.yaml',
     'minimal-reference.fhgff3.json', 'rich.fhgff3.yaml', 'dotted-lineage.fhp.yaml'
   ].map((name) => build(name, readFixture(name))),
-  vectors: [build('vector.fhr', fhrVector()), build('vector.fhp', fhpVector())],
+  vectors: [build('vector.fhr', fhrVector()), build('vector.fhp', fhpVector()), build('vector.fhgff3', fhgff3Vector())],
   // Built through the same export path but EXPECTED to carry validation
   // errors; the Python test asserts the rejection, and export-blocking is the
   // browser wiring's job (covered by table-builder.spec.mjs).

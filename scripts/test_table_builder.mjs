@@ -551,7 +551,7 @@ test('the FHGFF3 1.2 contract follows the same BUSCO rule', () => {
 // ------------------------------------------------------------------ v0.6.0 records
 
 for (const name of ['example.fhr.json', 'extension-fields.fhr.yaml', 'rich-database.fhp.json',
-  'rich-mixed.fhp.yaml', 'minimal-reference.fhgff3.json', 'rich.fhgff3.yaml', 'dotted-lineage.fhp.yaml']) {
+  'rich-mixed-canonical.fhp.yaml', 'minimal-reference.fhgff3.json', 'rich.fhgff3.yaml', 'dotted-lineage.fhp.yaml']) {
   test(`released-shape fixture ${name} validates and survives YAML/table export`, () => {
     const record = releaseFixture(name);
     const kind = tb.recordType(record);
@@ -566,9 +566,9 @@ for (const name of ['example.fhr.json', 'extension-fields.fhr.yaml', 'rich-datab
       assert.match(html, /<h2>Machine-readable FHP microdata<\/h2>/);
       assert.ok(html.includes('<div itemscope itemtype="' + tb.FHP_ITEMTYPE_URL + '">'));
     } else if (kind === 'FHGFF3') {
-      assert.ok(!html.includes('itemscope'), 'FHGFF3 HTML carries no microdata');
-      assert.match(html, /HTML microdata is not supported/);
-      assert.throws(() => tb.microdataDiv(record, schema), /only supported for FHR and FHP/);
+      assert.ok(html.includes('<div itemscope itemtype="' + tb.FHGFF3_ITEMTYPE_URL + '">'));
+      assert.match(html, /Experimental FHGFF3 HTML binding/);
+      assert.match(html, /JSON-LD is unsupported/);
     }
     const groups = tb.tableRows(record);
     if (kind === 'FHR') {
@@ -600,16 +600,18 @@ for (const name of ['rich-database.fhp.json', 'rich-mixed.fhp.yaml', 'minimal-re
     const schema = kind === 'FHP' ? snapshots['fhp-v0.4.0.json'] : snapshots['fhgff3-v0.4.0.json'];
     assert.equal(record.schema, `https://w3id.org/fair-bioheaders/${kind.toLowerCase()}/v0.4.0`);
     assert.equal(record.schemaVersion, '1.0');
-    assert.deepEqual(tb.validateRecord(record, schema), []);
+    const errors = tb.validateRecord(record, schema);
+    if (name === 'rich-mixed.fhp.yaml') {
+      assert.ok(errors.some(e => e.path.join('.') === 'derivedFrom.0.checksum' && e.message.includes('canonical')), 'historical noncanonical placeholder is rejected without rewriting fixture bytes');
+    } else assert.deepEqual(errors, []);
     assert.deepEqual(parse(tb.toYaml(record, schema)), record);
     const html = tb.standaloneHtml(record, schema);
     if (kind === 'FHP') {
       assert.match(html, /<h2>Machine-readable FHP microdata<\/h2>/);
       assert.ok(html.includes('<div itemscope itemtype="' + tb.FHP_ITEMTYPE_URL + '">'));
     } else {
-      assert.ok(!html.includes('itemscope'));
-      assert.match(html, /HTML microdata is not supported/);
-      assert.throws(() => tb.microdataDiv(record, schema), /only supported for FHR and FHP/);
+      assert.ok(html.includes(tb.FHGFF3_ITEMTYPE_URL));
+      assert.match(html, /Experimental FHGFF3 HTML binding/);
     }
     for (const key of Object.keys(record)) {
       assert.ok(tb.tableRows(record)[0].rows.some((row) => row.label === key || row.label.startsWith(key + '.')), key);
@@ -761,4 +763,45 @@ test('builder snapshots use only validation keywords the browser validator imple
     }
     visit(schema);
   }
+});
+
+
+// Named runtime policy controls: schemas are deliberately kept byte-frozen.
+for (const name of ['example.fhr.json', 'rich-database.fhp.json', 'rich.fhgff3.yaml']) {
+  test(`R4 metadata-only canonical checksum control: ${name}`, () => {
+    const record = releaseFixture(name);
+    const schema = tb.selectSchema(record.schema, snapshots);
+    record.checksum = 'A'.repeat(42) + 'B=';
+    assert.ok(tb.validateRecord(record, schema).some(e => e.path.join('.') === 'checksum' && e.message.includes('canonical')));
+    record.checksum = 'A'.repeat(43) + '=';
+    assert.deepEqual(tb.validateRecord(record, schema), []);
+    record['x-arbitrary'] = { checksum: 'not a standard checksum' };
+    assert.deepEqual(tb.validateRecord(record, schema), []);
+  });
+}
+for (const name of ['rich-database.fhp.json', 'rich.fhgff3.yaml']) {
+  test(`R4 nested parent checksum control: ${name}`, () => {
+    const record = releaseFixture(name);
+    if (!record.derivedFrom) record.derivedFrom = [{ headerType: 'FHR', relationship: 'translatedFrom', checksum: 'A'.repeat(43) + '=' }];
+    const schema = tb.selectSchema(record.schema, snapshots);
+    record.derivedFrom[0].checksum = 'A'.repeat(42) + 'B=';
+    assert.ok(tb.validateRecord(record, schema).some(e => e.path.join('.') === 'derivedFrom.0.checksum' && e.message.includes('canonical')));
+    record.derivedFrom[0].checksum = 'A'.repeat(43) + '=';
+    assert.deepEqual(tb.validateRecord(record, schema), []);
+  });
+  test(`V1–V4 selector controls: ${name}`, () => {
+    const record = releaseFixture(name);
+    const type = tb.recordType(record).toLowerCase();
+    record.schema = `https://w3id.org/fair-bioheaders/${type}/v0.4.0`;
+    const selected = tb.selectSchema(record.schema, snapshots);
+    assert.ok(selected);
+    assert.ok(tb.validateRecord(record, selected).length, 'new contract version must fail under the cited old release');
+    record.schema = `https://w3id.org/fair-bioheaders/${type}/v99.0.0`;
+    assert.equal(tb.selectSchema(record.schema, snapshots), null, 'unknown release has no fallback');
+  });
+}
+
+test('frozen v0.6.0 noncanonical mixed-parent placeholder stays rejected', () => {
+  const record = releaseFixture('rich-mixed.fhp.yaml');
+  assert.ok(tb.validateRecord(record, snapshots['fhp-v0.6.0.json']).some(e => e.path.join('.') === 'derivedFrom.0.checksum' && e.message.includes('canonical')));
 });

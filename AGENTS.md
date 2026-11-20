@@ -511,9 +511,8 @@ Schema implementation when updating support. Avoid general JSON Schema claims.
 FHR HTML retains its established microdata binding. FHP HTML carries the typed
 FHP binding (FHP-Specification `docs/FHP-MICRODATA.md`): the raw-main FHP schema
 itemtype, never the FHR itemtype, with reader round trips checked against
-`bioheaders/fhp_microdata.py` in FAIR-bioHeaders-Tools. FHGFF3 HTML is a
-readable table with stable field paths, without microdata until its own binding
-slice lands; its separate YAML preserves the structured record. Do not emit one
+`bioheaders/fhp_microdata.py` in FAIR-bioHeaders-Tools. FHGFF3 HTML carries its own experimental H1–H8 typed binding and a readable
+table; its separate YAML retains extension fields excluded by M5. Do not emit one
 type's microdata for another header type. These exports are metadata documents
 and do not embed headers into sequence files.
 
@@ -569,7 +568,7 @@ version selector, and never claim toolkit, validator or builder support for it.
 `/table-builder/` validates its pinned v0.6.0 snapshots by default (see
 “Current-release builder support” above), so the reference pages describe that
 coverage — including the rule M5 limit that extension fields never enter HTML
-microdata — and must not overstate it: FHGFF3 still emits no microdata, FHT and
+microdata — and must not overstate it: FHGFF3 emits explicitly experimental microdata, FHT and
 FHGM have no form, and an unpinned citation (v0.5.0, v0.4.1, v0.4.2) is reported
 as unsupported rather than validated against a newer snapshot.
 Adding a new indexable route here means updating the sitemap allow-lists in

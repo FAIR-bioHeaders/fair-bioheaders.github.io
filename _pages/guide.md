@@ -23,8 +23,10 @@ page, generated from the published schema bytes; the
 narrative introduction, so it does not restate the contracts.
 
 **FHGM** (gene model records) is not in the table and is not a header to choose:
-it is a *draft proposal*, with no contract, no `schemaVersion` and no tooling
-support, for model-level records that would live inside an FHGFF3 annotation file.
+it is a reviewed native development model for records inside an FHGFF3 annotation
+file, with no FHGM header `schemaVersion` or header-registry entry. Experimental
+toolkit implementation is merged in source; shared model publication and installed
+release acceptance are pending. The published 0.12.0 wheel has no FHGM runtime.
 See the [FHGM draft page](/specifications/fhgm/) and the authoritative
 [draft overview](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHGM.md)
 in the shared specification.

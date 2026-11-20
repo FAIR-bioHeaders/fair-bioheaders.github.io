@@ -2,7 +2,7 @@
    FAIR BioHeaders table builder
    Builds one typed FHR, FHP or FHGFF3 metadata record from a form, validates it
    against the selected supported schema snapshot, and produces a readable table,
-   a standalone HTML document (with FHR and FHP microdata), and a YAML metadata
+   a standalone HTML document (with type-specific microdata), and a YAML metadata
    file.
 
    The pure functions are exported for Node tests; the DOM wiring runs only in
@@ -93,8 +93,9 @@
   // The FHP itemtype identity is the raw-main FHP schema URL, fixed by the FHP
   // microdata binding (FHP-Specification docs/FHP-MICRODATA.md F1); the record's
   // own `schema` property selects the contract version. FHP is never labeled
-  // with the FHR itemtype. FHGFF3 has no website microdata binding yet.
+  // with the FHR itemtype. FHGFF3 uses its own H1 identity.
   var FHP_ITEMTYPE_URL = SHARED_RAW + 'main/fhp.json';
+  var FHGFF3_ITEMTYPE_URL = SHARED_RAW + 'main/fhgff3.json';
 
   // The extension-key pattern the released v0.5.0+ contracts declare. Named here for
   // reader-facing help text; validation always reads patternProperties from the bytes.
@@ -539,6 +540,19 @@
   function validateRecord(record, schema) {
     var errors = [];
     validateSchema(record, schema, schema, [], errors);
+    // R4 applies outside the frozen JSON Schema bytes, including metadata-only
+    // exports and parent identities. Extension data is not a standard checksum.
+    function canonical(value, path) {
+      if (typeof value === 'string' && !/^[A-Za-z0-9+/]{42}[AEIMQUYcgkosw048]=$/.test(value)) {
+        errors.push({ path: path, message: 'must be a canonical SHA-512/256 base64 checksum (rule R4)' });
+      }
+    }
+    if (record && typeof record === 'object') {
+      canonical(record.checksum, ['checksum']);
+      if (Array.isArray(record.derivedFrom)) record.derivedFrom.forEach(function (parent, index) {
+        if (parent && typeof parent === 'object') canonical(parent.checksum, ['derivedFrom', index, 'checksum']);
+      });
+    }
     return errors;
   }
 
@@ -680,8 +694,8 @@
 
   function microdataDiv(record, schema) {
     var kind = recordType(record);
-    if (kind !== 'FHR' && kind !== 'FHP') {
-      throw new Error('HTML microdata is only supported for FHR and FHP');
+    if (kind !== 'FHR' && kind !== 'FHP' && kind !== 'FHGFF3') {
+      throw new Error('HTML microdata is only supported for FHR, FHP and FHGFF3');
     }
     var props = (schema && schema.properties) || {};
     // FHR keeps its canonical FIELD_ORDER; FHP follows the record's own key
@@ -694,7 +708,7 @@
       .filter(function (key) {
         return record[key] !== undefined && extensions.indexOf(key) === -1;
       });
-    return '<div itemscope itemtype="' + (kind === 'FHR' ? SCHEMA_URL : FHP_ITEMTYPE_URL) + '">' +
+    return '<div itemscope itemtype="' + (kind === 'FHR' ? SCHEMA_URL : kind === 'FHP' ? FHP_ITEMTYPE_URL : FHGFF3_ITEMTYPE_URL) + '">' +
       order.map(function (key) { return htmlValue(key, record[key], ownProperty(props, key)); }).join('') + '</div>';
   }
 
@@ -799,13 +813,14 @@
   function standaloneHtml(record, schema) {
     var title = recordTitle(record);
     var kind = recordType(record);
-    var carriesMicrodata = kind === 'FHR' || kind === 'FHP';
+    var carriesMicrodata = kind === 'FHR' || kind === 'FHP' || kind === 'FHGFF3';
     return '<!doctype html>\n<html lang="en"><head><meta charset="utf-8">' +
       '<title>' + escapeHtml(title) + '</title></head><body>\n' +
       '<h1>' + escapeHtml(title) + '</h1>\n' +
       tableHtml(record) + '\n' +
       (carriesMicrodata ?
-        '<h2>Machine-readable ' + kind + ' microdata</h2>\n' + microdataDiv(record, schema) +
+        '<h2>Machine-readable ' + kind + ' microdata</h2>\n' +
+          (kind === 'FHGFF3' ? '<p>Experimental FHGFF3 HTML binding; JSON-LD is unsupported. Header metadata does not validate annotation features.</p>\n' : '') + microdataDiv(record, schema) +
           microdataOmissionNote(record, schema) :
         '<p>Readable table only: ' + kind + ' HTML microdata is not supported. Preserve the YAML metadata separately.</p>') + '\n' +
       '</body></html>\n';
@@ -817,6 +832,7 @@
     RELEASES: RELEASES,
     DEVELOPMENT: DEVELOPMENT,
     FHP_ITEMTYPE_URL: FHP_ITEMTYPE_URL,
+    FHGFF3_ITEMTYPE_URL: FHGFF3_ITEMTYPE_URL,
     recordType: recordType,
     selectRelease: selectRelease,
     selectSchema: selectSchema,

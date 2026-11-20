@@ -362,7 +362,7 @@ test('a 320px narrow layout keeps the extension rows and table inside the viewpo
 });
 
 for (const [kind, release, fixture] of [
-  ['FHP', 'v0.4.0', 'rich-mixed.fhp.yaml'], ['FHGFF3', 'v0.4.0', 'rich.fhgff3.yaml'],
+  ['FHP', 'v0.4.0', 'rich-mixed-canonical.fhp.yaml'], ['FHGFF3', 'v0.4.0', 'rich.fhgff3.yaml'],
   ['FHP', 'v0.6.0', 'rich-database.fhp.json'], ['FHGFF3', 'v0.6.0', 'rich.fhgff3.yaml']
 ]) {
   test(`${kind} ${release} form preserves nested values, downloads, draft switching and local requests`, async ({ page, browserName }) => {
@@ -489,7 +489,8 @@ for (const kind of ['FHP', 'FHGFF3']) {
     if (kind === 'FHP') {
       await expect(page.locator('#tb-html-source')).toContainText('itemtype="https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json"');
     } else {
-      await expect(page.locator('#tb-html-source')).not.toContainText('itemscope');
+      await expect(page.locator('#tb-html-source')).toContainText('itemscope itemtype="https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhgff3.json"');
+      await expect(page.locator('#tb-html-source')).toContainText('Experimental FHGFF3 HTML binding');
     }
   });
 }

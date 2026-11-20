@@ -17,7 +17,8 @@ The historical `scripts/fixtures/family-v0.4.0/rich-mixed.fhp.yaml` and
 `family-v0.6.0/rich-mixed.fhp.yaml` remain byte-unchanged. Their nested synthetic
 parent checksum ends in `D=`, which violates existing R4 unused-bit rules.
 Named negative tests now reject those records. New site-authored counterpart
-`family-v0.6.0/rich-mixed-canonical.fhp.yaml` changes that placeholder's final
+`family-v0.6.0/rich-mixed-canonical.fhp.yaml` and the matching v0.4.0
+counterpart change that placeholder's final
 payload character to `A`; it is synthetic, not a claim of parent identity or
 biological derivation. The round-trip positive corpus uses the new counterpart.
 No frozen release schema, example or cited checksum was rewritten.
@@ -52,3 +53,14 @@ merged Tools #198 experimental source implementation, while explicitly denying
 publication and installed 0.12.0 support. No model field inventory or alias is
 invented. Final FHT/FHGM released references/forms remain a later deliberate
 publication handoff.
+
+
+## Browser CI follow-up
+
+Initial head `6182642` CI completed 624 browser visits: 616 passed and eight
+failed (two stale browser expectations on each of four projects). The FHP
+v0.4.0 positive form test now uses an explicit canonical synthetic counterpart,
+while the frozen historical fixture remains a negative. The FHGFF3 loading-race
+assertion now requires its typed identity and experimental label. These are
+new-commit fixes; no published fixture was edited. The focused two-test/four-project rerun passed all eight cases locally with no
+skips. Full fresh CI is required, and the updated head needs new independent review.

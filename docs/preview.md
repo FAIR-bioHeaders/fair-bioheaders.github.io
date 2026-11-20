@@ -17,7 +17,7 @@ Open `http://127.0.0.1:4000`. Check desktop and narrow widths, keyboard focus, o
 
 ## Docker fallback
 
-The verified image uses Ruby 3.3.4 and the GitHub Pages 232 gems. Pin the digest below instead of a moving tag. Dependencies and caches inside this disposable container do not change your host Ruby installation:
+The verified image uses Ruby 3.3.4 and the GitHub Pages 233 gems. Pin the digest below instead of a moving tag. Dependencies and caches inside this disposable container do not change your host Ruby installation:
 
 ```sh
 docker run --rm --entrypoint sh \

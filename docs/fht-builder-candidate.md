@@ -1,5 +1,10 @@
 # FHT v0.7.0 browser activation preparation — Round 15
 
+> Historical Round 15 evidence. Completed actions and former authorization below
+> are dated receipts. Current Round 16 guidance requires human-only PR merges;
+> this document grants no agent merge or deployment authority. Current support
+> is documented in the README and public contract reference.
+
 This branch implements normal FHT support against the actual published
 fair-bioheaders 0.13.1 wheel, SHA-256
 9f600347711ee771c8bc8f8e545438c255685736206b1342413b16076da20a45

@@ -20,7 +20,10 @@ main:
         url: /specifications/fhgm/
       - title: "Metadata mappings (v1 reference)"
         url: /mappings/
-  - title: "JavaScript examples"
+  - title: "Tools & language guides"
+    url: /tools/
+    overflow: true
+  - title: "Browser JavaScript examples"
     url: /metadata-viewer/
     overflow: true
   - title: "Table builder"

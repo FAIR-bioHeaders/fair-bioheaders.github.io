@@ -1,5 +1,10 @@
 # Round 15 builder packet — November 19, 2026
 
+> Historical Round 15 evidence. Completed actions and former authorization below
+> are dated receipts. Current Round 16 guidance requires human-only PR merges;
+> this document grants no agent merge or deployment authority. Current support
+> is documented in the README and public contract reference.
+
 Base: website `df11a89`; FHGFF3 binding source `db3f90b`, H1–H8;
 released runtime baseline `fair-bioheaders==0.12.0`.
 David authorized reviewed experimental binding enablement; this PR does not

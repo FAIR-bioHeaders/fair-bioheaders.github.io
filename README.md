@@ -24,17 +24,21 @@ is the active family converter/validator; the standalone FHT converter is retire
 
 Resource citations live in `_data/references.yml`, while per-type development
 links live in `_data/development.yml`. Keep their roles distinct. The site cites
-the specification and toolkit DOI records under the titles FHR Specification /
-FHR File Converter; DataCite now registers the specification record as
-FAIR-bioHeaders Specification (checked 2026-11-14), and renaming a citation title is a
-joint decision with FHR-Citation, not a website edit — `_data/references.yml`,
-`scripts/check_site.py` and the resources browser test must move together if it changes.
-Repository display names do not change those citation identities. See the
-[resource audit](docs/resource-audit.md) for primary-source evidence and retained
-historical URLs. The table builder supports released FHR, FHP and FHGFF3 metadata at the
-current v0.6.0 contracts (`schemaVersion` "2.1", "1.2", "1.2"), keeps its pinned v0.4.0
-snapshots and legacy FHR v0.3.1 support selectable, and writes `x-` extension fields into
-the YAML export only. FHT remains deferred under issue #15.
+the specification as **FAIR-bioHeaders Specification** and the toolkit under its
+registered title **FHR File Converter**, distinct from its current product name.
+Preserve citation keys, version DOIs and historical records; see the
+[resource audit](docs/resource-audit.md).
+
+The table builder supports FHR 2.1, FHP 1.2 and FHGFF3 1.2 from shared v0.6.0,
+and FHT 1.0 from v0.7.0. Earlier selectable releases retain their own snapshots.
+FHGFF3 HTML has an experimental type-specific binding; FHT is normal released
+support. Extension fields survive YAML and the readable table but are omitted
+from HTML microdata. Structural validation does not verify files, parents or biology.
+FHGM model 0.1 (shared v0.8.0) has a separate overview; it is not another header form.
+
+[Tools and language guides](https://fhref.org/tools/) distinguish the released
+Python toolkit from native R, Node.js, Java and Julia source libraries. Native
+library support is determined by each build, independently of specification releases.
 
 The [FHR JavaScript guide](docs/metadata-viewer.md) teaches reading/querying JSON,
 changing a metadata copy, extracting an authored typed HTML microdata example,

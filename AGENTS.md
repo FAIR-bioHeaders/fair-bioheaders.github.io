@@ -1,33 +1,39 @@
 # AGENTS.md
 
-## Independent review and merge authorization (2026-11-18)
+## Agent review and human-only PR merges (maintainer direction, 2026-11-20)
 
-The maintainer's independent-review rule (2026-11-18) applies only to
-FAIR-bioHeaders repositories and agents operated by David Molik (`molikd`) or
-Adam Wright (`adamjohnwright`). A PR submitted by either maintainer or their
-agents may satisfy the approval gate through an independent **different model**:
-Copilot, or a model operated by David or Adam. The approving model/agent must be
-other than the submitter; an agent must not self-approve its PR, and another
-instance of the same model does not satisfy the different-model requirement.
-Record author/reviewer model provenance when needed to establish independence.
-David and Adam themselves may self-approve their PRs; this exception does not
-apply to their agents.
+[Authoritative Round 16 policy and plan](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/211#issuecomment-7042896529) supersedes the former conditional agent-merge authorization.
+This rule applies to all repositories and operators, including FAIR-bioHeaders,
+external upstream repositories and personal forks.
 
-An eligible agent may merge only after that approval requirement is met, all
-applicable CI checks are green, and its own validation of the current changes
-passes, including changes after review. Recheck the exact head, base branch,
-findings and dependencies immediately before merging. Missing checks are not
-passing checks, and branch protection must not be bypassed. Read every overall
-review and inline finding, reply with its disposition and fix/evidence, resolve
-handled threads, and post an overall response. Merge authorization does not grant
-contract adoption, curator acceptance, release, publication or deployment
-authority; those retain their separate maintainer gates.
+Agents must never merge pull requests. A human performs the merge. Agents must
+not enable auto-merge, enter a merge queue, use another agent/service as a merge
+proxy, or push directly to a default branch instead of merging a PR. Model
+review never grants an agent merge authority. Preserve platform protections;
+do not forge approval or work around repository permissions.
 
-Authority: [approval by another, different model](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/268#issuecomment-6984337685)
-and [human self-approval exception](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/268#issuecomment-6984418624).
+Every PR receives independent review from another actual model. Prefer another
+model family, for example Qwen or Gemma reviewing Codex work, but a different
+family is a preference rather than a hard requirement. A second session of the
+same model is not another model. Record actual author/reviewer model identities
+and never invent review provenance.
 
-Port source: FAIR-bioHeaders-Specification commit
-`0d0d6b43efdee96bc7548f1f7c65fdafb2a31f32` ([specification PR #269](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/pull/269)).
+Agents continue monitoring CI and fixing failures and actionable review
+findings. Read overall and inline reviews, fix in new commits, reply with
+disposition/evidence, resolve handled findings and acknowledge clean reviews.
+Validate the current head after changes; hand the human exact head/base,
+review, CI, dependency and remaining-risk information. Missing, failed and
+NOT_RUN checks are not passes. Contract adoption, curator acceptance and
+publication keep their separate authority and gates.
+
+Port the current policy through live AGENTS and applicable existing LLM/llms,
+plugin/skill, contribution and workplan guidance. The six specification holders
+remain semantically in step, not byte-identical; preserve local sections.
+Immutable published/vendored historical instruction copies keep their bytes
+and provenance and are explicitly non-operative from current parent guidance.
+Their older text never authorizes an agent merge. Earlier rounds' authorized
+merges and dated receipts remain historical facts, not future permission.
+
 
 ## Current repository context
 
@@ -165,7 +171,7 @@ sitemap, robots policy, and feeds. Toolchain is pinned in `.ruby-version`
   The unused `onchange` watcher was removed with its vulnerable dependency tree;
   use `npm run build:js` for source changes. `theme.js` loads separately and does
   not appear in the bundle inputs.
-- **This is Jekyll 3.10 (GitHub Pages 232), not current Jekyll.** Liquid include
+- **This is Jekyll 3.10 (GitHub Pages 233), not current Jekyll.** Liquid include
   parameters cannot contain bracket lookups. This fails to parse:
   `{% include reference.html reference=site.data.references[page.cite_key] %}`.
   Assign to a variable first, then pass it:
@@ -342,8 +348,7 @@ material. Keep README badges, package metadata and citation metadata consistent.
 validation against the selected supported schema snapshot -> readable table +
 standalone HTML (with FHR and FHP microdata) + YAML metadata, with local downloads.
 Support released FHR, FHP and FHGFF3 contracts through the linked family builder
-issues and adopted contracts. FHT requires a released contract before support is
-enabled. Do not add uploads or persistence without explicit scope.
+issues and adopted contracts. FHT 1.0 support uses the released v0.7.0 contract, not the historical draft. Do not add uploads or persistence without explicit scope.
 
 - The established FHR raw-main compatibility URL is
   `https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json`.
@@ -417,7 +422,7 @@ v0.4.0 raw-tag URL is its supported alias.
 `168a60467e3651dfdfe9855747f38257d5889bfcce6ec8661d9a378762a362dd`.
 The existing validator covers the validation keywords used by this FHR snapshot;
 the family extension also implements the FHGFF3 conditional validation keywords.
-FHT remains deferred. Keep #15 open for its outstanding full delivery gates.
+At this earlier slice FHT was deferred; current coverage is recorded below.
 
 Schema selection sets the read-only schemaVersion from the cited release: string
 `"2.0"` for v0.4.0, string `"2.1"` for v0.6.0, or numeric `1` for the legacy
@@ -480,7 +485,7 @@ about two pins, not a licence to serve one for the other.
 
 ### Released family forms (issue #15)
 
-The header-type selector enables FHR, FHP and FHGFF3. Type-specific
+The header-type selector enables FHR, FHP, FHGFF3 and released FHT. Type-specific
 drafts are retained only in page memory. Switching clears previews/downloads;
 never leak a previous profile's output into the selected profile. FHP and
 FHGFF3 use string schemaVersion `"1.2"` at v0.6.0 (`"1.0"` at their frozen v0.4.0
@@ -539,77 +544,27 @@ behavior and page-loading scope rather than adding them to the bundle. Keep the
 schema-authority/version-selection section as the governing rule; repeated
 builder details describe its supported snapshots, not another schema policy.
 
-## Schema reference pages (issue #46)
+## Current schema reference and builder coverage
 
-`/specifications/` holds one overview plus four stable type pages (FHR, FHT, FHP,
-FHGFF3) and the published FHGM native model overview. Their field tables are **generated**: `_includes/schema/<type>-reference.html`
-comes from the byte-pinned schemas in `scripts/schema-snapshots/` and is produced by
-`scripts/schema_fields.py`. Never hand-edit a generated fragment and never edit a
-pinned schema copy to make a check pass — refresh from the authority, update
-`provenance.json`, then regenerate. `python3 scripts/schema_fields.py --check` is the
-drift gate (CI runs it through the existing `test_*.py` discovery step, and
-`scripts/check_site.py` re-verifies the rendered pages); see
-[docs/schema-reference.md](docs/schema-reference.md) for the refresh procedure.
+The four header reference pages use generated inventories from byte-pinned schemas
+in `scripts/schema-snapshots/`. Never hand-edit generated fragments or pinned
+contracts. Run `python3 scripts/schema_fields.py --check`; see
+[the refresh procedure](docs/schema-reference.md).
 
-These pages document contracts; they do not change them. Requiredness, meaning
-and version claims come from the publication authority. FHR/FHP/FHGFF3 retain
-their v0.6.0 pins, while FHT 1.0 uses published v0.7.0 at 623c79 with its own pinned
-registry and preserved owning history. Runtime support and website activation
-still require actual released artifacts and current validation.
+Current support is FHR 2.1, FHP 1.2 and FHGFF3 1.2 at shared v0.6.0, plus released
+FHT 1.0 at shared v0.7.0. All four have forms. FHGFF3 HTML uses its own experimental
+binding; FHT HTML uses the released typed binding. Extension fields stay out of
+microdata under M5. The published Python toolkit 0.13.1 reads the FHT exports.
+FHGM model 0.1 was published separately in shared v0.8.0. It is a native record
+contract inside FHGFF3, not a fifth header; preserve the overview without inventing
+a header inventory, model editor or automatic support in native libraries.
 
-FHGM native model 0.1 was published in shared v0.8.0 at 72cb46b, DOI
-10.5281/zenodo.24385999. It is selected outside model records and introduces no
-FHGM header schemaVersion, in-record schema field or header registry row.
-The existing /specifications/fhgm/ overview links the immutable native schema
-and publication.json; it does not add a generated header inventory or a header
-selector. The logical native w3id identifier is pending external registration
-and must not be presented as a live resolving link. Its release does not imply
-JSON-LD, biology/curator endorsement or installed runtime support.
-check_site.py's fhgm_native_errors enforces the published native notice and
-immutable authority, rejects invented header aliases/unrequested inventories,
-and distinguishes the logical native identifier from a live-link claim.
-
-The prepared builder supports FHT v0.7.0 alongside the unchanged released-type
-snapshots, retaining M5 extension omission and experimental FHGFF3 HTML
-disclosures. Actual published 0.13.1 installed-export acceptance is verified; current
-independent review, green CI and real Pages/live evidence still gate activation. FHGM has no model editor
-in this form, and adding one is not an FHT activation requirement.
-An unpinned citation is unsupported rather than substituted with another schema.
-Adding a new indexable route here means updating the sitemap allow-lists in
-`scripts/check_site.py` and `scripts/check_deployed.py` and their tests in the same change.
-
-## Metadata mappings reference (issue #29)
-
-`/mappings/` renders the adopted **mapping v1** surface of
-`FAIR-bioHeaders-Specification`: the FHR root-field handling inventory
-(`mappings/proposals/assembly-dcmi.yml`), the per-target and per-type delivery matrix
-(`mappings/proposals/profile-status.yml`), the proposed supplemental export-context schema,
-and the one worked bundle (`tests/fixtures/mapping-proposal/`). Like the schema references,
-its tables are **generated** — from byte-pinned copies in `scripts/mapping-snapshots/` with
-`provenance.json` digests, by `scripts/mapping_crosswalk.py`; `--check` is the drift gate CI
-runs, and `--fetch` is the maintainer refresh step. Never hand-edit
-`_includes/mappings/v1-crosswalk.html`, and never edit a pin to make a check pass.
-
-**The status language is the point of the page, so it is enforced twice.** V1 was adopted
-2026-11-14 as correct-but-not-final with the **"official" label withheld until a
-deterministic exporter ships**, and it stays that way on the page: `not projected by
-mapping v1` is the only allowed phrasing for the 15 ruled-out root fields (the inventory
-never calls a field unmapable), the upstream `status: proposal` and
-`profile_version: 0.1.0-draft.1` are quoted rather than restated, the worked graph is
-labelled a manually curated fixture. Actual toolkit 0.13.1 now ships the narrow
-export-dcmi CLI, measured with preserved inputs and deterministic repeated bundles.
-This grants no new official label, browser converter, deposit readiness, registration
-or external endorsement. `scripts/mapping_crosswalk.py` refuses to emit wording
-that breaks that, and `scripts/check_site.py`'s `mapping_page_errors` re-checks the rendered
-page — including the hand-written prose — for the pinned digest, the required vocabulary and
-the forbidden claims. Any later label grant or scope change needs its recorded disposition; shipped
-runtime facts do not rewrite the preserved source pins or curated fixture.
-
-V1 covers FHR root fields for an assembly resource only. FHP and FHGFF3 are recorded
-upstream as not yet profiled and FHT as blocked on its contract, so no row may be invented
-for them, and this page is not the place where mapping semantics are decided: that is
-specification #56. An interactive crosswalk explorer, any mapping export in
-`/table-builder/`, and per-target adapters are separate work.
+The earlier builder slices below/above document their own frozen snapshots;
+statements that FHT is deferred or FHGFF3 lacks microdata describe those earlier
+slices and do not override this current coverage. The native FHGM logical w3id
+identifier is not a claim that its external alias registration is complete.
+Keep every frozen example, contract and provenance byte unchanged during cleanup.
+New indexable routes require both sitemap allowlists and their regression tests.
 
 ## Metadata viewer (issue #23)
 
@@ -668,5 +623,5 @@ When a PR receives code review (human or model):
 6. Treat optional suggestions as required unless they are genuinely out of
    scope; state why and link a follow-up issue.
 
-Do not push directly to the default branch. PR merges follow the independent
-review authorization above; adoption and publication keep their separate gates.
+Agents never merge or push directly to the default branch. Humans merge;
+adoption and publication keep their separate gates.

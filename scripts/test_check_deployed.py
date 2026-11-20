@@ -21,6 +21,11 @@ SITEMAP = (
     f'<url><loc>{ORIGIN}/specifications/fhgff3/</loc></url>'
     f'<url><loc>{ORIGIN}/specifications/fhgm/</loc></url>'
     f'<url><loc>{ORIGIN}/mappings/</loc></url>'
+    f'<url><loc>{ORIGIN}/tools/</loc></url>'
+    f'<url><loc>{ORIGIN}/tools/r/</loc></url>'
+    f'<url><loc>{ORIGIN}/tools/javascript/</loc></url>'
+    f'<url><loc>{ORIGIN}/tools/java/</loc></url>'
+    f'<url><loc>{ORIGIN}/tools/julia/</loc></url>'
     f'<url><loc>{ORIGIN}/publication/x</loc></url>'
     '</urlset>'
 )
@@ -46,6 +51,11 @@ def fake_fetch(overrides=None):
         '/specifications/fhgff3/': (200, 'text/html', b'<html></html>'),
         '/specifications/fhgm/': (200, 'text/html', b'<html></html>'),
         '/mappings/': (200, 'text/html', b'<html></html>'),
+        '/tools/': (200, 'text/html', b'<html></html>'),
+        '/tools/r/': (200, 'text/html', b'<html></html>'),
+        '/tools/javascript/': (200, 'text/html', b'<html></html>'),
+        '/tools/java/': (200, 'text/html', b'<html></html>'),
+        '/tools/julia/': (200, 'text/html', b'<html></html>'),
         '/publication/x': (200, 'text/html', b'<html></html>'),
     }
     if overrides:

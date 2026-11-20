@@ -6,7 +6,8 @@ import { focusFirstLink, prepareClipboard, copiedText } from './engine-helpers.m
 // resources (repo references + citations).
 const PAGES = ['/', '/publications/', '/guide/', '/resources/', '/table-builder/', '/metadata-viewer/',
   '/specifications/', '/specifications/fhr/', '/specifications/fht/', '/specifications/fhp/',
-  '/specifications/fhgff3/', '/specifications/fhgm/', '/mappings/'];
+  '/specifications/fhgff3/', '/specifications/fhgm/', '/mappings/',
+  '/tools/', '/tools/r/', '/tools/javascript/', '/tools/java/', '/tools/julia/'];
 
 // Inspect settled layouts, not the intro animation or a fallback-font frame.
 test.beforeEach(async ({ page }) => {

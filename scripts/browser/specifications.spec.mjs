@@ -134,6 +134,8 @@ test.describe('specifications dropdown', () => {
     // The five specification entries plus the /mappings/ reference page share the menu.
     await expect(links).toHaveCount(NAV_ITEMS.length + 1);
     await expect(links.first()).toBeVisible();
+    await expect(page.locator('#site-nav a[href="/tools/"]')).toBeVisible();
+    await expect(page.locator('#site-nav a[href="/metadata-viewer/"]')).toBeVisible();
     await context.close();
   });
 });

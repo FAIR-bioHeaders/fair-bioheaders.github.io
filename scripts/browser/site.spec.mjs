@@ -172,8 +172,8 @@ test.describe('accessibility', () => {
 // These source-build guides must not silently become registry/released-type claims.
 for (const [language, revision] of Object.entries({
   r: 'e458dd660bed6cfbbba6080df95b4bd5f3cfc6a3',
-  javascript: 'c3402d8b5ceed08c88d0da9f6eb9ce2f43b2333a',
-  java: '51b08af5c12140c296fb8fced36517cfbfc6e494',
+  javascript: 'ab4158aad46aa04f8eca8e74ea0055bf410c28dd',
+  java: '379facafef1356e42d6a1e567453db648a1287ab',
   julia: 'd5aa9a5f82d744178dfa1ddeb6ede2bc0925a606'
 })) {
   test(`source support boundaries on /tools/${language}/`, async ({ page }) => {

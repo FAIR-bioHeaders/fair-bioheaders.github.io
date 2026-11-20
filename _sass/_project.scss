@@ -816,6 +816,7 @@ fair-bioheaders-metadata h3 { overflow-wrap: anywhere; }
 .field-origin,
 .field-none { color: var(--text-muted); }
 .group-facts {
+  overflow-wrap: anywhere;
   margin: 0 0 1em;
   padding: .6em .9em;
   border-left: 3px solid var(--surface-border);
@@ -826,6 +827,7 @@ fair-bioheaders-metadata h3 { overflow-wrap: anywhere; }
 .group-contents ul { columns: 2 16em; column-gap: 2em; }
 .schema-links { font-size: $type-size-6; overflow-wrap: anywhere; }
 .schema-links a { overflow-wrap: anywhere; }
+.release-source { overflow-wrap: anywhere; }
 .field-table {
   overflow-x: auto;
   max-width: 100%;
@@ -833,6 +835,11 @@ fair-bioheaders-metadata h3 { overflow-wrap: anywhere; }
 }
 .field-table:focus-visible { outline: 3px solid var(--brand-orange); outline-offset: 2px; }
 .field-table table { width: 100%; min-width: 62em; font-size: $type-size-7; }
+.guide-family-table table { min-width: 36em; font-size: $type-size-6; }
+.guide-family-table th:first-child,
+.guide-family-table td:first-child { min-width: 5em; }
+.guide-family-table th:nth-child(2),
+.guide-family-table td:nth-child(2) { min-width: 9em; }
 .field-table caption { text-align: left; font-weight: $font-weight-bold; }
 .field-table th,
 .field-table td {

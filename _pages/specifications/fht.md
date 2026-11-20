@@ -19,6 +19,7 @@ Acceptance of the actual final fair-bioheaders 0.13.0 artifact is still pending;
 a development wheel carrying that version is not a release. The browser form is
 prepared against these published bytes, with activation gated on that installed
 runtime evidence, current review/CI and actual Pages verification.
+{: .release-source}
 
 ## What FHT describes
 

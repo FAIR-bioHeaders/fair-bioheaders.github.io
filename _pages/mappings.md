@@ -9,9 +9,14 @@ excerpt: "How FHR header fields relate to qualified Dublin Core: the adopted map
 inventory from FHR to qualified [DCMI Terms][dcmi], a supplemental export-context contract,
 and one worked bundle. The maintainers adopted that surface on 2026-11-14 as
 *correct-but-not-final* and **withheld the "official" label until a deterministic exporter
-ships**. No exporter ships, here or in the toolkit: nothing on this page writes a Dublin
-Core file for you, validates a DataCite or Crossref deposit, registers a DOI, or mints an
-ARK.
+ships**. That is the historical adoption record. Published
+[fair-bioheaders 0.13.1](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/releases/tag/v0.13.1)
+now includes the narrow, deterministic
+[export-dcmi CLI](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/blob/v0.13.1/README.md#qualified-dcmi-assembly-export)
+for complete FHR v0.4.0 metadata plus the adopted context. Two actual installed
+runs produced identical bundles and preserved both inputs. This page remains a
+reference rather than a browser converter; no new official label, target profile,
+deposit readiness, DOI registration or ARK minting is claimed.
 
 The completed foundation is deliberately limited to the FHR root-field inventory,
 export context and curated DCMI example. Additional target adapters and nested or

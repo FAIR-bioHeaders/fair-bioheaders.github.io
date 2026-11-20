@@ -552,12 +552,13 @@ test('error paths map through blank entries in both outer and nested arrays', as
 });
 
 
-test('a broken local snapshot reference fails closed before generating any export', async ({ page }) => {
+for (const ref of ['#/$defs/DoesNotExist', '', null, false, 0]) {
+  test(`a broken local snapshot reference ${JSON.stringify(ref)} fails closed before generating any export`, async ({ page }) => {
   await page.route('**/assets/schema/fhr-v0.6.0.json', async route => {
     const response = await route.fetch();
     const schema = await response.json();
     schema.$defs = schema.$defs || {};
-    schema.$defs.BrokenUnused = { $ref: '#/$defs/DoesNotExist' };
+    schema.$defs.BrokenUnused = { $ref: ref };
     await route.fulfill({ response, json: schema });
   });
   await page.goto('/table-builder/');
@@ -567,3 +568,4 @@ test('a broken local snapshot reference fails closed before generating any expor
   await expect(page.locator('#tb-html-source')).toHaveText('');
   await expect(page.locator('#tb-yaml-source')).toHaveText('');
 });
+}

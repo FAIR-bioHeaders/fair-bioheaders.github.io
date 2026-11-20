@@ -22,7 +22,7 @@ Then build and install the source package:
 ```sh
 git clone https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-R.git
 cd FAIR-bioHeaders-Tools-R
-git checkout a91e135aa11c56ca37f99d222430343babe4da30
+git checkout e458dd660bed6cfbbba6080df95b4bd5f3cfc6a3
 R CMD build .
 R CMD INSTALL FAIRbioHeadersTools_0.1.0.tar.gz
 ```
@@ -53,12 +53,12 @@ not-run coverage. Do not turn these gaps into successful validation.
 
 ## Support and further reading
 
-This guide records source commit `a91e135aa11c56ca37f99d222430343babe4da30` (source snapshot recorded November 20, 2026).
+This guide records source commit `e458dd660bed6cfbbba6080df95b4bd5f3cfc6a3` (tested source revision, November 20, 2026).
 The build's released header set is FHR 2.1, FHP 1.2 and FHGFF3 1.2 from shared
 v0.6.0. FHT and FHGM recognition at this pin is an explicit historical draft
 lane, not support for the subsequently published v0.7.0/v0.8.0 contracts.
-Use the [pinned README](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-R/tree/a91e135aa11c56ca37f99d222430343babe4da30/README.md) and
-[capability documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-R/tree/a91e135aa11c56ca37f99d222430343babe4da30/docs/) for detailed limits and API guidance.
+Use the [pinned README](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-R/tree/e458dd660bed6cfbbba6080df95b4bd5f3cfc6a3/README.md) and
+[capability documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-R/tree/e458dd660bed6cfbbba6080df95b4bd5f3cfc6a3/docs/) for detailed limits and API guidance.
 Current development may have advanced; inspect changes before updating a pin.
 
 These are starting commands and API examples, not a claim that a new registry

@@ -307,8 +307,11 @@
 
   function resolveRef(schema, root) {
     var seen = [];
-    while (schema && schema.$ref) {
+    while (schema && Object.prototype.hasOwnProperty.call(schema, '$ref')) {
       var reference = schema.$ref;
+      if (typeof reference !== 'string' || reference.length === 0) {
+        throw new Error('Unsupported pinned schema reference: expected a nonempty local pointer');
+      }
       if (reference.indexOf('#/') !== 0) throw new Error('Unsupported external schema reference');
       if (seen.indexOf(reference) !== -1) throw new Error('Cyclic pinned schema reference: ' + reference);
       seen.push(reference);

@@ -13,7 +13,7 @@ Build from this source revision; the source version is `0.1.0-SNAPSHOT`.
 ```sh
 git clone https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-Java.git
 cd FAIR-bioHeaders-Tools-Java
-git checkout 5fb3d1d1b98304c908a6fb40b02340fa7048c65d
+git checkout 51b08af5c12140c296fb8fced36517cfbfc6e494
 ./mvnw -DskipTests package
 java -jar target/fair-bioheaders-java-0.1.0-SNAPSHOT.jar version
 java -jar target/fair-bioheaders-java-0.1.0-SNAPSHOT.jar verify genome.fhr.fasta
@@ -21,7 +21,7 @@ java -jar target/fair-bioheaders-java-0.1.0-SNAPSHOT.jar verify genome.fhr.fasta
 
 The package command above is a build-only step: `-DskipTests` skips both unit
 and conformance tests. Full validation needs additional pinned shared suites;
-follow the [native acceptance instructions](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-Java/blob/5fb3d1d1b98304c908a6fb40b02340fa7048c65d/docs/NATIVE-ACCEPTANCE.md)
+follow the [native acceptance instructions](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-Java/blob/51b08af5c12140c296fb8fced36517cfbfc6e494/docs/NATIVE-ACCEPTANCE.md)
 before relying on a locally built artifact. A successful package build alone is
 not acceptance evidence.
 Keep `target/lib/` alongside the jar when moving it: the jar manifest references
@@ -55,12 +55,12 @@ The library API example was exercised against the packaged jar and its adjacent
 dependencies: valid plain and gzip files passed, and a modified sequence failed
 the checksum check. This example check is separate from full native acceptance.
 
-This guide records source commit `5fb3d1d1b98304c908a6fb40b02340fa7048c65d` (source snapshot recorded November 20, 2026).
+This guide records source commit `51b08af5c12140c296fb8fced36517cfbfc6e494` (tested source revision, November 20, 2026).
 The build's released header set is FHR 2.1, FHP 1.2 and FHGFF3 1.2 from shared
 v0.6.0. FHT and FHGM recognition at this pin is an explicit historical draft
 lane, not support for the subsequently published v0.7.0/v0.8.0 contracts.
-Use the [pinned README](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-Java/tree/5fb3d1d1b98304c908a6fb40b02340fa7048c65d/README.md) and
-[capability documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-Java/tree/5fb3d1d1b98304c908a6fb40b02340fa7048c65d/docs/) for detailed limits and API guidance.
+Use the [pinned README](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-Java/tree/51b08af5c12140c296fb8fced36517cfbfc6e494/README.md) and
+[capability documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-Java/tree/51b08af5c12140c296fb8fced36517cfbfc6e494/docs/) for detailed limits and API guidance.
 Current development may have advanced; inspect changes before updating a pin.
 
 These are starting commands and API examples, not a claim that a new registry

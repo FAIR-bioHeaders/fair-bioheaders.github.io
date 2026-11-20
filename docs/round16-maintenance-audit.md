@@ -84,3 +84,25 @@ run passed 103 of 104 cases; its one Firefox startup-timeout case then passed
 separately with unchanged assertions and timeout. Those are separate attempts,
 not a single clean run. Preserve their failure and success receipts. Further
 runtime changes require their own current-head regression evidence.
+
+## Final corrective review and source guides
+
+An additional independent GPT-6.1-Terra source review found that falsy `$ref`
+values bypassed reference resolution. References now require own-property
+presence and a supported nonempty string; direct and chained malformed values
+fail closed. All 112 Node tests and 153 Python tests passed after the correction.
+The 20 focused reference-preflight browser cases passed across Chromium desktop,
+320px Chromium, Firefox and WebKit. The interrupted earlier attempt is retained
+as incomplete evidence, not a pass.
+
+The four native-language guides now pin the tested Round 16 source revisions.
+Their setup/API checks are recorded separately in the native repository receipts;
+the browser matrix passed all 16 source-boundary cases. These source builds do
+not publish registry packages, update approved schema pins or imply support for
+subsequently published contracts. Merge the native repository PRs before this
+website PR. The separate human website merge publishes through Pages.
+
+The final strict production build, generated-reference check and offline
+29-page/23-route site check passed. Independent source review of the corrective
+code and four guide revisions found no further actionable issue. These bounded
+checks do not turn the earlier incomplete broad browser run into a pass.

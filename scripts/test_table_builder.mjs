@@ -835,3 +835,15 @@ test('reference targets must be schemas and false schemas cannot pass vacuously'
   assert.ok(tb.validateRecord({ value: 'x' }, root(false)).length > 0);
   assert.deepEqual(tb.validateRecord({ value: 'x' }, root(true)), []);
 });
+
+
+test('falsy or non-string reference declarations are rejected rather than treated as absent', () => {
+  for (const ref of ['', null, false, 0, [], {}]) {
+    const direct = { type: 'object', properties: { value: { $ref: ref } } };
+    const chained = { type: 'object', properties: { value: { $ref: '#/$defs/Target' } },
+      $defs: { Target: { $ref: ref } } };
+    for (const schema of [direct, chained]) {
+      assert.throws(() => tb.validateRecord({ value: 'unchecked' }, schema), /Unsupported pinned schema reference/);
+    }
+  }
+});

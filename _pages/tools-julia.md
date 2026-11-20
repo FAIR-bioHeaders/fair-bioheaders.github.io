@@ -15,7 +15,7 @@ directory and install this source revision:
 import Pkg
 Pkg.activate("bioheaders-example"; shared=false)
 Pkg.add(url="https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-Julia",
-        rev="8b306fac947c615b1c170e6ac76d8cb60665057b")
+        rev="d5aa9a5f82d744178dfa1ddeb6ede2bc0925a606")
 ```
 
 This selects repository source rather than a General registry release.
@@ -51,12 +51,12 @@ project: valid plain and gzip files passed with the expected checksum, while
 a modified sequence failed. This recipe check is separate from full native
 acceptance and does not turn unavailable formats or layers into passes.
 
-This guide records source commit `8b306fac947c615b1c170e6ac76d8cb60665057b` (source snapshot recorded November 20, 2026).
+This guide records source commit `d5aa9a5f82d744178dfa1ddeb6ede2bc0925a606` (tested source revision, November 20, 2026).
 The build's released header set is FHR 2.1, FHP 1.2 and FHGFF3 1.2 from shared
 v0.6.0. FHT and FHGM recognition at this pin is an explicit historical draft
 lane, not support for the subsequently published v0.7.0/v0.8.0 contracts.
-Use the [pinned README](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-Julia/tree/8b306fac947c615b1c170e6ac76d8cb60665057b/README.md) and
-[capability documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-Julia/tree/8b306fac947c615b1c170e6ac76d8cb60665057b/docs/) for detailed limits and API guidance.
+Use the [pinned README](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-Julia/tree/d5aa9a5f82d744178dfa1ddeb6ede2bc0925a606/README.md) and
+[capability documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-Julia/tree/d5aa9a5f82d744178dfa1ddeb6ede2bc0925a606/docs/) for detailed limits and API guidance.
 Current development may have advanced; inspect changes before updating a pin.
 
 These are starting commands and API examples, not a claim that a new registry

@@ -12,7 +12,7 @@ Node crypto, zlib and Ajv; it is separate from the browser metadata lesson.
 Install this exact source revision in your own Node project:
 
 ```sh
-npm install 'git+https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-JavaScript.git#bac1781aac5162ccb18003a8bc268fe576f6eba7'
+npm install 'git+https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-JavaScript.git#c3402d8b5ceed08c88d0da9f6eb9ce2f43b2333a'
 ```
 
 ## Read and inspect results
@@ -44,12 +44,12 @@ A Node library result is not a result from the website tools.
 
 ## Support and further reading
 
-This guide records source commit `bac1781aac5162ccb18003a8bc268fe576f6eba7` (source snapshot recorded November 20, 2026).
+This guide records source commit `c3402d8b5ceed08c88d0da9f6eb9ce2f43b2333a` (tested source revision, November 20, 2026).
 The build's released header set is FHR 2.1, FHP 1.2 and FHGFF3 1.2 from shared
 v0.6.0. FHT and FHGM recognition at this pin is an explicit historical draft
 lane, not support for the subsequently published v0.7.0/v0.8.0 contracts.
-Use the [pinned README](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-JavaScript/tree/bac1781aac5162ccb18003a8bc268fe576f6eba7/README.md) and
-[capability documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-JavaScript/tree/bac1781aac5162ccb18003a8bc268fe576f6eba7/docs/) for detailed limits and API guidance.
+Use the [pinned README](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-JavaScript/tree/c3402d8b5ceed08c88d0da9f6eb9ce2f43b2333a/README.md) and
+[capability documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-JavaScript/tree/c3402d8b5ceed08c88d0da9f6eb9ce2f43b2333a/docs/) for detailed limits and API guidance.
 Current development may have advanced; inspect changes before updating a pin.
 
 These are starting commands and API examples, not a claim that a new registry

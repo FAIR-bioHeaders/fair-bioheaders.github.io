@@ -354,7 +354,7 @@ def resource_errors(text):
         if match:
             references[match[1]] = MicrodataParser(f'<div{head}>{block}</div>').root
     expected = {
-        'FHR_Specification': ('FHR Specification', 'FAIR-bioHeaders-Specification',
+        'FHR_Specification': ('FAIR-bioHeaders Specification', 'FAIR-bioHeaders-Specification',
                               '10.5281/zenodo.6762549'),
         'FHR_File_Converter': ('FHR File Converter', 'FAIR-bioHeaders-Tools',
                               '10.5281/zenodo.6762547'),

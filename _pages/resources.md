@@ -61,13 +61,14 @@ and alias resolution. The inherited historical feature-model snapshot remains
 separate from the authored native contract.
 
 <span id="FHT_File_Converter"></span>The standalone FHT File Converter is retired.
-Use FAIR BioHeaders Tools for active tooling; FHT support awaits the reviewed
-transcriptome contract. The former converter is not an active download or support destination.
+Use FAIR BioHeaders Tools for active tooling; actual 0.13.1 supports published
+FHT 1.0 from shared v0.7.0. The former standalone converter is not a separate
+active download or support destination.
 
 ### Repository citations
 
 Select **Cite** to view and copy a resource’s BibTeX entry. The specification and
-toolkit DOI records retain their registered titles, *FHR Specification* and
+toolkit DOI records retain their registered titles, *FAIR-bioHeaders Specification* and
 *FHR File Converter*, even though their repositories now serve the family.
 Version DOI links identify the specific published releases.
 

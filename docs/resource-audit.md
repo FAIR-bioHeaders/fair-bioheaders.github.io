@@ -1,5 +1,20 @@
 # Resource and link audit — issue #22
 
+## Current citation identity — November 20, 2026
+
+The specification [concept record](https://api.datacite.org/dois/10.5281/zenodo.6762549)
+and pinned [v0.6.0 record](https://api.datacite.org/dois/10.5281/zenodo.24223950)
+both register **FAIR-bioHeaders Specification**. The toolkit
+[concept](https://api.datacite.org/dois/10.5281/zenodo.6762547) and
+[0.13.1 version](https://api.datacite.org/dois/10.5281/zenodo.24387470)
+still register **FHR File Converter**. Current site citations and FHR-Citation
+follow those verified titles; product names do not rename bibliographic records.
+Stable keys, DOI values, creator order (David Molik, then Adam Wright), year 2026
+and historical permissions are unchanged.
+
+The dated inventory and observations below are the October 20 audit snapshot,
+not a current released-support matrix or a new license grant.
+
 Checked 2026-10-14 against primary repository/release and DataCite records.
 
 ## Published resources and development
@@ -9,9 +24,11 @@ Checked 2026-10-14 against primary repository/release and DataCite records.
 - [FAIR-bioHeaders-Nextflow v0.1.0](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Nextflow/releases/tag/v0.1.0) (formerly FHR-Nextflow) is the first release of the Nextflow modules and Dockstore workflow, consolidated from the toolkit (FAIR-bioHeaders-Nextflow#21). It pins fair-bioheaders 0.8.2, not the newest toolkit release.
 - [FHGFF3 licensing review](https://github.com/FAIR-bioHeaders/FHGFF3/issues/3) concerns inherited gff-schema material. The released, independently authored annotation header is a separate artifact; linking its development home does not grant reuse permission for the whole inherited tree.
 
-## Citation identity and provenance
+## Historical citation identity and provenance — October 20, 2026
 
-DataCite still registers the titles **FHR Specification** and **FHR File Converter**. The site preserves those titles, both creators (David Molik, then Adam Wright), publication year 2026, and the concept DOI citation keys. Overview labels use the current repository roles; they do not silently rename the cited resource.
+Original dated observation (preserved as history):
+
+> DataCite still registers the titles **FHR Specification** and **FHR File Converter**. The site preserves those titles, both creators (David Molik, then Adam Wright), publication year 2026, and the concept DOI citation keys. Overview labels use the current repository roles; they do not silently rename the cited resource.
 
 | Resource | Concept DOI | Current release DOI |
 | --- | --- | --- |

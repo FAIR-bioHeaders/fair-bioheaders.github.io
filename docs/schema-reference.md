@@ -113,11 +113,8 @@ The pages distinguish four things that are easy to conflate:
   and biological/feature validation are separate questions with separate tools, spelled
   out in each page's "Validation boundaries" section.
 
-FHGM is a reviewed native development model inside FHGFF3, with separate
-publication and installed-package acceptance. This header-type reference generator
-does not invent an FHGM header registry row. Its overview links the shared model
-authority and retains its current publication boundary; native publication is not
-an extra prerequisite for FHT support.
+FHGM native model 0.1 is published in shared v0.8.0 at 72cb46b, DOI 10.5281/zenodo.24385999; installed final 0.13.0 acceptance remains separate. This header-type reference generator
+does not invent an FHGM header registry row. Its existing overview links the exact raw-tag schema and publication.json while keeping the logical native alias unlinked pending registration. It has no generated header inventory or header selector. A native model editor is not a prerequisite for FHT support.
 
 ## FHT publication promotion
 

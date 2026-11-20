@@ -13,7 +13,7 @@ sitemap: false
   - [FHT schema reference](/specifications/fht/)
   - [FHP schema reference](/specifications/fhp/)
   - [FHGFF3 schema reference](/specifications/fhgff3/)
-  - [FHGM gene model records (draft)](/specifications/fhgm/)
+  - [FHGM native gene model records](/specifications/fhgm/)
   - [Metadata mappings (v1 reference)](/mappings/)
 - [FHR table builder](/table-builder/)
 - [Resources and citation](/resources/)

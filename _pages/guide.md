@@ -27,14 +27,15 @@ page, generated from the published schema bytes; the
 [specification overview](/specifications/) lists all four. This guide stays the
 narrative introduction, so it does not restate the contracts.
 
-**FHGM** (gene model records) is not in the table and is not a header to choose:
-it is a reviewed native development model for records inside an FHGFF3 annotation
-file, with no FHGM header `schemaVersion` or header-registry entry. Experimental
-toolkit implementation is merged in source; shared model publication and installed
-release acceptance are pending. The published 0.12.0 wheel has no FHGM runtime.
-See the [FHGM draft page](/specifications/fhgm/) and the authoritative
-[draft overview](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/FHGM.md)
-in the shared specification.
+**FHGM** (gene model records) is not a header to choose. Native model contract
+0.1 was published in shared v0.8.0, DOI
+[10.5281/zenodo.24385999](https://doi.org/10.5281/zenodo.24385999), for records
+inside an FHGFF3 annotation. It adds no FHGM header schemaVersion or header
+registry entry; the native contract is selected outside each record.
+Final released-toolkit acceptance is pending, and the published 0.12.0 wheel
+has no FHGM runtime. The logical native alias is not yet a live resolving link.
+See the [FHGM native model overview](/specifications/fhgm/) for the immutable
+raw-tag schema, source history and separate validation outcomes.
 
 Toolkit 0.10.0 rejects v0.6.0 aliases for FHR, FHP and FHGFF3. For workflows with that toolkit release, use the [v0.5.0 examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.5.0/examples) and its [tagged documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/tree/v0.10.0). Choose a supported alias when creating new records; changing an existing file-bound header requires checksum recomputation.
 

@@ -21,6 +21,6 @@
   repository: https://github.com/FAIR-bioHeaders/FHGFF3
 - key: FHGM_Specification
   name: FHGM development
-  purpose: Gene model record metadata; draft proposal under review, no contract
-  status: Draft
+  purpose: Native gene model contract development; shared v0.8.0 publishes model contract 0.1
+  status: Development
   repository: https://github.com/FAIR-bioHeaders/FHGM-Specification

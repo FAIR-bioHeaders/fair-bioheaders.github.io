@@ -22,7 +22,7 @@ test('resources distinguish publication, development and retired tooling', async
     await expect(versionLink).toHaveAttribute('href', `https://doi.org/${doi}`);
   }
   // FHP is Draft (not yet a verified release); the rest remain Development.
-  for (const name of ['FHR', 'FHGFF3']) {
+  for (const name of ['FHR', 'FHGFF3', 'FHGM']) {
     const link = page.getByRole('link', { name: `${name} development`, exact: true });
     await expect(link.locator('xpath=ancestor::tr')).toContainText('Development');
   }

@@ -98,6 +98,20 @@ test.describe('specifications dropdown', () => {
     expect(results.violations).toEqual([]);
   });
 
+  test('keeps both tools and browser lessons reachable in More', async ({ page }) => {
+    for (const width of [1280, 320]) {
+      await page.setViewportSize({ width, height: 900 });
+      await openPage(page, '/');
+      const toggle = page.locator('.nav-toggle');
+      await toggle.click();
+      await expect(page.locator('#overflow-navigation a[href="/tools/"]')).toBeVisible();
+      await expect(page.locator('#overflow-navigation a[href="/metadata-viewer/"]')).toBeVisible();
+      await expect(page.locator('#overflow-navigation a[href="/tools/"]')).toHaveText('Tools & language guides');
+      await page.keyboard.press('Escape');
+      await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    }
+  });
+
   test('stays reachable in the overflow menu at 320px', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 });
     await openPage(page, '/');

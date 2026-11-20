@@ -34,7 +34,6 @@ and provenance and are explicitly non-operative from current parent guidance.
 Their older text never authorizes an agent merge. Earlier rounds' authorized
 merges and dated receipts remain historical facts, not future permission.
 
-
 ## Current repository context
 
 This is the public Jekyll website and browser-tool implementation. Normative
@@ -190,6 +189,10 @@ sitemap, robots policy, and feeds. Toolchain is pinned in `.ruby-version`
   reads that microdata back into BibTeX. Do not add a separate `.bib` copy, and
   keep the Schema.org itemprop ↔ BibTeX field mapping in `_includes/reference.html`
   and `cite.js` in sync.
+- **Citation identity changes move together.** Keep `_data/references.yml`,
+  `scripts/check_site.py`, Node citation tests and resources browser expectations
+  coordinated. Verify registered titles against primary records; preserve citation
+  keys, version identifiers and historical receipts.
 - **Element IDs must be unique per page.** Each reference uses its citation key as
   an `id`; the checker rejects duplicate IDs. Do not render the same reference twice on one page (for example, in both
   a list and a citation block).
@@ -561,7 +564,7 @@ FHGM model 0.1 was published separately in shared v0.8.0. It is a native record
 contract inside FHGFF3, not a fifth header; preserve the overview without inventing
 a header inventory, model editor or automatic support in native libraries.
 
-The earlier builder slices below/above document their own frozen snapshots;
+Earlier builder snapshot sections document their own frozen snapshots;
 statements that FHT is deferred or FHGFF3 lacks microdata describe those earlier
 slices and do not override this current coverage. The native FHGM logical w3id
 identifier is not a claim that its external alias registration is complete.

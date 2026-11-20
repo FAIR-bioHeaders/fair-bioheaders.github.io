@@ -39,7 +39,7 @@ A Node library result is not a result from the website tools.
 
 ## Support and further reading
 
-This guide records source commit `bac1781aac5162ccb18003a8bc268fe576f6eba7` (reviewed November 20, 2026).
+This guide records source commit `bac1781aac5162ccb18003a8bc268fe576f6eba7` (source snapshot recorded November 20, 2026).
 The build's released header set is FHR 2.1, FHP 1.2 and FHGFF3 1.2 from shared
 v0.6.0. FHT and FHGM recognition at this pin is an explicit historical draft
 lane, not support for the subsequently published v0.7.0/v0.8.0 contracts.

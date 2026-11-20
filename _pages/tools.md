@@ -36,7 +36,7 @@ means unchecked, not passed. GFF3 feature validation belongs to
 [gff3-validator](https://github.com/FAIR-bioHeaders/gff3-validator), separately
 from its metadata header.
 
-The native-language guides below describe pinned **source builds**, not registry
+The native-language guides linked above describe pinned **source builds**, not registry
 installation or a release announcement. Each keeps its own supported contract
 set; they do not acquire the Python toolkit's FHT support automatically.
 See the [contract reference](/specifications/), [usage guide](/guide/) and

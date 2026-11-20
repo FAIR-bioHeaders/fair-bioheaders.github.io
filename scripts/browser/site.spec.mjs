@@ -168,3 +168,20 @@ test.describe('accessibility', () => {
     }
   }
 });
+
+// These source-build guides must not silently become registry/released-type claims.
+for (const [language, revision] of Object.entries({
+  r: 'a91e135aa11c56ca37f99d222430343babe4da30',
+  javascript: 'bac1781aac5162ccb18003a8bc268fe576f6eba7',
+  java: '5fb3d1d1b98304c908a6fb40b02340fa7048c65d',
+  julia: '8b306fac947c615b1c170e6ac76d8cb60665057b'
+})) {
+  test(`source support boundaries on /tools/${language}/`, async ({ page }) => {
+    await openPage(page, `/tools/${language}/`);
+    const content = page.locator('.page__content');
+    await expect(content).toContainText(revision);
+    await expect(content).toContainText('not support for the subsequently published');
+    await expect(content.locator('a[href="/tools/"]')).toBeVisible();
+    await expect(content.locator('a[href="/metadata-viewer/"]')).toBeVisible();
+  });
+}

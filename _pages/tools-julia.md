@@ -8,13 +8,23 @@ excerpt: "Set up and use the native Julia source library for FAIR BioHeaders."
 ## Setup
 
 Use Julia **1.12 or later**: the required SHA-512/256 API determines the runtime
-floor. In a clean project environment, install this source revision:
+floor. In a clean Julia session, create a local `bioheaders-example` project
+directory and install this source revision:
 
 ```julia
 import Pkg
 Pkg.activate("bioheaders-example"; shared=false)
 Pkg.add(url="https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-Julia",
         rev="8b306fac947c615b1c170e6ac76d8cb60665057b")
+```
+
+This selects repository source rather than a General registry release.
+
+## Read and inspect results
+
+After installation completes in the same session:
+
+```julia
 using FAIRBioHeaders
 result = verify_file("genome.fhr.fasta")
 result.ok
@@ -22,9 +32,6 @@ result.computed
 println(result)
 ```
 
-This selects repository source rather than a General registry release.
-
-## Read and inspect results
 
 `verify_file()` coordinates framing, checksum, YAML portability and cited-contract
 validation. `read_fhr_file()`, `read_fhr_header()`, `header_checksum()`,
@@ -40,7 +47,10 @@ coverage is not a pass.
 
 ## Support and further reading
 
-This guide records source commit `8b306fac947c615b1c170e6ac76d8cb60665057b` (reviewed November 20, 2026).
+The API example has not yet been executed as part of this website update;
+source documentation review does not establish a successful native acceptance run.
+
+This guide records source commit `8b306fac947c615b1c170e6ac76d8cb60665057b` (source snapshot recorded November 20, 2026).
 The build's released header set is FHR 2.1, FHP 1.2 and FHGFF3 1.2 from shared
 v0.6.0. FHT and FHGM recognition at this pin is an explicit historical draft
 lane, not support for the subsequently published v0.7.0/v0.8.0 contracts.

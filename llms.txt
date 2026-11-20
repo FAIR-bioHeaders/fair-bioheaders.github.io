@@ -107,5 +107,4 @@ and provenance and are explicitly non-operative from current parent guidance.
 Their older text never authorizes an agent merge. Earlier rounds' authorized
 merges and dated receipts remain historical facts, not future permission.
 
-
 - Published 0.13.1 DCMI CLI: bioheaders export-dcmi source context output, scoped to adopted complete FHR v0.4.0/context inputs. Actual repeated installed runs produced identical preservation bundles. No new official mapping label or six-target/profile expansion is implied.

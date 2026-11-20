@@ -449,5 +449,5 @@ for the authoritative Round 16 policy. PR previews are not live publication.
 
 `_pages/tools*.md` hold the public language guides. Keep source revision, runtime,
 install route, examples and limitations together. A specification release does
-not automatically upgrade library support. Both sitemap allowlists, deploy
+not automatically upgrade library support. Both sitemap allowlists, `scripts/test_check_deployed.py`
 fixtures and browser layout/accessibility coverage include these routes.

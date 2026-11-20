@@ -19,7 +19,11 @@ java -jar target/fair-bioheaders-java-0.1.0-SNAPSHOT.jar version
 java -jar target/fair-bioheaders-java-0.1.0-SNAPSHOT.jar verify genome.fhr.fasta
 ```
 
-The package command above builds the artifact; it does not run acceptance tests.
+The package command above is a build-only step: `-DskipTests` skips both unit
+and conformance tests. Full validation needs additional pinned shared suites;
+follow the [native acceptance instructions](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-Java/blob/5fb3d1d1b98304c908a6fb40b02340fa7048c65d/docs/NATIVE-ACCEPTANCE.md)
+before relying on a locally built artifact. A successful package build alone is
+not acceptance evidence.
 Keep `target/lib/` alongside the jar when moving it: the jar manifest references
 those runtime dependencies. This is a source-build workflow, not a Maven Central
 coordinate or publication claim.
@@ -47,7 +51,10 @@ released support and from GFF3 feature/biology validation.
 
 ## Support and further reading
 
-This guide records source commit `5fb3d1d1b98304c908a6fb40b02340fa7048c65d` (reviewed November 20, 2026).
+The library API example has not yet been executed as part of this website
+update; native build/test evidence is tracked separately from documentation review.
+
+This guide records source commit `5fb3d1d1b98304c908a6fb40b02340fa7048c65d` (source snapshot recorded November 20, 2026).
 The build's released header set is FHR 2.1, FHP 1.2 and FHGFF3 1.2 from shared
 v0.6.0. FHT and FHGM recognition at this pin is an explicit historical draft
 lane, not support for the subsequently published v0.7.0/v0.8.0 contracts.

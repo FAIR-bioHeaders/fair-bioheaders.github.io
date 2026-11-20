@@ -1,12 +1,12 @@
 {
-  "note": "Byte-exact copies of the FAIR-bioHeaders mapping v1 surface, pinned so the /mappings/ page can be generated and drift-checked offline. Never edit these files by hand: refresh them from the authority with `python3 scripts/mapping_crosswalk.py --fetch`, update the ref/commit fields here, and regenerate. The website links the fixed URLs recorded here; the copies are a rendering source, not a second mapping authority. The v1 surface is adopted as correct-but-not-final and the 'official' label is withheld until a deterministic exporter ships: see FAIR-bioHeaders-Specification#56 and docs/mappings/v1-adoption-packet.md at the pinned revision.",
+  "note": "Byte-exact copies of the FAIR-bioHeaders mapping v1 surface, pinned so the /mappings/ page can be generated and drift-checked offline. Never edit these files by hand: refresh them from the authority with `python3 scripts/mapping_crosswalk.py --fetch`, update the ref/commit fields here, and regenerate. The website links the fixed URLs recorded here; the copies are a rendering source, not a second mapping authority. The v1 surface is adopted as correct-but-not-final and its dated adoption withheld the 'official' label pending a shipped exporter; the narrow exporter now ships in toolkit0.13.1, without changing these source pins or granting a new label: see FAIR-bioHeaders-Specification#56 and docs/mappings/v1-adoption-packet.md at the pinned revision.",
   "authority": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification",
   "adoption": {
     "issue": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/56",
     "decisionPacket": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/1e6d692a37d55f322d7fa27c519b9a5254874e7e/docs/mappings/v1-adoption-packet.md",
     "profileVersion": "0.1.0-draft.1",
     "upstreamStatus": "proposal",
-    "label": "withheld: no deterministic exporter has shipped, so this site publishes the crosswalk as reference material, not as official guidance",
+    "label": "withheld in the recorded adoption; exporter availability is now verified in0.13.1, with no new label grant recorded here",
     "recorded": "2026-11-14"
   },
   "files": {
@@ -94,5 +94,16 @@
     "canonicalJsonldDcmiTable": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/mappings/fhr-jsonld-dcmi.yml",
     "schemaOrgExport": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/SCHEMAORG-EXPORT.md",
     "mlixsProjection": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/MAPPINGS.md"
+  },
+  "runtimeExporter": {
+    "status": "shipped",
+    "toolkitVersion": "0.13.1",
+    "toolkitCommit": "531d98ea742277b1ec391c646f2d32d94f520b56",
+    "wheelSha256": "9f600347711ee771c8bc8f8e545438c255685736206b1342413b16076da20a45",
+    "documentation": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/blob/v0.13.1/README.md#qualified-dcmi-assembly-export",
+    "command": "bioheaders export-dcmi source context output",
+    "sourceScope": "complete FHR v0.4.0 / schemaVersion2.0",
+    "profileVersion": "0.1.0-draft.1",
+    "actualInstalledRepeatBytesEqual": true
   }
 }

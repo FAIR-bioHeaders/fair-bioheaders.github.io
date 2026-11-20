@@ -62,12 +62,17 @@ and publication record above. See the
 [shared publication guide](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.8.0/docs/FHGM-PUBLICATION.md)
 and the [historical overview](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.8.0/docs/FHGM.md).
 
-Contract publication does not automatically update installed tools.
-The published fair-bioheaders 0.12.0 wheel has no FHGM runtime.
-Final 0.13.1 release and installed-artifact acceptance remain pending;
-a locally built package carrying that version is not a release.
-[Tools #155](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/issues/155)
-tracks consumer delivery. No FHGM JSON-LD form is claimed.
+Published [fair-bioheaders 0.13.1](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/releases/tag/v0.13.1) includes the experimental FHGM model checker.
+Enable BIOHEADERS_EXPERIMENTAL_FHGM=1 to run it; the published native 0.1
+contract is selected outside records by default when that independent lane is
+enabled. BIOHEADERS_FHGM_CONTRACT=draft explicitly replays owning history;
+unknown selections do not fall back. This opt-in does not change normal FHT or
+FHGFF3 header selection. The published 0.12.0 wheel remains historical and has
+no FHGM runtime. See
+[the released runtime documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/blob/v0.13.1/bioheaders/fhgm.py)
+and [Tools #155](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/issues/155).
+No FHGM JSON-LD form is claimed.
+{: .release-source}
 
 ## Distinct validation outcomes
 

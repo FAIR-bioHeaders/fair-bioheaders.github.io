@@ -161,8 +161,8 @@ FHR_File_Converter:
   status: Published
   resource_name: FAIR BioHeaders Tools
   purpose: Family metadata conversion, validation and file checksums
-  release: v0.12.0
-  version_doi: 10.5281/zenodo.24292408
+  release: v0.13.1
+  version_doi: 10.5281/zenodo.24387470
   type: software
   title: "FHR File Converter"
   authors:
@@ -174,7 +174,7 @@ FHR_File_Converter:
   repository: https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools
   programming_language: Python
   license: MPL-2.0
-  note: "The registered citation title remains FHR File Converter; the active package is fair-bioheaders. The v0.12.0 version DOI (10.5281/zenodo.24292408) is registered and findable in DataCite as checked 2026-11-18. v0.11.0 (10.5281/zenodo.24210269) is the first toolkit release whose bundled schema set is shared specification v0.6.0; v0.12.0 bundles the same set and adds bioheaders metadata."
+  note: "The registered citation title remains FHR File Converter; the active package is fair-bioheaders. The actual v0.13.1 release and version DOI 10.5281/zenodo.24387470 are verified; DataCite marks the version and concept records findable with the existing title and creators (2026-11-20). The published wheel supports normal FHT v0.7.0 and independently opt-in native FHGM 0.1; earlier released 0.12.0 support and unpublished 0.13.0 preparation receipts remain history."
 
 FHR_Nextflow:
   status: Published

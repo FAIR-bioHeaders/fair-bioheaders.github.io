@@ -500,11 +500,15 @@ class MappingPageChecks(unittest.TestCase):
         errors = mapping_page_errors('mappings/index.html', mapping_fixture(authority=False))
         self.assertTrue(any('upstream artifact' in error for error in errors), errors)
 
+    def test_shipped_runtime_exporter_does_not_grant_an_official_label(self):
+        text = mapping_fixture(extra='<p>Published0.13.1 ships the narrow export-dcmi CLI.</p>')
+        self.assertEqual(mapping_page_errors('mappings/index.html', text), [])
+
     def test_official_label_claim_is_rejected(self):
         for phrase in ('Official guidance from FAIR BioHeaders.',
                        'this is an official mapping',
                        'the field is unmappable',
-                       'the exporter writes the file',
+                       'this page exports a mapped file',
                        'deposit-ready output is produced'):
             with self.subTest(phrase=phrase):
                 errors = mapping_page_errors('mappings/index.html', mapping_fixture(extra=f'<p>{phrase}</p>'))

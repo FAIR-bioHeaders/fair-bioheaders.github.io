@@ -100,7 +100,8 @@ The pages distinguish four things that are easy to conflate:
   `ExperimentalMicrodataWarning`, and that runtime availability is not website enablement
   (see shared `docs/MICRODATA.md`). FHT handling in that published 0.12.0 wheel remains the historical opt-in
   owning-draft lane, not normal support for the new shared contract. Actual
-  released final 0.13.1 installed-artifact acceptance is pending.
+  published 0.13.1 now supports the normal FHT lane; a fresh actual-wheel install
+  validated all 14 normal browser exports with strict typed source equality.
 - **This site's builder** — `/table-builder/` validates its pinned **v0.6.0**
   snapshots (FHR "2.1", FHP/FHGFF3 "1.2") and can produce `x-` extension fields and
   dotted BUSCO dataset versions; extension fields go to the YAML export, never to
@@ -113,7 +114,7 @@ The pages distinguish four things that are easy to conflate:
   and biological/feature validation are separate questions with separate tools, spelled
   out in each page's "Validation boundaries" section.
 
-FHGM native model 0.1 is published in shared v0.8.0 at 72cb46b, DOI 10.5281/zenodo.24385999; installed final 0.13.1 acceptance remains separate. This header-type reference generator
+FHGM native model 0.1 is published in shared v0.8.0 at 72cb46b, DOI 10.5281/zenodo.24385999; published 0.13.1 includes the independently opt-in model checker selecting native 0.1. This header-type reference generator
 does not invent an FHGM header registry row. Its existing overview links the exact raw-tag schema and publication.json while keeping the logical native alias unlinked pending registration. It has no generated header inventory or header selector. A native model editor is not a prerequisite for FHT support.
 
 ## FHT publication promotion
@@ -127,8 +128,8 @@ metadata authors, unique parents, C1 runtime arithmetic, canonical checksums and
 typed F1 HTML. JSON-LD remains unsupported. A frozen v1 mapping matrix does not
 acquire an FHT profile merely because its header contract was published.
 
-Toolkit final 0.13.1 release/installed acceptance, final review/CI and actual Pages
-verification remain required before browser activation. No FHGM condition is
+Actual final 0.13.1 release/installed-export acceptance is recorded. Current
+review/CI and actual Pages verification remain before browser activation. No FHGM condition is
 added. A source commit or locally built package does not satisfy those gates.
 
 ## Checks after changing this section

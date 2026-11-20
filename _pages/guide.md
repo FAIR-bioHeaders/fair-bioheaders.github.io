@@ -15,7 +15,7 @@ that type's released contract and tooling.
 | Type | Resource | Contract and workflow status |
 | --- | --- | --- |
 | [FHR](/specifications/fhr/) | Reference genome assembly | FHR `2.1`; the pinned shared release v0.6.0 re-publishes the 2.1 bytes unchanged. Toolkit `fair-bioheaders` 0.12.0 writes and checks FASTA/GFA, JSON-LD and microdata for `2.1`, accepts a `…/v0.6.0` citation, and can write a new `2.1` record from typed fields with `bioheaders metadata`. The browser builder cites the pinned v0.6.0 snapshot by default and can write `x-` extension fields (YAML only). |
-| [FHT](/specifications/fht/) | Transcriptome | Released FHT 1.0 in shared v0.7.0, DOI 10.5281/zenodo.24385024. Normal toolkit acceptance still awaits the actual published final 0.13.1 artifact; 0.12.0’s opt-in owning-draft lane is historical preparation, not support for this published contract. The FHT browser form is prepared against the released schema and remains subject to runtime and actual deployment gates. JSON-LD is unsupported. |
+| [FHT](/specifications/fht/) | Transcriptome | Released FHT 1.0 in shared v0.7.0, DOI 10.5281/zenodo.24385024. Published toolkit 0.13.1 supports the normal FHT lane with no development flag. All seven browser HTML/YAML pairs were validated and re-read through the actual installed release. The earlier 0.12.0 owning-draft lane remains historical. JSON-LD is unsupported. |
 | [FHP](/specifications/fhp/) | Protein/proteome FASTA | FHP `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit 0.12.0 reads and writes `1.2` as JSON/YAML, in files, and as canonical JSON-LD and HTML microdata. The browser builder cites the pinned v0.6.0 snapshot by default, accepts a dotted `lineageDataset` in a `1.2` record, and writes `x-` extension fields into YAML only. |
 | [FHGFF3](/specifications/fhgff3/) | GFF3 annotation metadata | FHGFF3 `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit 0.12.0 reads and writes `1.2` as JSON/YAML and in files, plus experimental HTML microdata, and has no JSON-LD form. Feature and biology validation is a separate tool. |
 {: .status-table}
@@ -32,10 +32,12 @@ narrative introduction, so it does not restate the contracts.
 [10.5281/zenodo.24385999](https://doi.org/10.5281/zenodo.24385999), for records
 inside an FHGFF3 annotation. It adds no FHGM header schemaVersion or header
 registry entry; the native contract is selected outside each record.
-Final released-toolkit acceptance is pending, and the published 0.12.0 wheel
-has no FHGM runtime. The logical native alias is not yet a live resolving link.
+Published toolkit 0.13.1 includes an experimental model checker: enable
+BIOHEADERS_EXPERIMENTAL_FHGM=1 to select the published native 0.1 contract.
+It remains separate from normal header selection and feature/biology checks. The logical native alias is not yet a live resolving link.
 See the [FHGM native model overview](/specifications/fhgm/) for the immutable
 raw-tag schema, source history and separate validation outcomes.
+{: .release-source}
 
 Toolkit 0.10.0 rejects v0.6.0 aliases for FHR, FHP and FHGFF3. For workflows with that toolkit release, use the [v0.5.0 examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.5.0/examples) and its [tagged documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/tree/v0.10.0). Choose a supported alias when creating new records; changing an existing file-bound header requires checksum recomputation.
 

@@ -9,13 +9,13 @@ test('resources distinguish publication, development and retired tooling', async
   await expect(publication.locator('xpath=ancestor::tr')).toContainText('Published (v0.6.0)');
   const toolkit = page.getByRole('link', { name: 'FAIR BioHeaders Tools', exact: true });
   await expect(toolkit).toHaveAttribute('href', 'https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools');
-  await expect(toolkit.locator('xpath=ancestor::tr')).toContainText('Published (v0.12.0)');
+  await expect(toolkit.locator('xpath=ancestor::tr')).toContainText('Published (v0.13.1)');
   // Each version DOI link must name the release it points at: both records below
   // were re-checked as registered and `findable` in DataCite (specification on
-  // 2026-11-14, toolkit v0.12.0 on 2026-11-18).
+  // 2026-11-14, toolkit v0.13.1 on 2026-11-20).
   for (const [key, release, doi] of [
     ['FHR_Specification', 'v0.6.0', '10.5281/zenodo.24223950'],
-    ['FHR_File_Converter', 'v0.12.0', '10.5281/zenodo.24292408'],
+    ['FHR_File_Converter', 'v0.13.1', '10.5281/zenodo.24387470'],
   ]) {
     const versionLink = page.locator(`#${key} .reference__version`);
     await expect(versionLink).toHaveText(`${release} version DOI`);

@@ -14,11 +14,11 @@ separate values.
 
 This page uses the exact released schema at commit
 [623c79fe58edeb238a20fb6de518c62dd69b92bc](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/623c79fe58edeb238a20fb6de518c62dd69b92bc).
-Contract publication does not automatically update an installed toolkit.
-Acceptance of the actual final fair-bioheaders 0.13.1 artifact is still pending;
-a development wheel carrying that version is not a release. The browser form is
-prepared against these published bytes, with activation gated on that installed
-runtime evidence, current review/CI and actual Pages verification.
+Published [fair-bioheaders 0.13.1](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/releases/tag/v0.13.1) supports FHT through its normal released lane,
+with no development opt-in. A fresh noneditable install of the actual published
+wheel validated all seven normal browser HTML/YAML pairs and converted them to
+JSON equal in value and type to the published source records. This is metadata
+interoperability evidence, not sequence-byte or parent verification.
 {: .release-source}
 
 ## What FHT describes
@@ -90,15 +90,15 @@ notes and rendered reference are retained byte-exact in its snapshot history;
 the field inventory above now uses the shared released authority.
 
 Do not silently rewrite existing citations or headers. Header changes require
-checksum recomputation and can affect downstream parent links. A stable schema
-identifier does not itself prove network resolution; the
+checksum recomputation and can affect downstream parent links. The FHT w3id identity remains a logical identifier with alias registration
+pending; it is not a live-resolution claim. The
 [raw-tag schema](https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.7.0/fht.json)
 provides the immutable published bytes.
 
 ## Related guidance
 
 - [Using FH*](/guide/) — choose a header and distinguish contract from runtime support.
-- [Table builder](/table-builder/) — prepared metadata form and inert typed exports.
+- [Table builder](/table-builder/) — metadata form and inert typed exports.
 - [Resources & citation](/resources/) — publication and development roles.
 - [Format rules](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/docs/FORMAT.md)
   and [version selection](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.7.0/docs/SCHEMA-VERSIONS.md).

@@ -795,6 +795,7 @@ def build_type(page: str, provenance: dict, shared: dict) -> dict:
         'schemaId': schema.get('$id', ''),
         'schemaVersions': [str(value) for value in version.get('enum', [])],
         'release': meta['release'],
+        'aliasPending': meta.get('aliasStatus') == 'pending-registration',
         'releases': releases,
         'pinned': {
             'file': f'scripts/schema-snapshots/{name}',
@@ -955,8 +956,10 @@ def render_location(data: dict) -> str:
             'hard-code a "latest" schema, and never check an unknown version against a different one.</li>',
             f'<li>The same bytes at the release tag: <a href="{attr(tag_url)}">{tag_url}</a>, also fixed at '
             f'commit <a href="{attr(blob_url)}">{pinned["commit"][:10]}</a>.</li>',
-            f'<li>{identity_label}: '
-            f'<a href="{attr(data["schemaId"])}">{data["schemaId"]}</a>.</li>',
+            (f'<li>Logical schema identity (<code>$id</code>), alias registration pending: '
+             f'{code(data["schemaId"])}. Use the raw-tag resource above for published bytes.</li>'
+             if data.get('aliasPending') else
+             f'<li>{identity_label}: <a href="{attr(data["schemaId"])}">{data["schemaId"]}</a>.</li>'),
         ]
     else:
         links = [
@@ -991,9 +994,10 @@ def render_history(data: dict) -> str:
         version = f'<code>{line["schemaVersion"]}</code>' + (' (the number, not a string)' if line['legacy'] else '')
         unchanged = (f'<span class="field-none">unchanged from {line["unchangedFrom"]}</span>'
                      if line['unchangedFrom'] else '')
-        alias = (f'<a href="{attr(line["alias"])}">{line["alias"].split("fair-bioheaders/", 1)[1]}</a>'
-                 if line['alias']
-                 else '<span class="field-none">none published</span>')
+        alias = (code(line['alias'].split('fair-bioheaders/', 1)[1]) + ' (registration pending)'
+                 if line['alias'] and data.get('aliasPending') else
+                 f'<a href="{attr(line["alias"])}">{line["alias"].split("fair-bioheaders/", 1)[1]}</a>'
+                 if line['alias'] else '<span class="field-none">none published</span>')
         rows.append(f'<tr><th scope="row">{release}</th><td>{version}</td>'
                     f'<td>{line["date"]}{unchanged}</td><td>{alias}</td></tr>')
     label = f'{data["type"]} schema versions by shared release'

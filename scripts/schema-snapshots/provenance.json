@@ -69,7 +69,8 @@
       "rawUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.7.0/fht.json",
       "sha256": "082b0790b7878940c4496c97d7485e32c65de8ba75ecc080e53f04fb44251a43",
       "retrieved": "2026-11-20",
-      "registrySnapshot": "versions-v0.7.0.json"
+      "registrySnapshot": "versions-v0.7.0.json",
+      "aliasStatus": "pending-registration"
     }
   },
   "examples": {

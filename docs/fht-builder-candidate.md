@@ -1,10 +1,20 @@
 # FHT v0.7.0 browser activation preparation — Round 15
 
-This branch prepares normal FHT support; it is not yet the deployed website.
-Do not merge or publish until the final released fair-bioheaders 0.13.1 artifact
-has been installed, verified and exercised against these exact exports, then
-current independent different-model review and full CI pass. No FHGM publication
-condition is added. Website #15/#39 stay open until actual Pages/live receipts.
+This branch implements normal FHT support against the actual published
+fair-bioheaders 0.13.1 wheel, SHA-256
+9f600347711ee771c8bc8f8e545438c255685736206b1342413b16076da20a45
+(338797 bytes), from actual release tag
+531d98ea742277b1ec391c646f2d32d94f520b56. A fresh noneditable install compared
+all 65 payload files with both wheel and tag and validated 14 real browser exports
+against seven byte-equal published JSON sources, with strict typed conversion
+and independent HTML/YAML rereads. All BIOHEADERS gates and PYTHONPATH were unset
+for normal FHT checks. Unknown versions and JSON-LD remained refusals.
+All 14 downloads matched the displayed sources and edits disabled stale output.
+These are local installed-release receipts, not Pages deployment evidence.
+
+Current full CI, independent different-model review and actual Pages/live checks
+remain before publication. Root owns merge/deployment and #15/#39 completion.
+No FHGM model editor or downstream workflow integration is an extra gate.
 
 ## Published source
 
@@ -48,21 +58,23 @@ The generated FHT schema-reference page/pins/notes and public guide now use
 the actual published source. The previous owning snapshot/example and archived
 notes/rendering retain exact historical bytes and fixed source links.
 
-## Remaining final publication work
+## Remaining website publication work
 
-- Install and verify the actual published final toolkit artifact, then re-run
-  the seven JSON/FASTA/HTML interoperability pairs and exact exported HTML/YAML
-  equality; a locally built 0.13.1 candidate is not that release.
-- Run the full final site/browser suite and obtain current-head independent
-  review after the documentation promotion, then recheck findings/base/dependencies.
-- Merge only after all gates pass, await actual Pages, test the live form/exports,
-  and close #15/#39 only if the complete accepted scope is met.
+- Current full CI and independent different-model review after the factual support refresh.
+- Root's authorized merge followed by actual Pages, live FHT form/export/safety
+  verification and issue acceptance readback.
 
+## Actual narrow exporter evidence
+
+The same installed 0.13.1 environment ran the documented export-dcmi CLI twice
+on the existing adopted FHR v0.4.0 source/context. All four bundle outputs were
+byte-identical across runs, and both inputs were preserved exactly.
+This does not change the curated website fixture, profile token, unlabelled
+adoption record, target scope, deposit readiness or any biological claim.
 
 ## Historical toolkit preparation
 
 The earlier 0.13.0 development wheels and preserved failed v0.13.0 tag remain
 historical preparation evidence. The release guard stopped that vehicle before
-GitHub Release, PyPI or GHCR publication. Current acceptance targets the actual
-final 0.13.1 artifact; version strings, tags and locally built candidates alone
-are not publication or installed-release proof.
+GitHub Release, PyPI or GHCR publication. Actual final 0.13.1 artifacts are now published and verified as described above;
+version strings, tags and locally built candidates alone were never that proof.

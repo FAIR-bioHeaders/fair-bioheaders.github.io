@@ -571,8 +571,8 @@ and distinguishes the logical native identifier from a live-link claim.
 
 The prepared builder supports FHT v0.7.0 alongside the unchanged released-type
 snapshots, retaining M5 extension omission and experimental FHGFF3 HTML
-disclosures. Final actual 0.13.1 installed acceptance, current independent review,
-green CI and real Pages/live evidence gate activation. FHGM has no model editor
+disclosures. Actual published 0.13.1 installed-export acceptance is verified; current
+independent review, green CI and real Pages/live evidence still gate activation. FHGM has no model editor
 in this form, and adding one is not an FHT activation requirement.
 An unpinned citation is unsupported rather than substituted with another schema.
 Adding a new indexable route here means updating the sitemap allow-lists in
@@ -596,12 +596,14 @@ deterministic exporter ships**, and it stays that way on the page: `not projecte
 mapping v1` is the only allowed phrasing for the 15 ruled-out root fields (the inventory
 never calls a field unmapable), the upstream `status: proposal` and
 `profile_version: 0.1.0-draft.1` are quoted rather than restated, the worked graph is
-labelled a manually curated fixture, and no exporter, deposit readiness, registration or
-external endorsement may be implied. `scripts/mapping_crosswalk.py` refuses to emit wording
+labelled a manually curated fixture. Actual toolkit 0.13.1 now ships the narrow
+export-dcmi CLI, measured with preserved inputs and deterministic repeated bundles.
+This grants no new official label, browser converter, deposit readiness, registration
+or external endorsement. `scripts/mapping_crosswalk.py` refuses to emit wording
 that breaks that, and `scripts/check_site.py`'s `mapping_page_errors` re-checks the rendered
 page — including the hand-written prose — for the pinned digest, the required vocabulary and
-the forbidden claims. If maintainers later grant the label or ship an exporter, change the
-guard, the page and the pins deliberately together.
+the forbidden claims. Any later label grant or scope change needs its recorded disposition; shipped
+runtime facts do not rewrite the preserved source pins or curated fixture.
 
 V1 covers FHR root fields for an assembly resource only. FHP and FHGFF3 are recorded
 upstream as not yet profiled and FHT as blocked on its contract, so no row may be invented

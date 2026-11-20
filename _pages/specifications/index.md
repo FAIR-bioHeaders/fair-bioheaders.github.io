@@ -65,8 +65,8 @@ The field tables above describe the contracts. How FHR root fields relate to qua
 Dublin Core — with each field's condition, transformation and stated loss, and the
 supplemental export context a descriptive export needs — is on the
 [metadata mappings reference](/mappings/). That page renders the adopted mapping v1
-surface from pinned upstream bytes; it publishes no exporter, claims no deposit readiness,
-and inherits v1's withheld "official" label exactly as recorded upstream.
+surface from pinned upstream bytes and identifies the shipped 0.13.1 narrow CLI.
+It claims no deposit readiness, expanded target profile or new official label.
 
 ## Where the authority lies
 

@@ -14,13 +14,15 @@ The shared specification publishes reviewed family contracts. Shared
 **v0.7.0** adds FHT transcriptome contract 1.0, with version DOI
 [10.5281/zenodo.24385024](https://doi.org/10.5281/zenodo.24385024).
 FHR 2.1 and FHP/FHGFF3 1.2 retain their published v0.6.0 contracts and citations.
-Contract publication and installed toolkit support are separate: final released
-0.13.1 FHT runtime acceptance is pending.
+Published [fair-bioheaders 0.13.1](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/releases/tag/v0.13.1) supports FHT with its released
+contract; actual installed browser-export interoperability is verified. Its
+version DOI is [10.5281/zenodo.24387470](https://doi.org/10.5281/zenodo.24387470).
 
 FHGM native model contract 0.1 is published in shared **v0.8.0**, DOI
 [10.5281/zenodo.24385999](https://doi.org/10.5281/zenodo.24385999).
 It describes model records inside FHGFF3 and adds no FHGM header type or
-header-registry entry. Actual released-toolkit acceptance remains pending;
+header-registry entry. Toolkit 0.13.1 includes an independently opt-in experimental
+model checker selecting published native 0.1 when enabled;
 the logical native alias is not presented as resolving. See the
 [FHGM native model overview](/specifications/fhgm/).
 FAIR BioHeaders Tools is the single active conversion and validation package, and each

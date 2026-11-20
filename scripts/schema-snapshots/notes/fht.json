@@ -4,7 +4,7 @@
       "units": "URL",
       "notes": [
         "Released in shared v0.7.0, pinned here at 623c79fe58edeb238a20fb6de518c62dd69b92bc. Record selectors are shared raw-main, shared raw-tag v0.7.0 or fixed w3id v0.7.0; owning-draft identifiers are a separate historical lane. Unknown releases do not fall back.",
-        "The fixed schema identity is not evidence that an alias resolves. Reader support and network alias registration are distinct from contract publication.",
+        "The fixed w3id schema identity has pending alias registration; use the immutable raw-tag resource for published bytes. Bundled reader support does not imply network resolution.",
         "The immutable schema retains prepublication wording in a descriptive annotation. This reference contextualizes that annotation with the actual v0.7.0 publication; the pattern and all validation bytes are unchanged."
       ],
       "description": "Published FHT schema selector under shared V1\u2013V7. Shared raw-main selects the reader current FHT contract; fixed raw-tag and w3id citations select registered releases. Owning-development raw tags remain a separate historical scope."
@@ -78,7 +78,7 @@
       "units": "standard padded base64 of the SHA-512/256 digest",
       "notes": [
         "Shared rules R1\u2013R4 cover exact FASTA bytes excluding the root checksum line, using canonical padded base64 of SHA-512/256. A structural checksum check is not byte verification.",
-        "The published contract does not automatically update older installed toolkits. Normal released-runtime acceptance is pending verification of the actual final fair-bioheaders 0.13.1 artifact.",
+        "Published fair-bioheaders 0.13.1 bundles this released FHT contract. Metadata validation alone does not recompute file bytes; use the released file-verification commands with the actual files.",
         "Legacy MD5 values and T/U conversion are not header repairs."
       ]
     },
@@ -235,7 +235,7 @@
       "example": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
       "exampleLabel": "illustrative canonical checksum; not a verified parent",
       "notes": [
-        "Canonical padded base64 of the exact parent file SHA-512/256 checksum. Metadata-only validation cannot report a verified parent without the actual supplied file. Actual final released toolkit support is a separate installed-artifact acceptance gate."
+        "Canonical padded base64 of the exact parent file SHA-512/256 checksum. Metadata-only validation cannot report a verified parent without the actual supplied file. Published 0.13.1 supports the normal FHT lane; matching parent identity still does not prove biological derivation."
       ]
     },
     "derivedFrom[].seqcol_id": {
@@ -357,8 +357,8 @@
       "YAML preserves extension data; HTML omits extension fields under M5 and reports the omission."
     ],
     "tooling": [
-      "Contract publication is distinct from installed runtime support. The final fair-bioheaders 0.13.1 artifact still needs release and installed acceptance; a locally built candidate with that version string is not a released package.",
-      "The browser builder is prepared against the exact published schema, with C1 arithmetic and safe-number limits. Website activation remains gated on the actual released toolkit, current review/CI and actual Pages verification.",
+      "Published fair-bioheaders 0.13.1 supports normal released FHT without a development gate. The actual noneditable published wheel validated all 14 browser HTML/YAML exports from the seven published source records and converted them to equal typed JSON.",
+      "The browser builder uses the exact published schema, C1 arithmetic and explicit safe-number limits. File-byte, parent and biology checks remain separate; website deployment requires its own live receipt.",
       "Owning development remains in FHT-Specification; the shared specification is the publication authority."
     ],
     "caveats": [

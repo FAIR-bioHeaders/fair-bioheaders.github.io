@@ -29,10 +29,10 @@ SCHEMA_SNAPSHOTS = Path(__file__).resolve().parent / 'schema-snapshots'
 # The pinned mapping v1 surface behind the generated /mappings/ crosswalk.
 MAPPING_SNAPSHOTS = Path(__file__).resolve().parent / 'mapping-snapshots'
 MAPPING_INVENTORY = 'assembly-dcmi.yml'
-# Wording the /mappings/ page may not carry while the label is withheld and no
-# deterministic exporter exists. scripts/mapping_crosswalk.py guards the generated
+# Unrecorded label/deposit/browser-converter claims stay forbidden despite the
+# shipped narrow runtime exporter. scripts/mapping_crosswalk.py guards the generated
 # fragment; this guards what actually renders, including the hand-written prose.
-MAPPING_FORBIDDEN = ('official guidance', 'official mapping', 'unmappable', 'the exporter',
+MAPPING_FORBIDDEN = ('official guidance', 'official mapping', 'unmappable', 'this page exports',
                      'deposit-ready output')
 RELEASED_TYPES = ('FHR', 'FHP', 'FHGFF3', 'FHT')
 MATHJAX_INTEGRITY = 'sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei'
@@ -546,7 +546,7 @@ def mapping_page_errors(relative, text):
     `scripts/mapping_crosswalk.py --check` (and by test_mapping_crosswalk.py); this is
     the matching rendered check. It proves the page still shows the pinned revision,
     still uses the inventory's own vocabulary, and still does not claim the two things
-    the withheld label forbids: an "official" status, or an exporter.
+    the recorded scope forbids: an ungranted official status, deposit readiness or browser conversion.
     """
     if relative != 'mappings/index.html':
         return []

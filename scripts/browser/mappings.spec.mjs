@@ -6,7 +6,7 @@ import path from 'node:path';
 // /mappings/ renders the pinned mapping v1 surface (issue #29). The page is generated
 // from scripts/mapping-snapshots/ bytes, so the assertions compare the rendered digest
 // with the pin rather than trusting the wording, and they guard the status language the
-// withheld "official" label and the absent exporter require.
+// withheld "official" label and the recorded scope require.
 const INVENTORY = 'assembly-dcmi.yml';
 const MATRIX = 'profile-status.yml';
 
@@ -68,12 +68,15 @@ test('the adoption state is stated and the withheld claims are absent', async ({
   await expect(adoption).toContainText('correct-but-not-final');
   await expect(adoption).toContainText('withheld');
   const text = (await page.locator('#main').innerText()).toLowerCase();
-  for (const claim of ['official guidance', 'official mapping', 'the exporter writes', 'deposit-ready output']) {
+  for (const claim of ['official guidance', 'official mapping', 'this page exports', 'deposit-ready output']) {
     expect(text).not.toContain(claim);
   }
   // The upstream label is quoted as it stands rather than silently restated.
   await expect(adoption).toContainText('status: proposal');
   await expect(adoption).toContainText('0.1.0-draft.1');
+  await expect(adoption).toContainText('0.13.1');
+  await expect(adoption).toContainText('export-dcmi CLI');
+  await expect(adoption).not.toContainText('ships anywhere else yet');
 });
 
 test('the worked example is reproduced verbatim and reports its own losses', async ({ page }) => {

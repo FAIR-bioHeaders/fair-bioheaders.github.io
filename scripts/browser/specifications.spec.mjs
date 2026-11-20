@@ -173,8 +173,10 @@ test.describe('generated field references', () => {
     await openPage(page, '/specifications/fht/');
     await expect(page.locator('.spec-notice--draft')).toHaveCount(0);
     await expect(page.locator('#main')).toContainText('24385024');
-    await expect(page.locator('#main')).toContainText('actual final fair-bioheaders 0.13.1 artifact is still pending');
+    await expect(page.locator('#main')).toContainText('supports FHT through its normal released lane');
     await expect(page.locator('#main')).toContainText('JSON-LD remains unsupported');
+    await expect(page.locator('a[href^="https://w3id.org/fair-bioheaders/fht/"]')).toHaveCount(0);
+    await expect(page.locator('.schema-links')).toContainText('alias registration pending');
     await expect(page.locator('#main')).toContainText('historical');
   });
 

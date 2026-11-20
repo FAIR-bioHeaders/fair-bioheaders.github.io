@@ -12,19 +12,21 @@ This page renders them; it defines nothing.
 
 ## Status language is load-bearing
 
-The maintainers adopted v1 as **correct-but-not-final** on 2026-11-14 and **withheld the
+The historical adoption remains the authority. The maintainers adopted v1 as **correct-but-not-final** on 2026-11-14 and **withheld the
 "official" label until a deterministic exporter ships**. Two consequences are enforced by
 checks rather than left to discipline:
 
 - the page must keep the inventory's own vocabulary — a root field is
   **"Not projected by mapping v1"**, never "unmappable", because the ruling is about this
   surface and not about what a later version might do;
-- the page may not claim official status, an exporter, or deposit readiness. The upstream
+- the page may not claim a new official status, browser conversion or deposit readiness.
+  Published toolkit 0.13.1 now ships the scoped export-dcmi CLI, verified in an
+  actual noneditable install with two identical output bundles and exact input preservation. The upstream
   artifacts still carry `status: proposal` and `profile_version: 0.1.0-draft.1`, and the
   worked graph is a **manually curated fixture, not tool output**.
 
 `scripts/mapping_crosswalk.py` refuses to emit wording containing
-`official guidance`, `official mapping`, `unmappable`, `the exporter` or
+`official guidance`, `official mapping`, `unmappable`, `this page exports` or
 `deposit-ready output`, and `scripts/check_site.py` re-checks the rendered page (including
 the hand-written prose) for the same phrases. If the label is ever granted, that change
 must be made deliberately, together with the two guards.

@@ -1,75 +1,56 @@
-# Unpublished FHT browser preparation — Round 15
+# FHT v0.7.0 browser activation preparation — Round 15
 
-This is an explicitly opt-in **candidate**, not a release cache or website
-support claim. The public `/table-builder/` keeps FHT disabled, does not load
-`fht-builder-candidate.js`, and its release registry/defaults are unchanged.
-Actual shared v0.7.0 publication and a named published supported runtime must
-precede deliberate form activation and released-cache provenance.
+This branch prepares normal FHT support; it is not yet the deployed website.
+Do not merge or publish until the final released fair-bioheaders 0.13.0 artifact
+has been installed, verified and exercised against these exact exports, then
+current independent different-model review and full CI pass. No FHGM publication
+condition is added. Website #15/#39 stay open until actual Pages/live receipts.
 
-## Exact reviewed input
+## Published source
 
-`scripts/fht-candidate/provenance.json` pins shared commit
-`1a0792e6f8db1b73959999d30f5e6575b982cbfc` (merged #281), schema SHA-256
-`082b0790b7878940c4496c97d7485e32c65de8ba75ecc080e53f04fb44251a43`.
-Its 116 unchanged files contain that schema, seven publication JSON/FASTA/HTML
-triples and all 93 release-counterpart vectors plus their manifest. These are
-unpublished publication test artifacts, not supported citations for new data.
-No older cache, snapshot digest, fixture byte or vector ID is rewritten.
+The shared v0.7.0 tag resolves to
+623c79fe58edeb238a20fb6de518c62dd69b92bc (GitHub release452203176,
+version DOI10.5281/zenodo.24385024). The release archive SHA-256 is
+a65d9693361fd4348f6bc0ba69dd7a8ce1c7a8e24e7658625e6b7bc2f55141a7.
+scripts/fht-candidate/provenance.json now names that immutable release and pins
+117 source files: schema, seven JSON/FASTA/HTML triples,93 counterpart files,
+their manifest, and the published version registry. Relative to the reviewed
+prepublication closure, only the manifest and seven HTML annotations changed;
+the schema digest remains
+082b0790b7878940c4496c97d7485e32c65de8ba75ecc080e53f04fb44251a43.
+The historical fht-candidate directory name is retained to make this deliberate
+refresh reviewable. Old released caches and fixtures are not refreshed.
 
-The F1 writer identity is the reviewed schema `$id`,
-`https://w3id.org/fair-bioheaders/fht/v0.7.0`, matching all seven supplied HTML
-examples. Record-level schema selectors remain separate: this candidate accepts
-only shared raw-main, shared v0.7.0 raw tag and the v0.7.0 w3id forms. Owning
-raw-main remains a distinct draft lane; unknown releases and the old FHR repo's
-nonexistent FHT identity are refused, with no fallback. The regular released
-builder still recognizes none of these FHT candidate selectors.
+assets/schema/fht-v0.7.0.json is the exact published schema. Normal registry
+selection admits shared raw-main, raw-tag v0.7.0 and fixed w3id v0.7.0 forms,
+without substituting for unknown releases or owning-draft selectors. The writer
+itemtype is the schema identity https://w3id.org/fair-bioheaders/fht/v0.7.0,
+separate from the record-level selector.
 
-## Staged implementation
+## Prepared behavior
 
-`assets/js/fht-builder-candidate.js` requires `{candidate: true}` for selection,
-validation, profile construction and export. It provides the 29-field form
-profile with requiredness/types/constraints supplied by the reviewed schema;
-it does not mount or enable a public form. Shared pure YAML/typed-value helpers
-are reused. The ordinary browser validator now implements `minItems` and
-structural `uniqueItems`, including duplicate parent objects with reordered
-keys, without changing schema bytes. Existing released-type tests remain green.
+table-builder.js provides the normal29-field FHT form, separate visit-local
+draft/extension state, schema validation, canonical checksum checks and C1
+arithmetic. Complete BUSCO counts are summed with BigInt; partial counts stay
+partial. Unsafe numeric values and input underflow are refused rather than
+silently exported as rounded integers or zero. Metadata validity does not prove
+file bytes, parent identity or biological derivation.
 
-C1 arithmetic is separate from JSON Schema: only a fully supplied safe-integer
-component set is summed, using BigInt so the sum cannot silently round. Partial
-counts remain partial, not zero-filled. Canonical standard checksums, nested
-parents and schema selection remain distinct from actual file verification.
-Unsafe numeric values are reported as **browser capability limits**, not newly
-invalid biological records; no precision loss is accepted silently.
+Exports preserve typed nested/ordered standard values. YAML retains extension
+data; HTML omits extension keys under M5 and states that omission. Values remain
+inert escaped text. JSON-LD is unsupported. fht-builder-candidate.js is now only
+a compatibility adapter for the existing preparation harness; the public form
+uses the normal builder and does not load that adapter.
 
-Candidate HTML has one FHT scope, typed ordered/nested values and a readable
-text-only table; all metadata is escaped. A fixed controlled stylesheet keeps
-whitespace readable and never interpolates values or remote URLs. Scripts,
-links, uploads, persistence, remote URL resolution and user-controlled styles
-are absent. YAML preserves extension data; M5 omissions are named in HTML.
-JSON-LD remains explicitly unsupported. Candidate output labels itself
-unpublished and does not claim checksum, parent or biological proof.
+## Remaining final publication work
 
-## Measured checks
-
-- 14 Node candidate tests: exact source pins, 93-vector inventory, all seven
-  pairs, all 29 form fields, selector refusal, both bad/equal/partial BUSCO sums,
-  large exact summation, duplicate/canonical parents, hostile text, zero/false,
-  extensions, unsafe-number refusal and no default/UI enablement.
-- All 34 valid counterpart records passed metadata-only schema/semantic checks.
-  This is **not** FASTA/gzip/checksum verification; file-level rejection vectors
-  are preserved as source bytes, not relabeled as browser parser tests.
-- Independent Python YAML and typed HTML structural re-reading matched all seven
-  records including scalar types and array/object order. 137 Python site tests
-  and 70 existing Node builder tests passed, zero skips.
-- Real DOM extraction of all seven outputs, controlled/inert markup and public
-  FHT-disabled assertions pass in Chromium desktop/320px, Firefox desktop and
-  WebKit desktop. This does not claim enabled-form lifecycle/accessibility
-  coverage; those checks follow actual publication and activation.
-- Pinned frozen production Jekyll build, site checker (24 pages/18 sitemap URLs),
-  deterministic JS bundle and whitespace checks passed.
-
-Installed candidate toolkit interoperability is recorded separately when its
-concrete wheel is available; a development version string alone is not proof of
-published support. Root coordinates actual publication, precise published
-artifact/runtime pins and the final active-form browser/download/lifecycle
-matrix. No proposed DOI or alias is described as live.
+- Promote the generated FHT schema-reference page/pins/notes and public guide
+  status from their historical owning-draft snapshot to this published source.
+  Those existing historical bytes have deliberately not been overwritten here.
+- Install and verify the actual published final toolkit artifact, then re-run
+  the seven JSON/FASTA/HTML interoperability pairs and exact exported HTML/YAML
+  equality; a locally built0.13.0 candidate is not that release.
+- Run the full final site/browser suite and obtain current-head independent
+  review after the documentation promotion, then recheck findings/base/dependencies.
+- Merge only after all gates pass, await actual Pages, test the live form/exports,
+  and close #15/#39 only if the complete accepted scope is met.

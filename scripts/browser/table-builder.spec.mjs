@@ -46,7 +46,7 @@ test('only the pinned snapshots are requested, and they are the current release'
     '/assets/schema/fhgff3-v0.4.0.json', '/assets/schema/fhgff3-v0.6.0.json',
     '/assets/schema/fhp-v0.4.0.json', '/assets/schema/fhp-v0.6.0.json',
     '/assets/schema/fhr-v0.3.1.json', '/assets/schema/fhr-v0.4.0.json', '/assets/schema/fhr-v0.6.0.json',
-    '/assets/schema/fhr.json'
+    '/assets/schema/fhr.json', '/assets/schema/fht-v0.7.0.json'
   ].sort());
 });
 
@@ -337,12 +337,12 @@ test('an unpinned real release is unsupported instead of falling back', async ({
   await expect(page.locator('#tb-errors')).toContainText('Unsupported schema target');
 });
 
-test('FHT stays disabled and FHGM is absent from the builder', async ({ page }) => {
+test('FHT is enabled and FHGM is absent from the builder', async ({ page }) => {
   await page.goto('/table-builder/');
-  await expect(page.locator('#tb-profile option[value="FHT"]')).toHaveCount(0);
+  await expect(page.locator('#tb-profile option[value="FHT"]')).toHaveCount(1);
   const fht = page.locator('#tb-profile option').filter({ hasText: 'FHT' });
   await expect(fht).toHaveCount(1);
-  await expect(fht).toBeDisabled();
+  await expect(fht).toBeEnabled();
   await expect(page.locator('#tb-profile option')).toHaveCount(4);
   await expect(page.locator('#tb-profile')).not.toContainText('FHGM');
 });

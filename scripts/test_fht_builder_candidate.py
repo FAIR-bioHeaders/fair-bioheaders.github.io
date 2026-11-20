@@ -1,4 +1,4 @@
-"""Independent structural re-read of the explicitly unpublished FHT exports."""
+"""Independent structural re-read of the published v0.7.0 FHT exports."""
 import json
 from pathlib import Path
 import subprocess
@@ -20,7 +20,7 @@ class FHTCandidateRoundTrips(unittest.TestCase):
                 expected = {k: v for k, v in item['record'].items() if not k.startswith('x-')}
                 typed_equal(expected, read_microdata(item['microdata'], ITEMTYPE), item['name'])
                 typed_equal(item['record'], load_builder_yaml(item['yaml']), item['name'])
-                self.assertEqual(item['status'], 'candidate-unpublished')
+                self.assertEqual(item['status'], 'published-v0.7.0')
 
 
 if __name__ == '__main__':

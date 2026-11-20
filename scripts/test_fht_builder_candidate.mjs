@@ -18,35 +18,36 @@ const clone = value => JSON.parse(JSON.stringify(value));
 const sha = value => createHash('sha256').update(value).digest('hex');
 
 if (process.argv.includes('--exports')) {
-  process.stdout.write(JSON.stringify(records.map(({name, record}) => ({ name, record, ...candidate.exportsFor(record, schema, opt) }))));
+  process.stdout.write(JSON.stringify(records.map(({name, record}) => ({ name, record, ...candidate.exportsFor(record, schema, opt), html: builder.standaloneHtml(record, schema), yaml: builder.toYaml(record, schema), microdata: builder.microdataDiv(record, schema) }))));
 } else {
   test('candidate snapshot and all 93 counterparts retain exact source byte pins', () => {
     const provenance = json('./fht-candidate/provenance.json');
     assert.equal(sha(read('./fht-candidate/schema.json')), candidate.PROFILE.schemaSha256);
     assert.equal(candidate.ITEMTYPE, schema.$id);
+    assert.deepEqual(read('../assets/schema/fht-v0.7.0.json'), read('./fht-candidate/schema.json'));
     for (const name of names) assert.ok(read('./fht-candidate/examples/fht/' + name.replace('.json', '.html')).toString().includes('itemtype="' + candidate.ITEMTYPE + '"'));
-    assert.equal(provenance.sourceCommit, '1a0792e6f8db1b73959999d30f5e6575b982cbfc');
-    assert.equal(provenance.files.length, 116);
+    assert.equal(provenance.sourceCommit, '623c79fe58edeb238a20fb6de518c62dd69b92bc');
+    assert.equal(provenance.files.length, 117);
     for (const file of provenance.files) {
       const bytes = read('./fht-candidate/' + file.local);
       assert.equal(bytes.length, file.bytes, file.local); assert.equal(sha(bytes), file.sha256, file.local);
     }
     assert.equal(json('./fht-candidate/conformance/fht-v0.7.0/manifest.json').vectors.length, 93);
   });
-  test('candidate is opt-in, never in the released registry or public form', () => {
-    assert.throws(() => candidate.select(candidate.ITEMTYPE), /unpublished/);
-    assert.throws(() => candidate.exportsFor(records[0].record, schema), /opt-in/);
+  test('published FHT selectors are registered without opt-in and reject unsupported scope', () => {
     for (const alias of candidate.PROFILE.aliases) {
-      assert.equal(builder.selectRelease(alias), null);
-      assert.equal(candidate.select(alias, opt).status, 'candidate-unpublished');
+      assert.equal(builder.selectRelease(alias).type, 'FHT');
+      assert.equal(candidate.select(alias).status, 'published-v0.7.0');
     }
     for (const bad of ['https://w3id.org/fair-bioheaders/fht/v99.0.0',
       'https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json',
       'https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.7.0/fht.json']) {
-      assert.equal(candidate.select(bad, opt), null);
+      assert.equal(candidate.select(bad), null);
+      assert.equal(builder.selectRelease(bad), null);
     }
     const page = read('../_pages/table-builder.md').toString();
-    assert.match(page, /<option disabled>FHT/); assert.ok(!page.includes('fht-builder-candidate.js'));
+    assert.match(page, /<option value="FHT">FHT/);
+    assert.ok(!page.includes('fht-builder-candidate.js'));
   });
   test('form profile covers all and only 29 schema fields with schema requiredness', () => {
     const fields = candidate.formSections(schema, opt).flatMap(s => s.fields);
@@ -60,7 +61,7 @@ if (process.argv.includes('--exports')) {
     assert.deepEqual(parse(out.yaml), record);
     assert.ok(out.html.includes('itemtype="' + candidate.ITEMTYPE + '"'));
     assert.ok(!out.html.includes('main/fhr.json'));
-    assert.ok(out.html.includes('Unpublished FHT candidate'));
+    assert.ok(out.html.includes('FHT v0.7.0 typed HTML.'));
     assert.ok(!/<script|<a\s|<img|href=|src=/i.test(out.html));
   });
   test('complete BUSCO arithmetic: equality, both bad sums, partial and safe exact sums', () => {

@@ -20,6 +20,7 @@ const json = (path) => JSON.parse(read(path).toString('utf8'));
 // The builder's local catalog, keyed by snapshot file name exactly as the browser
 // wiring builds it in `init()`.
 const snapshots = {
+  'fht-v0.7.0.json': json('../assets/schema/fht-v0.7.0.json'),
   'fhr.json': json('../assets/schema/fhr.json'),
   'fhr-v0.3.1.json': json('../assets/schema/fhr-v0.3.1.json'),
   'fhr-v0.4.0.json': json('../assets/schema/fhr-v0.4.0.json'),
@@ -345,7 +346,8 @@ test('the registry declares the versions the shared release registry publishes',
   assert.equal(registry.current, 'v0.6.0');
   for (const entries of Object.values(tb.RELEASES)) {
     for (const entry of entries) {
-      const published = registry.releases[entry.release][entry.type];
+      const selectedRegistry = entry.type === 'FHT' ? json('../scripts/fht-candidate/versions.json') : registry;
+      const published = selectedRegistry.releases[entry.release][entry.type];
       assert.equal(entry.declares, published, `${entry.type} ${entry.release}`);
       const enumValues = snapshots[entry.snapshot].properties.schemaVersion.enum;
       if (Array.isArray(enumValues)) {
@@ -746,7 +748,7 @@ test('builder snapshots use only validation keywords the browser validator imple
   const known = new Set(['$schema', '$id', '$ref', '$defs', 'definitions', 'title', 'description', 'type',
     'properties', 'required', 'additionalProperties', 'items', 'anyOf', 'allOf', 'not', 'if', 'then', 'else',
     'const', 'contains', 'minContains', 'enum', 'format', 'minimum', 'maximum', 'pattern', 'minLength',
-    'maxLength', 'patternProperties', 'propertyNames']);
+    'maxLength', 'minItems', 'uniqueItems', 'patternProperties', 'propertyNames']);
   const container = new Set(['properties', '$defs', 'definitions', 'patternProperties']);
   for (const [file, schema] of Object.entries(snapshots)) {
     function visit(node) {

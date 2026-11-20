@@ -1,7 +1,7 @@
 {
-  "status": "candidate-unpublished; no website default or release recognition",
+  "status": "published-v0.7.0; website activation pending released toolkit validation",
   "sourceRepository": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
-  "sourceCommit": "1a0792e6f8db1b73959999d30f5e6575b982cbfc",
+  "sourceCommit": "623c79fe58edeb238a20fb6de518c62dd69b92bc",
   "schemaSha256": "082b0790b7878940c4496c97d7485e32c65de8ba75ecc080e53f04fb44251a43",
   "reviewedPackage": "shared #281; joint disposition #211 comment7025645941",
   "files": [
@@ -368,8 +368,8 @@
     {
       "source": "conformance/fht-v0.7.0/manifest.json",
       "local": "conformance/fht-v0.7.0/manifest.json",
-      "sha256": "5d27efe75a5d617dc720ec88fff2435d3c689de831d9f0641a9273a5cdcc987c",
-      "bytes": 67156
+      "sha256": "238682707a799c274b24388159d392e74c42d16ef96593b49bb483db3f642e3a",
+      "bytes": 67174
     },
     {
       "source": "conformance/fht-v0.7.0/valid/fht-v070-fasta-bgzf.fht.fasta.gz",
@@ -584,8 +584,8 @@
     {
       "source": "examples/fht/annotation-derived.fht.html",
       "local": "examples/fht/annotation-derived.fht.html",
-      "sha256": "a193b2627aba4a09113e18444f593f5e5f75178fcccd9b5738830767d18bb5a1",
-      "bytes": 4976
+      "sha256": "243f47902517a43acf371e5a914591e53f7a30395cb0c8b2892d29455b601934",
+      "bytes": 5023
     },
     {
       "source": "examples/fht/annotation-derived.fht.json",
@@ -602,8 +602,8 @@
     {
       "source": "examples/fht/de-novo.fht.html",
       "local": "examples/fht/de-novo.fht.html",
-      "sha256": "c84ec8af8ebcb165610ea26f8b40110b0c4939cb0e77bcc225c7943dfb6c753b",
-      "bytes": 6823
+      "sha256": "640f50f7726ab1a7b9928bea4cc84c3954dd43419a28186fb3b63ae54c0c6c2f",
+      "bytes": 6870
     },
     {
       "source": "examples/fht/de-novo.fht.json",
@@ -620,8 +620,8 @@
     {
       "source": "examples/fht/genome-guided.fht.html",
       "local": "examples/fht/genome-guided.fht.html",
-      "sha256": "e28c4e0d26e44a301d92e60186a0717d88f25381fc97315e776e7e72fdcdd6f1",
-      "bytes": 6594
+      "sha256": "51b416cd13075a80e6464b132259ae07ee7932aa21807fcf41ce67d2901b2d9a",
+      "bytes": 6641
     },
     {
       "source": "examples/fht/genome-guided.fht.json",
@@ -638,8 +638,8 @@
     {
       "source": "examples/fht/minimal-annotation-derived.fht.html",
       "local": "examples/fht/minimal-annotation-derived.fht.html",
-      "sha256": "df37e5f7e9cc9eee649537523a3294cdf846aca4b326b2eca285e4c52a9c4200",
-      "bytes": 2688
+      "sha256": "d4808a01cbaa30b7847f7f61038ae9bad33faa833b17465778ea368e6139afa8",
+      "bytes": 2735
     },
     {
       "source": "examples/fht/minimal-annotation-derived.fht.json",
@@ -656,8 +656,8 @@
     {
       "source": "examples/fht/minimal-de-novo.fht.html",
       "local": "examples/fht/minimal-de-novo.fht.html",
-      "sha256": "9f27c94ae6e7cfc5b5410ab6ab3648a6b271769a95f0790482142db01840fda6",
-      "bytes": 2618
+      "sha256": "127fbd4b03eaafbd66c981083aa24d6db90318a3aa2433e0824b09c2ebced9c4",
+      "bytes": 2665
     },
     {
       "source": "examples/fht/minimal-de-novo.fht.json",
@@ -674,8 +674,8 @@
     {
       "source": "examples/fht/minimal-genome-guided.fht.html",
       "local": "examples/fht/minimal-genome-guided.fht.html",
-      "sha256": "13ae690e8e587a1917c5e0dc14084e1e8fe671d35ac9b58a247d68cdc9626879",
-      "bytes": 2604
+      "sha256": "1ee5f2909b8061bf57a6fd71706a888a7ded3eb86a1fcf0defbcd9635c0f7684",
+      "bytes": 2651
     },
     {
       "source": "examples/fht/minimal-genome-guided.fht.json",
@@ -692,14 +692,24 @@
     {
       "source": "examples/fht/mixed-molecules.fht.html",
       "local": "examples/fht/mixed-molecules.fht.html",
-      "sha256": "b3a0a7bd5a43dfd105cff9be4b9521815f9f26fca2cfa18d4bd33309f3974225",
-      "bytes": 2780
+      "sha256": "acb6641a1b62ddd2518d8c5261a32c07c065cf136616f1f4d08406e3921d6913",
+      "bytes": 2827
     },
     {
       "source": "examples/fht/mixed-molecules.fht.json",
       "local": "examples/fht/mixed-molecules.fht.json",
       "sha256": "09e7ef4f57fa6ed40306689f810a335022a13280c28755b144a524d20b8c02e4",
       "bytes": 614
+    },
+    {
+      "source": "schemas/versions.json",
+      "local": "versions.json",
+      "sha256": "0b426eedfbf3eeff987ae484b8d16a75a757b97ba1daf29d36ce2e96c14bdf19",
+      "bytes": 1504
     }
-  ]
+  ],
+  "sourceTag": "v0.7.0",
+  "githubRelease": 452203176,
+  "versionDOI": "10.5281/zenodo.24385024",
+  "archiveSha256": "a65d9693361fd4348f6bc0ba69dd7a8ce1c7a8e24e7658625e6b7bc2f55141a7"
 }

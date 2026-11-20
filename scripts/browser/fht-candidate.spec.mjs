@@ -4,9 +4,9 @@ const folder = new URL('../fht-candidate/examples/fht/', import.meta.url);
 const records = readdirSync(folder).filter(n => n.endsWith('.json')).map(n => JSON.parse(readFileSync(new URL(n, folder))));
 const schema = JSON.parse(readFileSync(new URL('../fht-candidate/schema.json', import.meta.url)));
 
-test('FHT remains disabled while explicit candidate exports round-trip through a real DOM', async ({ page }) => {
+test('released FHT exports round-trip through a real DOM', async ({ page }) => {
   await page.goto('/table-builder/');
-  await expect(page.locator('#tb-profile option').filter({ hasText: 'FHT' })).toBeDisabled();
+  await expect(page.locator('#tb-profile option').filter({ hasText: 'FHT' })).toBeEnabled();
   expect(await page.locator('script[src*="fht-builder-candidate"]').count()).toBe(0);
   await page.addScriptTag({ url: '/assets/js/fht-builder-candidate.js' });
   const rebuilt = await page.evaluate(({ records, schema }) => records.map(record => {
@@ -30,6 +30,6 @@ test('FHT remains disabled while explicit candidate exports round-trip through a
     }
     return { status: out.status, record: Object.fromEntries([...scope[0].children].map(n => [n.getAttribute('itemprop'), value(n)])) };
   }), { records, schema });
-  expect(rebuilt).toEqual(records.map(record => ({ status: 'candidate-unpublished', record: Object.fromEntries(Object.entries(record).filter(([key]) => !key.startsWith('x-'))) })));
-  await expect(page.locator('#tb-profile option').filter({ hasText: 'FHT' })).toBeDisabled();
+  expect(rebuilt).toEqual(records.map(record => ({ status: 'published-v0.7.0', record: Object.fromEntries(Object.entries(record).filter(([key]) => !key.startsWith('x-'))) })));
+  await expect(page.locator('#tb-profile option').filter({ hasText: 'FHT' })).toBeEnabled();
 });

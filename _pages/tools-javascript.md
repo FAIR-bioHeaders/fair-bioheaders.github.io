@@ -30,8 +30,13 @@ console.log(result.errors, result.warnings);
 `stripFileTo()` writes stripped content to a destination. Read the source usage
 instructions for output behavior and resource limits before processing large files.
 Invalid file content is reported in `errors`; filesystem and other operational
-errors also need handling by your application. `validateRecord()` checks a record
+errors also need handling by your application. Require `result.valid === true`
+for acceptance: an invalid reading can have placeholder or incomplete layer
+results, and its errors need not enumerate every problem. `validateRecord()` checks a record
 against an explicit selection and does not verify its containing file.
+
+Stripping removes the header without validating its checksum or schema and can
+replace an existing output. Inspect the input first and choose a new destination.
 
 There is no header writer, browser build, JSON-LD or microdata reader at this pin.
 Parent checks require caller-supplied evidence in the explicit draft lane.

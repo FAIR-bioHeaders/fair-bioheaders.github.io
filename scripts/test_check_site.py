@@ -79,6 +79,23 @@ class ReferenceChecks(unittest.TestCase):
         page = Page(REFERENCE)
         self.assertEqual(reference_errors('index.html', REFERENCE, page), [])
 
+    def test_reference_attribute_order_classes_and_quoting_do_not_hide_errors(self):
+        valid = REFERENCE.replace('class="reference" id="Wright2024"',
+                                  "id='Wright2024' class='extra reference'")
+        self.assertEqual(reference_errors('index.html', valid, Page(valid)), [])
+        bad = valid.replace('<meta itemprop="familyName" content="Wright">', '')
+        self.assertTrue(reference_errors('index.html', bad, Page(bad)))
+
+    def test_unclosed_reference_is_not_silently_skipped(self):
+        bad = REFERENCE[:-6]
+        self.assertTrue(any('unclosed' in e for e in reference_errors('index.html', bad, Page(bad))))
+
+    def test_all_missing_citation_bindings_are_not_an_empty_set_pass(self):
+        bad = REFERENCE
+        for attribute in ('data-cite-key', 'data-cite-output', 'data-cite-copy', 'data-cite-panel'):
+            bad = bad.replace(f' {attribute}="Wright2024"', '')
+        self.assertTrue(reference_errors('index.html', bad, Page(bad)))
+
     def test_missing_itemtype_is_reported(self):
         bad = REFERENCE.replace(' itemscope itemtype="https://schema.org/ScholarlyArticle"', '')
         self.assertTrue(reference_errors('index.html', bad, Page(bad)))
@@ -581,3 +598,33 @@ class FhgmNativePageChecks(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class PublicationIdentityChecks(unittest.TestCase):
+    def test_highwire_jsonld_and_visible_doi_must_agree(self):
+        from check_site import publication_identity_errors
+        article = {'headline': 'Example', 'identifier': {'value': '10.1234/example'},
+                   'sameAs': 'https://doi.org/10.1234/example'}
+        text = ('<meta name="citation_title" content="Example">'
+                '<meta name="citation_doi" content="10.1234/example">'
+                '<a href="https://doi.org/10.1234/example">Paper</a>')
+        self.assertEqual(publication_identity_errors(article, Page(text), 'paper'), [])
+        for old, new in [('content="Example"', 'content="Other"'),
+                         ('content="10.1234/example"', 'content="10.1234/other"'),
+                         ('href="https://doi.org/10.1234/example"', 'href="https://doi.org/10.1234/other"')]:
+            with self.subTest(old=old):
+                self.assertTrue(publication_identity_errors(article, Page(text.replace(old, new)), 'paper'))
+        article['identifier']['value'] = 'not-a-doi'
+        self.assertTrue(publication_identity_errors(article, Page(text), 'paper'))
+
+
+class SitemapCompletenessChecks(unittest.TestCase):
+    def test_both_allowlists_agree_and_offline_requires_every_adopted_route(self):
+        from check_site import INDEXABLE_PAGES, ORIGIN, sitemap_route_errors
+        from check_deployed import INDEXABLE
+        self.assertEqual(set(INDEXABLE_PAGES), set(INDEXABLE))
+        complete = [ORIGIN + route for route in INDEXABLE_PAGES]
+        self.assertEqual(sitemap_route_errors(complete), [])
+        missing = [url for url in complete if not url.endswith('/tools/julia/')]
+        self.assertTrue(any('/tools/julia/' in e for e in sitemap_route_errors(missing)))
+        self.assertTrue(any('outside' in e for e in sitemap_route_errors(complete + ['https://evil.test/'])))

@@ -46,8 +46,10 @@ coverage is not a pass.
 
 ## Support and further reading
 
-The API example has not yet been executed as part of this website update;
-source documentation review does not establish a successful native acceptance run.
+The exact source-install and API example were exercised in a fresh Julia 1.13.2
+project: valid plain and gzip files passed with the expected checksum, while
+a modified sequence failed. This recipe check is separate from full native
+acceptance and does not turn unavailable formats or layers into passes.
 
 This guide records source commit `8b306fac947c615b1c170e6ac76d8cb60665057b` (source snapshot recorded November 20, 2026).
 The build's released header set is FHR 2.1, FHP 1.2 and FHGFF3 1.2 from shared

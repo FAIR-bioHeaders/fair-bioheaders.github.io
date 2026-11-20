@@ -37,7 +37,7 @@
 </table>
 </div>
 <h2 id="fhr-field-reference">Field reference</h2>
-<p id="fhr-how-to-read" class="how-to-read">Every field of the contract appears here, including the fields and objects inherited from the shared core: nothing is left out because another type also uses it. <em>Required</em> means the key must be present; <em>when present, requires</em> lists the members that become mandatory once you supply an optional object. Constraints are reproduced verbatim from the schema, so a pattern you see here is the pattern the validator matches. Examples are the values stated by the released example records, which are synthetic, or an illustrative value where no example reaches the field.</p>
+<p id="fhr-how-to-read" class="how-to-read">Every field of the contract appears here, including the fields and objects inherited from the shared core: nothing is left out because another type also uses it. <em>Required</em> means the key must be present; <em>when present, requires</em> lists the members that become mandatory once you supply an optional object. Field rows quote direct constraints such as patterns from the schema; conditional and cross-field requirements appear in the rules below. Examples are the values stated by the released example records, which are synthetic, or an illustrative value where no example reaches the field.</p>
 <h3 id="fhr-group-record">Top-level fields</h3>
 <p class="group-lead">Every field of an FHR record. The record is a closed object: an unknown top-level key is invalid, with the single exception of the <code>x-</code> extension fields listed last.</p>
 <div class="field-table" role="region" tabindex="0" aria-label="FHR top-level fields">

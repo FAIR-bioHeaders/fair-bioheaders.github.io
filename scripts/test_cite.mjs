@@ -114,3 +114,16 @@ test('escapes braces in field values', () => {
   const output = bibtex('x', parseItem(node));
   assert.match(output, /title = \{A \\\{curly\\\} title\}/);
 });
+
+
+test('BibTeX preserves plain title punctuation in TeX while keeping URI identifiers verbatim', () => {
+  const entry = { types: ['ScholarlyArticle'], props: {
+    name: '100% {coverage} \\ path & protein_name',
+    url: 'https://example.test/a_b?q=100%25&x=1',
+    identifier: { types: ['PropertyValue'], props: { propertyID: 'DOI', value: '10.1234/a_b%25' } }
+  } };
+  const result = bibtex('literal', entry);
+  assert.ok(result.includes(String.raw`title = {100\% \{coverage\} {\textbackslash} path \& protein\_name}`));
+  assert.ok(result.includes('url = {https://example.test/a_b?q=100%25&x=1}'));
+  assert.ok(result.includes('doi = {10.1234/a_b%25}'));
+});

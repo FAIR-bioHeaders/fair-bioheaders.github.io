@@ -33,7 +33,7 @@ import html
 import json
 import re
 import sys
-import urllib.request
+from pinned_fetch import fetch_bytes, snapshot_target
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -160,6 +160,8 @@ def read_yaml(text: str, source: str) -> dict:
         while index < len(lines) and lines[index][1] == indent and lines[index][2].startswith('- '):
             number, dash_indent, content = lines[index]
             rest = content[2:].strip()
+            if rest.startswith('- '):
+                raise ValueError(f'{source}:{number}: compact nested sequences are outside the supported subset')
             column = dash_indent + 2
             if not rest:
                 index += 1
@@ -518,9 +520,8 @@ def command_fetch() -> int:
     provenance = load_provenance()
     changed, today = 0, str(datetime.date.today())
     for name, meta in provenance['files'].items():
-        with urllib.request.urlopen(meta['fetchUrl'], timeout=60) as response:
-            data = response.read()
-        target = SNAPSHOT_DIR / name
+        target = snapshot_target(SNAPSHOT_DIR, name)
+        data = fetch_bytes(meta['fetchUrl'])
         if not target.is_file() or target.read_bytes() != data:
             target.write_bytes(data)
             print(f'refreshed {name} from {meta["fetchUrl"]}')

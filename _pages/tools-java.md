@@ -51,8 +51,9 @@ released support and from GFF3 feature/biology validation.
 
 ## Support and further reading
 
-The library API example has not yet been executed as part of this website
-update; native build/test evidence is tracked separately from documentation review.
+The library API example was exercised against the packaged jar and its adjacent
+dependencies: valid plain and gzip files passed, and a modified sequence failed
+the checksum check. This example check is separate from full native acceptance.
 
 This guide records source commit `5fb3d1d1b98304c908a6fb40b02340fa7048c65d` (source snapshot recorded November 20, 2026).
 The build's released header set is FHR 2.1, FHP 1.2 and FHGFF3 1.2 from shared

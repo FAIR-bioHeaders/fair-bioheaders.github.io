@@ -550,3 +550,20 @@ test('error paths map through blank entries in both outer and nested arrays', as
   await page.locator('#tb-errors a[href="#tb-predictionSoftware-1-name"]').click();
   await expect(page.locator('#tb-predictionSoftware-1-name')).toBeFocused();
 });
+
+
+test('a broken local snapshot reference fails closed before generating any export', async ({ page }) => {
+  await page.route('**/assets/schema/fhr-v0.6.0.json', async route => {
+    const response = await route.fetch();
+    const schema = await response.json();
+    schema.$defs = schema.$defs || {};
+    schema.$defs.BrokenUnused = { $ref: '#/$defs/DoesNotExist' };
+    await route.fulfill({ response, json: schema });
+  });
+  await page.goto('/table-builder/');
+  await expect(page.locator('#tb-status')).toContainText('could not be loaded');
+  await expect(page.locator('#tb-download-html')).toBeDisabled();
+  await expect(page.locator('#tb-download-yaml')).toBeDisabled();
+  await expect(page.locator('#tb-html-source')).toHaveText('');
+  await expect(page.locator('#tb-yaml-source')).toHaveText('');
+});

@@ -130,6 +130,16 @@
     return String(value).replace(/([{}])/g, '\\$1');
   }
 
+  function escapeField(value, field) {
+    // DOI/URL are verbatim identifiers (percent-encoding and underscores matter).
+    // Human-readable Schema.org fields are plain text, not authored TeX macros.
+    if (field === 'doi' || field === 'url') return escapeBraces(value);
+    var escaped = { '\\': '{\\textbackslash}', '{': '\\{', '}': '\\}',
+      '%': '\\%', '#': '\\#', '&': '\\&', '_': '\\_', '$': '\\$',
+      '~': '{\\textasciitilde}', '^': '{\\textasciicircum}' };
+    return String(value).replace(/[\\{}%#&_$~^]/g, function (character) { return escaped[character]; });
+  }
+
   function bibtex(key, item) {
     var p = item.props;
     var container = containerInfo(p.isPartOf);
@@ -149,7 +159,7 @@
     var lines = ['@' + type + '{' + key + ','];
     fields.forEach(function (pair) {
       if (pair[1]) {
-        lines.push('  ' + pair[0] + ' = {' + escapeBraces(pair[1]) + '},');
+        lines.push('  ' + pair[0] + ' = {' + escapeField(pair[1], pair[0]) + '},');
       }
     });
     if (lines.length > 1) {

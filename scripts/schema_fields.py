@@ -43,7 +43,7 @@ import html
 import json
 import re
 import sys
-import urllib.request
+from pinned_fetch import fetch_bytes, snapshot_target
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -1073,8 +1073,8 @@ def render_reference(data: dict) -> str:
         f'<p id="{page}-how-to-read" class="how-to-read">Every field of the contract appears here, including '
         'the fields and objects inherited from the shared core: nothing is left out because another type also '
         'uses it. <em>Required</em> means the key must be present; <em>when present, requires</em> lists the '
-        'members that become mandatory once you supply an optional object. Constraints are reproduced verbatim '
-        'from the schema, so a pattern you see here is the pattern the validator matches. Examples are the '
+        'members that become mandatory once you supply an optional object. Field rows quote direct constraints '
+        'such as patterns from the schema; conditional and cross-field requirements appear in the rules below. Examples are the '
         'values stated by the released example records, which are synthetic, or an illustrative value where no '
         'example reaches the field.</p>',
         render_table(data, data['groups'][0]),
@@ -1192,9 +1192,8 @@ def command_fetch() -> int:
     for section in ('files', 'references', 'examples'):
         for name, meta in provenance[section].items():
             url = meta['fetchUrl']
-            with urllib.request.urlopen(url, timeout=60) as response:
-                data = response.read()
-            target = SNAPSHOT_DIR / name
+            target = snapshot_target(SNAPSHOT_DIR, name)
+            data = fetch_bytes(url)
             target.parent.mkdir(parents=True, exist_ok=True)
             if not target.is_file() or target.read_bytes() != data:
                 target.write_bytes(data)

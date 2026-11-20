@@ -807,3 +807,31 @@ test('frozen v0.6.0 noncanonical mixed-parent placeholder stays rejected', () =>
   const record = releaseFixture('rich-mixed.fhp.yaml');
   assert.ok(tb.validateRecord(record, snapshots['fhp-v0.6.0.json']).some(e => e.path.join('.') === 'derivedFrom.0.checksum' && e.message.includes('canonical')));
 });
+
+
+test('missing or inherited schema references fail closed instead of validating against an empty schema', () => {
+  for (const ref of ['#/$defs/Absent', '#/__proto__']) {
+    const broken = { type: 'object', properties: { value: { $ref: ref } } };
+    assert.throws(() => tb.validateRecord({ value: 'unchecked' }, broken), /Unresolvable pinned schema reference/);
+  }
+  const valid = { type: 'object', properties: { value: { $ref: '#/$defs/Text' } },
+    $defs: { Text: { type: 'string', minLength: 2 } } };
+  assert.deepEqual(tb.validateRecord({ value: 'valid' }, valid), []);
+  assert.ok(tb.validateRecord({ value: 'x' }, valid).length > 0);
+});
+
+
+test('chained unresolved and cyclic references are not vacuous valid schemas', () => {
+  for (const target of [{ $ref: '#/$defs/Missing' }, { $ref: '#/$defs/Chain' }]) {
+    const schema = { type: 'object', properties: { value: { $ref: '#/$defs/Chain' } }, $defs: { Chain: target } };
+    assert.throws(() => tb.validateRecord({ value: 'unchecked' }, schema), /pinned schema reference/);
+  }
+});
+
+
+test('reference targets must be schemas and false schemas cannot pass vacuously', () => {
+  const root = target => ({ type: 'object', properties: { value: { $ref: '#/$defs/Target' } }, $defs: { Target: target } });
+  assert.throws(() => tb.validateRecord({ value: 'x' }, root('annotation text')), /Unsupported pinned schema reference target/);
+  assert.ok(tb.validateRecord({ value: 'x' }, root(false)).length > 0);
+  assert.deepEqual(tb.validateRecord({ value: 'x' }, root(true)), []);
+});

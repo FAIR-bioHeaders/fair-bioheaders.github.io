@@ -571,7 +571,7 @@ and distinguishes the logical native identifier from a live-link claim.
 
 The prepared builder supports FHT v0.7.0 alongside the unchanged released-type
 snapshots, retaining M5 extension omission and experimental FHGFF3 HTML
-disclosures. Final actual 0.13.0 installed acceptance, current independent review,
+disclosures. Final actual 0.13.1 installed acceptance, current independent review,
 green CI and real Pages/live evidence gate activation. FHGM has no model editor
 in this form, and adding one is not an FHT activation requirement.
 An unpinned citation is unsupported rather than substituted with another schema.

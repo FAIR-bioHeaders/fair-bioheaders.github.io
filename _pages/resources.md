@@ -15,7 +15,7 @@ The shared specification publishes reviewed family contracts. Shared
 [10.5281/zenodo.24385024](https://doi.org/10.5281/zenodo.24385024).
 FHR 2.1 and FHP/FHGFF3 1.2 retain their published v0.6.0 contracts and citations.
 Contract publication and installed toolkit support are separate: final released
-0.13.0 FHT runtime acceptance is pending.
+0.13.1 FHT runtime acceptance is pending.
 
 FHGM native model contract 0.1 is published in shared **v0.8.0**, DOI
 [10.5281/zenodo.24385999](https://doi.org/10.5281/zenodo.24385999).

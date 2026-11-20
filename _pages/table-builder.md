@@ -13,7 +13,7 @@ FHGM native gene-model records are outside this form.
 FHR, FHP, FHGFF3 and FHT exports include typed HTML microdata, each marked with its own
 header-type identity. FHGFF3 HTML uses the experimental binding supported by
 `fair-bioheaders` 0.12.0. FHT v0.7.0 exports use the shared F1 binding
-and require `fair-bioheaders` 0.13.0. FHT and FHGFF3 JSON-LD remain unsupported. This form
+and require `fair-bioheaders` 0.13.1. FHT and FHGFF3 JSON-LD remain unsupported. This form
 produces metadata, not a FASTA/GFF3 file with an embedded
 header. Reported counts, completeness and provenance are supplied by you and
 are not verified against sequence or annotation files.

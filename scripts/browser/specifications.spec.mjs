@@ -173,7 +173,7 @@ test.describe('generated field references', () => {
     await openPage(page, '/specifications/fht/');
     await expect(page.locator('.spec-notice--draft')).toHaveCount(0);
     await expect(page.locator('#main')).toContainText('24385024');
-    await expect(page.locator('#main')).toContainText('actual final fair-bioheaders 0.13.0 artifact is still pending');
+    await expect(page.locator('#main')).toContainText('actual final fair-bioheaders 0.13.1 artifact is still pending');
     await expect(page.locator('#main')).toContainText('JSON-LD remains unsupported');
     await expect(page.locator('#main')).toContainText('historical');
   });

@@ -14,7 +14,7 @@ layout: default
   {% endunless %}
 {% endif %}
 
-<main id="main" tabindex="-1">
+<main id="main"{% if page.url == "/table-builder/" %} class="table-builder-main"{% endif %} tabindex="-1">
   {% include sidebar.html %}
 
   <article class="page{% if page.url == "/" %} page--home{% endif %}" itemscope itemtype="https://schema.org/CreativeWork">

@@ -1,7 +1,7 @@
 # FHT v0.7.0 browser activation preparation — Round 15
 
 This branch prepares normal FHT support; it is not yet the deployed website.
-Do not merge or publish until the final released fair-bioheaders 0.13.0 artifact
+Do not merge or publish until the final released fair-bioheaders 0.13.1 artifact
 has been installed, verified and exercised against these exact exports, then
 current independent different-model review and full CI pass. No FHGM publication
 condition is added. Website #15/#39 stay open until actual Pages/live receipts.
@@ -52,8 +52,17 @@ notes/rendering retain exact historical bytes and fixed source links.
 
 - Install and verify the actual published final toolkit artifact, then re-run
   the seven JSON/FASTA/HTML interoperability pairs and exact exported HTML/YAML
-  equality; a locally built 0.13.0 candidate is not that release.
+  equality; a locally built 0.13.1 candidate is not that release.
 - Run the full final site/browser suite and obtain current-head independent
   review after the documentation promotion, then recheck findings/base/dependencies.
 - Merge only after all gates pass, await actual Pages, test the live form/exports,
   and close #15/#39 only if the complete accepted scope is met.
+
+
+## Historical toolkit preparation
+
+The earlier 0.13.0 development wheels and preserved failed v0.13.0 tag remain
+historical preparation evidence. The release guard stopped that vehicle before
+GitHub Release, PyPI or GHCR publication. Current acceptance targets the actual
+final 0.13.1 artifact; version strings, tags and locally built candidates alone
+are not publication or installed-release proof.

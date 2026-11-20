@@ -731,8 +731,22 @@ html[data-theme="dark"] {
 .tb-remove:hover,
 .tb-add:focus,
 .tb-remove:focus { background: var(--brand-orange); color: #1a1a1a; }
+/* Interactive validation/download controls must not inherit the page intro fade. */
+#main.table-builder-main { -webkit-animation: none; animation: none; }
 .tb-actions { display: flex; flex-wrap: wrap; gap: .6em; margin: $space-block 0 0; }
-.tb-actions .btn[disabled] { opacity: .5; cursor: not-allowed; }
+/* State changes must stay legible on their first enabled frame. The inherited
+   all-property transition otherwise fades from disabled opacity after the DOM
+   has already enabled a download. Use opaque disabled colours and no fade. */
+.tb-actions .btn {
+  opacity: 1;
+  -webkit-transition: none;
+  transition: none;
+}
+.tb-actions .btn[disabled] {
+  color: var(--text-muted) !important;
+  background-color: var(--surface-soft);
+  cursor: not-allowed;
+}
 .tb-status { margin: .8em 0; padding: .6em .8em; border-left: 3px solid var(--surface-border); font-size: $type-size-6; }
 .tb-status[data-kind="ok"] { border-left-color: $success-color; }
 .tb-status[data-kind="error"] { border-left-color: $danger-color; }

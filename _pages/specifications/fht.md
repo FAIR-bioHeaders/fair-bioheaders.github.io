@@ -15,7 +15,7 @@ separate values.
 This page uses the exact released schema at commit
 [623c79fe58edeb238a20fb6de518c62dd69b92bc](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/623c79fe58edeb238a20fb6de518c62dd69b92bc).
 Contract publication does not automatically update an installed toolkit.
-Acceptance of the actual final fair-bioheaders 0.13.0 artifact is still pending;
+Acceptance of the actual final fair-bioheaders 0.13.1 artifact is still pending;
 a development wheel carrying that version is not a release. The browser form is
 prepared against these published bytes, with activation gated on that installed
 runtime evidence, current review/CI and actual Pages verification.

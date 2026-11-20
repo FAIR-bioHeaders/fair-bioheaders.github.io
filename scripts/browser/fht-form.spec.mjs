@@ -86,3 +86,74 @@ for (const theme of ['light', 'dark']) test('FHT form accessibility and narrow l
   await page.keyboard.press('Tab');
   await expect(page.locator('#tb-schemaVersion')).toBeFocused();
 });
+for (const theme of ['light', 'dark']) for (const motion of ['reduce', 'no-preference']) {
+  test('download controls keep readable disabled/enabled frames: ' + theme + ' / ' + motion, async ({page}, testInfo) => {
+    await page.setViewportSize({width: 320, height: 800});
+    await page.addInitScript(value => localStorage.setItem('fhr-theme', value), theme);
+    await page.emulateMedia({ reducedMotion: motion });
+    await page.goto('/table-builder/');
+    await page.waitForSelector('#tb-form fieldset');
+    await page.selectOption('#tb-profile', 'FHT');
+    await populate(page, records.find(([name]) => name === 'minimal-de-novo.fht.json')[1]);
+    await page.evaluate(() => {
+      const samples = window.controlSamples = [];
+      const rgb = value => value.match(/[\d.]+/g).slice(0, 3).map(Number);
+      const blend = (front, back, opacity) => front.map((value, i) => value * opacity + back[i] * (1 - opacity));
+      const luminance = color => color.map(value => {
+        const channel = value / 255;
+        return channel <= .04045 ? channel / 12.92 : ((channel + .055) / 1.055) ** 2.4;
+      }).reduce((sum, value, i) => sum + value * [.2126, .7152, .0722][i], 0);
+      function sample(phase) {
+        for (const button of document.querySelectorAll('.tb-actions .btn')) {
+          const style = getComputedStyle(button);
+          const paper = rgb(getComputedStyle(document.body).backgroundColor);
+          let opacity = Number(style.opacity);
+          const fadedAncestors = [];
+          for (let parent = button.parentElement; parent; parent = parent.parentElement) {
+            const factor = Number(getComputedStyle(parent).opacity);
+            if (factor !== 1) fadedAncestors.push({tag: parent.tagName, id: parent.id, opacity: factor});
+            opacity *= factor;
+          }
+          const foreground = blend(rgb(style.color), paper, opacity);
+          const background = blend(rgb(style.backgroundColor), paper, opacity);
+          const first = luminance(foreground), second = luminance(background);
+          samples.push({phase, id: button.id, disabled: button.disabled, opacity, fadedAncestors,
+            foreground: style.color, background: style.backgroundColor,
+            ratio: (Math.max(first, second) + .05) / (Math.min(first, second) + .05)});
+        }
+      }
+      window.sampleControls = sample;
+      sample('initial-disabled');
+      new MutationObserver(() => sample('disabled-attribute-mutation')).observe(
+        document.querySelector('.tb-actions'), {subtree: true, attributes: true, attributeFilter: ['disabled']});
+      window.sampleControlFrames = () => new Promise(resolve => {
+        let frames = 0;
+        function next() {
+          sample('animation-frame');
+          if (++frames === 4) resolve();
+          else requestAnimationFrame(next);
+        }
+        requestAnimationFrame(next);
+      });
+    });
+    await page.click('#tb-generate');
+    await expect(page.locator('#tb-download-yaml')).toBeEnabled();
+    await page.evaluate(() => window.sampleControlFrames());
+    await page.fill('#tb-transcriptome', 'Edited transcriptome');
+    await expect(page.locator('#tb-download-yaml')).toBeDisabled();
+    await page.evaluate(() => window.sampleControlFrames());
+    await page.click('#tb-generate');
+    await expect(page.locator('#tb-download-yaml')).toBeEnabled();
+    await page.evaluate(() => window.sampleControlFrames());
+    const samples = await page.evaluate(() => window.controlSamples);
+    expect(samples.some(value => value.disabled)).toBe(true);
+    expect(samples.some(value => !value.disabled && value.id === 'tb-download-yaml')).toBe(true);
+    await testInfo.attach('rendered-control-frames', {body: JSON.stringify(samples, null, 2), contentType: 'application/json'});
+    for (const sample of [...samples].sort((a, b) => Number(a.disabled) - Number(b.disabled))) {
+      expect(sample.ratio, JSON.stringify(sample)).toBeGreaterThanOrEqual(4.5);
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+    const {default: AxeBuilder} = await import('@axe-core/playwright');
+    expect((await new AxeBuilder({page}).analyze()).violations).toEqual([]);
+  });
+}

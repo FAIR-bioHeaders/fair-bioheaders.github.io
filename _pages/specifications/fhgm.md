@@ -64,7 +64,7 @@ and the [historical overview](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders
 
 Contract publication does not automatically update installed tools.
 The published fair-bioheaders 0.12.0 wheel has no FHGM runtime.
-Final 0.13.0 release and installed-artifact acceptance remain pending;
+Final 0.13.1 release and installed-artifact acceptance remain pending;
 a locally built package carrying that version is not a release.
 [Tools #155](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/issues/155)
 tracks consumer delivery. No FHGM JSON-LD form is claimed.

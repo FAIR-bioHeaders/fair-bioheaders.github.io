@@ -78,7 +78,7 @@
       "units": "standard padded base64 of the SHA-512/256 digest",
       "notes": [
         "Shared rules R1\u2013R4 cover exact FASTA bytes excluding the root checksum line, using canonical padded base64 of SHA-512/256. A structural checksum check is not byte verification.",
-        "The published contract does not automatically update older installed toolkits. Normal released-runtime acceptance is pending verification of the actual final fair-bioheaders 0.13.0 artifact.",
+        "The published contract does not automatically update older installed toolkits. Normal released-runtime acceptance is pending verification of the actual final fair-bioheaders 0.13.1 artifact.",
         "Legacy MD5 values and T/U conversion are not header repairs."
       ]
     },
@@ -357,7 +357,7 @@
       "YAML preserves extension data; HTML omits extension fields under M5 and reports the omission."
     ],
     "tooling": [
-      "Contract publication is distinct from installed runtime support. The final fair-bioheaders 0.13.0 artifact still needs release and installed acceptance; a locally built candidate with that version string is not a released package.",
+      "Contract publication is distinct from installed runtime support. The final fair-bioheaders 0.13.1 artifact still needs release and installed acceptance; a locally built candidate with that version string is not a released package.",
       "The browser builder is prepared against the exact published schema, with C1 arithmetic and safe-number limits. Website activation remains gated on the actual released toolkit, current review/CI and actual Pages verification.",
       "Owning development remains in FHT-Specification; the shared specification is the publication authority."
     ],

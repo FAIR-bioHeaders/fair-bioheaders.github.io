@@ -39,12 +39,14 @@ merges and dated receipts remain historical facts, not future permission.
 
 This is the public Jekyll website and browser-tool implementation. Normative
 contracts and reviewed mappings live in FAIR-bioHeaders-Specification; type
-repositories own type development. Website issues #15/#21 track builder expansion,
-grouped with #29 (a mapping explainer blocked on specification #56) under tracker
-#39; #23 delivered the JavaScript guide (closed 2026-10-20) and the
-/metadata-viewer/ page doubles as it.
-The FHR-only prototype does not establish support for all types or current
-schemas. Add profile support through its linked contract/toolkit work, preserving
+repositories own type development. Historical website issues #15/#21 covered
+builder expansion, #29 the mapping
+explainer and #39 their coordination. The current reference and README record
+delivered coverage; copied issue descriptions are not current blockers. Issue
+#23 delivered the browser JavaScript lesson (closed 2026-10-20), which remains
+at /metadata-viewer/ separately from the Node.js library guide.
+The historical FHR-only prototype does not establish current support. Add profile
+support through its linked contract/toolkit work, preserving
 local-file privacy, typed metadata and separate parsed/valid/verified states.
 
 ## Schema additions and their own development cycle

@@ -12,7 +12,7 @@ Node crypto, zlib and Ajv; it is separate from the browser metadata lesson.
 Install this exact source revision in your own Node project:
 
 ```sh
-npm install github:FAIR-bioHeaders/FAIR-bioHeaders-Tools-JavaScript#bac1781aac5162ccb18003a8bc268fe576f6eba7
+npm install 'git+https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-JavaScript.git#bac1781aac5162ccb18003a8bc268fe576f6eba7'
 ```
 
 ## Read and inspect results

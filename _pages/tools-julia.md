@@ -23,6 +23,7 @@ println(result)
 ```
 
 This selects repository source rather than a General registry release.
+
 ## Read and inspect results
 
 `verify_file()` coordinates framing, checksum, YAML portability and cited-contract

@@ -306,11 +306,38 @@
   }
 
   function resolveRef(schema, root) {
-    if (!schema || !schema.$ref) return schema;
-    if (schema.$ref.indexOf('#/') !== 0) throw new Error('Unsupported external schema reference');
-    return schema.$ref.slice(2).split('/').reduce(function (node, part) {
-      return node && node[part.replace(/~1/g, '/').replace(/~0/g, '~')] !== undefined ? node[part.replace(/~1/g, '/').replace(/~0/g, '~')] : {};
-    }, root);
+    var seen = [];
+    while (schema && Object.prototype.hasOwnProperty.call(schema, '$ref')) {
+      var reference = schema.$ref;
+      if (typeof reference !== 'string' || reference.length === 0) {
+        throw new Error('Unsupported pinned schema reference: expected a nonempty local pointer');
+      }
+      if (reference.indexOf('#/') !== 0) throw new Error('Unsupported external schema reference');
+      if (seen.indexOf(reference) !== -1) throw new Error('Cyclic pinned schema reference: ' + reference);
+      seen.push(reference);
+      schema = reference.slice(2).split('/').reduce(function (node, part) {
+        var target = ownProperty(node, part.replace(/~1/g, '/').replace(/~0/g, '~'));
+        if (target === undefined) throw new Error('Unresolvable pinned schema reference: ' + reference);
+        return target;
+      }, root);
+    }
+    if (seen.length && (schema === null || (typeof schema !== 'object' && typeof schema !== 'boolean') || Array.isArray(schema))) {
+      throw new Error('Unsupported pinned schema reference target');
+    }
+    return schema;
+  }
+
+  function checkSchemaReferences(node, root) {
+    if (!node || typeof node !== 'object') return;
+    resolveRef(node, root);
+    ['$defs', 'definitions', 'properties', 'patternProperties', 'dependentSchemas'].forEach(function (key) {
+      Object.keys(node[key] || {}).forEach(function (name) { checkSchemaReferences(node[key][name], root); });
+    });
+    ['items', 'additionalProperties', 'contains', 'not', 'if', 'then', 'else', 'propertyNames',
+      'unevaluatedProperties'].forEach(function (key) { checkSchemaReferences(node[key], root); });
+    ['allOf', 'anyOf', 'oneOf', 'prefixItems'].forEach(function (key) {
+      (node[key] || []).forEach(function (child) { checkSchemaReferences(child, root); });
+    });
   }
 
   function isUri(value) {
@@ -430,6 +457,8 @@
 
   function validateSchema(value, schema, root, path, errors) {
     schema = resolveRef(schema, root);
+    if (schema === true) return;
+    if (schema === false) { errors.push({ path: path, message: 'is forbidden by the cited schema' }); return; }
     function matches(node) {
       var sink = [];
       validateSchema(value, node, root, path, sink);
@@ -1679,6 +1708,7 @@
     Promise.all(entries.map(function (entry) {
       return load(pathFor(entry, directory, development));
     })).then(function (loaded) {
+        loaded.forEach(function (schema) { checkSchemaReferences(schema, schema); });
         entries.forEach(function (entry, index) { snapshots[entry.snapshot] = loaded[index]; });
         document.getElementById('tb-profile').addEventListener('change', changeProfile);
         changeProfile();

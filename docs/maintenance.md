@@ -44,7 +44,7 @@ The former adoption list is removed because the repository did not provide evide
 
 ## Dependencies and checks
 
-`github-pages` is pinned to 232, matching the [published GitHub Pages dependency set](https://pages.github.com/versions/). `Gemfile.lock` pins its resolved dependencies. Ruby 3.3.4 matches the verified Pages image. `package-lock.json` pins the JavaScript build tools; the production bundle uses jQuery 3.7.1. Dependabot proposes updates for Ruby, npm, and Actions. Actions are pinned to immutable commits. CI checks do not alter the existing branch-based Pages publishing configuration.
+`github-pages` is pinned to 233, matching the [published GitHub Pages dependency set](https://pages.github.com/versions/). `Gemfile.lock` pins its resolved dependencies. Ruby 3.3.4 matches the verified Pages image. `package-lock.json` pins the JavaScript build tools; the production bundle uses jQuery 4.0.0. Dependabot proposes updates for Ruby, npm, and Actions. Actions are pinned to immutable commits. CI checks do not alter the existing branch-based Pages publishing configuration.
 
 Builds are verified with the committed lockfiles. Before accepting dependency updates, run the site checks and inspect desktop/mobile rendering and keyboard behavior. Further theme changes should have a concrete benefit to this small project site; avoid reintroducing unused template features.
 
@@ -96,7 +96,8 @@ publication/citation metadata and navigation remain part of the acceptance check
 
 ## FAIR BioHeaders table builder
 
-`/table-builder/` supports released FHR, FHP and FHGFF3 metadata (issues #16/#15).
+`/table-builder/` supports released FHR, FHP and FHGFF3 metadata at v0.6.0,
+plus FHT 1.0 from shared v0.7.0 (issues #16/#15).
 Each form drives one typed record, validated against its selected schema,
 previewed as a readable table, and serialized as standalone HTML and YAML.
 FHR, FHP and FHGFF3 HTML include type-specific microdata; FHGFF3 is experimental. All processing
@@ -436,3 +437,17 @@ marked with `aria-current="page"` (bold text plus the existing gradient rule, ne
 colour alone) and its group with `is-current`. `scripts/browser/specifications.spec.mjs`
 covers open/close, Escape-and-return-focus, the 320px overflow case and the no-JavaScript
 case; keep those assertions when changing this mechanism.
+
+## Reviews and publication
+
+Every PR receives review by another actual model; another family is preferred.
+Agents fix CI and review findings and provide exact-head evidence. Only humans
+merge, including changes that publish through Pages. See [AGENTS.md](../AGENTS.md)
+for the authoritative Round 16 policy. PR previews are not live publication.
+
+## Tools documentation
+
+`_pages/tools*.md` hold the public language guides. Keep source revision, runtime,
+install route, examples and limitations together. A specification release does
+not automatically upgrade library support. Both sitemap allowlists, `scripts/test_check_deployed.py`
+fixtures and browser layout/accessibility coverage include these routes.

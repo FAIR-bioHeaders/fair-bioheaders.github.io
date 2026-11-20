@@ -100,3 +100,9 @@ For direct use of the specification or converter, cite the resource in the [proj
 These are concept DOIs, which group releases. For reproducible use of a specific release, select its version DOI from the Zenodo record. See [FHR Citation](https://github.com/FAIR-bioHeaders/FHR-Citation) for maintained metadata and [downloadable BibTeX](https://github.com/FAIR-bioHeaders/FHR-Citation/blob/main/citation.bib).
 
 To assemble a metadata record and a readable table in the browser, use the [FHR table builder](/table-builder/).
+
+## Language libraries
+
+See [Tools and language guides](/tools/) for Python installation and separate
+native R, Node.js, Java and Julia source-build workflows. Their supported
+contracts and verification layers are independent of the browser tools.

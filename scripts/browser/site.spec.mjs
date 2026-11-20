@@ -6,7 +6,8 @@ import { focusFirstLink, prepareClipboard, copiedText } from './engine-helpers.m
 // resources (repo references + citations).
 const PAGES = ['/', '/publications/', '/guide/', '/resources/', '/table-builder/', '/metadata-viewer/',
   '/specifications/', '/specifications/fhr/', '/specifications/fht/', '/specifications/fhp/',
-  '/specifications/fhgff3/', '/specifications/fhgm/', '/mappings/'];
+  '/specifications/fhgff3/', '/specifications/fhgm/', '/mappings/',
+  '/tools/', '/tools/r/', '/tools/javascript/', '/tools/java/', '/tools/julia/'];
 
 // Inspect settled layouts, not the intro animation or a fallback-font frame.
 test.beforeEach(async ({ page }) => {
@@ -167,3 +168,20 @@ test.describe('accessibility', () => {
     }
   }
 });
+
+// These source-build guides must not silently become registry/released-type claims.
+for (const [language, revision] of Object.entries({
+  r: 'e458dd660bed6cfbbba6080df95b4bd5f3cfc6a3',
+  javascript: 'ab4158aad46aa04f8eca8e74ea0055bf410c28dd',
+  java: '379facafef1356e42d6a1e567453db648a1287ab',
+  julia: 'd5aa9a5f82d744178dfa1ddeb6ede2bc0925a606'
+})) {
+  test(`source support boundaries on /tools/${language}/`, async ({ page }) => {
+    await openPage(page, `/tools/${language}/`);
+    const content = page.locator('.page__content');
+    await expect(content).toContainText(revision);
+    await expect(content).toContainText('not support for the subsequently published');
+    await expect(content.locator('a[href="/tools/"]')).toBeVisible();
+    await expect(content.locator('a[href="/metadata-viewer/"]')).toBeVisible();
+  });
+}

@@ -16,7 +16,8 @@ ORIGIN = 'https://fhref.org'
 INDEXABLE_PAGES = ('/', '/publications/', '/resources/', '/guide/', '/table-builder/',
                    '/metadata-viewer/', '/specifications/', '/specifications/fhr/',
                    '/specifications/fht/', '/specifications/fhp/', '/specifications/fhgff3/',
-                   '/specifications/fhgm/', '/mappings/')
+                   '/specifications/fhgm/', '/mappings/', '/tools/', '/tools/r/',
+                   '/tools/javascript/', '/tools/java/', '/tools/julia/')
 INDEXABLE_PREFIXES = ('/publication/',)
 # The four header-type reference pages, each pinned to one schema snapshot.
 SCHEMA_PAGES = {
@@ -47,6 +48,8 @@ class Page(HTMLParser):
         self.scripts = []
         self.icons = []
         self.references = []
+        self.reference_count = 0
+        self.citation_errors = []
         self.json_errors = []
         self.cite_buttons = set()
         self.cite_outputs = set()
@@ -57,6 +60,17 @@ class Page(HTMLParser):
 
     def handle_starttag(self, tag, attributes):
         attrs = dict(attributes)
+        classes = set(attrs.get('class', '').split())
+        if tag == 'div' and 'reference' in classes:
+            self.reference_count += 1
+        for element, class_name, binding in (
+            ('button', 'cite-button', 'data-cite-key'),
+            ('button', 'cite-copy', 'data-cite-copy'),
+            ('pre', 'cite-output', 'data-cite-output'),
+            ('div', 'cite-panel', 'data-cite-panel'),
+        ):
+            if tag == element and class_name in classes and not attrs.get(binding):
+                self.citation_errors.append(f'{class_name} lacks {binding}')
         if attrs.get('id'):
             if attrs['id'] in self.ids:
                 self.duplicate_ids.add(attrs['id'])
@@ -126,23 +140,35 @@ def parse_srcset(value):
     return urls
 
 
-REFERENCE_RE = re.compile(r'<div class="reference"([^>]*)>')
+class ReferenceBlocks(HTMLParser):
+    """Find reference divs independent of attribute order, quoting and class order."""
+    def __init__(self, text):
+        super().__init__(convert_charrefs=True)
+        self.text, self.stack, self.blocks = text, [], []
+        self.offsets = [0]
+        for line in text.splitlines(keepends=True):
+            self.offsets.append(self.offsets[-1] + len(line))
+        self.feed(text)
+
+    def source_offset(self):
+        line, column = self.getpos()
+        return self.offsets[line - 1] + column
+
+    def handle_starttag(self, tag, attributes):
+        if tag == 'div':
+            self.stack.append((self.source_offset(), dict(attributes)))
+
+    def handle_endtag(self, tag):
+        if tag == 'div' and self.stack:
+            start, attrs = self.stack.pop()
+            if 'reference' in attrs.get('class', '').split():
+                self.blocks.append((start, attrs, self.text[start:self.source_offset()] + '</div>'))
 
 
 def iter_references(text):
-    """Yield (start_tag_attrs, inner_html) for each .reference div.
-
-    Divs nest (the citation panel), so scan with a depth counter rather than a
-    non-greedy match that would stop at the first closing tag.
-    """
-    for match in REFERENCE_RE.finditer(text):
-        depth = 1
-        pos = match.end()
-        for div in re.finditer(r'<div\b|</div>', text[pos:]):
-            depth += 1 if div.group(0).startswith('<div') else -1
-            if depth == 0:
-                yield match.group(1), text[pos:pos + div.start()]
-                break
+    """Yield attributes and complete HTML for each reference, including nested divs."""
+    for _, attrs, block in sorted(ReferenceBlocks(text).blocks):
+        yield attrs, block
 
 
 class MicrodataParser(HTMLParser):
@@ -291,11 +317,19 @@ def jsonld_container_errors(article, relative):
 
 
 def reference_errors(relative, text, page):
-    errors = []
-    for head, block in iter_references(text):
-        if 'itemscope' not in head or 'itemtype="https://schema.org/' not in head:
+    errors = [f'{relative}: {error}' for error in page.citation_errors]
+    references = list(iter_references(text))
+    if len(references) != page.reference_count:
+        errors.append(f'{relative}: unclosed reference block')
+    reference_keys = set()
+    for attrs, block in references:
+        if attrs.get('id'):
+            reference_keys.add(attrs['id'])
+        else:
+            errors.append(f'{relative}: reference block lacks an id')
+        if 'itemscope' not in attrs or not attrs.get('itemtype', '').startswith('https://schema.org/'):
             errors.append(f'{relative}: reference block lacks itemscope/itemtype')
-        root = MicrodataParser(f'<div{head}>{block}</div>').root or {'type': '', 'props': {}}
+        root = MicrodataParser(block).root or {'type': '', 'props': {}}
         props = root.get('props', {})
         if not props.get('name'):
             errors.append(f'{relative}: reference block lacks a name')
@@ -324,6 +358,8 @@ def reference_errors(relative, text, page):
             if not props.get('datePublished'):
                 errors.append(f'{relative}: article reference lacks datePublished')
             errors.extend(container_hierarchy_errors(root, relative))
+    for key in sorted(reference_keys.symmetric_difference(page.cite_buttons)):
+        errors.append(f'{relative}: reference/cite button mismatch for {key}')
     expected = page.cite_buttons
     for label, actual in (
         ('output', page.cite_outputs),
@@ -332,6 +368,25 @@ def reference_errors(relative, text, page):
     ):
         for key in sorted(expected.symmetric_difference(actual)):
             errors.append(f'{relative}: cite button/{label} mismatch for {key}')
+    return errors
+
+
+
+def publication_identity_errors(article, page, relative):
+    """Tie Highwire, JSON-LD and visible DOI links to the same publication identity."""
+    errors = []
+    identifier = article.get('identifier') or {}
+    doi = identifier.get('value', '') if isinstance(identifier, dict) else ''
+    if not isinstance(doi, str) or not re.fullmatch(r'10\.\d{4,9}/\S+', doi):
+        errors.append(f'{relative}: invalid publication DOI identifier')
+        return errors
+    if page.metas.get('citation_doi') != doi:
+        errors.append(f'{relative}: Highwire/JSON-LD DOI mismatch')
+    if page.metas.get('citation_title') != article.get('headline', article.get('name')):
+        errors.append(f'{relative}: Highwire/JSON-LD title mismatch')
+    uri = 'https://doi.org/' + doi
+    if article.get('sameAs') != uri or uri not in page.links:
+        errors.append(f'{relative}: publication DOI link/JSON-LD mismatch')
     return errors
 
 
@@ -349,10 +404,9 @@ def resource_errors(text):
         if any(link.startswith(base + repo) for link in links):
             errors.append(f'resources: obsolete active converter link {repo}')
     references = {}
-    for head, block in iter_references(text):
-        match = re.search(r'\bid="([^"]+)"', head)
-        if match:
-            references[match[1]] = MicrodataParser(f'<div{head}>{block}</div>').root
+    for attrs, block in iter_references(text):
+        if attrs.get('id'):
+            references[attrs['id']] = MicrodataParser(block).root
     expected = {
         'FHR_Specification': ('FAIR-bioHeaders Specification', 'FAIR-bioHeaders-Specification',
                               '10.5281/zenodo.6762549'),
@@ -480,6 +534,20 @@ def mathjax_errors(page):
     elif scripts:
         return ['MathJax loaded without a page math opt-in']
     return []
+
+
+def sitemap_route_errors(urls):
+    """Require the production origin and every adopted indexable route offline too."""
+    errors = []
+    for url in urls:
+        parts = urlsplit(url)
+        if f'{parts.scheme}://{parts.netloc}' != ORIGIN:
+            errors.append(f'Sitemap URL outside the production origin: {url}')
+    present = set(urls)
+    for path in INDEXABLE_PAGES:
+        if ORIGIN + path not in present:
+            errors.append(f'Sitemap missing required page: {path}')
+    return errors
 
 
 def sitemap_path_allowed(path):
@@ -685,6 +753,7 @@ def check(root):
     sitemap = ET.parse(root / 'sitemap.xml')
     urls = [loc.text for loc in sitemap.findall('.//{http://www.sitemaps.org/schemas/sitemap/0.9}loc')]
     require(len(urls) == len(set(urls)), 'Sitemap contains duplicate URLs')
+    errors.extend(sitemap_route_errors(urls))
     for url in urls:
         path = urlsplit(url).path
         require(resolve(path).is_file(), f'Sitemap has missing page: {url}')
@@ -745,6 +814,7 @@ def check(root):
             require(bool(article.get('datePublished')), f'{relative}: ScholarlyArticle missing datePublished')
             require(bool(article.get('author')), f'{relative}: ScholarlyArticle missing authors')
             errors.extend(jsonld_container_errors(article, relative))
+            errors.extend(publication_identity_errors(article, page, relative))
             require(any('citation_title' == key for key in page.metas),
                     f'{relative}: missing Highwire citation_title meta')
             require(any('citation_author' == key for key in page.metas),

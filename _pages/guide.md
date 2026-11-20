@@ -242,3 +242,9 @@ The converter exists to make that easier and to validate against the schema.
 Cite the [published paper](https://doi.org/10.1093/bib/bbae122) for a general
 description of FHR, and the version DOI of the specification or converter for
 direct use of a specific release. See [Resources & citation](/resources/).
+
+## Language libraries
+
+See [Tools and language guides](/tools/) for Python installation and separate
+native R, Node.js, Java and Julia source-build workflows. Their supported
+contracts and verification layers are independent of the browser tools.

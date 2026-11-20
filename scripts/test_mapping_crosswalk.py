@@ -49,6 +49,11 @@ class PinnedBytes(unittest.TestCase):
 class YamlSubset(unittest.TestCase):
     """The reader is deliberately narrow; these are the shapes it must survive."""
 
+    def test_compact_nested_sequence_is_rejected_instead_of_misread_as_text(self):
+        with self.assertRaisesRegex(ValueError, 'compact nested'):
+            tools.read_yaml('a:\n- - x\nb: 1\n', 'unsupported.yml')
+        self.assertEqual(tools.read_yaml("a:\n- '- x'\n", 'quoted.yml'), {'a': ['- x']})
+
     def test_root_counts_and_dispositions(self):
         data = inventory()
         self.assertEqual(len(data['entries']), 24)

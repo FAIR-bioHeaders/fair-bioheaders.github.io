@@ -371,7 +371,7 @@ if __name__ == '__main__':
 
 class SitemapAllowListChecks(unittest.TestCase):
     def test_existing_and_new_routes_are_allowed(self):
-        for path in ('/', '/publications/', '/resources/', '/guide/', '/table-builder/',
+        for path in ('/', '/publications/', '/resources/', '/guide/', '/table-builder/', '/fhgm-builder/',
                      '/metadata-viewer/', '/specifications/', '/specifications/fhr/',
                      '/specifications/fht/', '/specifications/fhp/', '/specifications/fhgff3/',
                      '/specifications/fhgm/', '/mappings/', '/tools/', '/tools/r/',

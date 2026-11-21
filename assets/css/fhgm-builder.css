@@ -1,0 +1,23 @@
+#fhgm-builder fieldset { min-width: 0; margin: 1.5rem 0; padding: 1rem; border: 1px solid currentColor; border-radius: .35rem; }
+#fhgm-builder legend { color: inherit; font-weight: 600; padding: 0 .4rem; }
+#fhgm-builder label { color: inherit; display: block; margin-top: .75rem; }
+#fhgm-builder input:not([type=checkbox]), #fhgm-builder select { width: 100%; max-width: 100%; font-size: 1rem; }
+#fhgm-builder input[type=checkbox] { margin-right: .5rem; }
+#fhgm-builder .tb-field p, #fhgm-builder fieldset > p { font-size: 1rem; }
+#fhgm-builder .tb-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1rem; }
+#fhgm-builder button { white-space: normal; font-size: 1rem; }
+#fhgm-builder .fm-entry { border-left: 2px solid currentColor; margin: 1rem 0; padding-left: .75rem; }
+#fhgm-builder [aria-invalid=true] { outline: 2px solid currentColor; outline-offset: 2px; }
+#fhgm-builder td, #fhgm-builder th { overflow-wrap: anywhere; }
+
+/* Set both colors: Linux WebKit's native dark buttons otherwise use white
+   text on a light system background. Keep the primary themed .btn intact. */
+#fhgm-builder button:not(.btn) {
+  color: inherit;
+  background: var(--surface-soft);
+  border: 1px solid currentColor;
+  border-radius: .25em;
+  padding: .45em .7em;
+  cursor: pointer;
+}
+#fhgm-builder button:not(.btn):disabled { opacity: .65; cursor: not-allowed; }

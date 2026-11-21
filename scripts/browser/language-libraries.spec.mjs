@@ -11,6 +11,9 @@ test('the guide leads to the library hub and every language has a setup route', 
     const href = page.locator(`#main a[href="${path}"]`).first(); await expect(href).toBeVisible();
   }
   await expect(page.locator('#main')).toContainText('not new');
+  const wrapped = await page.locator('.language-library-table th').first().evaluate(node => { const range = document.createRange(); range.selectNodeContents(node); return range.getClientRects().length; });
+  expect(wrapped).toBe(1);
+  await expect(page.locator('.language-library-table td').filter({ hasText: /^JavaScript$/ })).toBeVisible();
 });
 
 for (const theme of ['light', 'dark']) test(`hub is accessible at page-load theme ${theme}`, async ({ page }, info) => {

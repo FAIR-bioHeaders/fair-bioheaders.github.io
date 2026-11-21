@@ -10,7 +10,7 @@ using the data. A successful read is different from a verified file checksum.
 
 ## Choose your language
 
-<div class="field-table" role="region" aria-label="Language library choices" tabindex="0" markdown="1">
+<div class="field-table language-library-table" role="region" aria-label="Language library choices" tabindex="0" markdown="1">
 
 | Language | Start here | Installation described by the guide | Main use |
 | --- | --- | --- | --- |

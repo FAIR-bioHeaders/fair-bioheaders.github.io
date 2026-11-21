@@ -5,6 +5,9 @@ permalink: /tools/
 excerpt: "Choose a CLI, native library or local browser tool for FAIR BioHeaders."
 ---
 
+Working in Python, R, JavaScript, Java or Julia? Start with the
+[Language libraries page](/language-libraries/) for setup, APIs and support limits.
+
 Choose the tool for the operation you need. A published contract does not mean
 every language library implements it. Check the library's own capability table
 before interpreting a result or enabling a draft lane.

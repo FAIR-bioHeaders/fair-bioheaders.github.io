@@ -1,6 +1,6 @@
 import {test, expect} from '@playwright/test';
 
-test('family overview and guide keep type scope and historical workflow clear', async ({page}) => {
+test('family overview and guide keep type scope and current workflow clear', async ({page}) => {
   await page.goto('/');
   const main = page.locator('#main');
   await expect(main).toContainText('collectively called FH*');
@@ -14,8 +14,8 @@ test('family overview and guide keep type scope and historical workflow clear', 
   await page.goto('/guide/');
   await expect(page.locator('h1')).toHaveText('Using FH*');
   await expect(page.locator('#choose-a-header')).toBeVisible();
-  await expect(page.locator('#main')).toContainText('historical FHR-only workflow');
-  await expect(page.locator('#main')).toContainText('fhr==0.3.3');
+  await expect(page.locator('#main')).toContainText('Current FHR-only workflow');
+  await expect(page.locator('#main')).toContainText('fair-bioheaders==0.13.1');
 });
 
 test('JavaScript examples stays in More across resize and supports keyboard access', async ({page}) => {

@@ -854,6 +854,13 @@ fair-bioheaders-metadata h3 { overflow-wrap: anywhere; }
 .guide-family-table td:first-child { min-width: 5em; }
 .guide-family-table th:nth-child(2),
 .guide-family-table td:nth-child(2) { min-width: 9em; }
+.language-library-table table { min-width: 40rem; font-size: .875rem; }
+.language-library-table th:first-child,
+.language-library-table td:first-child {
+  min-width: 7em;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
 .field-table caption { text-align: left; font-weight: $font-weight-bold; }
 .field-table th,
 .field-table td {

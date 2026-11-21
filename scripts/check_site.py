@@ -17,7 +17,7 @@ INDEXABLE_PAGES = ('/', '/publications/', '/resources/', '/guide/', '/table-buil
                    '/metadata-viewer/', '/specifications/', '/specifications/fhr/',
                    '/specifications/fht/', '/specifications/fhp/', '/specifications/fhgff3/',
                    '/specifications/fhgm/', '/mappings/', '/tools/', '/tools/r/',
-                   '/tools/javascript/', '/tools/java/', '/tools/julia/')
+                   '/tools/javascript/', '/tools/java/', '/tools/julia/', '/language-libraries/')
 INDEXABLE_PREFIXES = ('/publication/',)
 # The four header-type reference pages, each pinned to one schema snapshot.
 SCHEMA_PAGES = {

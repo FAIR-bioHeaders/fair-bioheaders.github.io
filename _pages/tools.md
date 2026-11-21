@@ -19,7 +19,9 @@ before interpreting a result or enabling a draft lane.
 | Browser | [Table builder](/table-builder/) | Prepare typed metadata and download HTML/YAML; structural checks only |
 | Browser lesson | [JavaScript metadata examples](/metadata-viewer/) | Read, query, edit and display authored JSON/HTML metadata; independent of the Node package |
 
-For the Python command line, create an isolated environment:
+## Start with the Python command line
+
+Create an isolated environment so this installation stays separate from other projects:
 
 ```sh
 python3 -m venv .venv
@@ -28,13 +30,17 @@ python -m pip install 'fair-bioheaders==0.13.1'
 bioheaders --help
 ```
 
-Keep original data. Use a new destination when converting or stripping headers,
+## Keep your original data
+
+Use a new destination when converting or stripping headers,
 and recompute file-bound checksums after edits using the toolkit writer.
 A valid metadata record is not evidence of biological correctness. Checksum,
 parent-link and native model results are separate layers; unavailable evidence
 means unchecked, not passed. GFF3 feature validation belongs to
 [gff3-validator](https://github.com/FAIR-bioHeaders/gff3-validator), separately
 from its metadata header.
+
+## Before choosing a native library
 
 The native-language guides linked above describe pinned **source builds**, not registry
 installation or a release announcement. Each keeps its own supported contract

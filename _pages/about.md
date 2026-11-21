@@ -11,7 +11,7 @@ redirect_from:
   <div class="project-intro__copy">
     <p class="project-eyebrow">Genomes · Transcripts · Proteins · Annotations</p>
     <p class="project-intro__lead">Keep the context.<br>Carry it with the data.</p>
-    <p>FAIR BioHeaders develops a family of metadata headers, collectively called FH*, for reference genomes, transcriptomes, protein sets and annotations. They keep the identity, methods and provenance of biological resources close to the files researchers share and use.</p>
+    <p>FAIR BioHeaders develops a family of metadata headers, collectively called FH*, for reference genomes, transcriptomes, protein sets and annotations. They record what a file describes, who created it and how it was made, so that context travels with the data.</p>
     <div class="project-actions">
       <a class="project-action project-action--primary" href="{{ '/guide/#choose-a-header' | relative_url }}">Choose a header <span aria-hidden="true">↗</span></a>
       <a class="project-action" href="{{ '/publications/' | relative_url }}">Explore the research <span aria-hidden="true">→</span></a>
@@ -27,7 +27,7 @@ redirect_from:
 </div>
 
 <nav class="project-paths" aria-label="Explore FAIR BioHeaders">
-  <a href="https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification"><span class="project-eyebrow">01 / Standard</span><strong>A shared language</strong><span>Released genome, protein and annotation metadata contracts.</span></a>
+  <a href="https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification"><span class="project-eyebrow">01 / Standard</span><strong>A shared language</strong><span>Released genome, transcriptome, protein and annotation metadata contracts.</span></a>
   <a href="https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools"><span class="project-eyebrow">02 / Tools</span><strong>Put it into practice</strong><span>Convert headers and work with supported representations.</span></a>
   <a href="{{ '/resources/' | relative_url }}"><span class="project-eyebrow">03 / Resources</span><strong>Build on the work</strong><span>Repositories, archived releases, and citation guidance.</span></a>
 </nav>
@@ -55,7 +55,7 @@ that matches your file; a shared core does not make the types interchangeable.
   [FHR development](https://github.com/FAIR-bioHeaders/FHR-Specification).
 - **FHT — transcriptomes.** Describe transcript sequences and their
   biological and computational origins. FHT 1.0 was published in shared v0.7.0;
-  final released toolkit acceptance and browser activation are separate gates.
+  Python toolkit 0.13.1 and the browser builder support that released contract.
   [FHT development](https://github.com/FAIR-bioHeaders/FHT-Specification).
 - **FHP — protein sets.** Describe predicted, database and mixed protein FASTA
   sets without inventing source material or quality-control results. FHP 1.2 is the

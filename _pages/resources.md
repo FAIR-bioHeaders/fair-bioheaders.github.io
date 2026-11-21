@@ -4,7 +4,14 @@ permalink: /resources/
 excerpt: "FAIR BioHeaders specifications, converters, workflows, and citation guidance."
 ---
 
-Released specifications, tools, development repositories and citation guidance for the FAIR BioHeaders (FH*) family. FHR, FHT, FHP and FHGFF3 describe different biological resources; their release and tooling support are listed separately.
+Find the software, specifications and citation records for FAIR BioHeaders (FH*).
+
+- Need a repository? Start with [Project repositories](#project-repositories).
+- Need a citation? Go to [Citing FHR](#citing-fhr) for release and paper guidance.
+- Need to use a header? Follow the [usage guide](/guide/).
+
+FHR, FHT, FHP and FHGFF3 describe different kinds of data. Their support is
+listed separately so you can choose a tool that handles your file type.
 
 {% include nature-panel.html key="pineapple" %}
 

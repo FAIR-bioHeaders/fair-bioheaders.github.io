@@ -561,8 +561,14 @@ FHT 1.0 at shared v0.7.0. All four have forms. FHGFF3 HTML uses its own experime
 binding; FHT HTML uses the released typed binding. Extension fields stay out of
 microdata under M5. The published Python toolkit 0.13.1 reads the FHT exports.
 FHGM model 0.1 was published separately in shared v0.8.0. It is a native record
-contract inside FHGFF3, not a fifth header; preserve the overview without inventing
-a header inventory, model editor or automatic support in native libraries.
+contract inside FHGFF3, not a fifth header. The explicitly authorized /fhgm-builder/
+edits native records using assets/schema/fhgm-0.1.json, separately from header
+selection. Its exports are record JSON/YAML, a readable table without FHGM
+microdata, and an x-fhgm-models insertion snippet. It checks the pinned record
+structure only: no carrier, feature, predecessor, integrity or biology verdict.
+Keep its native pattern adapter and minProperties coverage in step with the
+actual schema, preserve bytes/provenance, and never auto-fetch entered URLs.
+No automatic support in native libraries follows.
 
 Earlier builder snapshot sections document their own frozen snapshots;
 statements that FHT is deferred or FHGFF3 lacks microdata describe those earlier

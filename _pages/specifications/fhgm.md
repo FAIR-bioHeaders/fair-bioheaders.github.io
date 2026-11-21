@@ -41,7 +41,9 @@ Select the native model contract **outside the record**. It adds no in-record
 schema field, no FHGM header schemaVersion, no header registry row in
 schemas/versions.json and no fifth choice in the browser header form.
 The enclosing file continues to cite its supported FHGFF3 contract.
-The [table builder](/table-builder/) does not edit native FHGM records.
+Use the separate [FHGM model builder](/fhgm-builder/) to prepare a record and
+readable table. It checks record structure; the enclosing file and model-level
+relationships still require their separate checks.
 
 ## Published package and runtime status
 

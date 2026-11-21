@@ -551,6 +551,9 @@
       });
     }
     if (jsonType(value) === 'object') {
+      if (schema.minProperties !== undefined && Object.keys(value).length < schema.minProperties) {
+        errors.push({ path: path, message: 'must contain at least ' + schema.minProperties + ' property' });
+      }
       var properties = schema.properties || {};
       var patterns = schema.patternProperties || {};
       (schema.required || []).forEach(function (key) {

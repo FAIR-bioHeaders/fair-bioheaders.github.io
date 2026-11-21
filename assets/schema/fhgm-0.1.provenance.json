@@ -1,0 +1,12 @@
+{
+  "authority": "FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+  "release": "v0.8.0",
+  "commit": "72cb46b98160ecc7a7f20ef579a6879d5030c40b",
+  "path": "model-contracts/fhgm/0.1/fhgm-model.schema.json",
+  "rawUrl": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.8.0/model-contracts/fhgm/0.1/fhgm-model.schema.json",
+  "retrieved": "2026-11-21",
+  "bytes": 12039,
+  "sha256": "56c0a5a91e9e56c50c0919a375505c01f52bce5f1792841c40b87b1cd18e9336",
+  "gitBlob": "71bc6c3916d74979082bf4aaf9362c18ede03e2c",
+  "verification": "Contents API base64 bytes matched their Git blob identity and an independent v0.8.0 Git object. Contract bytes unchanged; historical Draft descriptions remain verbatim. Consumer browser pattern adaptation changes no source bytes. No FHGM header registry entry or HTML binding is introduced."
+}

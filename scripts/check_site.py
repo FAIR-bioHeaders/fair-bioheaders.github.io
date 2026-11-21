@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 ORIGIN = 'https://fhref.org'
 # Indexable routes, allow-listed: a new public page must be added here and to
 # scripts/check_deployed.py in the same change that publishes it.
-INDEXABLE_PAGES = ('/', '/publications/', '/resources/', '/guide/', '/table-builder/',
+INDEXABLE_PAGES = ('/', '/publications/', '/resources/', '/guide/', '/table-builder/', '/fhgm-builder/',
                    '/metadata-viewer/', '/specifications/', '/specifications/fhr/',
                    '/specifications/fht/', '/specifications/fhp/', '/specifications/fhgff3/',
                    '/specifications/fhgm/', '/mappings/', '/tools/', '/tools/r/',

@@ -26,8 +26,13 @@ main:
   - title: "Browser JavaScript examples"
     url: /metadata-viewer/
     overflow: true
-  - title: "Table builder"
+  - title: "Table builders"
     url: /table-builder/
+    children:
+      - title: "File header builder"
+        url: /table-builder/
+      - title: "FHGM model builder"
+        url: /fhgm-builder/
   - title: "Resources & citation"
     url: /resources/
   - title: "GitHub"

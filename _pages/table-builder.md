@@ -8,7 +8,7 @@ Build a **genome (FHR), protein set (FHP), annotation (FHGFF3), or transcriptome
 record using pinned released schemas: v0.6.0 for FHR/FHP/FHGFF3 and v0.7.0 for FHT. Choose a header type below. Each type
 keeps its own entries while this page is open; reloading discards them.
 Everything runs in your browser; nothing is uploaded or saved to this site.
-FHGM native gene-model records are outside this form.
+For FHGM native gene-model records, use the separate [model builder](/fhgm-builder/).
 
 FHR, FHP, FHGFF3 and FHT exports include typed HTML microdata, each marked with its own
 header-type identity. FHGFF3 HTML uses the experimental binding supported by

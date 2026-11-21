@@ -4,15 +4,15 @@ permalink: /specifications/
 excerpt: "Field-by-field reference for the FAIR-bioHeaders header types: FHR for reference genomes, FHT for transcriptomes, FHP for protein FASTA and FHGFF3 for GFF3 annotations, plus the published native FHGM gene model overview."
 ---
 
-One page per FAIR-bioHeaders header type, each with the complete field reference
-for its contract: every field and nested object, whether it is required, its JSON
-type, its format, pattern, enum or range, its cardinality, its units, an example and
-the compatibility notes that matter. The normative schemas stay in
-[FAIR-bioHeaders-Specification](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification);
-these pages are generated from the published schema bytes and link back to them.
-FHGM has a published native model contract rather than a file-header contract:
-its [native overview](/specifications/fhgm/) stays separate from the four generated
-header inventories.
+Choose the reference for your file type below. Each page explains the fields you
+can enter, which are required, their types and units, and shows examples.
+A **contract** is the set of rules a metadata record must follow.
+
+The field tables are generated from the published schemas in
+[FAIR BioHeaders Specification](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification).
+That repository is the authority; these pages help you read its rules.
+The [FHGM model overview](/specifications/fhgm/) is separate because it describes
+model records inside an annotation, not another file header.
 
 {% include nature-panel.html key="turtle-shell" %}
 

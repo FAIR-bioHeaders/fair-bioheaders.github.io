@@ -894,3 +894,13 @@ fair-bioheaders-metadata h3 { overflow-wrap: anywhere; }
   font-size: $type-size-7;
   overflow-wrap: anywhere;
 }
+
+// Keep the builder's long reference material available after the primary task.
+#tb-advanced-details {
+  margin-top: 2rem;
+  padding: 1rem;
+  border: 1px solid currentColor;
+  border-radius: .35rem;
+  summary { cursor: pointer; font-weight: 600; }
+  summary:focus-visible { outline: 2px solid currentColor; outline-offset: .25rem; }
+}

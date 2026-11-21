@@ -4,10 +4,14 @@ permalink: /mappings/
 excerpt: "How FHR header fields relate to qualified Dublin Core: the adopted mapping v1 crosswalk, its worked example, and what it does not claim."
 ---
 
-**Reference material, not a converter.** This page renders the
-[FAIR-bioHeaders Specification][spec] **mapping v1** surface: a root-field handling
-inventory from FHR to qualified [DCMI Terms][dcmi], a supplemental export-context contract,
-and one worked bundle. The maintainers adopted that surface on 2026-11-14 as
+**Use this page to understand metadata mappings.** A mapping explains which
+fields describe the same concept in two metadata systems. Here, the target is
+qualified Dublin Core: a vocabulary for describing resources such as datasets.
+This page is a reference, not a browser converter.
+
+This page renders the
+[FAIR-bioHeaders Specification][spec] **mapping v1** surface: a field-by-field inventory from FHR to qualified [DCMI Terms][dcmi],
+a contract for extra export context, and one worked bundle. The maintainers adopted that surface on 2026-11-14 as
 *correct-but-not-final* and **withheld the "official" label until a deterministic exporter
 ships**. That is the historical adoption record. Published
 [fair-bioheaders 0.13.1](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/releases/tag/v0.13.1)

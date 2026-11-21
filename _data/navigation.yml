@@ -22,6 +22,17 @@ main:
         url: /mappings/
   - title: "Tools & language guides"
     url: /tools/
+    children:
+      - title: "Language libraries"
+        url: /language-libraries/
+      - title: "R"
+        url: /tools/r/
+      - title: "JavaScript (Node.js)"
+        url: /tools/javascript/
+      - title: "Java"
+        url: /tools/java/
+      - title: "Julia"
+        url: /tools/julia/
     overflow: true
   - title: "Browser JavaScript examples"
     url: /metadata-viewer/

@@ -375,7 +375,7 @@ class SitemapAllowListChecks(unittest.TestCase):
                      '/metadata-viewer/', '/specifications/', '/specifications/fhr/',
                      '/specifications/fht/', '/specifications/fhp/', '/specifications/fhgff3/',
                      '/specifications/fhgm/', '/mappings/', '/tools/', '/tools/r/',
-                     '/tools/javascript/', '/tools/java/', '/tools/julia/'):
+                     '/tools/javascript/', '/tools/java/', '/tools/julia/', '/language-libraries/'):
             with self.subTest(path=path):
                 self.assertTrue(sitemap_path_allowed(path))
 

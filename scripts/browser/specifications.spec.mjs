@@ -37,7 +37,7 @@ test.describe('specifications dropdown', () => {
   test('opens by keyboard, reports aria-expanded, and closes on Escape', async ({ page, browserName }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await openPage(page, '/');
-    const group = page.locator('.masthead__menu-item--group');
+    const group = page.locator('.masthead__menu-item--group:has(a[href="/specifications/"])');
     const toggle = group.locator('.nav-dropdown-toggle');
     const menu = group.locator('.nav-dropdown');
     await expect(menu).toBeHidden();
@@ -65,7 +65,7 @@ test.describe('specifications dropdown', () => {
 
   test('marks the active section and page', async ({ page }) => {
     await openPage(page, '/specifications/fhp/');
-    const group = page.locator('.masthead__menu-item--group');
+    const group = page.locator('.masthead__menu-item--group:has(a[href="/specifications/"])');
     await expect(group).toHaveClass(/is-current/);
     await expect(group.locator('a[href="/specifications/fhp/"]')).toHaveAttribute('aria-current', 'page');
     await expect(group.locator('a[href="/specifications/"]')).not.toHaveAttribute('aria-current', 'page');
@@ -86,7 +86,7 @@ test.describe('specifications dropdown', () => {
   test('stacks dropdown items and preserves dark-theme contrast', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await openPage(page, '/');
-    const group = page.locator('.masthead__menu-item--group');
+    const group = page.locator('.masthead__menu-item--group:has(a[href="/specifications/"])');
     await group.locator('.nav-dropdown-toggle').click();
     await page.evaluate(() => { document.documentElement.dataset.theme = 'dark'; });
     const menu = group.locator('.nav-dropdown');
@@ -117,7 +117,7 @@ test.describe('specifications dropdown', () => {
     await openPage(page, '/');
     const toggle = page.locator('.nav-toggle');
     await toggle.click();
-    const item = page.locator('#overflow-navigation .masthead__menu-item--group');
+    const item = page.locator('#overflow-navigation .masthead__menu-item--group:has(a[href="/specifications/"])');
     await expect(item).toHaveCount(1);
     // Inside More the children are a plain indented list: no second disclosure to operate.
     await expect(item.locator('.nav-dropdown a[href="/specifications/fhgff3/"]')).toBeVisible();
@@ -130,7 +130,7 @@ test.describe('specifications dropdown', () => {
     const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 1280, height: 900 } });
     const page = await context.newPage();
     await page.goto(baseURL + '/specifications/');
-    const links = page.locator('#site-nav .nav-dropdown a');
+    const links = page.locator('#site-nav .masthead__menu-item--group:has(a[href="/specifications/"]) .nav-dropdown a');
     // The five specification entries plus the /mappings/ reference page share the menu.
     await expect(links).toHaveCount(NAV_ITEMS.length + 1);
     await expect(links.first()).toBeVisible();

@@ -26,6 +26,7 @@ SITEMAP = (
     f'<url><loc>{ORIGIN}/tools/javascript/</loc></url>'
     f'<url><loc>{ORIGIN}/tools/java/</loc></url>'
     f'<url><loc>{ORIGIN}/tools/julia/</loc></url>'
+    f'<url><loc>{ORIGIN}/language-libraries/</loc></url>'
     f'<url><loc>{ORIGIN}/publication/x</loc></url>'
     '</urlset>'
 )
@@ -56,6 +57,7 @@ def fake_fetch(overrides=None):
         '/tools/javascript/': (200, 'text/html', b'<html></html>'),
         '/tools/java/': (200, 'text/html', b'<html></html>'),
         '/tools/julia/': (200, 'text/html', b'<html></html>'),
+        '/language-libraries/': (200, 'text/html', b'<html></html>'),
         '/publication/x': (200, 'text/html', b'<html></html>'),
     }
     if overrides:

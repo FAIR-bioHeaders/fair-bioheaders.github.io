@@ -1,250 +1,182 @@
 ---
 title: "Using FH*"
 permalink: /guide/
-excerpt: "Choose a FAIR BioHeaders header for genomes, transcriptomes, protein sets or annotations, with scope and compatibility guidance."
+excerpt: "Choose a FAIR BioHeaders header, find a language library and follow a current FHR file workflow."
 ---
 
-FAIR BioHeaders (FH*) is a family of headers for different biological resources.
-Start with the type that matches your data, then use a workflow supported by
-that type's released contract and tooling.
+FAIR BioHeaders keeps metadata with the biological files it describes. FH* is
+the family name; each header type describes a different kind of data.
+Choose a type below, then use the [Language libraries page](/language-libraries/)
+to find setup instructions and APIs for Python, R, JavaScript, Java or Julia.
 
 ## Choose a header
 
 <div class="field-table guide-family-table" role="region" tabindex="0" aria-label="Header family workflow status" markdown="1">
 
-| Type | Resource | Contract and workflow status |
+| Type | Use for | Start here |
 | --- | --- | --- |
-| [FHR](/specifications/fhr/) | Reference genome assembly | FHR `2.1`; the pinned shared release v0.6.0 re-publishes the 2.1 bytes unchanged. Toolkit `fair-bioheaders` 0.12.0 writes and checks FASTA/GFA, JSON-LD and microdata for `2.1`, accepts a `…/v0.6.0` citation, and can write a new `2.1` record from typed fields with `bioheaders metadata`. The browser builder cites the pinned v0.6.0 snapshot by default and can write `x-` extension fields (YAML only). |
-| [FHT](/specifications/fht/) | Transcriptome | Released FHT 1.0 in shared v0.7.0, DOI 10.5281/zenodo.24385024. Published toolkit 0.13.1 supports the normal FHT lane with no development flag. All seven browser HTML/YAML pairs were validated and re-read through the actual installed release. The earlier 0.12.0 owning-draft lane remains historical. JSON-LD is unsupported. |
-| [FHP](/specifications/fhp/) | Protein/proteome FASTA | FHP `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit 0.12.0 reads and writes `1.2` as JSON/YAML, in files, and as canonical JSON-LD and HTML microdata. The browser builder cites the pinned v0.6.0 snapshot by default, accepts a dotted `lineageDataset` in a `1.2` record, and writes `x-` extension fields into YAML only. |
-| [FHGFF3](/specifications/fhgff3/) | GFF3 annotation metadata | FHGFF3 `1.2` in shared v0.6.0 (dotted BUSCO dataset versions); toolkit 0.12.0 reads and writes `1.2` as JSON/YAML and in files, plus experimental HTML microdata, and has no JSON-LD form. Feature and biology validation is a separate tool. |
+| [FHR](/specifications/fhr/) | Reference genome assemblies in FASTA or GFA | Contract 2.1; the current FHR-only workflow below uses shared v0.6.0 |
+| [FHT](/specifications/fht/) | Transcriptomes in FASTA | Published contract 1.0 in shared v0.7.0; Python toolkit 0.13.1 and the browser builder support it |
+| [FHP](/specifications/fhp/) | Protein sets in FASTA | Contract 1.2 in shared v0.6.0; check the chosen library's formats and operations |
+| [FHGFF3](/specifications/fhgff3/) | Annotation metadata in GFF3 | Contract 1.2 in shared v0.6.0; checking features and biology is a separate operation |
 {: .status-table}
 
 </div>
 
-Every field, type, constraint and unit is documented on that type's schema reference
-page, generated from the published schema bytes; the
-[specification overview](/specifications/) lists all four. This guide stays the
-narrative introduction, so it does not restate the contracts.
+The [field references](/specifications/) explain required fields, types and
+units. The [language library comparison](/language-libraries/#check-support-before-choosing-a-library)
+explains why a published contract may not yet be supported by every reader.
+Never assume that support for one type or representation includes the others.
 
-**FHGM** (gene model records) is not a header to choose. Native model contract
-0.1 was published in shared v0.8.0, DOI
-[10.5281/zenodo.24385999](https://doi.org/10.5281/zenodo.24385999), for records
-inside an FHGFF3 annotation. It adds no FHGM header schemaVersion or header
-registry entry; the native contract is selected outside each record.
-Published toolkit 0.13.1 includes an experimental model checker: enable
-BIOHEADERS_EXPERIMENTAL_FHGM=1 to select the published native 0.1 contract.
-It remains separate from normal header selection and feature/biology checks. The logical native alias is not yet a live resolving link.
-See the [FHGM native model overview](/specifications/fhgm/) for the immutable
-raw-tag schema, source history and separate validation outcomes.
-{: .release-source}
+**FHGM describes a gene-model contribution inside an annotation, rather than
+another file-header type.** Native model contract 0.1 was published in shared
+v0.8.0. The enclosing file still uses FHGFF3. Read the
+[FHGM overview](/specifications/fhgm/) for its separate model checks and the
+[language library support notes](/language-libraries/#check-support-before-choosing-a-library)
+before choosing a runtime. Python toolkit 0.13.1's model checker is an explicit
+opt-in; it does not replace header, feature or biological validation.
 
-Toolkit 0.10.0 rejects v0.6.0 aliases for FHR, FHP and FHGFF3. For workflows with that toolkit release, use the [v0.5.0 examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.5.0/examples) and its [tagged documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/tree/v0.10.0). Choose a supported alias when creating new records; changing an existing file-bound header requires checksum recomputation.
+## Choose a way to work
 
-Read the [released examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.6.0/examples)
-and [current toolkit documentation](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools)
-for the chosen type and supported representation. The [resources page](/resources/)
-links each development repository and distinguishes development from shared final
-publication. A format supported for FHR is not automatically supported for every type.
-
-The worked example below is a **historical FHR-only workflow**, verified against
-`fhr` 0.3.3 and its
-[synthetic example](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/tree/v0.3.3/examples).
-It is retained as recorded; use the released examples above for current work.
-Its sample identifiers are placeholders.
+- **In a program:** open [Language libraries](/language-libraries/) and choose
+  your language. Each guide gives setup, a short read/verify example and limits.
+- **In a browser:** use the [table builder](/table-builder/) to prepare metadata
+  and download a readable table. The [JavaScript lesson](/metadata-viewer/)
+  demonstrates reading and editing its authored metadata examples.
+- **At the command line:** use the Python toolkit for writing, combining,
+  conversion and file checks. The worked example below starts from a new FASTA.
 
 {% include nature-panel.html key="turtle-shell" %}
 
-Prefer a form? The [FHR table builder](/table-builder/) builds the metadata,
-validates it against the schema, and downloads the table and metadata file.
+## Current FHR-only workflow
 
-Prefer the command line? `bioheaders metadata` (fair-bioheaders 0.12.0 and later)
-writes an FHR `2.1` record citing v0.6.0 from typed fields and checks it against the
-bundled schema before writing. It never invents a required value: a missing one is
-listed and the command exits with an error. `--stats-from` computes `vitalStats` from
-the FASTA, and `bioheaders combine` then adds the checksum:
+This example uses published **fair-bioheaders 0.13.1** and FHR contract **2.1**,
+citing the supported shared v0.6.0 schema. It replaces the older fhr0.3.3 recipe.
+The names, sequence and date below are synthetic examples; enter your own
+accurate metadata for real data. For the same checks inside an application, see
+[Language libraries](/language-libraries/).
 
-```bash
-bioheaders metadata --genome "Example assembly" --taxon-name "Homo sapiens" \
-  --taxon-id 9606 --version 1 \
-  --metadata-author "Adam Wright <https://orcid.org/0000-0002-5719-4024>" \
-  --assembly-author "David Molik <https://orcid.org/0000-0003-3192-6538>" \
-  --date-created 2026-11-18 --masking soft-masked \
+### Install in a new directory
+
+Use Python 3.9 or later. Run these commands in a directory where `fh-example`
+does not already exist:
+
+```sh
+mkdir fh-example
+cd fh-example
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install 'fair-bioheaders==0.13.1'
+```
+
+For other languages and their runtime requirements, use the
+[language setup guides](/language-libraries/#choose-your-language).
+
+### Create the sequence and metadata
+
+Save this short synthetic sequence as `genome.fasta`:
+
+```fasta
+>example synthetic sequence
+ACGTACGTACGTACGT
+```
+
+Write metadata from supplied values and compute the sequence statistics:
+
+```sh
+bioheaders metadata --genome "Synthetic workflow example" \
+  --taxon-name "Homo sapiens" --taxon-id 9606 --version 1 \
+  --metadata-author "Example metadata author" \
+  --assembly-author "Example assembly author" \
+  --date-created 2026-11-21 --masking not-masked \
   --stats-from genome.fasta -o metadata.yaml
+```
+
+`metadata.yaml` contains typed metadata, including the fixed schema citation and
+`schemaVersion: '2.1'`. It has no file checksum yet. Do not invent missing values
+or enter someone else's name as an author of your real data.
+
+### Combine and verify
+
+```sh
 bioheaders combine metadata.yaml genome.fasta -o genome.fhr.fasta
 bioheaders verify genome.fhr.fasta
 ```
 
-FHP and FHGFF3 records are not written by this command yet.
+`combine` adds the `;~` metadata block and computes the file checksum. `verify`
+checks the cited metadata contract and exact file bytes. Require a successful
+exit status; an error is not a partially successful verification.
 
-## A historical worked example (fhr 0.3.3)
+### Convert metadata or make a compatible working copy
 
-Start with ordinary FASTA that carries no FHR metadata:
-
-```
->chr1 synthetic example
-ACGTACGTACGTACGT
-```
-
-Supply the metadata as a small YAML file (fields for this example are described
-in the [v0.3.1 contract](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/v0.3.1/fhr.json)):
-
-```yaml
-schema: https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json
-schemaVersion: 1.0
-taxon:
-  name: Homo sapiens
-  uri: https://identifiers.org/taxonomy:9606
-genome: Synthetic human reference example
-version: 0.0.1
-masking: not-masked
-metadataAuthor:
-- name: Adam Wright
-  uri: https://orcid.org/0000-0002-5719-4024
-assemblyAuthor:
-- name: David Molik
-  uri: https://orcid.org/0000-0003-3192-6538
-dateCreated: '2022-03-21'
+```sh
+bioheaders convert genome.fhr.fasta metadata.json
+bioheaders validate metadata.json
+bioheaders strip genome.fhr.fasta genome.stripped.fasta
 ```
 
-Install the released package and combine the metadata with the sequence:
-
-```bash
-python -m pip install fhr==0.3.3
-fhr-fasta-combine metadata.yaml genome.fasta -o genome.fhr.fasta
-fhr-fasta-validate genome.fhr.fasta
-```
-
-`fhr-fasta-combine` writes the metadata as `;~`-prefixed header lines above the
-unchanged sequence, and `fhr-fasta-validate` confirms the metadata and the
-file checksum:
-
-```
-;~schema: https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json
-;~schemaVersion: 1.0
-;~taxon:
-;~  name: Homo sapiens
-;~  uri: https://identifiers.org/taxonomy:9606
-;~genome: Synthetic human reference example
-;~version: 0.0.1
-;~masking: not-masked
-;~metadataAuthor:
-;~- name: Adam Wright
-;~  uri: https://orcid.org/0000-0002-5719-4024
-;~assemblyAuthor:
-;~- name: David Molik
-;~  uri: https://orcid.org/0000-0003-3192-6538
-;~dateCreated: '2022-03-21'
-;~checksum: PayVnq8Fdnzvaq2jOdUq+l0oJZ+iHk/DtiaYuUWRHqQ=
->chr1 synthetic example
-ACGTACGTACGTACGT
-```
-
-To convert to another supported representation, use `fhr-convert`; it reads
-`.json`, `.yaml`, `.fasta`, `.gfa`, and `.html` from file extensions and
-validates before writing:
-
-```bash
-fhr-convert genome.fhr.fasta genome.fhr.json
-fhr-validate genome.fhr.json
-```
-
-## Scope: the header family and where metadata lives
-
-- **FHR** (FAIR Header Reference genome) describes reference **genomes**. **FHT**
-  describes reference **transcriptomes**, with contract 1.0 published in shared v0.7.0;
-  their contracts and installed runtime support are separate.
-- **FHP** describes protein FASTA and **FHGFF3** describes annotation metadata.
-  Their `schemaVersion` `"1.0"` contracts were first included alongside FHR in the
-  [shared specification v0.4.0](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/releases/tag/v0.4.0),
-  and shared v0.6.0 released both at `"1.2"`. FHP has canonical JSON-LD and HTML
-  microdata in the toolkit; FHGFF3 has experimental HTML microdata (its binding is
-  still a draft) and no JSON-LD form. FHGFF3 JSON-LD remains follow-up work.
-- **File-carried metadata** travels with the sequence in `;~` (FASTA) or `#~`
-  (GFA) header comments, so the metadata cannot drift away from the data it
-  describes. **Repository metadata** is held by the archive that stores the
-  sequence; the two are complementary, not alternatives.
-- Header handling varies by tool. Many FASTA indexers require a stripped copy;
-  follow the [tool compatibility guidance](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/TOOL_COMPATIBILITY.md)
-  and keep the metadata-bearing original. Comments alone do not guarantee
-  compatibility with every parser.
-
-## Version compatibility
-
-- The FHR contract is `schemaVersion: "2.0"` from shared release v0.4.0 and `"2.1"`
-  from v0.5.0, shared v0.6.0 re-publishing the same 2.1 bytes; it is a quoted string,
-  not a number. `schemaVersion`, repository release tags and the
-  assembly's `version` describe different things.
-- The family package **fair-bioheaders 0.12.0**, installed with
-  `python -m pip install fair-bioheaders==0.12.0`. Its `bioheaders` CLI performs
-  conversion, validation and checksums, and from 0.12.0 writes FHR metadata from
-  typed fields (`bioheaders metadata`); the legacy `fhr-*` commands remain
-  supported. 0.12.0 bundles the same v0.6.0 schema set as 0.11.0. See the [toolkit usage](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools).
-- The worked example above is preserved as the recorded **fhr 0.3.3** workflow.
-  Its numeric schemaVersion and raw-main header are historical, not a current
-  v0.4 recipe. The raw-main URL now selects the current contract. For new work,
-  use the reviewed [release examples](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/tree/v0.6.0/examples)
-  and a fixed versioned schema URL; unknown schema versions are unsupported,
-  never silently replaced. The [schema-version policy](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/SCHEMA-VERSIONS.md)
-  explains migration and compatibility checks.
-- A `…/v0.6.0` citation needs a toolkit release that bundles that registry entry:
-  0.11.0 and later do, and 0.10.0 reports it as an unsupported schema version. Citations of
-  v0.3.x, v0.4.x and v0.5.0 keep resolving to their own frozen copies, so an existing
-  file-bound header never needs to be rewritten to stay readable.
-- The browser table builder defaults to FHR v0.6.0 (`schemaVersion` "2.1") and also
-  builds FHP and FHGFF3 records at their released v0.6.0 `"1.2"` contracts — including
-  `x-` extension fields in the YAML export and dotted BUSCO dataset versions. Its
-  pinned v0.4.0 snapshots (FHR `"2.0"`, FHP/FHGFF3 `"1.0"`) and legacy FHR v0.3.1 stay
-  selectable on their own bytes; shared release v0.5.0 is not pinned, so citing it is
-  reported as unsupported. A released specification is not a claim that this browser
-  supports it;
-  [issue #15](https://github.com/FAIR-bioHeaders/fair-bioheaders.github.io/issues/15)
-  tracks the remaining builder gates.
-- **Concept DOIs** (for example the [FAIR-bioHeaders Specification](https://doi.org/10.5281/zenodo.6762549))
-  group all releases of a resource. For a reproducible citation, use the
-  **version DOI** for the specific release you used; see
-  [Resources & citation](/resources/).
+The stripped FASTA has the original sequence bytes. Keep `genome.fhr.fasta` as
+the metadata-bearing original and use new output paths. Stripping is a copying
+operation, not proof that the input was valid. Some FASTA indexers require a
+stripped copy; follow the
+[tool compatibility guide](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/TOOL_COMPATIBILITY.md).
+Native library read/verify functions and their output handling are linked from
+[Language libraries](/language-libraries/#read-the-result-not-just-the-metadata).
 
 ## What the checks establish
 
-Schema validation checks metadata structure against its cited supported contract.
-File checksum verification checks the specified file bytes. Parent verification
-checks supplied links against supplied parent files. These are separate results;
-parsing a header or viewing its metadata does not perform all three. GFF3 feature,
-ontology and optional biology checks belong to the
-[GFF3 validator](https://github.com/FAIR-bioHeaders/gff3-validator), independently
-of whether the file carries an FHGFF3 header.
+- **Schema validation:** the metadata follows its cited supported contract.
+- **File verification:** the specified file bytes match the checksum.
+- **Parent or model checks:** separate operations compare supplied relationships
+  with available evidence; unavailable evidence stays unchecked.
+- **Feature and biological checks:** separate tools assess the GFF3 content,
+  ontology or biological assertions.
+
+A parsed record, a displayed table or a successful package build does not prove
+all of these. The [library result guide](/language-libraries/#read-the-result-not-just-the-metadata)
+helps you interpret API results. GFF3 checks belong to
+[gff3-validator](https://github.com/FAIR-bioHeaders/gff3-validator), separately
+from its metadata header.
+
+## Versions and existing files
+
+`schemaVersion` is the metadata contract version. A shared release tag identifies
+a specification package; the resource's `version` identifies your genome or other
+data. These are different values.
+
+The example uses a fixed supported citation. Readers must not silently replace
+an unknown cited version with a newer schema. Existing released citations keep
+their frozen contracts; a new publication is not a reason to rewrite a valid
+old header. Editing file-bound metadata requires checksum recomputation.
+
+Each [language guide](/language-libraries/#check-support-before-choosing-a-library)
+records its own supported subset. Browser coverage is listed on the
+[table builder](/table-builder/). For migration details, read the
+[schema-version policy](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/docs/SCHEMA-VERSIONS.md).
 
 ## FAQ
 
 **How do I check an existing file?**
-Run `fhr-validate` on JSON/YAML metadata, or `fhr-fasta-validate` /
-`fhr-gfa-validate` on sequence files to check both the metadata and the
-exact-byte checksum. Failures exit with status 1.
+Run `bioheaders verify your-file.fhr.fasta` for the supported file type. In an
+application, choose a reader from [Language libraries](/language-libraries/)
+and require its appropriate overall success result. Inspect warnings too.
 
-**What happens if validation fails?**
-The converter validates before writing, so an invalid entry is not written to
-the output path. Inspect the error, correct the metadata, and re-run.
+**Can I write a header with every library?**
+No. The Python toolkit has writing commands; the native-language guides describe
+reader/verifier subsets. Check the [library comparison](/language-libraries/)
+before building a workflow around a missing operation.
 
-**Do I report schema problems or converter problems in the same place?**
-No. Schema and specification questions belong with
-[FHR development](https://github.com/FAIR-bioHeaders/FHR-Specification/issues);
-shared publication questions belong with
-[FAIR BioHeaders Specification](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues);
-conversion and validation bugs belong with
-[FAIR BioHeaders Tools](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools/issues).
+**What if validation fails?**
+Read the error, correct the source metadata and regenerate the output with a new
+checksum. Preserve your original file. Do not treat an unchecked layer as passed.
 
-**Do I have to use the converter?**
-No. The format is plain text; you can write or parse the `;~` header directly.
-The converter exists to make that easier and to validate against the schema.
+**Where should I report a problem?**
+Use the chosen library's repository for implementation bugs, and
+[FAIR BioHeaders Specification](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues)
+for shared contract questions. The [language guides](/language-libraries/)
+link their source repositories and capability documentation.
 
 **Which citation should I use?**
-Cite the [published paper](https://doi.org/10.1093/bib/bbae122) for a general
-description of FHR, and the version DOI of the specification or converter for
-direct use of a specific release. See [Resources & citation](/resources/).
-
-## Language libraries
-
-See [Tools and language guides](/tools/) for Python installation and separate
-native R, Node.js, Java and Julia source-build workflows. Their supported
-contracts and verification layers are independent of the browser tools.
+Cite the [FHR paper](https://doi.org/10.1093/bib/bbae122) for its general description,
+and the version DOI of the specification or software you used for reproducibility.
+See [Resources and citation](/resources/).

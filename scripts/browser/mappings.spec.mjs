@@ -140,7 +140,7 @@ test('the page links the pinned upstream artifacts and no invented alias', async
 test('the mappings entry is reachable from the specifications menu', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await openPage(page, '/specifications/');
-  const group = page.locator('.masthead__menu-item--group');
+  const group = page.locator('.masthead__menu-item--group:has(a[href="/specifications/"])');
   await group.locator('.nav-dropdown-toggle').click();
   await expect(group.locator('.nav-dropdown a[href="/mappings/"]')).toBeVisible();
   await group.locator('.nav-dropdown a[href="/mappings/"]').click();

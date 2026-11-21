@@ -15,7 +15,7 @@ to find setup instructions and APIs for Python, R, JavaScript, Java or Julia.
 
 | Type | Use for | Start here |
 | --- | --- | --- |
-| [FHR](/specifications/fhr/) | Reference genome assemblies in FASTA or GFA | Contract 2.1; the current FHR-only workflow below uses shared v0.6.0 |
+| [FHR](/specifications/fhr/) | Reference genome assemblies in FASTA or GFA | Contract 2.1; the current FHR-only workflow below uses shared v0.8.0 |
 | [FHT](/specifications/fht/) | Transcriptomes in FASTA | Published contract 1.0 in shared v0.7.0; Python toolkit 0.13.1 and the browser builder support it |
 | [FHP](/specifications/fhp/) | Protein sets in FASTA | Contract 1.2 in shared v0.6.0; check the chosen library's formats and operations |
 | [FHGFF3](/specifications/fhgff3/) | Annotation metadata in GFF3 | Contract 1.2 in shared v0.6.0; checking features and biology is a separate operation |
@@ -51,7 +51,7 @@ opt-in; it does not replace header, feature or biological validation.
 ## Current FHR-only workflow
 
 This example uses published **fair-bioheaders 0.13.1** and FHR contract **2.1**,
-citing the supported shared v0.6.0 schema. It replaces the older fhr0.3.3 recipe.
+citing the fixed shared v0.8.0 schema. It replaces the older fhr 0.3.3 recipe.
 The names, sequence and date below are synthetic examples; enter your own
 accurate metadata for real data. For the same checks inside an application, see
 [Language libraries](/language-libraries/).

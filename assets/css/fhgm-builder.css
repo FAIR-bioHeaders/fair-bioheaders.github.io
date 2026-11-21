@@ -9,3 +9,15 @@
 #fhgm-builder .fm-entry { border-left: 2px solid currentColor; margin: 1rem 0; padding-left: .75rem; }
 #fhgm-builder [aria-invalid=true] { outline: 2px solid currentColor; outline-offset: 2px; }
 #fhgm-builder td, #fhgm-builder th { overflow-wrap: anywhere; }
+
+/* Set both colors: Linux WebKit's native dark buttons otherwise use white
+   text on a light system background. Keep the primary themed .btn intact. */
+#fhgm-builder button:not(.btn) {
+  color: inherit;
+  background: var(--surface-soft);
+  border: 1px solid currentColor;
+  border-radius: .25em;
+  padding: .45em .7em;
+  cursor: pointer;
+}
+#fhgm-builder button:not(.btn):disabled { opacity: .65; cursor: not-allowed; }

@@ -134,6 +134,7 @@ npm ci --ignore-scripts          # install the committed npm lockfile
 npm run build:js                 # regenerate assets/js/main.min.js
 BUNDLE_FROZEN=true JEKYLL_ENV=production bundle exec jekyll build --strict_front_matter
 python3 scripts/check_site.py _site
+python3 -m pip install 'jsonschema[format]==4.26.0' # native model reference tests only
 python3 -m unittest discover -s scripts -p 'test_*.py'
 node --test scripts/test_cite.mjs
 npm run test:browser             # once: npx playwright install --with-deps chromium firefox webkit

@@ -28,7 +28,8 @@ or version coercion. Consumer limits:100entries per array and1MiB per record. Te
 truncated; an oversized record is refused with its entered values preserved. No checksum or SeqCol identity is inferred. Errors focus
 the relevant control; edits clear stale sources/previews and disable downloads.
 
-Validation: Node producer/refusal/round-trip tests, Python reference-validator
+Validation: Node producer/refusal/round-trip tests, Python jsonschema4.26.0
+(with the format extra, explicitly installed in CI and documented setup) reference-validator
 parity on site-authored structural cases, full existing site regressions, and
 Playwright form/accessibility tests. These cases are not upstream conformance
 vectors. New public routes are in source and deployment sitemap allowlists.

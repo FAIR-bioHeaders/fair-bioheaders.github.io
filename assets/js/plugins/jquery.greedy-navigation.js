@@ -88,3 +88,9 @@ $nav.on('keydown', function(event) {
     $btn.removeClass('close').attr('aria-expanded', 'false').trigger('focus');
   }
 });
+
+// WebKit does not consistently reveal a focused link inside a resized overflow
+// panel. Keep keyboard focus visible in the scrollable menu on every engine.
+$hlinks.on('focusin', 'a', function() {
+  this.scrollIntoView({block: 'nearest', inline: 'nearest'});
+});

@@ -35,6 +35,11 @@ test('JavaScript examples stays in More across resize and supports keyboard acce
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
     await expect(secondary).toBeVisible();
     await secondary.focus();
+    const bounds = await secondary.boundingBox();
+    expect(bounds.x).toBeGreaterThanOrEqual(0);
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
+    expect(bounds.y).toBeGreaterThanOrEqual(0);
+    expect(bounds.y + bounds.height).toBeLessThanOrEqual(1000);
     await page.keyboard.press('Escape');
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
     await expect(toggle).toBeFocused();

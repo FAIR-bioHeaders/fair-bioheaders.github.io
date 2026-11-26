@@ -259,6 +259,7 @@
     max-height: calc(100vh - 6rem);
     max-height: calc(100dvh - 6rem);
     overflow-y: auto;
+    max-width: 100%;
     padding: 5px;
     border: 1px solid $border-color;
     border-radius: $border-radius;
@@ -269,6 +270,7 @@
       margin: 0;
       padding: 10px 20px;
       font-size: $type-size-5;
+      white-space: normal;
 
       &:hover {
         color: $masthead-link-color-hover;

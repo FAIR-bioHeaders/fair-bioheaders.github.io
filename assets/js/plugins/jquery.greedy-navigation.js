@@ -14,6 +14,17 @@ var $hlinks = $('#site-nav .hidden-links');
 $vlinks.children('[data-overflow-only]').appendTo($hlinks);
 var breaks = [];
 
+function revealOverflowFocus() {
+  // Resize/font layout can move links after focus has already been assigned.
+  // Reveal the final focused position after those menu mutations have settled.
+  requestAnimationFrame(function() {
+    var focused = document.activeElement;
+    if ($hlinks[0].contains(focused)) {
+      focused.scrollIntoView({block: 'nearest', inline: 'nearest'});
+    }
+  });
+}
+
 function updateNav() {
 
   var availableSpace = $btn.hasClass('hidden') ? $nav.width() : $nav.width() - $btn.width() - 30;
@@ -59,6 +70,7 @@ function updateNav() {
     updateNav();
   }
 
+  revealOverflowFocus();
 }
 
 // Window listeners
@@ -88,3 +100,6 @@ $nav.on('keydown', function(event) {
     $btn.removeClass('close').attr('aria-expanded', 'false').trigger('focus');
   }
 });
+
+// Native capture avoids dependency-specific synthetic focus event ordering.
+$hlinks[0].addEventListener('focus', revealOverflowFocus, true);

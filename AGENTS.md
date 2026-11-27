@@ -295,14 +295,50 @@ remains lazy. The new egg/tortoise derivatives are CC BY-SA 2.0, pineapple CC BY
 4.0; retain their independent image licenses. Run image decode/credit checks and
 axe/layout checks on all three pages in both themes and widths.
 
-## Licensing policy (2026-10-09)
+## Licensing policy
 
-New FAIR BioHeaders project contributions from March 2025 onward use MPL-2.0.
-David Molik left USDA in February 2025. Preserve historical USDA public-domain
-material, previously granted permissions, and third-party licenses/notices;
-do not label all current contributors as government employees. See LICENSE
-for scope. Do not rewrite historical releases or silently relicense upstream
-material. Keep README badges, package metadata and citation metadata consistent.
+**Software (new project-owned code from March 2025 onward):** MPL-2.0 — the family standard
+for new software contributions. David Molik left USDA in February 2025; contributions before
+that date carry public-domain / PDDL-era terms within the United States. The project's
+`LICENSE` file documents the provenance split between these eras. Do not normalize old
+notices to the new license, and do not "clean up" a historical PDDL/public-domain line.
+
+**Test datasets and generated databases:** ODbL-1.0 (Open Database License) for newly created
+project-owned database collections where the project has authority to grant database rights.
+Reference: <https://opendatacommons.org/licenses/odbl/>. This applies to conformance test
+fixtures, reference data compilations, schema snapshot archives and derived website asset
+collections where the project holds relevant rights.
+
+**Database rights versus content rights:** ODbL licenses the structure, curation and
+compilation of a database — not individual sequences, images, articles, books or other
+constituent works within it. Document the applicable terms for each source's constituent
+material separately. A project cannot grant ODbL-1.0 over third-party sequence data,
+NCBI-published records, INSDC minimum-specification texts, or any biological resource
+that was not authored by the project.
+
+**Mixed fixtures:** Distinguish (1) newly authored metadata headers and database schema,
+(2) database compilation/organization structure, (3) original JavaScript/CSS/Sass code
+(MPL-2.0), and (4) third-party or public-domain source payloads (e.g., NCBI assembly data,
+public domain GBFF features, CC BY-SA 3.0 honeycomb derivatives). Do not apply a blanket
+license to a mixed fixture that contradicts any component's terms.
+
+**Preserved material:** Retain historical USDA/public-domain notices, previously distributed
+license permissions, third-party terms and immutable fixture bytes. Copying, converting,
+annotating, packaging or generating derivatives from third-party material does not establish
+ownership or authority to relicense it. Preserve released artifact bytes (conformance vectors,
+example data, schema snapshots) as-is. Do not rewrite historical releases or silently
+relicense upstream material. Keep README badges, package metadata and citation metadata
+consistent.
+
+**Biological imagery:** Image credits live in `_data/image_credits.yml` with detailed provenance
+in `docs/design.md`. Honeycomb derivatives are CC BY-SA 3.0; egg/tortoise derivatives are
+CC BY-SA 2.0; pineapple is CC BY-SA 4.0 — these retain their independent image licenses and
+are not governed by the project code license.
+
+**Uncertainty:** Where rights or ODbL applicability are uncertain, document the specific
+question for maintainer disposition — do not invent permissions, ownership or legal
+conclusions. Flag for review: derived data with unclear upstream authority, cross-jurisdictional
+public-domain equivalence, and newly generated datasets built from mixed-license sources.
 
 ## FAIR BioHeaders table builder (issues #16/#15)
 
